@@ -1,0 +1,18 @@
+{
+  "id" : "292573e4-7885-4d2c-be3e-800ff4233abc",
+  "created" : 1522324396772,
+  "modified" : 1522324396772,
+  "title" : "Liedgutbetreuer",
+  "synonyms" : [ ],
+  "abbreviation" : "LGB",
+  "status" : "Aktiv",
+  "parent" : "Gebetshausmitarbeiter",
+  "rolegroup" : "All-Staff",
+  "responsibilities" : [ "R1" ],
+  "opportunities" : [ "O1", "O2" ],
+  "guidelines" : [ "G1", "G2" ],
+  "competences" : [ "C1", "C2" ],
+  "activities" : [ "A1", "A2" ],
+  "persons" : [ "P1" ],
+  "organisation" : "Gebetshaus Freiburg"
+}

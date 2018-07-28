@@ -1,0 +1,371 @@
+/*
+ * Circlead - Develop and structure evolutionary Organisations
+ * 
+ * @author Matthias Wegner
+ * @version 0.1
+ * @since 01.07.2018
+ * 
+ */
+package org.rogatio.circlead.control.synchronizer;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.rogatio.circlead.model.WorkitemType;
+import org.rogatio.circlead.model.data.PersonDataitem;
+import org.rogatio.circlead.model.data.RoleDataitem;
+import org.rogatio.circlead.model.data.RolegroupDataitem;
+import org.rogatio.circlead.model.work.IWorkitem;
+import org.rogatio.circlead.model.work.Person;
+import org.rogatio.circlead.model.work.Role;
+import org.rogatio.circlead.model.work.Rolegroup;
+import org.rogatio.circlead.util.FileUtil;
+import org.rogatio.circlead.view.IRenderer;
+
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
+// TODO: Auto-generated Javadoc
+/**
+ * The Class FileSynchronizer.
+ */
+public class FileSynchronizer extends DefaultSynchronizer {
+
+	/** The data directory. */
+	private String dataDirectory;
+
+	/**
+	 * Gets the data directory.
+	 *
+	 * @return the data directory
+	 */
+	public String getDataDirectory() {
+		return dataDirectory;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#getIdPattern()
+	 */
+	@Override
+	public String getIdPattern() {
+		return "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$";
+	}
+
+	/**
+	 * Instantiates a new file synchronizer.
+	 *
+	 * @param dataDirectory the data directory
+	 */
+	public FileSynchronizer(String dataDirectory) {
+		setDataDirectory(dataDirectory);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#init()
+	 */
+	@Override
+	public void init() {
+		dataDirectory = "data";
+	}
+
+	/**
+	 * Sets the data directory.
+	 *
+	 * @param dataDirectory the new data directory
+	 */
+	public void setDataDirectory(String dataDirectory) {
+		this.dataDirectory = dataDirectory;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#update(org.rogatio.circlead.model.work.IWorkitem)
+	 */
+	@Override
+	public SynchronizerResult update(IWorkitem workitem) {
+		SynchronizerFactory.getInstance().setActual(this);
+		return add(workitem);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#add(org.rogatio.circlead.model.work.IWorkitem)
+	 */
+	@Override
+	public SynchronizerResult add(IWorkitem workitem) {
+		SynchronizerFactory.getInstance().setActual(this);
+
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setSerializationInclusion(Include.NON_NULL);
+		mapper.enable(SerializationFeature.INDENT_OUTPUT);
+
+		if (WorkitemType.ROLE.isTypeOf(workitem)) {
+			writeWorkitemData(workitem, "roles");
+		} else if (WorkitemType.ROLEGROUP.isTypeOf(workitem)) {
+			writeWorkitemData(workitem, "rolegroups");
+		} else if (WorkitemType.PERSON.isTypeOf(workitem)) {
+			writeWorkitemData(workitem, "persons");
+		}
+
+		writeWorkitemRendered(workitem);
+
+		SynchronizerResult res = new SynchronizerResult();
+		res.setMessage("Write");
+		res.setCode(200);
+		
+		return res;
+	}
+	
+	/**
+	 * Delete all.
+	 */
+	public void deleteAll() {
+		File data = new File(dataDirectory);
+		try {
+			// Delete all directories to prevent unused files
+			FileUtil.deleteRecursive(data);
+		} catch (Exception e) {
+			logger.warn("No directory '" + dataDirectory + "' found to delete.");
+		}
+	}
+
+	/**
+	 * Write workitem data.
+	 *
+	 * @param workitem the workitem
+	 * @param folder the folder
+	 * @return the string
+	 */
+	private String writeWorkitemData(IWorkitem workitem, String folder) {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setSerializationInclusion(Include.NON_NULL);
+		mapper.enable(SerializationFeature.INDENT_OUTPUT);
+
+		if (workitem.getId(this)==null) {
+			workitem.setId(UUID.randomUUID().toString(), this);
+		}
+		
+		String result = "";
+
+		try {
+			File dir = new File(dataDirectory + File.separatorChar + folder);
+			dir.mkdirs();
+			File f = new File(dir.toString() + File.separatorChar + "" + workitem.getId(this) + "." + workitem.getType().toLowerCase() + ".json");
+			if (f.exists()) {
+				f.delete();
+			}
+			f.createNewFile();
+
+			if (workitem instanceof Role) {
+				Role role = (Role) workitem;
+				mapper.writeValue(f, role.getDataitem());
+			} else if (workitem instanceof Rolegroup) {
+				Rolegroup rolegroup = (Rolegroup) workitem;
+				mapper.writeValue(f, rolegroup.getDataitem());
+			} else if (workitem instanceof Person) {
+				Person person = (Person) workitem;
+				mapper.writeValue(f, person.getDataitem());
+			}
+
+			result = "" + f + "";
+
+			logger.info("Write/Update file '" + f + "'");
+
+		} catch (IOException e) {
+			logger.error(e);
+			result = "Error on writing workitem '" + workitem.getId() + "'";
+		}
+
+		return result;
+
+	}
+
+	/**
+	 * Write workitem rendered.
+	 *
+	 * @param workitem the workitem
+	 */
+	private void writeWorkitemRendered(IWorkitem workitem) {
+		if (workitem instanceof IRenderer) {
+			IRenderer renderer = (IRenderer) workitem;
+			String filename = workitem.getId(this);
+			Document doc = new Document("");
+			Element html = doc.appendElement("html");
+			html.appendElement("head");
+			Element body = html.appendElement("body");
+			renderer.render().appendTo(body);
+
+			try {
+				String f = "web/" + filename + ".html";
+				File ff = new File("web");
+				ff.mkdirs();
+				Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"));
+				try {
+					out.write(doc.toString());
+				} finally {
+					out.close();
+				}
+			} catch (IOException e) {
+				logger.error("Error writing Html-File", e);
+			}
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#loadIndex(org.rogatio.circlead.model.WorkitemType)
+	 */
+	public List<String> loadIndex(WorkitemType workitemType) {
+		SynchronizerFactory.getInstance().setActual(this);
+
+		List<String> fileIndex = new ArrayList<String>();
+
+		if (WorkitemType.ROLE == workitemType) {
+			fileIndex = readFolder("roles");
+		} else if (WorkitemType.ROLEGROUP == workitemType) {
+			fileIndex = readFolder("rolegroups");
+		} else if (WorkitemType.PERSON == workitemType) {
+			fileIndex = readFolder("persons");
+		}
+
+		return fileIndex;
+	}
+
+	/**
+	 * Read folder.
+	 *
+	 * @param folder the folder
+	 * @return the list
+	 */
+	private List<String> readFolder(String folder) {
+		List<String> fileIndex = new ArrayList<String>();
+		File directory = new File(dataDirectory + File.separatorChar + folder);
+		if (directory != null) {
+			if (directory.listFiles() != null) {
+				for (File file : directory.listFiles()) {
+					if (!file.toString().contains(".schema")) {
+						fileIndex.add(file.toString());
+					}
+				}
+			}
+		}
+		return fileIndex;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#get(java.lang.String)
+	 */
+	@Override
+	public IWorkitem get(String filename) throws SynchronizerException {
+		SynchronizerFactory.getInstance().setActual(this);
+
+		File file = new File(filename);
+		Date modified = new Date(file.lastModified());
+
+		if (!file.exists()) {
+			throw new SynchronizerException("Item with id '" + filename + "' could not be loaded with File Synchronizer.");
+		}
+
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setSerializationInclusion(Include.NON_NULL);
+		try {
+			logger.info("Read file '" + filename + "'");
+
+			IWorkitem item = null;
+
+			if (!file.toString().contains(".schema")) {
+				if (filename.endsWith(".role.json")) {
+					RoleDataitem data = mapper.readValue(file, RoleDataitem.class);
+					item = new Role(data);
+				} else if (filename.endsWith(".rolegroup.json")) {
+					RolegroupDataitem data = mapper.readValue(file, RolegroupDataitem.class);
+					item = new Rolegroup(data);
+				} else if (filename.endsWith(".person.json")) {
+					PersonDataitem data = mapper.readValue(file, PersonDataitem.class);
+					item = new Person(data);
+				}
+			}
+
+			item.setModified(modified);
+			setWorkitemId(filename, item);
+			return item;
+
+		} catch (JsonParseException e) {
+			throw new SynchronizerException("Error (JsonParse) loading role '" + file + "'. " + e.getMessage(), e.getCause());
+		} catch (JsonMappingException e) {
+			throw new SynchronizerException("Error (JsonMapping) loading role '" + file + "'. " + e.getMessage(), e.getCause());
+		} catch (IOException e) {
+			throw new SynchronizerException("Error (IOException) loading role '" + file + "'. " + e.getMessage(), e.getCause());
+		}
+
+	}
+
+	/**
+	 * Sets the workitem id.
+	 *
+	 * @param filename the filename
+	 * @param wi the wi
+	 * @throws SynchronizerException the synchronizer exception
+	 */
+	private void setWorkitemId(String filename, IWorkitem wi) throws SynchronizerException {
+		String i[] = filename.split("/");
+		for (String ii : i) {
+			if (ii.matches("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}." + wi.getType().toLowerCase() + ".json$")) {
+				wi.setId(ii.replace("." + wi.getType().toLowerCase() + ".json", ""), this);
+			}
+		}
+
+		if (!filename.contains(wi.getId(this))) {
+			throw new SynchronizerException(
+					"Error loading " + wi.getType().toLowerCase() + " '" + filename + "'. Id '" + wi.getId(this) + "' is not similar to filename-uid.");
+		}
+	}
+
+	/**
+	 * Creates the file.
+	 *
+	 * @param workitem the workitem
+	 * @param folder the folder
+	 * @return the file
+	 */
+	private File createFile(IWorkitem workitem, String folder) {
+		File dir = new File(dataDirectory + File.separatorChar + folder);
+		File f = new File(dir.toString() + File.separatorChar + "" + workitem.getId(this) + "." + workitem.getType().toLowerCase() + ".json");
+		return f;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#delete(org.rogatio.circlead.model.work.IWorkitem)
+	 */
+	@Override
+	public String delete(IWorkitem workitem) throws SynchronizerException {
+		SynchronizerFactory.getInstance().setActual(this);
+
+		File f = null;
+		if (WorkitemType.ROLE.isTypeOf(workitem)) {
+			f = createFile(workitem, "roles");
+		} else if (WorkitemType.ROLEGROUP.isTypeOf(workitem)) {
+			f = createFile(workitem, "rolegroups");
+		} else if (WorkitemType.PERSON.isTypeOf(workitem)) {
+			f = createFile(workitem, "persons");
+		}
+		if (f != null) {
+			if (f.exists()) {
+				logger.debug("DELETE "+f);
+				f.delete();
+				return "OK";
+			}
+		}
+		return "NIO";
+	}
+}

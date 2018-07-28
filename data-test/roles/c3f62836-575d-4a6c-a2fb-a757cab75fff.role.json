@@ -1,0 +1,18 @@
+{
+  "id" : "c3f62836-575d-4a6c-a2fb-a757cab75fff",
+  "created" : 1522324396773,
+  "modified" : 1522324396773,
+  "title" : "Stamm-Mitarbeiter",
+  "synonyms" : [ ],
+  "abbreviation" : "SMA",
+  "status" : "active",
+  "parent" : "Gebetshausmitarbeiter",
+  "rolegroup" : "All-Staff",
+  "responsibilities" : [ "R1" ],
+  "opportunities" : [ "O1", "O2" ],
+  "guidelines" : [ "G1", "G2" ],
+  "competences" : [ "C1", "C2" ],
+  "activities" : [ "A1", "A2" ],
+  "persons" : [ "P1" ],
+  "organisation" : "Gebetshaus Freiburg"
+}
