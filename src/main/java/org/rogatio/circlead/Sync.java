@@ -36,48 +36,11 @@ public class Sync {
 		repository.loadPersons();
 		
 		for (IWorkitem workitem : repository.getWorkitems()) {
-
 			repository.getConnector().update(workitem);
-			
-//			if (workitem instanceof Role) {
-//				Role r = (Role)workitem;
-//				if (r.getOrganisationIdentifier()!=null) {
-//					if (r.getOrganisationIdentifier().equalsIgnoreCase("JobRad")) {
-						//repository.getConnector().delete(workitem);
-//					} 
-//				}
-//			}
-			
-			//			repository.getConnector().update(workitem);
 		}
 
 		repository.validate();
-		
-//		Person p = repository.getPerson("Matthias Wegner");
-//		System.out.println(p);
-		
-//		IWorkitem wi = repository.get("422116fe-6bf5-4c34-9c81-1186d52a60e6");
-		
-//		IWorkitem wi = repository.get("efb4afed-3a49-4ca4-8971-658255297b07");
-
-//		IWorkitem wi = repository.get("dbe87e5b-f9d2-4121-80be-c1bce9672553");
-
-//		System.out.println(wi);
-		
-//		List<String> results = repository.getConnector().add(wi);
-//		System.out.println(results);
-
-		/*ISynchronizer is = SynchronizerFactory.getInstance().getSynchronizer("AtlassianSynchronizer");
-		
-		IWorkitem wi;
-		try {
-			
-			wi = is.get("256671745");
-			System.out.println(wi);
-			
-		} catch (SynchronizerException e) {
-		}*/
-		
+				
 	}
 
 }
