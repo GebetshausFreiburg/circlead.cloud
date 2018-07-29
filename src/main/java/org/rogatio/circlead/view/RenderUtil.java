@@ -25,6 +25,23 @@ import org.rogatio.circlead.model.work.Rolegroup;
  */
 public class RenderUtil {
 
+	public static void addRolegroupList(Element element, List<Rolegroup> list) {
+		if (list != null) {
+			if (list.size() > 0) {
+				Element ul = element.appendElement("div").appendElement("ul");
+				for (Rolegroup rolegroup : list) {
+					Element li = ul.appendElement("li");
+					Rolegroup r = Repository.getInstance().getRolegroup(rolegroup.getTitle());
+					if (r != null) {
+						li.appendElement("ac:link").append("<ri:page ri:content-title=\"" + rolegroup.getTitle() + "\" ri:version-at-save=\"1\" />");
+					} else {
+						li.appendText(rolegroup.getTitle());
+					}
+				}
+			}
+		}
+	}
+	
 	/**
 	 * Adds the role list.
 	 *

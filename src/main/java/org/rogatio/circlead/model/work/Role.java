@@ -14,16 +14,16 @@ import java.util.List;
 
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.IValidator;
+import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.ValidationMessage;
-import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.ListParserElement;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.RoleDataitem;
 import org.rogatio.circlead.util.ObjectUtil;
+import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.IRenderer;
 import org.rogatio.circlead.view.RenderUtil;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Role.
  */
@@ -36,24 +36,15 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 		this.dataitem = new RoleDataitem();
 	}
 
-	// public String getId(ISynchronizer synchronizer) {
-	// return this.getDataitem().getId(synchronizer);
-	// }
-
 	/**
 	 * Instantiates a new role.
 	 *
-	 * @param dataitem the dataitem
+	 * @param dataitem
+	 *            the dataitem
 	 */
 	public Role(IDataitem dataitem) {
 		super(dataitem);
 	}
-
-	/*
-	 * public String getSource(String id) { return this.sources.get(id); }
-	 * 
-	 * public void setSource(String id, String source) { this.sources.put(id, source); }
-	 */
 
 	/**
 	 * Gets the organisation identifier.
@@ -67,7 +58,8 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 	/**
 	 * Sets the organisation identifier.
 	 *
-	 * @param organisation the new organisation identifier
+	 * @param organisation
+	 *            the new organisation identifier
 	 */
 	public void setOrganisationIdentifier(String organisation) {
 		this.getDataitem().setOrganisation(organisation);
@@ -76,7 +68,8 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 	/**
 	 * Sets the rolegroup identifier.
 	 *
-	 * @param rolegroup the new rolegroup identifier
+	 * @param rolegroup
+	 *            the new rolegroup identifier
 	 */
 	public void setRolegroupIdentifier(String rolegroup) {
 		this.getDataitem().setRolegroup(rolegroup);
@@ -94,7 +87,8 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 	/**
 	 * Sets the person identifiers.
 	 *
-	 * @param element the new person identifiers
+	 * @param element
+	 *            the new person identifiers
 	 */
 	public void setPersonIdentifiers(ListParserElement element) {
 		this.setPersons(element.getList());
@@ -103,7 +97,8 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 	/**
 	 * Sets the person identifiers.
 	 *
-	 * @param persons the new person identifiers
+	 * @param persons
+	 *            the new person identifiers
 	 */
 	public void setPersonIdentifiers(String persons) {
 		List<String> list = Arrays.asList(persons.split("[\\s,]+"));
@@ -113,7 +108,8 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 	/**
 	 * Sets the persons.
 	 *
-	 * @param persons the new persons
+	 * @param persons
+	 *            the new persons
 	 */
 	public void setPersons(List<String> persons) {
 		this.getDataitem().setPersons(persons);
@@ -122,7 +118,8 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 	/**
 	 * Sets the competences.
 	 *
-	 * @param element the new competences
+	 * @param element
+	 *            the new competences
 	 */
 	public void setCompetences(ListParserElement element) {
 		this.setCompetences(element.getList());
@@ -131,7 +128,8 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 	/**
 	 * Sets the competences.
 	 *
-	 * @param competences the new competences
+	 * @param competences
+	 *            the new competences
 	 */
 	public void setCompetences(String competences) {
 		List<String> list = Arrays.asList(competences.split("[\\s,]+"));
@@ -141,7 +139,8 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 	/**
 	 * Sets the competences.
 	 *
-	 * @param competences the new competences
+	 * @param competences
+	 *            the new competences
 	 */
 	public void setCompetences(List<String> competences) {
 		this.getDataitem().setCompetences(competences);
@@ -150,7 +149,8 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 	/**
 	 * Sets the guidelines.
 	 *
-	 * @param element the new guidelines
+	 * @param element
+	 *            the new guidelines
 	 */
 	public void setGuidelines(ListParserElement element) {
 		this.setGuidelines(element.getList());
@@ -159,7 +159,8 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 	/**
 	 * Sets the guidelines.
 	 *
-	 * @param guidelines the new guidelines
+	 * @param guidelines
+	 *            the new guidelines
 	 */
 	public void setGuidelines(String guidelines) {
 		List<String> list = Arrays.asList(guidelines.split("[\\s,]+"));
@@ -169,7 +170,8 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 	/**
 	 * Sets the guidelines.
 	 *
-	 * @param guidelines the new guidelines
+	 * @param guidelines
+	 *            the new guidelines
 	 */
 	public void setGuidelines(List<String> guidelines) {
 		this.getDataitem().setGuidelines(guidelines);
@@ -178,7 +180,8 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 	/**
 	 * Sets the opportunities.
 	 *
-	 * @param element the new opportunities
+	 * @param element
+	 *            the new opportunities
 	 */
 	public void setOpportunities(ListParserElement element) {
 		this.setOpportunities(element.getList());
@@ -187,7 +190,8 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 	/**
 	 * Sets the opportunities.
 	 *
-	 * @param opportunities the new opportunities
+	 * @param opportunities
+	 *            the new opportunities
 	 */
 	public void setOpportunities(String opportunities) {
 		List<String> list = Arrays.asList(opportunities.split("[\\s,]+"));
@@ -197,7 +201,8 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 	/**
 	 * Sets the opportunities.
 	 *
-	 * @param opportunities the new opportunities
+	 * @param opportunities
+	 *            the new opportunities
 	 */
 	public void setOpportunities(List<String> opportunities) {
 		this.getDataitem().setOpportunities(opportunities);
@@ -206,13 +211,16 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 	/**
 	 * Sets the responsibilities.
 	 *
-	 * @param element the new responsibilities
+	 * @param element
+	 *            the new responsibilities
 	 */
 	public void setResponsibilities(ListParserElement element) {
 		this.setResponsibilities(element.getList());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.model.work.DefaultWorkitem#setVersion(java.lang.String)
 	 */
 	public void setVersion(String version) {
@@ -222,7 +230,8 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 	/**
 	 * Sets the responsibilities.
 	 *
-	 * @param responsibilities the new responsibilities
+	 * @param responsibilities
+	 *            the new responsibilities
 	 */
 	public void setResponsibilities(String responsibilities) {
 		List<String> list = Arrays.asList(responsibilities.split("[\\s,]+"));
@@ -241,7 +250,8 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 	/**
 	 * Sets the responsibilities.
 	 *
-	 * @param responsibilities the new responsibilities
+	 * @param responsibilities
+	 *            the new responsibilities
 	 */
 	public void setResponsibilities(List<String> responsibilities) {
 		this.getDataitem().setResponsibilities(responsibilities);
@@ -313,7 +323,8 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 	/**
 	 * Sets the activities.
 	 *
-	 * @param element the new activities
+	 * @param element
+	 *            the new activities
 	 */
 	public void setActivities(ListParserElement element) {
 		this.setActivities(element.getList());
@@ -322,7 +333,8 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 	/**
 	 * Sets the activities.
 	 *
-	 * @param activities the new activities
+	 * @param activities
+	 *            the new activities
 	 */
 	public void setActivities(String activities) {
 		List<String> list = Arrays.asList(activities.split("[\\s,]+"));
@@ -332,7 +344,8 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 	/**
 	 * Sets the activities.
 	 *
-	 * @param activities the new activities
+	 * @param activities
+	 *            the new activities
 	 */
 	public void setActivities(List<String> activities) {
 		this.getDataitem().setActivities(activities);
@@ -341,7 +354,8 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 	/**
 	 * Sets the synonyms.
 	 *
-	 * @param synonyms the new synonyms
+	 * @param synonyms
+	 *            the new synonyms
 	 */
 	public void setSynonyms(String synonyms) {
 		List<String> list = Arrays.asList(synonyms.split("[\\s,]+"));
@@ -351,13 +365,16 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 	/**
 	 * Sets the synonyms.
 	 *
-	 * @param synonyms the new synonyms
+	 * @param synonyms
+	 *            the new synonyms
 	 */
 	public void setSynonyms(List<String> synonyms) {
 		this.getDataitem().setSynonyms(synonyms);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.model.work.DefaultWorkitem#getDataitem()
 	 */
 	@Override
@@ -365,14 +382,11 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 		return (RoleDataitem) dataitem;
 	}
 
-	// public ISynchronizer getDefaultSynchronizer() {
-	// return this.getDataitem().getDefaultSynchronizer();
-	// }
-
 	/**
 	 * Sets the parent.
 	 *
-	 * @param parentRole the new parent
+	 * @param parentRole
+	 *            the new parent
 	 */
 	public void setParent(String parentRole) {
 		this.getDataitem().setParent(parentRole);
@@ -381,7 +395,8 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 	/**
 	 * Sets the abbreviation.
 	 *
-	 * @param abbreviation the new abbreviation
+	 * @param abbreviation
+	 *            the new abbreviation
 	 */
 	public void setAbbreviation(String abbreviation) {
 		this.getDataitem().setAbbreviation(abbreviation);
@@ -397,11 +412,8 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 	}
 
 	/*
-	 * public String getSources() { return "source (id="+dataitem.getId()+") = '" + sources.get(dataitem.getId())+"', "+
-	 * "source (aid="+dataitem.getAid()+") = '" + sources.get(dataitem.getAid())+"'"; }
-	 */
-
-	/* (non-Javadoc)
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.model.work.DefaultWorkitem#toString()
 	 */
 	@Override
@@ -409,7 +421,9 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 		return this.getDataitem().toString() + ", type=" + getType();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.view.IRenderer#render()
 	 */
 	@Override
@@ -417,10 +431,18 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 		Element element = new Element("p");
 
 		RenderUtil.addItem(element, "Abkürzung", this.getAbbreviation());
-		RenderUtil.addRolegroupItem(element, "Rollengruppe", this.getRolegroupIdentifier());
+		RenderUtil.addRolegroupItem(element, "Merkmalstragende Rollengruppe", this.getRolegroupIdentifier());
 		RenderUtil.addItem(element, "Organisation", this.getOrganisationIdentifier());
-		RenderUtil.addRoleItem(element, "Vorgänger", this.getParentIdentifier());
+		RenderUtil.addRoleItem(element, "Vererber", this.getParentIdentifier());
 		RenderUtil.addItem(element, "Synonyme", this.getSynonyms());
+
+		List<Role> childRoles = Repository.getInstance().getRoleChildren(this.getTitle());
+		if (childRoles != null) {
+			if (childRoles.size() > 0) {
+				RenderUtil.addH2(element, "Erben");
+				RenderUtil.addRoleList(element, childRoles);
+			}
+		}
 
 		if (ObjectUtil.isListNotNullAndEmpty(this.getPersonIdentifiers())) {
 			RenderUtil.addH2(element, "Rollenträger");
@@ -455,6 +477,13 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 		return element;
 	}
 
+	public boolean hasAbbreviation() {
+		if (this.getDataitem().getAbbreviation() != null) {
+			return true;
+		}
+		return false;
+	}
+
 	/**
 	 * Checks for organisation identifier.
 	 *
@@ -479,12 +508,26 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.control.IValidator#validate()
 	 */
 	@Override
 	public List<ValidationMessage> validate() {
 		List<ValidationMessage> messages = new ArrayList<ValidationMessage>();
+
+		if (!this.hasAbbreviation()) {
+			ValidationMessage m = new ValidationMessage(this);
+			m.warning("No abbreviation added", "Role '" + this.getTitle() + "' has no abbreviation");
+			messages.add(m);
+		}
+
+		if (!Repository.getInstance().hasUniqueRoleIdentity(this)) {
+			ValidationMessage m = new ValidationMessage(this);
+			m.error("No unique abbreviation", "Role '" + this.getTitle() + "' has no unique abbreviation");
+			messages.add(m);
+		}
 
 		if (!this.hasOrganisationIdentifier()) {
 			ValidationMessage m = new ValidationMessage(this);
@@ -492,9 +535,46 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 			messages.add(m);
 		}
 
+		if (ObjectUtil.isListNotNullAndEmpty(this.getPersonIdentifiers())) {
+			for (String identifier : getPersonIdentifiers()) {
+				Person person = Repository.getInstance().getPerson(identifier);
+				if (person == null) {
+					ValidationMessage m = new ValidationMessage(this);
+					m.warning("Person not found", "Person '" + identifier + "' in role '" + this.getTitle() + "' not found.");
+					messages.add(m);
+				}
+			}
+		}
+
 		if (!this.hasRolegroupIdentifier()) {
 			ValidationMessage m = new ValidationMessage(this);
 			m.error("Rolegroup not set", "Rolegroup in role '" + this.getTitle() + "' not set.");
+			messages.add(m);
+		} else {
+			Rolegroup rg = Repository.getInstance().getRolegroup(this.getRolegroupIdentifier());
+			if (rg == null) {
+				ValidationMessage m = new ValidationMessage(this);
+				m.error("Rolegroup not found", "Rolegroup '" + this.getRolegroupIdentifier() + "' in role '" + this.getTitle() + "' not found.");
+				messages.add(m);
+			}
+		}
+
+		boolean foundParent = false;
+		if (StringUtil.isNotNullAndNotEmpty(this.getParentIdentifier())) {
+			foundParent = true;
+		}
+		
+		boolean foundChildren = false;
+		List<Role> childRoles = Repository.getInstance().getRoleChildren(this.getTitle());
+		if (childRoles != null) {
+			if (childRoles.size() > 0) {
+				foundChildren = true;
+			}
+		}
+		
+		if (!foundParent&&!foundChildren) {
+			ValidationMessage m = new ValidationMessage(this);
+			m.error("Role lost", "Role '" + this.getTitle() + "' has no predecessor and no siblings.");
 			messages.add(m);
 		}
 

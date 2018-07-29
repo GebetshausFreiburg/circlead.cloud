@@ -22,7 +22,7 @@ import org.rogatio.circlead.model.work.IWorkitem;
 public class DefaultSynchronizer implements ISynchronizer {
 
 	/** The Constant logger. */
-	protected final static Logger logger = LogManager.getLogger(DefaultSynchronizer.class);
+	private final static Logger logger = LogManager.getLogger(DefaultSynchronizer.class);
 	
 	/**
 	 * Instantiates a new default synchronizer.

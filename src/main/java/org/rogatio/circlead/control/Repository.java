@@ -81,7 +81,8 @@ public class Repository {
 	/**
 	 * Adds the items.
 	 *
-	 * @param workitems the workitems
+	 * @param workitems
+	 *            the workitems
 	 */
 	private void addItems(List<IWorkitem> workitems) {
 		for (IWorkitem workitem : workitems) {
@@ -110,8 +111,6 @@ public class Repository {
 		this.addItems(rolegroups);
 		return ObjectUtil.castList(Rolegroup.class, rolegroups);
 	}
-	
-	
 
 	/**
 	 * Load roles.
@@ -138,7 +137,8 @@ public class Repository {
 	/**
 	 * Gets the.
 	 *
-	 * @param id the id
+	 * @param id
+	 *            the id
 	 * @return the i workitem
 	 */
 	public IWorkitem get(String id) {
@@ -164,7 +164,17 @@ public class Repository {
 		}
 		return rolegroups;
 	}
-	
+
+	public List<Person> getPersons() {
+		List<Person> roles = new ArrayList<Person>();
+		for (IWorkitem workitem : workitems) {
+			if (WorkitemType.PERSON.isTypeOf(workitem)) {
+				roles.add((Person) workitem);
+			}
+		}
+		return roles;
+	}
+
 	/**
 	 * Gets the roles.
 	 *
@@ -183,20 +193,45 @@ public class Repository {
 	/**
 	 * Gets the person.
 	 *
-	 * @param identifier the identifier
+	 * @param identifier
+	 *            the identifier
 	 * @return the person
 	 */
 	public Person getPerson(String identifier) {
-		for (IWorkitem workitem : workitems) {
-			if (WorkitemType.PERSON.isTypeOf(workitem)) {
-				Person person = (Person) workitem;
-				if (person.containsId(identifier)) {
-					return person;
-				}
-				if (person.getFullname().equals(identifier)) {
-					return person;
-				}
+
+		// if (identifier.contains("arsten")) {
+		// logger.debug("i: " + identifier + " (" + identifier.length() + ")");
+		// }
+
+		for (Person person : getPersons()) {
+			// if (WorkitemType.PERSON.isTypeOf(workitem)) {
+			// Person person = (Person) workitem;
+			if (person.containsId(identifier)) {
+				return person;
 			}
+
+			String fullname = person.getFullname();
+
+			// if (fullname.contains("arsten")) {
+			// logger.debug("p: " + fullname + " (" + fullname.length() + ")");
+			// }
+
+			/*
+			 * String match = "arsten ";
+			 * 
+			 * if (identifier.contains(match) && person.getFullname().contains(match)) { logger.debug("identifier=" + identifier+ " "+identifier.length());
+			 * String fullname = person.getFullname(); logger.debug("fullname=" + person.getFullname()+" "+fullname.length());
+			 * logger.debug(identifier.equals(person.getFullname())); for (int i = 0; i < identifier.length(); i++) { char c = identifier.charAt(i);
+			 * logger.debug("id: "+c); } for (int i = 0; i < fullname.length(); i++) { char c = fullname.charAt(i); logger.debug("fu: "+c); } }
+			 */
+
+			if (fullname.equals(identifier)) {
+				// if (identifier.contains("arsten")) {
+				// logger.debug(identifier + " = " + fullname);
+				// }
+				return person;
+			}
+			// }
 		}
 		return null;
 	}
@@ -204,7 +239,8 @@ public class Repository {
 	/**
 	 * Gets the roles.
 	 *
-	 * @param rolegroupIdentifier the rolegroup identifier
+	 * @param rolegroupIdentifier
+	 *            the rolegroup identifier
 	 * @return the roles
 	 */
 	public List<Role> getRoles(String rolegroupIdentifier) {
@@ -227,7 +263,8 @@ public class Repository {
 	/**
 	 * Gets the role identifiers.
 	 *
-	 * @param rolegroupIdentifier the rolegroup identifier
+	 * @param rolegroupIdentifier
+	 *            the rolegroup identifier
 	 * @return the role identifiers
 	 */
 	public List<String> getRoleIdentifiers(String rolegroupIdentifier) {
@@ -250,7 +287,8 @@ public class Repository {
 	/**
 	 * Gets the rolegroup.
 	 *
-	 * @param identifier the identifier
+	 * @param identifier
+	 *            the identifier
 	 * @return the rolegroup
 	 */
 	public Rolegroup getRolegroup(String identifier) {
@@ -269,11 +307,42 @@ public class Repository {
 
 		return null;
 	}
-	
+
+	public boolean hasUniqueRoleIdentity(Role r) {
+
+		String abr = null;
+
+		if (r == null) {
+			return false;
+		} else {
+			if (!r.hasAbbreviation()) {
+				return false;
+			} else {
+				abr = r.getAbbreviation();
+			}
+		}
+
+		// List<String> abbreviations = new ArrayList<String>();
+
+		int counter = 0;
+
+		for (Role role : this.getRoles()) {
+			if (role.hasAbbreviation()) {
+				// abbreviations.add(role.getAbbreviation());
+				if (role.getAbbreviation().equals(abr)) {
+					counter++;
+				}
+			}
+		}
+
+		return counter == 1;
+	}
+
 	/**
 	 * Gets the role.
 	 *
-	 * @param identifier the identifier
+	 * @param identifier
+	 *            the identifier
 	 * @return the role
 	 */
 	public Role getRole(String identifier) {
@@ -304,6 +373,42 @@ public class Repository {
 		}
 
 		return null;
+	}
+
+	public List<Role> getRoleChildren(String roleIdentifier) {
+		List<Role> childRoles = new ArrayList<Role>();
+		
+		if (roleIdentifier==null) {
+			return null;
+		}
+		
+		for (Role role : this.getRoles()) {
+
+			if (roleIdentifier.equalsIgnoreCase(role.getParentIdentifier())) {
+				childRoles.add(role);		
+			}
+			
+		}
+
+		return childRoles;
+	}
+	
+	public List<Rolegroup> getRolegroupChildren(String rolegroupIdentifier) {
+		List<Rolegroup> childRolegroups = new ArrayList<Rolegroup>();
+		
+		if (rolegroupIdentifier==null) {
+			return null;
+		}
+		
+		for (Rolegroup rolegroup : this.getRolegroups()) {
+
+			if (rolegroupIdentifier.equalsIgnoreCase(rolegroup.getParentIdentifier())) {
+				childRolegroups.add(rolegroup);		
+			}
+			
+		}
+
+		return childRolegroups;
 	}
 
 	/**
@@ -365,7 +470,8 @@ public class Repository {
 	/**
 	 * Gets the roles with person.
 	 *
-	 * @param person the person
+	 * @param person
+	 *            the person
 	 * @return the roles with person
 	 */
 	public ArrayList<Role> getRolesWithPerson(String person) {

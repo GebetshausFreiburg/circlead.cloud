@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -56,6 +58,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class AtlassianSynchronizer extends DefaultSynchronizer {
 
+	private final static Logger logger = LogManager.getLogger(AtlassianSynchronizer.class);
+	
 	/** The circlead space. */
 	private String circleadSpace = null;
 

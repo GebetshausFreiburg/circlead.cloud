@@ -41,6 +41,10 @@ public class StringUtil {
 		return i;
 	}
 
+	public static String beautify(String s) {
+		return s.substring(0,1).toUpperCase()+s.substring(1, s.length());
+	}
+	
 	/**
 	 * Checks if is not null and not empty.
 	 *

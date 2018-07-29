@@ -39,7 +39,8 @@ public class Rolegroup extends DefaultWorkitem implements IRenderer, IValidator 
 	/**
 	 * Instantiates a new rolegroup.
 	 *
-	 * @param dataitem the dataitem
+	 * @param dataitem
+	 *            the dataitem
 	 */
 	public Rolegroup(IDataitem dataitem) {
 		super(dataitem);
@@ -62,20 +63,22 @@ public class Rolegroup extends DefaultWorkitem implements IRenderer, IValidator 
 	public String getParentIdentifier() {
 		return this.getDataitem().getParent();
 	}
-	
+
 	/**
 	 * Sets the lead identifier.
 	 *
-	 * @param lead the new lead identifier
+	 * @param lead
+	 *            the new lead identifier
 	 */
 	public void setLeadIdentifier(String lead) {
 		this.getDataitem().setLead(lead);
 	}
-	
+
 	/**
 	 * Sets the parent identifier.
 	 *
-	 * @param parentIdentifier the new parent identifier
+	 * @param parentIdentifier
+	 *            the new parent identifier
 	 */
 	public void setParentIdentifier(String parentIdentifier) {
 		this.getDataitem().setParent(parentIdentifier);
@@ -172,7 +175,9 @@ public class Rolegroup extends DefaultWorkitem implements IRenderer, IValidator 
 	 * return persons.size(); }
 	 */
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.model.work.DefaultWorkitem#getDataitem()
 	 */
 	@Override
@@ -180,7 +185,9 @@ public class Rolegroup extends DefaultWorkitem implements IRenderer, IValidator 
 		return (RolegroupDataitem) dataitem;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.model.work.DefaultWorkitem#toString()
 	 */
 	@Override
@@ -188,7 +195,9 @@ public class Rolegroup extends DefaultWorkitem implements IRenderer, IValidator 
 		return this.getDataitem().toString() + ", type=" + getType();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.view.IRenderer#render()
 	 */
 	@Override
@@ -204,9 +213,9 @@ public class Rolegroup extends DefaultWorkitem implements IRenderer, IValidator 
 				RenderUtil.addPersonList(element, personIdentifiers, role, this.getLeadIdentifier());
 			}
 		}
-		
+
 		if (StringUtil.isNotNullAndNotEmpty(this.getParentIdentifier())) {
-			RenderUtil.addRolegroupItem(element, "Vorgänger: ", this.getParentIdentifier());
+			RenderUtil.addRolegroupItem(element, "Vererber: ", this.getParentIdentifier());
 		}
 
 		RenderUtil.addH2(element, "Zusammenfassung");
@@ -214,14 +223,24 @@ public class Rolegroup extends DefaultWorkitem implements IRenderer, IValidator 
 
 		List<Role> roles = Repository.getInstance().getRoles(this.getTitle());
 		if (roles.size() > 0) {
-			RenderUtil.addH2(element, "Zugehörige Rollen");
+			RenderUtil.addH2(element, "Merkmalgebende Rollen");
 			RenderUtil.addRoleList(element, roles);
+		}
+
+		List<Rolegroup> childRolegroups = Repository.getInstance().getRolegroupChildren(this.getTitle());
+		if (childRolegroups != null) {
+			if (childRolegroups.size() > 0) {
+				RenderUtil.addH2(element, "Erben");
+				RenderUtil.addRolegroupList(element, childRolegroups);
+			}
 		}
 
 		return element;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.control.IValidator#validate()
 	 */
 	@Override
@@ -232,6 +251,48 @@ public class Rolegroup extends DefaultWorkitem implements IRenderer, IValidator 
 			ValidationMessage m = new ValidationMessage(this);
 			m.warning("No responsible role added", "Rolegroup '" + this.getTitle() + "' has no named responsible role");
 			messages.add(m);
+		} else {
+			Role rg = Repository.getInstance().getRole(this.getResponsibleIdentifier());
+			if (rg == null) {
+				ValidationMessage m = new ValidationMessage(this);
+				m.warning("Responsible role not found",
+						"Responsible role '" + this.getResponsibleIdentifier() + "' not found for Rolegroup '" + this.getTitle() + "'");
+				messages.add(m);
+			}
+		}
+
+		List<Role> roles = Repository.getInstance().getRoles(this.getTitle());
+		if (roles.size() == 0) {
+			ValidationMessage m = new ValidationMessage(this);
+			m.warning("No role contained", "Rolegroup '" + this.getTitle() + "' is not added to any role");
+			messages.add(m);
+		}
+
+		if (!StringUtil.isNotNullAndNotEmpty(this.getLeadIdentifier())) {
+			ValidationMessage m = new ValidationMessage(this);
+			m.warning("No lead named", "Rolegroup '" + this.getTitle() + "' has no named person as lead");
+			messages.add(m);
+		}
+
+		if (StringUtil.isNotNullAndNotEmpty(this.getResponsibleIdentifier())) {
+			Role role = Repository.getInstance().getRole(this.getResponsibleIdentifier());
+			if (role != null) {
+				List<String> personIdentifiers = role.getPersonIdentifiers();
+				if (StringUtil.isNotNullAndNotEmpty(this.getLeadIdentifier())) {
+					boolean found = false;
+					for (String pi : personIdentifiers) {
+						if (pi.equalsIgnoreCase(this.getLeadIdentifier())) {
+							found = true;
+						}
+					}
+					if (!found) {
+						ValidationMessage m = new ValidationMessage(this);
+						m.warning("Lead not in role", "Rolegroup '" + this.getTitle() + "' has lead person '" + this.getLeadIdentifier() + "' not set in role '"
+								+ role.getTitle() + "'");
+						messages.add(m);
+					}
+				}
+			}
 		}
 
 		return messages;

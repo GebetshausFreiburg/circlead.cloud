@@ -19,6 +19,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.model.WorkitemType;
@@ -44,6 +46,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  */
 public class FileSynchronizer extends DefaultSynchronizer {
 
+	private final static Logger logger = LogManager.getLogger(FileSynchronizer.class);
+	
 	/** The data directory. */
 	private String dataDirectory;
 

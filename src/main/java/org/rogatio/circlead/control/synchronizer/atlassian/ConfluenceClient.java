@@ -181,7 +181,7 @@ public class ConfluenceClient extends HttpClient {
 	public SynchronizerResult search(String cql) {
 		try {
 			String encoded = URLEncoder.encode(cql, "UTF-8");
-			return this.get("wiki/rest/api/search?limit=100&cql=" + encoded);
+			return this.get("wiki/rest/api/search?limit="+Constant.LIMIT+"&cql=" + encoded);
 		} catch (UnsupportedEncodingException e1) {
 			return null;
 		} catch (IOException e) {
@@ -196,7 +196,7 @@ public class ConfluenceClient extends HttpClient {
 	 */
 	public SynchronizerResult browseContent() {
 		try {
-			return this.get("wiki/rest/api/content?expand=space&limit=50");
+			return this.get("wiki/rest/api/content?expand=space&limit="+Constant.LIMIT);
 		} catch (IOException e) {
 			return null;
 		}
