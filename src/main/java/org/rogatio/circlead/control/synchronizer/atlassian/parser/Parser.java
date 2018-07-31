@@ -17,10 +17,12 @@ import org.rogatio.circlead.control.synchronizer.atlassian.content.Storage;
 import org.rogatio.circlead.control.synchronizer.atlassian.search.Result;
 import org.rogatio.circlead.control.synchronizer.atlassian.search.Results;
 import org.rogatio.circlead.model.StatusParameter;
+import org.rogatio.circlead.model.data.ActivityDataitem;
 import org.rogatio.circlead.model.data.ContactDataitem;
 import org.rogatio.circlead.model.data.PersonDataitem;
 import org.rogatio.circlead.model.data.RoleDataitem;
 import org.rogatio.circlead.model.data.RolegroupDataitem;
+import org.rogatio.circlead.model.work.Activity;
 import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
@@ -65,6 +67,14 @@ public class Parser {
 			addBulletList("Kompetenzen", d.getCompetences(), table);
 		}
 
+		if (workitem instanceof Activity) {
+			Activity w = (Activity) workitem;
+			ActivityDataitem d = w.getDataitem();
+			addDataPair("Id", d.getIds(), table);
+			addDataPair("Rolle", d.getRole(), table);
+			addDataPair("Status", Parser.getStatus(d.getStatus()), table);
+		}
+		
 		if (workitem instanceof Rolegroup) {
 			Rolegroup w = (Rolegroup) workitem;
 			RolegroupDataitem d = w.getDataitem();

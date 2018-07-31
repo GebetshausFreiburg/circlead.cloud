@@ -24,9 +24,11 @@ import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.model.WorkitemType;
+import org.rogatio.circlead.model.data.ActivityDataitem;
 import org.rogatio.circlead.model.data.PersonDataitem;
 import org.rogatio.circlead.model.data.RoleDataitem;
 import org.rogatio.circlead.model.data.RolegroupDataitem;
+import org.rogatio.circlead.model.work.Activity;
 import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
@@ -116,6 +118,8 @@ public class FileSynchronizer extends DefaultSynchronizer {
 
 		if (WorkitemType.ROLE.isTypeOf(workitem)) {
 			writeWorkitemData(workitem, "roles");
+		} else if (WorkitemType.ACTIVITY.isTypeOf(workitem)) {
+			writeWorkitemData(workitem, "activities");
 		} else if (WorkitemType.ROLEGROUP.isTypeOf(workitem)) {
 			writeWorkitemData(workitem, "rolegroups");
 		} else if (WorkitemType.PERSON.isTypeOf(workitem)) {
@@ -174,6 +178,9 @@ public class FileSynchronizer extends DefaultSynchronizer {
 			if (workitem instanceof Role) {
 				Role role = (Role) workitem;
 				mapper.writeValue(f, role.getDataitem());
+			} else if (workitem instanceof Activity) {
+				Activity activity = (Activity) workitem;
+				mapper.writeValue(f, activity.getDataitem());
 			} else if (workitem instanceof Rolegroup) {
 				Rolegroup rolegroup = (Rolegroup) workitem;
 				mapper.writeValue(f, rolegroup.getDataitem());
@@ -236,6 +243,8 @@ public class FileSynchronizer extends DefaultSynchronizer {
 
 		if (WorkitemType.ROLE == workitemType) {
 			fileIndex = readFolder("roles");
+		} else if (WorkitemType.ACTIVITY == workitemType) {
+			fileIndex = readFolder("activities");
 		} else if (WorkitemType.ROLEGROUP == workitemType) {
 			fileIndex = readFolder("rolegroups");
 		} else if (WorkitemType.PERSON == workitemType) {
@@ -291,6 +300,9 @@ public class FileSynchronizer extends DefaultSynchronizer {
 				if (filename.endsWith(".role.json")) {
 					RoleDataitem data = mapper.readValue(file, RoleDataitem.class);
 					item = new Role(data);
+				} else if (filename.endsWith(".activity.json")) {
+					ActivityDataitem data = mapper.readValue(file, ActivityDataitem.class);
+					item = new Activity(data);
 				} else if (filename.endsWith(".rolegroup.json")) {
 					RolegroupDataitem data = mapper.readValue(file, RolegroupDataitem.class);
 					item = new Rolegroup(data);
@@ -358,6 +370,8 @@ public class FileSynchronizer extends DefaultSynchronizer {
 		File f = null;
 		if (WorkitemType.ROLE.isTypeOf(workitem)) {
 			f = createFile(workitem, "roles");
+		} else if (WorkitemType.ACTIVITY.isTypeOf(workitem)) {
+			f = createFile(workitem, "activities");
 		} else if (WorkitemType.ROLEGROUP.isTypeOf(workitem)) {
 			f = createFile(workitem, "rolegroups");
 		} else if (WorkitemType.PERSON.isTypeOf(workitem)) {

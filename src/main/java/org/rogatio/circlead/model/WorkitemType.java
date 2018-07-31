@@ -16,6 +16,7 @@ import org.rogatio.circlead.model.work.IWorkitem;
  */
 public enum WorkitemType {
 
+	 ACTIVITY("Activity"),
 	/** The role. */
 	ROLE("Role"), /** The rolegroup. */
  ROLEGROUP("Rolegroup"), /** The person. */

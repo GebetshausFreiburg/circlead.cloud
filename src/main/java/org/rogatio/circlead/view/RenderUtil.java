@@ -16,6 +16,7 @@ import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
 import org.rogatio.circlead.model.StatusParameter;
 import org.rogatio.circlead.model.WorkitemType;
+import org.rogatio.circlead.model.work.Activity;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
@@ -25,18 +26,35 @@ import org.rogatio.circlead.model.work.Rolegroup;
  */
 public class RenderUtil {
 
+	public static void addActivityList(Element element, List<Activity> list) {
+		if (list != null) {
+			if (list.size() > 0) {
+				Element ul = element.appendElement("div").appendElement("ul");
+				for (Activity activity : list) {
+					Element li = ul.appendElement("li");
+					//Activity r = Repository.getInstance().getActivity(activity.getTitle());
+//					if (activity != null) {
+						li.appendElement("ac:link").append("<ri:page ri:content-title=\"" + activity.getTitle() + "\" ri:version-at-save=\"1\" />");
+//					} else {
+//						li.appendText(activity.getTitle());
+//					}
+				}
+			}
+		}
+	}
+	
 	public static void addRolegroupList(Element element, List<Rolegroup> list) {
 		if (list != null) {
 			if (list.size() > 0) {
 				Element ul = element.appendElement("div").appendElement("ul");
 				for (Rolegroup rolegroup : list) {
 					Element li = ul.appendElement("li");
-					Rolegroup r = Repository.getInstance().getRolegroup(rolegroup.getTitle());
-					if (r != null) {
+//					Rolegroup r = Repository.getInstance().getRolegroup(rolegroup.getTitle());
+//					if (rolegroup != null) {
 						li.appendElement("ac:link").append("<ri:page ri:content-title=\"" + rolegroup.getTitle() + "\" ri:version-at-save=\"1\" />");
-					} else {
-						li.appendText(rolegroup.getTitle());
-					}
+//					} else {
+//						li.appendText(rolegroup.getTitle());
+//					}
 				}
 			}
 		}
@@ -55,11 +73,11 @@ public class RenderUtil {
 				for (Role role : list) {
 					Element li = ul.appendElement("li");
 					Role r = Repository.getInstance().getRole(role.getTitle());
-					if (r != null) {
+//					if (r != null) {
 						li.appendElement("ac:link").append("<ri:page ri:content-title=\"" + role.getTitle() + "\" ri:version-at-save=\"1\" />");
-					} else {
-						li.appendText(role.getTitle());
-					}
+//					} else {
+//						li.appendText(role.getTitle());
+//					}
 				}
 			}
 		}

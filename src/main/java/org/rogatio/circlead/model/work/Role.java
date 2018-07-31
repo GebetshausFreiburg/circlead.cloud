@@ -469,11 +469,17 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 			RenderUtil.addList(element, this.getGuidelines());
 		}
 
+		RenderUtil.addH2(element, "Aufgaben");
 		if (ObjectUtil.isListNotNullAndEmpty(this.getActivities())) {
-			RenderUtil.addH2(element, "Aufgaben");
 			RenderUtil.addList(element, this.getActivities());
 		}
-
+		
+		List<Activity> a = Repository.getInstance().getActivities(this.getTitle());
+		if (ObjectUtil.isListNotNullAndEmpty(a)) {
+		//	RenderUtil.addH2(element, "Aufgaben");
+			RenderUtil.addActivityList(element, a);
+		}
+		
 		return element;
 	}
 

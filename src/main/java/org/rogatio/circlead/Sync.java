@@ -34,6 +34,7 @@ public class Sync {
 		repository.loadRoles();
 		repository.loadRolegroups();
 		repository.loadPersons();
+		repository.loadActivities();
 		
 		for (IWorkitem workitem : repository.getWorkitems()) {
 			repository.getConnector().update(workitem);

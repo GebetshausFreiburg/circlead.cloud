@@ -41,6 +41,7 @@ import org.rogatio.circlead.control.synchronizer.atlassian.search.Result;
 import org.rogatio.circlead.control.synchronizer.atlassian.search.Results;
 import org.rogatio.circlead.model.WorkitemParameter;
 import org.rogatio.circlead.model.WorkitemType;
+import org.rogatio.circlead.model.work.Activity;
 import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
@@ -113,6 +114,9 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 				Ancestor a = new Ancestor();
 				a.setId(id);
 
+				if (wi instanceof Activity) {
+					a.setTitle("Activities");
+				}
 				if (wi instanceof Role) {
 					a.setTitle("Roles");
 				}
@@ -251,6 +255,11 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 				SynchronizerResult page = confluenceClient.search("type=\"page\" and title=\"Roles\"");
 				id = "" + Parser.getIdFromResult(page.getContent());
 			}
+			if (type.equalsIgnoreCase("activity")) {
+				SynchronizerResult page = confluenceClient.search("type=\"page\" and title=\"Activities\"");
+				id = "" + Parser.getIdFromResult(page.getContent());
+				// System.out.println("PPP "+page);
+			}
 			if (type.equalsIgnoreCase("rolegroup")) {
 				SynchronizerResult page = confluenceClient.search("type=\"page\" and title=\"Rolegroups\"");
 				id = "" + Parser.getIdFromResult(page.getContent());
@@ -320,6 +329,10 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 				if (result.getLabel().equalsIgnoreCase("role")) {
 					type = "role";
 					acestorId = getAcestorId("Roles", p);
+				}
+				if (result.getLabel().equalsIgnoreCase("activity")) {
+					type = "activity";
+					acestorId = getAcestorId("Activities", p);
 				}
 				if (result.getLabel().equalsIgnoreCase("rolegroup")) {
 					type = "rolegroup";
@@ -408,6 +421,33 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	private IWorkitem setData(Map<String, IParserElement> pairs, String type, String indexId) {
 		Vector<String> keys = new Vector<String>(pairs.keySet());
 
+		if (type.equalsIgnoreCase("activity")) {
+			Activity activity = new Activity();
+			
+			for (String key : keys) {
+				IParserElement value = pairs.get(key);
+				if (key.equalsIgnoreCase("Id")) {
+					activity.getDataitem().setUid(value.toString());
+				} else if (key.equalsIgnoreCase("Created")) {
+					activity.setCreated(value.toString());
+				} else if (key.equalsIgnoreCase("Modified")) {
+					activity.setModified(value.toString());
+				} else if (key.equalsIgnoreCase("Version")) {
+					activity.setVersion(value.toString());
+				} else if (key.equalsIgnoreCase("Rolle")) {
+					activity.setRoleIdentifier(value.toString());
+				} else if (WorkitemParameter.STATUS.has(key)) {
+					activity.setStatus(value.toString());
+				} else {
+					logger.debug("Value from parser not set: key=" + key + ", value=" + pairs.get(key));
+				}
+			}
+
+			activity.setId(indexId, this);
+			
+			return activity;
+		}
+		
 		if (type.equalsIgnoreCase("person")) {
 			Person person = new Person();
 
@@ -564,9 +604,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#loadIndex(org.rogatio.circlead.model.WorkitemType)
 	 */
 	public List<String> loadIndex(WorkitemType workitemType) {
-
 		String type = workitemType.getName().toLowerCase();
-
 		ArrayList<String> fileIndex = new ArrayList<String>();
 
 		logger.info("Loading Index from system '" + confluenceClient.getSysteminfo().getContent() + "'");

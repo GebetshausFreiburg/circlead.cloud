@@ -19,6 +19,7 @@ import org.rogatio.circlead.control.synchronizer.Connector;
 import org.rogatio.circlead.control.synchronizer.FileSynchronizer;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.model.WorkitemType;
+import org.rogatio.circlead.model.work.Activity;
 import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
@@ -123,6 +124,12 @@ public class Repository {
 		return ObjectUtil.castList(Role.class, roles);
 	}
 
+	public List<Activity> loadActivities() {
+		List<IWorkitem> activities = connector.load(WorkitemType.ACTIVITY);
+		this.addItems(activities);
+		return ObjectUtil.castList(Activity.class, activities);
+	}
+	
 	/**
 	 * Load persons.
 	 *
@@ -259,6 +266,23 @@ public class Repository {
 		}
 		return roleIdentifiers;
 	}
+	
+	public List<Activity> getActivities(String roleIdentifier) {
+		List<Activity> activityIdentifiers = new ArrayList<Activity>();
+		for (IWorkitem workitem : workitems) {
+			if (workitem instanceof Activity) {
+				Activity a = (Activity) workitem;
+				if (StringUtil.isNotNullAndNotEmpty(a.getRoleIdentifier())) {
+					if (a.getRoleIdentifier().equals(roleIdentifier)) {
+						if (!activityIdentifiers.contains(a)) {
+							activityIdentifiers.add(a);
+						}
+					}
+				}
+			}
+		}
+		return activityIdentifiers;
+	}
 
 	/**
 	 * Gets the role identifiers.
@@ -374,7 +398,7 @@ public class Repository {
 
 		return null;
 	}
-
+	
 	public List<Role> getRoleChildren(String roleIdentifier) {
 		List<Role> childRoles = new ArrayList<Role>();
 		
