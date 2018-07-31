@@ -1,0 +1,118 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+
+body {
+   color: black;
+   background-color: #white
+}
+
+a:link {
+   color: black;
+   text-decoration: none;
+}
+
+/* visited link */
+a:visited {
+   color: #54585A;
+   text-decoration: none;
+}
+
+/* mouse over link */
+a:hover {
+   color: #B83A4B;
+   text-decoration: none;
+}
+
+/* selected link */
+a:active {
+   color: #CC8A00;
+   text-decoration: none;
+}
+
+circle, path {
+   cursor: pointer;
+}
+
+circle {
+   fill: none;
+   pointer-events: all;
+}
+
+#statusGreen {
+   font-size: small;
+   font-weight: bold;
+   color: white;
+   padding-left: 4px;
+   padding-right: 4px;
+   padding-top: 0px;
+   padding-bottom: 0px;
+   background: green;
+   display: inline;
+   border-radius: 3px;
+}
+
+#statusYellow {
+   font-size: small;
+   font-weight: bold;
+   color: black;
+   padding-left: 4px;
+   padding-right: 4px;
+   padding-top: 0px;
+   padding-bottom: 0px;
+   background: yellow;
+   display: inline;
+   border-radius: 3px;
+}
+
+#statusGrey {
+   font-size: small;
+   font-weight: bold;
+   color: white;
+   padding-left: 4px;
+   padding-right: 4px;
+   padding-top: 0px;
+   padding-bottom: 0px;
+   background: gray;
+   display: inline;
+   border-radius: 3px;
+}
+
+#statusBlue {
+   font-size: small;
+   font-weight: bold;
+   color: white;
+   padding-left: 4px;
+   padding-right: 4px;
+   padding-top: 0px;
+   padding-bottom: 0px;
+   background: blue;
+   display: inline;
+   border-radius: 3px;
+}
+
+#statusRed {
+   padding-left: 4px;
+   padding-right: 4px;
+   padding-top: 0px;
+   padding-bottom: 0px;
+   background: red;
+   display: inline;
+   border-radius: 3px;
+}
+
+#tooltip {
+   background-color: white;
+   padding: 3px 5px;
+   border: 1px solid black;
+   text-align: center;
+}
+
+html {
+   font-family: 'Open Sans', sans-serif;
+}
+
+.meta {
+   font-size: x-small;
+   text-align: right;
+   float: right;
+}
+

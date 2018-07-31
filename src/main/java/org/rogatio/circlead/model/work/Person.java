@@ -13,18 +13,20 @@ import java.util.Map;
 
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.Repository;
+import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.TablesParserElement;
 import org.rogatio.circlead.model.data.ContactDataitem;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.PersonDataitem;
-import org.rogatio.circlead.view.IRenderer;
-import org.rogatio.circlead.view.RenderUtil;
+import org.rogatio.circlead.view.IWorkitemRenderer;
+import org.rogatio.circlead.view.AtlassianRenderer;
+import org.rogatio.circlead.view.ISynchronizerRenderer;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class Person.
  */
-public class Person extends DefaultWorkitem implements IRenderer {
+public class Person extends DefaultWorkitem implements IWorkitemRenderer {
 
 	/**
 	 * Instantiates a new person.
@@ -109,26 +111,28 @@ public class Person extends DefaultWorkitem implements IRenderer {
 	 * @see org.rogatio.circlead.view.IRenderer#render()
 	 */
 	@Override
-	public Element render() {
+	public Element render(ISynchronizer synchronizer) {
+		ISynchronizerRenderer renderer = synchronizer.getRenderer();
+		
 		Element element = new Element("p");
 
-		RenderUtil.addH2(element, "Kontaktdaten");
+		renderer.addH2(element, "Kontaktdaten");
 
 		for (ContactDataitem contact : this.getContacts()) {
-			RenderUtil.addH3(element, contact.getName());
-			RenderUtil.addList(element, contact.getAsList());
+			renderer.addH3(element, contact.getName());
+			renderer.addList(element, contact.getAsList());
 		}
 
 		Map<String, String> d = this.getData();
 		if (d != null) {
 			if (d.size() > 0) {
-				RenderUtil.addH2(element, "Stammdaten");
-				RenderUtil.addTable(element, d);
+				renderer.addH2(element, "Stammdaten");
+				renderer.addTable(element, d);
 			}
 		}
 
-		RenderUtil.addH2(element, "Rollen");
-		RenderUtil.addRoleList(element, Repository.getInstance().getRolesWithPerson(this.getFullname()), this);
+		renderer.addH2(element, "Rollen");
+		renderer.addRoleList(element, Repository.getInstance().getRolesWithPerson(this.getFullname()), this);
 
 		return element;
 	}

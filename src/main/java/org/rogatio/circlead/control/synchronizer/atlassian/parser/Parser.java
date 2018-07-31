@@ -27,7 +27,7 @@ import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
-import org.rogatio.circlead.view.IRenderer;
+import org.rogatio.circlead.view.IWorkitemRenderer;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -184,9 +184,9 @@ public class Parser {
 		Element s = Parser.getStatus(workitem.getStatus());
 		s.appendTo(paragraph);
 
-		if (workitem instanceof IRenderer) {
-			IRenderer r = (IRenderer) workitem;
-			Element e = r.render();
+		if (workitem instanceof IWorkitemRenderer) {
+			IWorkitemRenderer r = (IWorkitemRenderer) workitem;
+			Element e = r.render(synchronizer);
 			e.appendTo(paragraph);
 		}
 

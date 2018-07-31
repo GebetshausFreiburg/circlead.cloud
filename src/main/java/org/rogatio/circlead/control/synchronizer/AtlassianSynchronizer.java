@@ -47,6 +47,8 @@ import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.StringUtil;
+import org.rogatio.circlead.view.AtlassianRenderer;
+import org.rogatio.circlead.view.ISynchronizerRenderer;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -628,6 +630,11 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		}
 
 		return fileIndex;
+	}
+	
+	@Override
+	public ISynchronizerRenderer getRenderer() {
+		return new AtlassianRenderer(this);
 	}
 
 }

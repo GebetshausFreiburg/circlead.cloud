@@ -14,6 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -34,7 +35,10 @@ import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.FileUtil;
-import org.rogatio.circlead.view.IRenderer;
+import org.rogatio.circlead.view.AtlassianRenderer;
+import org.rogatio.circlead.view.FileRenderer;
+import org.rogatio.circlead.view.ISynchronizerRenderer;
+import org.rogatio.circlead.view.IWorkitemRenderer;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -208,14 +212,21 @@ public class FileSynchronizer extends DefaultSynchronizer {
 	 * @param workitem the workitem
 	 */
 	private void writeWorkitemRendered(IWorkitem workitem) {
-		if (workitem instanceof IRenderer) {
-			IRenderer renderer = (IRenderer) workitem;
+		if (workitem instanceof IWorkitemRenderer) {
+			IWorkitemRenderer renderer = (IWorkitemRenderer) workitem;
 			String filename = workitem.getId(this);
 			Document doc = new Document("");
+			doc.charset(Charset.forName("UTF-8"));
 			Element html = doc.appendElement("html");
-			html.appendElement("head");
+			Element head = html.appendElement("head");
+			head.append("<link rel=\"stylesheet\" href=\"styles.css\">");
+			head.append("<meta charset=\"utf-8\">");
+			html.appendElement("body");
 			Element body = html.appendElement("body");
-			renderer.render().appendTo(body);
+			
+			body.appendElement("H1").appendText(workitem.getTitle());
+			
+			renderer.render(this).appendTo(body);
 
 			try {
 				String f = "web/" + filename + ".html";
@@ -385,5 +396,11 @@ public class FileSynchronizer extends DefaultSynchronizer {
 			}
 		}
 		return "NIO";
+	}
+	
+
+	@Override
+	public ISynchronizerRenderer getRenderer() {
+		return new FileRenderer(this);
 	}
 }

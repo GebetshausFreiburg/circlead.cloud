@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.work.IWorkitem;
+import org.rogatio.circlead.view.ISynchronizerRenderer;
 
 /**
  * The Interface ISynchronizer.
@@ -73,4 +74,6 @@ public interface ISynchronizer {
 	 * @return the id pattern
 	 */
 	public String getIdPattern();
+	
+	public ISynchronizerRenderer getRenderer();
 }
