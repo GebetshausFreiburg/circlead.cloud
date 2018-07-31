@@ -15,16 +15,18 @@ import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.IValidator;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.ValidationMessage;
+import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.ListParserElement;
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.data.ActivityDataitem;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.RolegroupDataitem;
 import org.rogatio.circlead.util.StringUtil;
-import org.rogatio.circlead.view.IRenderer;
-import org.rogatio.circlead.view.RenderUtil;
+import org.rogatio.circlead.view.IWorkitemRenderer;
+import org.rogatio.circlead.view.AtlassianRenderer;
+import org.rogatio.circlead.view.ISynchronizerRenderer;
 
-public class Activity extends DefaultWorkitem implements IRenderer, IValidator {
+public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IValidator {
 
 	public Activity() {
 		this.dataitem = new ActivityDataitem();
@@ -68,10 +70,12 @@ public class Activity extends DefaultWorkitem implements IRenderer, IValidator {
 	 * @see org.rogatio.circlead.view.IRenderer#render()
 	 */
 	@Override
-	public Element render() {
+	public Element render(ISynchronizer synchronizer) {
+		ISynchronizerRenderer renderer = synchronizer.getRenderer();
+		
 		Element element = new Element("p");
 
-		RenderUtil.addRoleItem(element, "Rolle", this.getRoleIdentifier());
+		renderer.addRoleItem(element, "Rolle", this.getRoleIdentifier());
 		
 		return element;
 	}

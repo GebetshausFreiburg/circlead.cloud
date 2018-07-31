@@ -9,17 +9,18 @@
 package org.rogatio.circlead.view;
 
 import org.jsoup.nodes.Element;
+import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 
 /**
  * The Interface IRenderer.
  */
-public interface IRenderer {
+public interface IWorkitemRenderer {
 
 	/**
 	 * Render.
 	 *
 	 * @return the element
 	 */
-	public Element render();
+	public Element render(ISynchronizer synchronizer);
 	
 }

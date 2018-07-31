@@ -16,18 +16,20 @@ import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.IValidator;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.ValidationMessage;
+import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.ListParserElement;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.RoleDataitem;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
-import org.rogatio.circlead.view.IRenderer;
-import org.rogatio.circlead.view.RenderUtil;
+import org.rogatio.circlead.view.IWorkitemRenderer;
+import org.rogatio.circlead.view.AtlassianRenderer;
+import org.rogatio.circlead.view.ISynchronizerRenderer;
 
 /**
  * The Class Role.
  */
-public class Role extends DefaultWorkitem implements IRenderer, IValidator {
+public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidator {
 
 	/**
 	 * Instantiates a new role.
@@ -427,57 +429,59 @@ public class Role extends DefaultWorkitem implements IRenderer, IValidator {
 	 * @see org.rogatio.circlead.view.IRenderer#render()
 	 */
 	@Override
-	public Element render() {
+	public Element render(ISynchronizer synchronizer) {
+		ISynchronizerRenderer renderer = synchronizer.getRenderer();
+		
 		Element element = new Element("p");
 
-		RenderUtil.addItem(element, "Abkürzung", this.getAbbreviation());
-		RenderUtil.addRolegroupItem(element, "Merkmalstragende Rollengruppe", this.getRolegroupIdentifier());
-		RenderUtil.addItem(element, "Organisation", this.getOrganisationIdentifier());
-		RenderUtil.addRoleItem(element, "Vererber", this.getParentIdentifier());
-		RenderUtil.addItem(element, "Synonyme", this.getSynonyms());
+		renderer.addItem(element, "Abkürzung", this.getAbbreviation());
+		renderer.addRolegroupItem(element, "Merkmalstragende Rollengruppe", this.getRolegroupIdentifier());
+		renderer.addItem(element, "Organisation", this.getOrganisationIdentifier());
+		renderer.addRoleItem(element, "Vererber", this.getParentIdentifier());
+		renderer.addItem(element, "Synonyme", this.getSynonyms());
 
 		List<Role> childRoles = Repository.getInstance().getRoleChildren(this.getTitle());
 		if (childRoles != null) {
 			if (childRoles.size() > 0) {
-				RenderUtil.addH2(element, "Erben");
-				RenderUtil.addRoleList(element, childRoles);
+				renderer.addH2(element, "Erben");
+				renderer.addRoleList(element, childRoles);
 			}
 		}
 
 		if (ObjectUtil.isListNotNullAndEmpty(this.getPersonIdentifiers())) {
-			RenderUtil.addH2(element, "Rollenträger");
-			RenderUtil.addPersonList(element, this.getPersonIdentifiers(), this);
+			renderer.addH2(element, "Rollenträger");
+			renderer.addPersonList(element, this.getPersonIdentifiers(), this);
 		}
 
 		if (ObjectUtil.isListNotNullAndEmpty(this.getCompetences())) {
-			RenderUtil.addH2(element, "Kompetenzen");
-			RenderUtil.addList(element, this.getCompetences());
+			renderer.addH2(element, "Kompetenzen");
+			renderer.addList(element, this.getCompetences());
 		}
 
 		if (ObjectUtil.isListNotNullAndEmpty(this.getResponsibilities())) {
-			RenderUtil.addH2(element, "Verantwortungen");
-			RenderUtil.addList(element, this.getResponsibilities());
+			renderer.addH2(element, "Verantwortungen");
+			renderer.addList(element, this.getResponsibilities());
 		}
 
 		if (ObjectUtil.isListNotNullAndEmpty(this.getOpportunities())) {
-			RenderUtil.addH2(element, "Befugnisse");
-			RenderUtil.addList(element, this.getOpportunities());
+			renderer.addH2(element, "Befugnisse");
+			renderer.addList(element, this.getOpportunities());
 		}
 
 		if (ObjectUtil.isListNotNullAndEmpty(this.getGuidelines())) {
-			RenderUtil.addH2(element, "Regeln");
-			RenderUtil.addList(element, this.getGuidelines());
+			renderer.addH2(element, "Regeln");
+			renderer.addList(element, this.getGuidelines());
 		}
 
-		RenderUtil.addH2(element, "Aufgaben");
+		renderer.addH2(element, "Aufgaben");
 		if (ObjectUtil.isListNotNullAndEmpty(this.getActivities())) {
-			RenderUtil.addList(element, this.getActivities());
+			renderer.addList(element, this.getActivities());
 		}
 		
 		List<Activity> a = Repository.getInstance().getActivities(this.getTitle());
 		if (ObjectUtil.isListNotNullAndEmpty(a)) {
 		//	RenderUtil.addH2(element, "Aufgaben");
-			RenderUtil.addActivityList(element, a);
+			renderer.addActivityList(element, a);
 		}
 		
 		return element;

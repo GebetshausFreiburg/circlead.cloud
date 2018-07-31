@@ -15,19 +15,21 @@ import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.IValidator;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.ValidationMessage;
+import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.ListParserElement;
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.RolegroupDataitem;
 import org.rogatio.circlead.util.StringUtil;
-import org.rogatio.circlead.view.IRenderer;
-import org.rogatio.circlead.view.RenderUtil;
+import org.rogatio.circlead.view.IWorkitemRenderer;
+import org.rogatio.circlead.view.AtlassianRenderer;
+import org.rogatio.circlead.view.ISynchronizerRenderer;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class Rolegroup.
  */
-public class Rolegroup extends DefaultWorkitem implements IRenderer, IValidator {
+public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IValidator {
 
 	/**
 	 * Instantiates a new rolegroup.
@@ -201,37 +203,39 @@ public class Rolegroup extends DefaultWorkitem implements IRenderer, IValidator 
 	 * @see org.rogatio.circlead.view.IRenderer#render()
 	 */
 	@Override
-	public Element render() {
+	public Element render(ISynchronizer synchronizer) {
+		ISynchronizerRenderer renderer = synchronizer.getRenderer();
+		
 		Element element = new Element("p");
 
 		if (StringUtil.isNotNullAndNotEmpty(this.getResponsibleIdentifier())) {
 			Role role = Repository.getInstance().getRole(this.getResponsibleIdentifier());
 			if (role != null) {
-				RenderUtil.addRoleItem(element, "Verantwortliche Rolle", this.getResponsibleIdentifier());
+				renderer.addRoleItem(element, "Verantwortliche Rolle", this.getResponsibleIdentifier());
 
 				List<String> personIdentifiers = role.getPersonIdentifiers();
-				RenderUtil.addPersonList(element, personIdentifiers, role, this.getLeadIdentifier());
+				renderer.addPersonList(element, personIdentifiers, role, this.getLeadIdentifier());
 			}
 		}
 
 		if (StringUtil.isNotNullAndNotEmpty(this.getParentIdentifier())) {
-			RenderUtil.addRolegroupItem(element, "Vererber: ", this.getParentIdentifier());
+			renderer.addRolegroupItem(element, "Vererber: ", this.getParentIdentifier());
 		}
 
-		RenderUtil.addH2(element, "Zusammenfassung");
-		RenderUtil.addItem(element, this.getSummary());
+		renderer.addH2(element, "Zusammenfassung");
+		renderer.addItem(element, this.getSummary());
 
 		List<Role> roles = Repository.getInstance().getRoles(this.getTitle());
 		if (roles.size() > 0) {
-			RenderUtil.addH2(element, "Merkmalgebende Rollen");
-			RenderUtil.addRoleList(element, roles);
+			renderer.addH2(element, "Merkmalgebende Rollen");
+			renderer.addRoleList(element, roles);
 		}
 
 		List<Rolegroup> childRolegroups = Repository.getInstance().getRolegroupChildren(this.getTitle());
 		if (childRolegroups != null) {
 			if (childRolegroups.size() > 0) {
-				RenderUtil.addH2(element, "Erben");
-				RenderUtil.addRolegroupList(element, childRolegroups);
+				renderer.addH2(element, "Erben");
+				renderer.addRolegroupList(element, childRolegroups);
 			}
 		}
 
