@@ -155,7 +155,7 @@ public class HttpClient {
 		String inputLine;
 		StringBuilder body;
 		try {
-			in = new BufferedReader(new InputStreamReader(is));
+			in = new BufferedReader(new InputStreamReader(is, "UTF-8"));
 
 			body = new StringBuilder();
 

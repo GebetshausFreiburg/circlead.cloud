@@ -431,7 +431,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	@Override
 	public Element render(ISynchronizer synchronizer) {
 		ISynchronizerRenderer renderer = synchronizer.getRenderer();
-		
+
 		Element element = new Element("p");
 
 		renderer.addItem(element, "Abkürzung", this.getAbbreviation());
@@ -474,16 +474,35 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		}
 
 		renderer.addH2(element, "Aufgaben");
-		if (ObjectUtil.isListNotNullAndEmpty(this.getActivities())) {
-			renderer.addList(element, this.getActivities());
-		}
-		
 		List<Activity> a = Repository.getInstance().getActivities(this.getTitle());
+
+		if (ObjectUtil.isListNotNullAndEmpty(this.getActivities())) {
+
+			if (ObjectUtil.isListNotNullAndEmpty(a)) {
+				List<String> alist = new ArrayList<String>();
+				for (String actRole : getActivities()) {
+					boolean found = false;
+					for (Activity activity : a) {
+						if (activity.getTitle().equals(actRole)) {
+							found = true;
+						}
+					}
+					if (!found) {
+						if (!alist.contains(actRole)) {
+							alist.add(actRole);
+						}
+					}
+				}
+				renderer.addList(element, alist);
+			} else {
+				renderer.addList(element, this.getActivities());
+			}
+		}
+
 		if (ObjectUtil.isListNotNullAndEmpty(a)) {
-		//	RenderUtil.addH2(element, "Aufgaben");
 			renderer.addActivityList(element, a);
 		}
-		
+
 		return element;
 	}
 
@@ -573,7 +592,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		if (StringUtil.isNotNullAndNotEmpty(this.getParentIdentifier())) {
 			foundParent = true;
 		}
-		
+
 		boolean foundChildren = false;
 		List<Role> childRoles = Repository.getInstance().getRoleChildren(this.getTitle());
 		if (childRoles != null) {
@@ -581,8 +600,8 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 				foundChildren = true;
 			}
 		}
-		
-		if (!foundParent&&!foundChildren) {
+
+		if (!foundParent && !foundChildren) {
 			ValidationMessage m = new ValidationMessage(this);
 			m.error("Role lost", "Role '" + this.getTitle() + "' has no predecessor and no siblings.");
 			messages.add(m);

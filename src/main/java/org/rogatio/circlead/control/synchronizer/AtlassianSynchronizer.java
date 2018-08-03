@@ -652,9 +652,10 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 						ht.setSynchronizer(this.toString());
 						ht.setType(type);
 						ht.setId(result.getContent().getId());
-						ht.setTitle(result.getContent().getTitle());
+						ht.setTitle(new String(result.getContent().getTitle().trim().getBytes(), "UTF-8"));
 						ht.setUrl("wiki/rest/api/content/" + type + "/" + result.getContent().getId());
 						fileIndex.add(ht.toString());
+						logger.debug("Found HowTo '"+ht.getTitle()+"' with '"+this.toString()+"'");
 					}
 				}
 			}

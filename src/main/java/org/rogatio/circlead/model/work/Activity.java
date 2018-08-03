@@ -103,7 +103,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 				}
 			}
 		}
-
+		
 		return element;
 	}
 
