@@ -13,6 +13,7 @@ import java.util.Map;
 
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.Repository;
+import org.rogatio.circlead.control.ValidationMessage;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
 import org.rogatio.circlead.model.StatusParameter;
@@ -43,6 +44,8 @@ public interface ISynchronizerRenderer {
 
 	public void addList(Element element, List<String> list, String underlinedElement);
 
+	public void addValidationList(Element element, List<ValidationMessage> list);
+	
 	public void addList(Element element, List<String> list);
 
 	public void addItem(Element element, String description);

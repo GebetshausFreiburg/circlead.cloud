@@ -41,6 +41,7 @@ import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.FileUtil;
 import org.rogatio.circlead.view.AtlassianRenderer;
 import org.rogatio.circlead.view.FileRenderer;
+import org.rogatio.circlead.view.IReport;
 import org.rogatio.circlead.view.ISynchronizerRenderer;
 import org.rogatio.circlead.view.IWorkitemRenderer;
 
@@ -56,7 +57,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 public class FileSynchronizer extends DefaultSynchronizer {
 
 	private final static Logger logger = LogManager.getLogger(FileSynchronizer.class);
-	
+
 	/** The data directory. */
 	private String dataDirectory;
 
@@ -69,7 +70,9 @@ public class FileSynchronizer extends DefaultSynchronizer {
 		return dataDirectory;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#getIdPattern()
 	 */
 	@Override
@@ -80,13 +83,16 @@ public class FileSynchronizer extends DefaultSynchronizer {
 	/**
 	 * Instantiates a new file synchronizer.
 	 *
-	 * @param dataDirectory the data directory
+	 * @param dataDirectory
+	 *            the data directory
 	 */
 	public FileSynchronizer(String dataDirectory) {
 		setDataDirectory(dataDirectory);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#init()
 	 */
 	@Override
@@ -97,13 +103,16 @@ public class FileSynchronizer extends DefaultSynchronizer {
 	/**
 	 * Sets the data directory.
 	 *
-	 * @param dataDirectory the new data directory
+	 * @param dataDirectory
+	 *            the new data directory
 	 */
 	public void setDataDirectory(String dataDirectory) {
 		this.dataDirectory = dataDirectory;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#update(org.rogatio.circlead.model.work.IWorkitem)
 	 */
 	@Override
@@ -111,8 +120,16 @@ public class FileSynchronizer extends DefaultSynchronizer {
 		SynchronizerFactory.getInstance().setActual(this);
 		return add(workitem);
 	}
+	
+	@Override
+	public SynchronizerResult update(IReport report) {
+		SynchronizerFactory.getInstance().setActual(this);
+		return add(report);
+	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#add(org.rogatio.circlead.model.work.IWorkitem)
 	 */
 	@Override
@@ -138,34 +155,51 @@ public class FileSynchronizer extends DefaultSynchronizer {
 		SynchronizerResult res = new SynchronizerResult();
 		res.setMessage("Write");
 		res.setCode(200);
-		
+
 		return res;
 	}
 	
+	@Override
+	public SynchronizerResult add(IReport report) {
+		SynchronizerFactory.getInstance().setActual(this);
+
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setSerializationInclusion(Include.NON_NULL);
+		mapper.enable(SerializationFeature.INDENT_OUTPUT);
+
+		writeReportRendered(report);
+
+		SynchronizerResult res = new SynchronizerResult();
+		res.setMessage("OK");
+		res.setCode(200);
+
+		return res;
+	}
+
 	/**
 	 * Delete all.
 	 */
 	public void deleteAll() {
-//		File data = new File(dataDirectory);
+		// File data = new File(dataDirectory);
 		try {
-			FileUtil.deleteRecursive(new File(dataDirectory+File.separatorChar+"persons"));
+			FileUtil.deleteRecursive(new File(dataDirectory + File.separatorChar + "persons"));
 		} catch (Exception e) {
-			logger.warn("No directory '" +dataDirectory +File.separatorChar+"persons" + "' found to delete.");
+			logger.warn("No directory '" + dataDirectory + File.separatorChar + "persons" + "' found to delete.");
 		}
 		try {
-			FileUtil.deleteRecursive(new File(dataDirectory+File.separatorChar+"rolegroups"));
+			FileUtil.deleteRecursive(new File(dataDirectory + File.separatorChar + "rolegroups"));
 		} catch (Exception e) {
-			logger.warn("No directory '" +dataDirectory +File.separatorChar+"rolegroups" + "' found to delete.");
+			logger.warn("No directory '" + dataDirectory + File.separatorChar + "rolegroups" + "' found to delete.");
 		}
 		try {
-			FileUtil.deleteRecursive(new File(dataDirectory+File.separatorChar+"activities"));
-		} catch (Exception e) {
-			logger.warn("No directory '" +dataDirectory +File.separatorChar+"activities" + "' found to delete.");
+			FileUtil.deleteRecursive(new File(dataDirectory + File.separatorChar + "activities"));
+		} catch (Exception e) { 
+			logger.warn("No directory '" + dataDirectory + File.separatorChar + "activities" + "' found to delete.");
 		}
 		try {
-			FileUtil.deleteRecursive(new File(dataDirectory+File.separatorChar+"roles"));
+			FileUtil.deleteRecursive(new File(dataDirectory + File.separatorChar + "roles"));
 		} catch (Exception e) {
-			logger.warn("No directory '" +dataDirectory +File.separatorChar+"roles" + "' found to delete.");
+			logger.warn("No directory '" + dataDirectory + File.separatorChar + "roles" + "' found to delete.");
 		}
 
 	}
@@ -173,8 +207,10 @@ public class FileSynchronizer extends DefaultSynchronizer {
 	/**
 	 * Write workitem data.
 	 *
-	 * @param workitem the workitem
-	 * @param folder the folder
+	 * @param workitem
+	 *            the workitem
+	 * @param folder
+	 *            the folder
 	 * @return the string
 	 */
 	private String writeWorkitemData(IWorkitem workitem, String folder) {
@@ -182,10 +218,10 @@ public class FileSynchronizer extends DefaultSynchronizer {
 		mapper.setSerializationInclusion(Include.NON_NULL);
 		mapper.enable(SerializationFeature.INDENT_OUTPUT);
 
-		if (workitem.getId(this)==null) {
+		if (workitem.getId(this) == null) {
 			workitem.setId(UUID.randomUUID().toString(), this);
 		}
-		
+
 		String result = "";
 
 		try {
@@ -224,10 +260,44 @@ public class FileSynchronizer extends DefaultSynchronizer {
 
 	}
 
+	private void writeReportRendered(IReport report) {
+		if (report instanceof IWorkitemRenderer) {
+			IWorkitemRenderer renderer = (IWorkitemRenderer) report;
+			String filename = report.getName();
+			Document doc = new Document("");
+			doc.charset(Charset.forName("UTF-8"));
+			Element html = doc.appendElement("html");
+			Element head = html.appendElement("head");
+			head.append("<link rel=\"stylesheet\" href=\"styles.css\">");
+			head.append("<meta charset=\"utf-8\">");
+			html.appendElement("body");
+			Element body = html.appendElement("body");
+
+			body.appendElement("H1").appendText(report.getName());
+
+			renderer.render(this).appendTo(body);
+
+			try {
+				String f = "reports/" + filename + ".html";
+				File ff = new File("reports");
+				ff.mkdirs();
+				Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"));
+				try {
+					out.write(doc.toString());
+				} finally {
+					out.close();
+				}
+			} catch (IOException e) {
+				logger.error("Error writing Html-File", e);
+			}
+		}
+	}
+	
 	/**
 	 * Write workitem rendered.
 	 *
-	 * @param workitem the workitem
+	 * @param workitem
+	 *            the workitem
 	 */
 	private void writeWorkitemRendered(IWorkitem workitem) {
 		if (workitem instanceof IWorkitemRenderer) {
@@ -241,9 +311,9 @@ public class FileSynchronizer extends DefaultSynchronizer {
 			head.append("<meta charset=\"utf-8\">");
 			html.appendElement("body");
 			Element body = html.appendElement("body");
-			
+
 			body.appendElement("H1").appendText(workitem.getTitle());
-			
+
 			renderer.render(this).appendTo(body);
 
 			try {
@@ -262,7 +332,9 @@ public class FileSynchronizer extends DefaultSynchronizer {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#loadIndex(org.rogatio.circlead.model.WorkitemType)
 	 */
 	public List<String> loadIndex(WorkitemType workitemType) {
@@ -272,12 +344,24 @@ public class FileSynchronizer extends DefaultSynchronizer {
 
 		if (WorkitemType.ROLE == workitemType) {
 			fileIndex = readFolder("roles");
+		} else if (WorkitemType.REPORT == workitemType) {
+			List<String> files = readFolder("reports");
+			for (String f : files) {
+				File file = new File(f);
+				HowTo ht = new HowTo();
+				ht.setType("report");
+				ht.setSynchronizer(this.toString());
+				ht.setId(f);
+				ht.setTitle(file.getName());
+				try {
+					ht.setUrl(file.toURI().toURL().toString());
+				} catch (MalformedURLException e) {
+					ht.setUrl(f);
+				}
+				fileIndex.add(ht.toString());
+			}
 		} else if (WorkitemType.HOWTO == workitemType) {
 			List<String> files = readFolder("howtos");
-			
-//			if (!type.equals("howto")) {
-//				fileIndex.add(URL + "wiki/rest/api/content/" + type + "/" + result.getContent().getId());
-//			} else {
 			for (String f : files) {
 				File file = new File(f);
 				HowTo ht = new HowTo();
@@ -292,10 +376,6 @@ public class FileSynchronizer extends DefaultSynchronizer {
 				}
 				fileIndex.add(ht.toString());
 			}
-			
-				
-//			}
-			
 		} else if (WorkitemType.ACTIVITY == workitemType) {
 			fileIndex = readFolder("activities");
 		} else if (WorkitemType.ROLEGROUP == workitemType) {
@@ -310,7 +390,8 @@ public class FileSynchronizer extends DefaultSynchronizer {
 	/**
 	 * Read folder.
 	 *
-	 * @param folder the folder
+	 * @param folder
+	 *            the folder
 	 * @return the list
 	 */
 	private List<String> readFolder(String folder) {
@@ -328,7 +409,9 @@ public class FileSynchronizer extends DefaultSynchronizer {
 		return fileIndex;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#get(java.lang.String)
 	 */
 	@Override
@@ -382,9 +465,12 @@ public class FileSynchronizer extends DefaultSynchronizer {
 	/**
 	 * Sets the workitem id.
 	 *
-	 * @param filename the filename
-	 * @param wi the wi
-	 * @throws SynchronizerException the synchronizer exception
+	 * @param filename
+	 *            the filename
+	 * @param wi
+	 *            the wi
+	 * @throws SynchronizerException
+	 *             the synchronizer exception
 	 */
 	private void setWorkitemId(String filename, IWorkitem wi) throws SynchronizerException {
 		String i[] = filename.split("/");
@@ -403,8 +489,10 @@ public class FileSynchronizer extends DefaultSynchronizer {
 	/**
 	 * Creates the file.
 	 *
-	 * @param workitem the workitem
-	 * @param folder the folder
+	 * @param workitem
+	 *            the workitem
+	 * @param folder
+	 *            the folder
 	 * @return the file
 	 */
 	private File createFile(IWorkitem workitem, String folder) {
@@ -413,7 +501,9 @@ public class FileSynchronizer extends DefaultSynchronizer {
 		return f;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#delete(org.rogatio.circlead.model.work.IWorkitem)
 	 */
 	@Override
@@ -432,14 +522,13 @@ public class FileSynchronizer extends DefaultSynchronizer {
 		}
 		if (f != null) {
 			if (f.exists()) {
-				logger.debug("DELETE "+f);
+				logger.debug("DELETE " + f);
 				f.delete();
 				return "OK";
 			}
 		}
 		return "NIO";
 	}
-	
 
 	@Override
 	public ISynchronizerRenderer getRenderer() {

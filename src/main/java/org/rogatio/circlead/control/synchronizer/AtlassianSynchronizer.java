@@ -26,6 +26,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.atlassian.ConfluenceClient;
 import org.rogatio.circlead.control.synchronizer.atlassian.content.Ancestor;
 import org.rogatio.circlead.control.synchronizer.atlassian.content.Metadata;
@@ -42,6 +43,7 @@ import org.rogatio.circlead.control.synchronizer.atlassian.search.Results;
 import org.rogatio.circlead.model.WorkitemParameter;
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.data.HowTo;
+import org.rogatio.circlead.model.data.Report;
 import org.rogatio.circlead.model.work.Activity;
 import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
@@ -49,6 +51,7 @@ import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.AtlassianRenderer;
+import org.rogatio.circlead.view.IReport;
 import org.rogatio.circlead.view.ISynchronizerRenderer;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -143,6 +146,39 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		return null;
 	}
 
+	@Override
+	public SynchronizerResult add(IReport report) throws SynchronizerException {
+		SynchronizerFactory.getInstance().setActual(this);
+
+		Page page = Parser.createPage(report, circleadSpace, this);
+
+		try {
+			Metadata m = Parser.getLabelMetadata(report);
+			page.setMetadata(m);
+
+			List<Ancestor> ancestors = new ArrayList<Ancestor>();
+			Ancestor a = new Ancestor();
+			a.setId(getAcestorId("report"));
+			a.setTitle("Reports");
+			a.setType("page");
+			ancestors.add(a);
+			page.setAncestors(ancestors);
+
+			ObjectMapper mapper = new ObjectMapper();
+			mapper.setSerializationInclusion(Include.NON_NULL);
+			String data = mapper.writeValueAsString(page);
+
+			SynchronizerResult res = confluenceClient.post("wiki/rest/api/content/", data);
+			// logger.info("Write '" + URL + "wiki/rest/api/content/" + workitem.getId(this) + "'");
+			return res;
+		} catch (JsonProcessingException e) {
+			logger.error(e);
+		} catch (IOException e) {
+			logger.error(e);
+		}
+		return null;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -170,7 +206,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 			mapper.setSerializationInclusion(Include.NON_NULL);
 			String data = mapper.writeValueAsString(page);
 
-			SynchronizerResult r = new SynchronizerResult();
+			// SynchronizerResult r = new SynchronizerResult();
 			// System.out.println(data);
 
 			SynchronizerResult res = confluenceClient.post("wiki/rest/api/content/", data);
@@ -222,6 +258,50 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		return null;
 	}
 
+	@Override
+	public SynchronizerResult update(IReport report) {
+		SynchronizerFactory.getInstance().setActual(this);
+
+		Page page = Parser.createPage(report, circleadSpace, this);
+
+		Report repo = Repository.getInstance().getReport(report.getName());
+		if (repo != null) {
+
+			logger.info("Update '" + URL + "wiki/rest/api/content/" + repo.getId()+ "' ("+report.getName()+")");
+			
+			Integer version = 0;
+			try {
+				ObjectMapper omapper = new ObjectMapper();
+				omapper.setSerializationInclusion(Include.NON_NULL);
+				SynchronizerResult pageR = confluenceClient.getPage(Integer.parseInt(repo.getId()));
+				Page p = omapper.readValue(pageR.getContent(), Page.class);
+
+				version = p.getVersion().getNumber() + 1;
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+
+			try {
+				ObjectMapper mapper = new ObjectMapper();
+				mapper.setSerializationInclusion(Include.NON_NULL);
+
+				Version v = new Version();
+				v.setNumber(version);
+				page.setVersion(v);
+
+				String data = mapper.writeValueAsString(page);
+				String uri = "wiki/rest/api/content/" + repo.getId();
+				SynchronizerResult res = confluenceClient.put(uri, data);
+				return res;
+			} catch (JsonProcessingException e) {
+				logger.error(e);
+			} catch (IOException e) {
+				logger.error(e);
+			}
+		}
+		return null;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -268,6 +348,10 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		// System.out.println("TYPE "+type);
 
 		if (id == null) {
+			if (type.equalsIgnoreCase("report")) {
+				SynchronizerResult page = confluenceClient.search("type=\"page\" and title=\"Reports\"");
+				id = "" + Parser.getIdFromResult(page.getContent());
+			}
 			if (type.equalsIgnoreCase("role")) {
 				SynchronizerResult page = confluenceClient.search("type=\"page\" and title=\"Roles\"");
 				id = "" + Parser.getIdFromResult(page.getContent());
@@ -645,9 +729,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 			Results queryResults = mapper.readValue(results.getContent(), Results.class);
 			for (Result result : queryResults.getResults()) {
 				if (result.getUrl().contains("/" + circleadSpace + "/")) {
-					if (!type.equals("howto")) {
-						fileIndex.add(URL + "wiki/rest/api/content/" + type + "/" + result.getContent().getId());
-					} else {
+					if (type.equals("howto")) {
 						HowTo ht = new HowTo();
 						ht.setSynchronizer(this.toString());
 						ht.setType(type);
@@ -655,7 +737,18 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 						ht.setTitle(new String(result.getContent().getTitle().trim().getBytes(), "UTF-8"));
 						ht.setUrl("wiki/rest/api/content/" + type + "/" + result.getContent().getId());
 						fileIndex.add(ht.toString());
-						logger.debug("Found HowTo '"+ht.getTitle()+"' with '"+this.toString()+"'");
+						logger.debug("Found HowTo '" + ht.getTitle() + "' with '" + this.toString() + "'");
+					} else if (type.equals("report")) {
+						Report ht = new Report();
+						ht.setSynchronizer(this.toString());
+						ht.setType(type);
+						ht.setId(result.getContent().getId());
+						ht.setTitle(new String(result.getContent().getTitle().trim().getBytes(), "UTF-8"));
+						ht.setUrl("wiki/rest/api/content/" + type + "/" + result.getContent().getId());
+						fileIndex.add(ht.toString());
+						logger.debug("Found Report '" + ht.getTitle() + "' with '" + this.toString() + "'");
+					} else {
+						fileIndex.add(URL + "wiki/rest/api/content/" + type + "/" + result.getContent().getId());
 					}
 				}
 			}

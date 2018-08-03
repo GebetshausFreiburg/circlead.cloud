@@ -22,6 +22,7 @@ import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.StringUtil;
+import org.rogatio.circlead.view.IReport;
 
 /**
  * The Class Connector.
@@ -291,6 +292,19 @@ public class Connector {
 		}
 		return results;
 	}
+	
+	public List<SynchronizerResult> add(IReport report) {
+		List<SynchronizerResult> results = new ArrayList<SynchronizerResult>();
+		List<ISynchronizer> synchronizers = SynchronizerFactory.getInstance().getSynchronizers();
+		for (ISynchronizer synchronizer : synchronizers) {
+			try {
+				results.add(synchronizer.add(report));
+			} catch (SynchronizerException e) {
+				logger.error(e);
+			}
+		}
+		return results;
+	}
 
 	/**
 	 * Update.
@@ -305,6 +319,20 @@ public class Connector {
 		for (ISynchronizer synchronizer : synchronizers) {
 			try {
 				results.add(synchronizer.update(workitem));
+			} catch (SynchronizerException e) {
+				logger.error(e);
+			}
+		}
+		return results;
+	}
+	
+	public List<SynchronizerResult> update(IReport report) {
+		List<SynchronizerResult> results = new ArrayList<SynchronizerResult>();
+
+		List<ISynchronizer> synchronizers = SynchronizerFactory.getInstance().getSynchronizers();
+		for (ISynchronizer synchronizer : synchronizers) {
+			try { 
+				results.add(synchronizer.update(report));
 			} catch (SynchronizerException e) {
 				logger.error(e);
 			}

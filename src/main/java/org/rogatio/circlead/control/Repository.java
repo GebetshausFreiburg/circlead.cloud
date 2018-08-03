@@ -21,6 +21,7 @@ import org.rogatio.circlead.control.synchronizer.FileSynchronizer;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.data.HowTo;
+import org.rogatio.circlead.model.data.Report;
 import org.rogatio.circlead.model.data.RoleDataitem;
 import org.rogatio.circlead.model.work.Activity;
 import org.rogatio.circlead.model.work.IWorkitem;
@@ -29,6 +30,7 @@ import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
+import org.rogatio.circlead.view.IReport;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -62,17 +64,15 @@ public class Repository {
 	/** The connector. */
 	private Connector connector;
 
+	public void addSynchronizer(ISynchronizer synchronizer) {
+		connector.addSynchronizer(synchronizer);
+	}
+
 	/**
 	 * Instantiates a new repository.
 	 */
 	private Repository() {
 		connector = new Connector();
-
-		ISynchronizer asynchronizer = new AtlassianSynchronizer("CIRCLEAD");
-		connector.addSynchronizer(asynchronizer);
-
-		ISynchronizer fsynchronizer = new FileSynchronizer("data");
-		connector.addSynchronizer(fsynchronizer);
 	}
 
 	/**
@@ -149,6 +149,8 @@ public class Repository {
 		return ObjectUtil.castList(Person.class, persons);
 	}
 
+	private List<String> indexReports = new ArrayList<String>();
+
 	private List<String> indexHowtos = new ArrayList<String>();
 
 	public List<HowTo> getIndexHowTos() {
@@ -169,6 +171,30 @@ public class Repository {
 		}
 
 		return howtos;
+	}
+
+	public List<Report> getIndexReports() {
+
+		List<Report> rs = new ArrayList<Report>();
+
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setSerializationInclusion(Include.NON_NULL);
+
+		for (String ht : indexReports) {
+			try {
+				Report howto = mapper.readValue(ht, Report.class);
+				rs.add(howto);
+			} catch (JsonParseException e) {
+			} catch (JsonMappingException e) {
+			} catch (IOException e) {
+			}
+		}
+
+		return rs;
+	}
+
+	public void loadIndexReports() {
+		indexReports = connector.loadIndex(WorkitemType.REPORT);
 	}
 
 	public void loadIndexHowTos() {
@@ -275,6 +301,12 @@ public class Repository {
 			// }
 		}
 		return null;
+	}
+
+	public void updateWorkitems() {
+		for (IWorkitem workitem : getWorkitems()) {
+			getConnector().update(workitem);
+		}
 	}
 
 	/**
@@ -433,10 +465,8 @@ public class Repository {
 		return null;
 	}
 
-	public HowTo getHowTo(String identifier) {
-		for (HowTo ht : this.getIndexHowTos()) {
-			// if (WorkitemType.ROLE.isTypeOf(workitem)) {
-			// Role role = (Role) workitem;
+	public Report getReport(String identifier) {
+		for (Report ht : this.getIndexReports()) {
 
 			if (identifier.equalsIgnoreCase(ht.getId())) {
 				return ht;
@@ -445,27 +475,22 @@ public class Repository {
 			if (identifier.equalsIgnoreCase(ht.getTitle())) {
 				return ht;
 			}
+		}
 
-			// if (role.containsId(identifier)) {
-			// return role;
-			// }
-			// if (StringUtil.isNotNullAndNotEmpty(role.getAbbreviation())) {
-			// if (role.getAbbreviation().equals(identifier)) {
-			// return role;
-			// }
-			// }
-			// if (role.getTitle().equals(identifier)) {
-			// return role;
-			// }
-			// if (role.getSynonyms() != null) {
-			// for (String synonym : role.getSynonyms()) {
-			// if (synonym.equals(identifier)) {
-			// return role;
-			// }
-			// }
-			// }
+		return null;
+	}
 
-			// }
+	
+	public HowTo getHowTo(String identifier) {
+		for (HowTo ht : this.getIndexHowTos()) {
+
+			if (identifier.equalsIgnoreCase(ht.getId())) {
+				return ht;
+			}
+
+			if (identifier.equalsIgnoreCase(ht.getTitle())) {
+				return ht;
+			}
 		}
 
 		return null;
@@ -487,6 +512,28 @@ public class Repository {
 		}
 
 		return childRoles;
+	}
+
+	public void addReports() {
+		for (IReport report : this.reports) {
+			this.getConnector().add(report);			
+		}
+	}
+	
+	public void updateReports() {
+		for (IReport report : this.reports) {
+			this.getConnector().update(report);			
+		}
+	}
+	
+	private List<IReport> reports = new ArrayList<IReport>();
+
+	public void addReport(IReport report) {
+		reports.add(report);
+	}
+
+	public List<IReport> getReports() {
+		return reports;
 	}
 
 	public List<Rolegroup> getRolegroupChildren(String rolegroupIdentifier) {

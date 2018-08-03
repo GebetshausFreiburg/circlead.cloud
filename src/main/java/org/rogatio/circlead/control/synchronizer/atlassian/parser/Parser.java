@@ -27,6 +27,7 @@ import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
+import org.rogatio.circlead.view.IReport;
 import org.rogatio.circlead.view.IWorkitemRenderer;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -197,6 +198,34 @@ public class Parser {
 		return page;
 	}
 
+	public static Page createPage(IReport report, String spaceKey, ISynchronizer synchronizer) {
+		Page page = new Page();
+		page.setType("page");
+		page.setTitle(report.getName());
+
+		Space space = new Space();
+		space.setKey(spaceKey);
+		page.setSpace(space);
+
+		Body body = new Body();
+		Storage storage = new Storage();
+		storage.setRepresentation("storage");
+		body.setStorage(storage);
+	
+		Element paragraph = new Element("div");
+		if (report instanceof IWorkitemRenderer) {
+			IWorkitemRenderer r = (IWorkitemRenderer) report;
+			Element e = r.render(synchronizer);
+			e.appendTo(paragraph);
+		}
+
+		String html = Parser.clean(paragraph);
+		storage.setValue(html);
+		page.setBody(body);
+		return page;
+	}
+
+	
 	public static int getIdFromResult(String result) {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
@@ -233,6 +262,19 @@ public class Parser {
 		return 0;
 	}
 
+	public static Metadata getLabelMetadata(IReport re) {
+		Metadata m = new Metadata();
+		Labels l = new Labels();
+		List<org.rogatio.circlead.control.synchronizer.atlassian.content.Result> results = new ArrayList<org.rogatio.circlead.control.synchronizer.atlassian.content.Result>();
+		org.rogatio.circlead.control.synchronizer.atlassian.content.Result r = new org.rogatio.circlead.control.synchronizer.atlassian.content.Result();
+		r.setPrefix("global");
+		r.setName("report");
+		results.add(r);
+		l.setResults(results);
+		m.setLabels(l);
+		return m;
+	}
+	
 	public static Metadata getLabelMetadata(IWorkitem wi) {
 		Metadata m = new Metadata();
 		Labels l = new Labels();

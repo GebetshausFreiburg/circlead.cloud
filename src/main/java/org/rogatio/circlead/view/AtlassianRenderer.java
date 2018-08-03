@@ -13,6 +13,7 @@ import java.util.Map;
 
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.Repository;
+import org.rogatio.circlead.control.ValidationMessage;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
 import org.rogatio.circlead.model.StatusParameter;
@@ -463,5 +464,15 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 	 */
 	public void addH3(Element element, String header) {
 		element.appendElement("h3").appendText(header);
+	}
+	
+	@Override
+	public void addValidationList(Element element, List<ValidationMessage> list) {
+		
+		Element table = element.appendElement("div").appendElement("table");
+		for (ValidationMessage vm : list) {
+			addDataPair(vm.getType().name(), vm.getMessage(), table);
+		}
+		
 	}
 }

@@ -14,6 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.work.IWorkitem;
+import org.rogatio.circlead.view.IReport;
 import org.rogatio.circlead.view.ISynchronizerRenderer;
 
 // TODO: Auto-generated Javadoc
@@ -129,6 +130,16 @@ public class DefaultSynchronizer implements ISynchronizer {
 
 	@Override
 	public ISynchronizerRenderer getRenderer() {
+		return null;
+	}
+
+	@Override
+	public SynchronizerResult add(IReport report) throws SynchronizerException {
+		return null;
+	}
+
+	@Override
+	public SynchronizerResult update(IReport report) throws SynchronizerException {
 		return null;
 	}
 

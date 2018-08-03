@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.work.IWorkitem;
+import org.rogatio.circlead.view.IReport;
 import org.rogatio.circlead.view.ISynchronizerRenderer;
 
 /**
@@ -58,6 +59,10 @@ public interface ISynchronizer {
 	 * @throws SynchronizerException the synchronizer exception
 	 */
 	public SynchronizerResult add(IWorkitem workitem) throws SynchronizerException ;
+	
+	public SynchronizerResult add(IReport report) throws SynchronizerException;
+	
+	public SynchronizerResult update(IReport report) throws SynchronizerException;
 	
 	/**
 	 * Update.

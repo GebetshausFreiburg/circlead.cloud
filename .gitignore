@@ -10,5 +10,7 @@ target/
 /target/
 web/
 /web/
+reports/
+/reports/
 /src/main/java/org/rogatio/circlead/control/synchronizer/atlassian/Constant.java
 /bfg-1.13.0.jar
