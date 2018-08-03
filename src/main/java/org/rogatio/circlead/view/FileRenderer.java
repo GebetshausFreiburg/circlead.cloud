@@ -17,6 +17,7 @@ import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 //import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
 import org.rogatio.circlead.model.StatusParameter;
 import org.rogatio.circlead.model.WorkitemType;
+import org.rogatio.circlead.model.data.HowTo;
 import org.rogatio.circlead.model.work.Activity;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
@@ -324,6 +325,23 @@ public class FileRenderer implements ISynchronizerRenderer {
 		}
 	}
 
+	public void addHowToItem(Element element, String description, String content) {
+		HowTo r = Repository.getInstance().getHowTo(content);
+
+		Element div = element.appendElement("div");
+		div.appendElement("b").appendText(description);
+		div.appendText(":").append("&nbsp;");
+		if (content != null) {
+			if (r != null) {
+				div.appendElement("a").attr("href", r.getUrl() ).appendText(r.getTitle());
+			} else {
+				div.appendText(content);
+			}
+		} else {
+			div.appendText("-");
+		}
+	}
+	
 	/**
 	 * Adds the role item.
 	 *

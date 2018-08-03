@@ -16,11 +16,7 @@ import org.rogatio.circlead.model.work.IWorkitem;
  */
 public enum WorkitemType {
 
-	 ACTIVITY("Activity"),
-	/** The role. */
-	ROLE("Role"), /** The rolegroup. */
- ROLEGROUP("Rolegroup"), /** The person. */
- PERSON("Person");
+	HOWTO("HowTo"), ACTIVITY("Activity"), ROLE("Role"), ROLEGROUP("Rolegroup"), PERSON("Person");
 
 	/** The text. */
 	private final String text;
@@ -28,7 +24,8 @@ public enum WorkitemType {
 	/**
 	 * Instantiates a new workitem type.
 	 *
-	 * @param text the text
+	 * @param text
+	 *            the text
 	 */
 	WorkitemType(final String text) {
 		this.text = text;
@@ -37,27 +34,30 @@ public enum WorkitemType {
 	/**
 	 * Checks if is type of.
 	 *
-	 * @param workitem the workitem
-	 * @param workitem2 the workitem 2
+	 * @param workitem
+	 *            the workitem
+	 * @param workitem2
+	 *            the workitem 2
 	 * @return true, if is type of
 	 */
 	public boolean isTypeOf(IWorkitem workitem, IWorkitem workitem2) {
 		boolean w1 = isTypeOf(workitem);
 		boolean w2 = isTypeOf(workitem2);
-		return w1&&w2;
+		return w1 && w2;
 	}
-	
+
 	/**
 	 * Checks if is type of.
 	 *
-	 * @param workitem the workitem
+	 * @param workitem
+	 *            the workitem
 	 * @return true, if is type of
 	 */
 	public boolean isTypeOf(IWorkitem workitem) {
-		if (workitem==null) {
+		if (workitem == null) {
 			return false;
 		}
-		
+
 		if (this.getName().equals(workitem.getType())) {
 			return true;
 		}

@@ -31,10 +31,16 @@ public class Sync {
 		FileSynchronizer fs = (FileSynchronizer)repository.getConnector().getSynchronizer("FileSynchronizer");
 		fs.deleteAll();
 		
-		repository.loadRoles();
-		repository.loadRolegroups();
-		repository.loadPersons();
+//		repository.loadRoles();
+//		repository.loadRolegroups();
+//		repository.loadPersons();
 		repository.loadActivities();
+		
+		repository.loadIndexHowTos();
+//		List<String> howtoIndex = repository.getIndexHowTos();
+//		for (String index : howtoIndex) {
+//			System.out.println(index);
+//		}
 		
 		for (IWorkitem workitem : repository.getWorkitems()) {
 			repository.getConnector().update(workitem);

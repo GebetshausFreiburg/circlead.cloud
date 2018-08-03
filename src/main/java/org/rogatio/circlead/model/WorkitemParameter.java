@@ -25,6 +25,8 @@ public enum WorkitemParameter {
 	/** The activity. */
 	ACTIVITY("Aktivität", "Aktivitäten", "Activity", "Activities", "Aufgaben"), 
 	
+	HOWTOS("HowTos", "Arbeitsanweisungen", "Anleitungen", "Erläuterungen", "Knowledgebase"), 
+	
 	/** The synonym. */
 	SYNONYM("Synonyme", "Synonym"), 
 	

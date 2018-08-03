@@ -8,12 +8,15 @@
  */
 package org.rogatio.circlead.control.synchronizer;
 
+import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.URL;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.net.MalformedURLException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,6 +29,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.data.ActivityDataitem;
+import org.rogatio.circlead.model.data.HowTo;
 import org.rogatio.circlead.model.data.PersonDataitem;
 import org.rogatio.circlead.model.data.RoleDataitem;
 import org.rogatio.circlead.model.data.RolegroupDataitem;
@@ -46,7 +50,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class FileSynchronizer.
  */
@@ -143,13 +146,28 @@ public class FileSynchronizer extends DefaultSynchronizer {
 	 * Delete all.
 	 */
 	public void deleteAll() {
-		File data = new File(dataDirectory);
+//		File data = new File(dataDirectory);
 		try {
-			// Delete all directories to prevent unused files
-			FileUtil.deleteRecursive(data);
+			FileUtil.deleteRecursive(new File(dataDirectory+File.separatorChar+"persons"));
 		} catch (Exception e) {
-			logger.warn("No directory '" + dataDirectory + "' found to delete.");
+			logger.warn("No directory '" +dataDirectory +File.separatorChar+"persons" + "' found to delete.");
 		}
+		try {
+			FileUtil.deleteRecursive(new File(dataDirectory+File.separatorChar+"rolegroups"));
+		} catch (Exception e) {
+			logger.warn("No directory '" +dataDirectory +File.separatorChar+"rolegroups" + "' found to delete.");
+		}
+		try {
+			FileUtil.deleteRecursive(new File(dataDirectory+File.separatorChar+"activities"));
+		} catch (Exception e) {
+			logger.warn("No directory '" +dataDirectory +File.separatorChar+"activities" + "' found to delete.");
+		}
+		try {
+			FileUtil.deleteRecursive(new File(dataDirectory+File.separatorChar+"roles"));
+		} catch (Exception e) {
+			logger.warn("No directory '" +dataDirectory +File.separatorChar+"roles" + "' found to delete.");
+		}
+
 	}
 
 	/**
@@ -254,6 +272,30 @@ public class FileSynchronizer extends DefaultSynchronizer {
 
 		if (WorkitemType.ROLE == workitemType) {
 			fileIndex = readFolder("roles");
+		} else if (WorkitemType.HOWTO == workitemType) {
+			List<String> files = readFolder("howtos");
+			
+//			if (!type.equals("howto")) {
+//				fileIndex.add(URL + "wiki/rest/api/content/" + type + "/" + result.getContent().getId());
+//			} else {
+			for (String f : files) {
+				File file = new File(f);
+				HowTo ht = new HowTo();
+				ht.setType("howto");
+				ht.setSynchronizer(this.toString());
+				ht.setId(f);
+				ht.setTitle(file.getName());
+				try {
+					ht.setUrl(file.toURI().toURL().toString());
+				} catch (MalformedURLException e) {
+					ht.setUrl(f);
+				}
+				fileIndex.add(ht.toString());
+			}
+			
+				
+//			}
+			
 		} else if (WorkitemType.ACTIVITY == workitemType) {
 			fileIndex = readFolder("activities");
 		} else if (WorkitemType.ROLEGROUP == workitemType) {

@@ -8,6 +8,7 @@
  */
 package org.rogatio.circlead.control;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,8 @@ import org.rogatio.circlead.control.synchronizer.Connector;
 import org.rogatio.circlead.control.synchronizer.FileSynchronizer;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.model.WorkitemType;
+import org.rogatio.circlead.model.data.HowTo;
+import org.rogatio.circlead.model.data.RoleDataitem;
 import org.rogatio.circlead.model.work.Activity;
 import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
@@ -26,6 +29,11 @@ import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
+
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -129,7 +137,7 @@ public class Repository {
 		this.addItems(activities);
 		return ObjectUtil.castList(Activity.class, activities);
 	}
-	
+
 	/**
 	 * Load persons.
 	 *
@@ -139,6 +147,32 @@ public class Repository {
 		List<IWorkitem> persons = connector.load(WorkitemType.PERSON);
 		this.addItems(persons);
 		return ObjectUtil.castList(Person.class, persons);
+	}
+
+	private List<String> indexHowtos = new ArrayList<String>();
+
+	public List<HowTo> getIndexHowTos() {
+
+		List<HowTo> howtos = new ArrayList<HowTo>();
+
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setSerializationInclusion(Include.NON_NULL);
+
+		for (String ht : indexHowtos) {
+			try {
+				HowTo howto = mapper.readValue(ht, HowTo.class);
+				howtos.add(howto);
+			} catch (JsonParseException e) {
+			} catch (JsonMappingException e) {
+			} catch (IOException e) {
+			}
+		}
+
+		return howtos;
+	}
+
+	public void loadIndexHowTos() {
+		indexHowtos = connector.loadIndex(WorkitemType.HOWTO);
 	}
 
 	/**
@@ -266,7 +300,7 @@ public class Repository {
 		}
 		return roleIdentifiers;
 	}
-	
+
 	public List<Activity> getActivities(String roleIdentifier) {
 		List<Activity> activityIdentifiers = new ArrayList<Activity>();
 		for (IWorkitem workitem : workitems) {
@@ -398,38 +432,76 @@ public class Repository {
 
 		return null;
 	}
-	
+
+	public HowTo getHowTo(String identifier) {
+		for (HowTo ht : this.getIndexHowTos()) {
+			// if (WorkitemType.ROLE.isTypeOf(workitem)) {
+			// Role role = (Role) workitem;
+
+			if (identifier.equalsIgnoreCase(ht.getId())) {
+				return ht;
+			}
+
+			if (identifier.equalsIgnoreCase(ht.getTitle())) {
+				return ht;
+			}
+
+			// if (role.containsId(identifier)) {
+			// return role;
+			// }
+			// if (StringUtil.isNotNullAndNotEmpty(role.getAbbreviation())) {
+			// if (role.getAbbreviation().equals(identifier)) {
+			// return role;
+			// }
+			// }
+			// if (role.getTitle().equals(identifier)) {
+			// return role;
+			// }
+			// if (role.getSynonyms() != null) {
+			// for (String synonym : role.getSynonyms()) {
+			// if (synonym.equals(identifier)) {
+			// return role;
+			// }
+			// }
+			// }
+
+			// }
+		}
+
+		return null;
+	}
+
 	public List<Role> getRoleChildren(String roleIdentifier) {
 		List<Role> childRoles = new ArrayList<Role>();
-		
-		if (roleIdentifier==null) {
+
+		if (roleIdentifier == null) {
 			return null;
 		}
-		
+
 		for (Role role : this.getRoles()) {
 
 			if (roleIdentifier.equalsIgnoreCase(role.getParentIdentifier())) {
-				childRoles.add(role);		
+				childRoles.add(role);
 			}
-			
+
 		}
 
 		return childRoles;
 	}
-	
+
 	public List<Rolegroup> getRolegroupChildren(String rolegroupIdentifier) {
 		List<Rolegroup> childRolegroups = new ArrayList<Rolegroup>();
-		
-		if (rolegroupIdentifier==null) {
+
+		if (rolegroupIdentifier == null) {
 			return null;
 		}
-		
+
 		for (Rolegroup rolegroup : this.getRolegroups()) {
 
 			if (rolegroupIdentifier.equalsIgnoreCase(rolegroup.getParentIdentifier())) {
-				childRolegroups.add(rolegroup);		
+				childRolegroups.add(rolegroup);
 			}
-			
+
 		}
 
 		return childRolegroups;

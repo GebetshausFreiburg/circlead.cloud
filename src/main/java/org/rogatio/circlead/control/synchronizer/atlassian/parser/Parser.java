@@ -72,6 +72,7 @@ public class Parser {
 			ActivityDataitem d = w.getDataitem();
 			addDataPair("Id", d.getIds(), table);
 			addDataPair("Rolle", d.getRole(), table);
+			addCommaList("HowTos", d.getHowtos(), table);
 			addDataPair("Status", Parser.getStatus(d.getStatus()), table);
 		}
 		

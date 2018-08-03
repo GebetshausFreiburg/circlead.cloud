@@ -9,6 +9,7 @@
 package org.rogatio.circlead.model.work;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.jsoup.nodes.Element;
@@ -19,6 +20,7 @@ import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.ListParserElement;
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.data.ActivityDataitem;
+import org.rogatio.circlead.model.data.HowTo;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.RolegroupDataitem;
 import org.rogatio.circlead.util.StringUtil;
@@ -35,13 +37,26 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	public Activity(IDataitem dataitem) {
 		super(dataitem);
 	}
-	
+
 	public String getRoleIdentifier() {
 		return this.getDataitem().getRole();
 	}
-	
+
 	public void setRoleIdentifier(String roleIdentifier) {
 		this.getDataitem().setRole(roleIdentifier);
+	}
+
+	public void setHowTos(List<String> howtos) {
+		this.getDataitem().setHowtos(howtos);
+	}
+
+	public List<String> getHowTos() {
+		return this.getDataitem().getHowtos();
+	}
+
+	public void setHowTos(String howtos) {
+		List<String> list = Arrays.asList(howtos.split(","));
+		this.setHowTos(list);
 	}
 
 	/*
@@ -72,11 +87,23 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	@Override
 	public Element render(ISynchronizer synchronizer) {
 		ISynchronizerRenderer renderer = synchronizer.getRenderer();
-		
-		Element element = new Element("p");
 
+		Element element = new Element("p");
 		renderer.addRoleItem(element, "Rolle", this.getRoleIdentifier());
-		
+
+		List<HowTo> howtos = Repository.getInstance().getIndexHowTos();
+		if (this.getHowTos() != null) {
+			for (String ht : this.getHowTos()) {
+				for (HowTo howTo : howtos) {
+					if (ht.equalsIgnoreCase(howTo.getTitle())) {
+						if (howTo.getSynchronizer().equals(synchronizer.toString())) {
+							renderer.addHowToItem(element, "HowTo", howTo.getTitle());
+						}
+					}
+				}
+			}
+		}
+
 		return element;
 	}
 
@@ -94,7 +121,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 			m.error("Role missing", "Activity '" + this.getTitle() + "' has no role named");
 			messages.add(m);
 		}
-		
+
 		return messages;
 	}
 
