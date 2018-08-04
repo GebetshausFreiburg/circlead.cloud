@@ -165,6 +165,14 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 		}
 	}
 
+	public void addStatus(Element element, String statusValue) {
+		StatusParameter status = StatusParameter.get(statusValue);
+		if (status != null) {
+			Element s = Parser.getStatus(status.getName());
+			s.appendTo(element);
+		}
+	}
+	
 	/**
 	 * Adds the person list.
 	 *

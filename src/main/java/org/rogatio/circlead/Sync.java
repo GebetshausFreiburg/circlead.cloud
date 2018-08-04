@@ -9,6 +9,7 @@ import org.rogatio.circlead.control.synchronizer.AtlassianSynchronizer;
 import org.rogatio.circlead.control.synchronizer.FileSynchronizer;
 import org.rogatio.circlead.control.synchronizer.SynchronizerException;
 import org.rogatio.circlead.model.work.Rolegroup;
+import org.rogatio.circlead.view.OverviewReport;
 import org.rogatio.circlead.view.RolegroupReport;
 import org.rogatio.circlead.view.ValidationReport;
 
@@ -25,9 +26,9 @@ public class Sync {
 		repository.addSynchronizer(fsynchronizer);
 		fsynchronizer.deleteAll();
 
-		// repository.loadRoles();
-		// repository.loadRolegroups();
-		// repository.loadPersons();
+		repository.loadRoles();
+		repository.loadRolegroups();
+		repository.loadPersons();
 		repository.loadActivities();
 		repository.loadIndexHowTos();
 		repository.loadIndexReports();
@@ -41,9 +42,10 @@ public class Sync {
 			}
 		}
 
+		repository.addReport(new OverviewReport());
 		repository.addReport(new ValidationReport());
 
-		// repository.addReports();
+		//repository.addReports();
 		repository.updateReports();
 
 	}

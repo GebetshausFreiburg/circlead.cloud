@@ -15,6 +15,7 @@ import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.ValidationMessage;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
+import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
 //import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
 import org.rogatio.circlead.model.StatusParameter;
 import org.rogatio.circlead.model.WorkitemType;
@@ -196,6 +197,13 @@ public class FileRenderer implements ISynchronizerRenderer {
 			}
 		}
 
+	}
+	
+	public void addStatus(Element element, String statusValue) {
+		StatusParameter status = StatusParameter.get(statusValue);
+		if (status != null) {
+			element.append("&nbsp;").appendElement("div").attr("id", "status" + status.getColor()).appendText(status.getName());
+		}
 	}
 
 	/**

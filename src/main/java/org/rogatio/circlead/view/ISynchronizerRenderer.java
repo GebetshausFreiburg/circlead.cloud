@@ -34,6 +34,8 @@ public interface ISynchronizerRenderer {
 
 	public void addRoleList(Element element, List<Role> list, Person person);
 
+	public void addStatus(Element element, String statusValue);
+	
 	public void addHowToItem(Element element, String description, String content);
 	
 	public void addTable(Element element, Map<String, String> map);
