@@ -24,6 +24,7 @@ import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.IReport;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class Connector.
  */
