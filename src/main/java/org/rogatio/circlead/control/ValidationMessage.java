@@ -8,6 +8,7 @@
  */
 package org.rogatio.circlead.control;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class ValidationMessage.
  */
@@ -59,6 +60,11 @@ public class ValidationMessage {
 		return result;
 	}
 	
+	/**
+	 * Sets the solution.
+	 *
+	 * @param solution the new solution
+	 */
 	public void setSolution(String solution) {
 		this.solution = solution;
 	}

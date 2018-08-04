@@ -15,6 +15,7 @@ import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.view.IReport;
 import org.rogatio.circlead.view.ISynchronizerRenderer;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Interface ISynchronizer.
  */
@@ -60,8 +61,22 @@ public interface ISynchronizer {
 	 */
 	public SynchronizerResult add(IWorkitem workitem) throws SynchronizerException ;
 	
+	/**
+	 * Adds the.
+	 *
+	 * @param report the report
+	 * @return the synchronizer result
+	 * @throws SynchronizerException the synchronizer exception
+	 */
 	public SynchronizerResult add(IReport report) throws SynchronizerException;
 	
+	/**
+	 * Update.
+	 *
+	 * @param report the report
+	 * @return the synchronizer result
+	 * @throws SynchronizerException the synchronizer exception
+	 */
 	public SynchronizerResult update(IReport report) throws SynchronizerException;
 	
 	/**
@@ -80,5 +95,10 @@ public interface ISynchronizer {
 	 */
 	public String getIdPattern();
 	
+	/**
+	 * Gets the renderer.
+	 *
+	 * @return the renderer
+	 */
 	public ISynchronizerRenderer getRenderer();
 }

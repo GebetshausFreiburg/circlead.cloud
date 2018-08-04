@@ -25,6 +25,7 @@ import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.IReport;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class Connector.
  */
@@ -294,6 +295,12 @@ public class Connector {
 		return results;
 	}
 	
+	/**
+	 * Adds the.
+	 *
+	 * @param report the report
+	 * @return the list
+	 */
 	public List<SynchronizerResult> add(IReport report) {
 		List<SynchronizerResult> results = new ArrayList<SynchronizerResult>();
 		List<ISynchronizer> synchronizers = SynchronizerFactory.getInstance().getSynchronizers();
@@ -338,6 +345,12 @@ public class Connector {
 		return results;
 	}
 	
+	/**
+	 * Update.
+	 *
+	 * @param report the report
+	 * @return the list
+	 */
 	public List<SynchronizerResult> update(IReport report) {
 		List<SynchronizerResult> results = new ArrayList<SynchronizerResult>();
 

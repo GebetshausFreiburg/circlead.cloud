@@ -128,16 +128,25 @@ public class DefaultSynchronizer implements ISynchronizer {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.control.synchronizer.ISynchronizer#getRenderer()
+	 */
 	@Override
 	public ISynchronizerRenderer getRenderer() {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.control.synchronizer.ISynchronizer#add(org.rogatio.circlead.view.IReport)
+	 */
 	@Override
 	public SynchronizerResult add(IReport report) throws SynchronizerException {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.control.synchronizer.ISynchronizer#update(org.rogatio.circlead.view.IReport)
+	 */
 	@Override
 	public SynchronizerResult update(IReport report) throws SynchronizerException {
 		return null;

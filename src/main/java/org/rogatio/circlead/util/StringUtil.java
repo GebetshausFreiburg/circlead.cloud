@@ -20,6 +20,7 @@ import java.util.Locale;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class StringUtil.
  */
@@ -41,6 +42,12 @@ public class StringUtil {
 		return i;
 	}
 
+	/**
+	 * Beautify.
+	 *
+	 * @param s the s
+	 * @return the string
+	 */
 	public static String beautify(String s) {
 		return s.substring(0,1).toUpperCase()+s.substring(1, s.length());
 	}

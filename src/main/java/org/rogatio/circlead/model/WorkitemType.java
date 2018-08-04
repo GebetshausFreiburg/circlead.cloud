@@ -16,7 +16,13 @@ import org.rogatio.circlead.model.work.IWorkitem;
  */
 public enum WorkitemType {
 
-	REPORT("Report"), HOWTO("HowTo"), ACTIVITY("Activity"), ROLE("Role"), ROLEGROUP("Rolegroup"), PERSON("Person");
+	/** The report. */
+	REPORT("Report"), /** The howto. */
+ HOWTO("HowTo"), /** The activity. */
+ ACTIVITY("Activity"), /** The role. */
+ ROLE("Role"), /** The rolegroup. */
+ ROLEGROUP("Rolegroup"), /** The person. */
+ PERSON("Person");
 
 	/** The text. */
 	private final String text;

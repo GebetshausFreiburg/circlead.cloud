@@ -1,3 +1,11 @@
+/*
+ * Circlead - Develop and structure evolutionary Organisations
+ * 
+ * @author Matthias Wegner
+ * @version 0.1
+ * @since 01.07.2018
+ * 
+ */
 package org.rogatio.circlead.view;
 
 import java.util.List;
@@ -9,12 +17,21 @@ import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 
+/**
+ * The Class OverviewReport.
+ */
 public class OverviewReport extends DefaultReport {
 
+	/**
+	 * Instantiates a new overview report.
+	 */
 	public OverviewReport() {
 		this.setName("Overview Report");
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.DefaultReport#render(org.rogatio.circlead.control.synchronizer.ISynchronizer)
+	 */
 	@Override
 	public Element render(ISynchronizer synchronizer) {
 		ISynchronizerRenderer renderer = synchronizer.getRenderer();

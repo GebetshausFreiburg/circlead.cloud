@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// TODO: Auto-generated Javadoc
 /**
  * A factory for creating Synchronizer objects.
  */

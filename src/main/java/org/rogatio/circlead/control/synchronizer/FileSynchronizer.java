@@ -51,11 +51,13 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class FileSynchronizer.
  */
 public class FileSynchronizer extends DefaultSynchronizer {
 
+	/** The Constant logger. */
 	private final static Logger logger = LogManager.getLogger(FileSynchronizer.class);
 
 	/** The data directory. */
@@ -121,6 +123,9 @@ public class FileSynchronizer extends DefaultSynchronizer {
 		return add(workitem);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#update(org.rogatio.circlead.view.IReport)
+	 */
 	@Override
 	public SynchronizerResult update(IReport report) {
 		SynchronizerFactory.getInstance().setActual(this);
@@ -159,6 +164,9 @@ public class FileSynchronizer extends DefaultSynchronizer {
 		return res;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#add(org.rogatio.circlead.view.IReport)
+	 */
 	@Override
 	public SynchronizerResult add(IReport report) {
 		SynchronizerFactory.getInstance().setActual(this);
@@ -256,6 +264,11 @@ public class FileSynchronizer extends DefaultSynchronizer {
 
 	}
 
+	/**
+	 * Write report rendered.
+	 *
+	 * @param report the report
+	 */
 	private void writeReportRendered(IReport report) {
 		if (report instanceof IWorkitemRenderer) {
 			IWorkitemRenderer renderer = (IWorkitemRenderer) report;
@@ -526,6 +539,9 @@ public class FileSynchronizer extends DefaultSynchronizer {
 		return "NIO";
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#getRenderer()
+	 */
 	@Override
 	public ISynchronizerRenderer getRenderer() {
 		return new FileRenderer(this);
