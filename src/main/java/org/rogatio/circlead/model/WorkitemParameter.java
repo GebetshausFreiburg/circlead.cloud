@@ -10,15 +10,10 @@ package org.rogatio.circlead.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import javax.management.relation.Role;
-
-// TODO: Auto-generated Javadoc
 /**
- * The Enum WorkitemParameter.
+ * The Enum WorkitemParameter allows rendering of different workitem-fields which map al values to a defined set of parameters
  */
 public enum WorkitemParameter {
 	

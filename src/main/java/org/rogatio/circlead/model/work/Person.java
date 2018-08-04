@@ -18,11 +18,9 @@ import org.rogatio.circlead.control.synchronizer.atlassian.parser.TablesParserEl
 import org.rogatio.circlead.model.data.ContactDataitem;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.PersonDataitem;
-import org.rogatio.circlead.view.IWorkitemRenderer;
-import org.rogatio.circlead.view.AtlassianRenderer;
 import org.rogatio.circlead.view.ISynchronizerRenderer;
+import org.rogatio.circlead.view.IWorkitemRenderer;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Person.
  */

@@ -12,14 +12,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class ObjectUtil.
+ * The Class ObjectUtil is a simple helper for objects
  */
 public class ObjectUtil {
 
 	/**
-	 * Cast list.
+	 * Cast list to wanted type
 	 *
 	 * @param <T> the generic type
 	 * @param clazz the clazz

@@ -21,9 +21,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.kjetland.jackson.jsonSchema.JsonSchemaGenerator;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class FileUtils.
+ * The Class FileUtil is a simple helper for File-IO-Handling
  */
 public class FileUtil {
 
@@ -31,7 +30,7 @@ public class FileUtil {
 	final static Logger logger = LogManager.getLogger(FileUtil.class);
 
 	/**
-	 * Delete recursive.
+	 * Delete recursively a directory
 	 *
 	 * @param f the f
 	 * @throws Exception the exception
@@ -52,7 +51,7 @@ public class FileUtil {
 	}
 
 	/**
-	 * Write schema.
+	 * Write json-schema from object. Could be used for schema-validation of the workitem-json-format (FileSynchronizer)
 	 *
 	 * @param dir the dir
 	 * @param name the name

@@ -12,9 +12,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Enum StatusParameter.
+ * The Enum StatusParameter allows different status values which are normalized to a given state and color.
  */
 public enum StatusParameter {
 
@@ -104,7 +103,6 @@ public enum StatusParameter {
 		for (StatusParameter statusParameter : statusParameters) {
 			if (statusParameter.isEquals(statusValue)) {
 				return statusParameter;
-//				representations.put(fullname, value.toLowerCase());
 			}
 		}
 		return null;

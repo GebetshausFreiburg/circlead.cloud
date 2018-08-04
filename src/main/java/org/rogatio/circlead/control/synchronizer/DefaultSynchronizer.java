@@ -23,6 +23,7 @@ import org.rogatio.circlead.view.ISynchronizerRenderer;
 public class DefaultSynchronizer implements ISynchronizer {
 
 	/** The Constant logger. */
+	@SuppressWarnings("unused")
 	private final static Logger logger = LogManager.getLogger(DefaultSynchronizer.class);
 	
 	/**

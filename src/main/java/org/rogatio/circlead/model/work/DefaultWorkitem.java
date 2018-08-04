@@ -8,19 +8,14 @@
  */
 package org.rogatio.circlead.model.work;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Vector;
 
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.util.StringUtil;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class DefaultWorkitem.
  */
@@ -32,19 +27,19 @@ public class DefaultWorkitem implements IWorkitem {
 	public DefaultWorkitem() {
 	}
 
-	/** The dataitem. */
+	/** The dataitem is the core-dataelement of the correlated workitem. 
+	 * It holds all entitiy-data which could not be calculated and must be set.
+	 * */
 	protected IDataitem dataitem;
-
-	// protected HashMap<String, String> sources = new HashMap<String, String>();
 
 	/**
 	 * Instantiates a new default workitem.
 	 *
-	 * @param dataitem the dataitem
+	 * @param dataitem
+	 *            the dataitem
 	 */
 	public DefaultWorkitem(IDataitem dataitem) {
 		this.dataitem = dataitem;
-		// this.sources.put(dataitem.getId(), source);
 	}
 
 	/**
@@ -56,21 +51,27 @@ public class DefaultWorkitem implements IWorkitem {
 		return dataitem;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.model.work.IWorkitem#getType()
 	 */
 	public String getType() {
 		return this.getClass().getSimpleName();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
 		return this.dataitem.toString() + ", type=" + getType();// + ", source (" + dataitem.getId() + ")=" + sources.get(dataitem.getId());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.model.work.IWorkitem#getTitle()
 	 */
 	@Override
@@ -78,62 +79,18 @@ public class DefaultWorkitem implements IWorkitem {
 		return dataitem.getTitle();
 	}
 
-	// public String getId(ISynchronizer synchronizer) {
-	//
-	// String i = dataitem.getId(synchronizer);
-	//
-	// if (i==null) {
-	// if (dataitem.getTempId()!=null) {
-	// this.setId(dataitem.getTempId(), synchronizer);
-	// }
-	// }
-	//
-	//// System.out.println(this.getDataitem());
-	//
-	// return dataitem.getId(synchronizer);
-	// }
-
-	// public void removeId(ISynchronizer synchronizer) {
-	// String id = this.getId(synchronizer);
-	// this.removeId(id);
-	// }
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.model.work.IWorkitem#removeId(java.lang.String)
 	 */
 	public void removeId(String id) {
-		// System.out.println("Set ID ("+this.getTitle()+"): "+id+", "+synchronizer.getClass().getSimpleName());
 		this.getDataitem().removeId(id);
-		// System.out.println(this.getDataitem().getId().size());
 	}
 
-	// public void setId(String id, ISynchronizer synchronizer) {
-	//// System.out.println("Set ID ("+this.getTitle()+"): "+id+", "+synchronizer.getClass().getSimpleName());
-	// this.getDataitem().setId(id, synchronizer);
-	// // System.out.println(this.getDataitem().getId().size());
-	// }
-
-	// @Override
-	// public String getId() {
-	// return dataitem.getId();
-	// }
-	//
-	// @Override
-	// public void setId(String id) {
-	// dataitem.setId(id);
-	// }
-	//
-	// @Override
-	// public String getAid() {
-	// return dataitem.getAid();
-	// }
-	//
-	// @Override
-	// public void setAid(String aid) {
-	// dataitem.setAid(aid);
-	// }
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.model.work.IWorkitem#setTitle(java.lang.String)
 	 */
 	@Override
@@ -141,7 +98,9 @@ public class DefaultWorkitem implements IWorkitem {
 		dataitem.setTitle(title);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.model.work.IWorkitem#getStatus()
 	 */
 	@Override
@@ -149,7 +108,9 @@ public class DefaultWorkitem implements IWorkitem {
 		return dataitem.getStatus();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.model.work.IWorkitem#setStatus(java.lang.String)
 	 */
 	@Override
@@ -157,7 +118,9 @@ public class DefaultWorkitem implements IWorkitem {
 		dataitem.setStatus(status);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.model.work.IWorkitem#setCreated(java.lang.String)
 	 */
 	@Override
@@ -165,7 +128,9 @@ public class DefaultWorkitem implements IWorkitem {
 		dataitem.setCreated(StringUtil.toDate(xmlDate));
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.model.work.IWorkitem#setModified(java.lang.String)
 	 */
 	@Override
@@ -173,7 +138,9 @@ public class DefaultWorkitem implements IWorkitem {
 		dataitem.setModified(StringUtil.toDate(xmlDate));
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.model.work.IWorkitem#getModified()
 	 */
 	@Override
@@ -181,7 +148,9 @@ public class DefaultWorkitem implements IWorkitem {
 		return dataitem.getModified();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.model.work.IWorkitem#getCreated()
 	 */
 	@Override
@@ -189,7 +158,9 @@ public class DefaultWorkitem implements IWorkitem {
 		return dataitem.getCreated();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.model.work.IWorkitem#getVersion()
 	 */
 	@Override
@@ -197,7 +168,9 @@ public class DefaultWorkitem implements IWorkitem {
 		return dataitem.getVersion();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.model.work.IWorkitem#setVersion(java.lang.String)
 	 */
 	@Override
@@ -205,7 +178,9 @@ public class DefaultWorkitem implements IWorkitem {
 		dataitem.setVersion(version);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -216,7 +191,9 @@ public class DefaultWorkitem implements IWorkitem {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -245,7 +222,9 @@ public class DefaultWorkitem implements IWorkitem {
 		return foundId;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.model.work.IWorkitem#setCreated(java.util.Date)
 	 */
 	@Override
@@ -253,7 +232,9 @@ public class DefaultWorkitem implements IWorkitem {
 		this.getDataitem().setCreated(date);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.model.work.IWorkitem#setModified(java.util.Date)
 	 */
 	@Override
@@ -261,26 +242,20 @@ public class DefaultWorkitem implements IWorkitem {
 		this.getDataitem().setModified(date);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.model.work.IWorkitem#getId(org.rogatio.circlead.control.synchronizer.ISynchronizer)
 	 */
 	public String getId(ISynchronizer synchronizer) {
-		// HashMap<String, ISynchronizer> id = this.getDataitem().getId();
-		// Vector<String> keys = new Vector<String>(id.keySet());
-		// for (String key : keys) {
-		// ISynchronizer sync = id.get(key);
-		// if (synchronizer.equals(sync)) {
-		// return key;
-		// }
-		// }
-		// return null;
 		return this.getDataitem().getId(synchronizer);
 	}
 
 	/**
 	 * Contains id.
 	 *
-	 * @param id the id
+	 * @param id
+	 *            the id
 	 * @return true, if successful
 	 */
 	public boolean containsId(String id) {
@@ -290,7 +265,8 @@ public class DefaultWorkitem implements IWorkitem {
 	/**
 	 * Sets the id.
 	 *
-	 * @param id the id
+	 * @param id
+	 *            the id
 	 */
 	public void setId(HashMap<String, ISynchronizer> id) {
 		Vector<String> keys = new Vector<String>(id.keySet());
@@ -300,29 +276,24 @@ public class DefaultWorkitem implements IWorkitem {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.model.work.IWorkitem#setId(java.lang.String, org.rogatio.circlead.control.synchronizer.ISynchronizer)
 	 */
 	public void setId(String id, ISynchronizer synchronizer) {
 
-		// System.out.println("x: "+id);
-		//
 		String s = getId(synchronizer);
 
 		if (s != null) {
-			// System.out.println(s);
 			this.removeId(s);
 		}
-
-		// s = getId(synchronizer);
-
-		// System.out.println(s);
-
-		// HashMap<String, ISynchronizer> ids = this.getDataitem().getId();
 		this.getDataitem().setId(id, synchronizer);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.model.work.IWorkitem#getId()
 	 */
 	@Override
@@ -330,7 +301,9 @@ public class DefaultWorkitem implements IWorkitem {
 		return this.getDataitem().getId();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.model.work.IWorkitem#removeId(org.rogatio.circlead.control.synchronizer.ISynchronizer)
 	 */
 	@Override
@@ -338,7 +311,9 @@ public class DefaultWorkitem implements IWorkitem {
 		this.getDataitem().removeId(synchronizer);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.model.work.IWorkitem#setIds(java.util.HashMap)
 	 */
 	@Override

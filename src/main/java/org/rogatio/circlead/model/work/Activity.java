@@ -17,43 +17,75 @@ import org.rogatio.circlead.control.IValidator;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.ValidationMessage;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
-import org.rogatio.circlead.control.synchronizer.atlassian.parser.ListParserElement;
-import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.data.ActivityDataitem;
 import org.rogatio.circlead.model.data.HowTo;
 import org.rogatio.circlead.model.data.IDataitem;
-import org.rogatio.circlead.model.data.RolegroupDataitem;
 import org.rogatio.circlead.util.StringUtil;
-import org.rogatio.circlead.view.IWorkitemRenderer;
-import org.rogatio.circlead.view.AtlassianRenderer;
 import org.rogatio.circlead.view.ISynchronizerRenderer;
+import org.rogatio.circlead.view.IWorkitemRenderer;
 
+/**
+ * The Class Activity.
+ */
 public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IValidator {
 
+	/**
+	 * Instantiates a new activity.
+	 */
 	public Activity() {
 		this.dataitem = new ActivityDataitem();
 	}
 
+	/**
+	 * Instantiates a new activity.
+	 *
+	 * @param dataitem the dataitem
+	 */
 	public Activity(IDataitem dataitem) {
 		super(dataitem);
 	}
 
+	/**
+	 * Gets the role identifier.
+	 *
+	 * @return the role identifier
+	 */
 	public String getRoleIdentifier() {
 		return this.getDataitem().getRole();
 	}
 
+	/**
+	 * Sets the role identifier.
+	 *
+	 * @param roleIdentifier the new role identifier
+	 */
 	public void setRoleIdentifier(String roleIdentifier) {
 		this.getDataitem().setRole(roleIdentifier);
 	}
 
+	/**
+	 * Sets the how tos.
+	 *
+	 * @param howtos the new how tos
+	 */
 	public void setHowTos(List<String> howtos) {
 		this.getDataitem().setHowtos(howtos);
 	}
 
+	/**
+	 * Gets the how tos.
+	 *
+	 * @return the how tos
+	 */
 	public List<String> getHowTos() {
 		return this.getDataitem().getHowtos();
 	}
 
+	/**
+	 * Sets the how tos.
+	 *
+	 * @param howtos the new how tos
+	 */
 	public void setHowTos(String howtos) {
 		List<String> list = Arrays.asList(howtos.split(","));
 		this.setHowTos(list);

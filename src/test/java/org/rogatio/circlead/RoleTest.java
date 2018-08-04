@@ -1,6 +1,5 @@
 package org.rogatio.circlead;
 
-import org.rogatio.circlead.model.data.RoleDataitem;
 import org.rogatio.circlead.model.work.Role;
 
 import junit.framework.Test;

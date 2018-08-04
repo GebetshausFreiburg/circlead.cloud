@@ -9,7 +9,6 @@ import org.rogatio.circlead.control.synchronizer.SynchronizerException;
 import org.rogatio.circlead.control.synchronizer.SynchronizerFactory;
 import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
 import org.rogatio.circlead.model.WorkitemType;
-import org.rogatio.circlead.model.work.DefaultWorkitem;
 import org.rogatio.circlead.model.work.IWorkitem;
 
 import junit.framework.TestCase;
@@ -42,6 +41,7 @@ public class FileSynchronizerTest extends TestCase {
 
 	public void testLoadWorkitemWithInconsistendId() throws SynchronizerException {
 		try {
+			@SuppressWarnings("unused")
 			IWorkitem wi = synchronizer.get("data-test/roles/c3f62836-575d-4a6c-a2fb-a757cab75ffa.role.json");
 		} catch (SynchronizerException e) {
 			assertTrue(e.getMessage().contains(
@@ -56,14 +56,10 @@ public class FileSynchronizerTest extends TestCase {
 
 		wi.setId(UUID.randomUUID().toString(), synchronizer);
 		
+		@SuppressWarnings("unused")
 		SynchronizerResult result = synchronizer.add(wi);
 		
 		addedItem = wi;
-//		System.out.println(result);
-		
-//		IWorkitem wi2 = synchronizer.get(result);
-	
-//	System.out.println(wi2);
 	} 
 	
 	public void testLoadWorkitem() throws SynchronizerException {
@@ -73,6 +69,7 @@ public class FileSynchronizerTest extends TestCase {
 
 	public void testLoadWorkitemWithWrongParam() {
 		try {
+			@SuppressWarnings("unused")
 			IWorkitem wi = synchronizer.get("data-test/roles/c3f62836-575d-4a6c-a2fb-a757cab75ffx.role.json");
 		} catch (SynchronizerException e) {
 			assertTrue(e.getMessage().contains("org.rogatio.circlead.model.data.RoleDataitem[\"wrongparameter\"]"));
@@ -81,6 +78,7 @@ public class FileSynchronizerTest extends TestCase {
 
 	public void testLoadNonExistingWorkitem() {
 		try {
+			@SuppressWarnings("unused")
 			IWorkitem wi = synchronizer.get("data-test/roles/file-not-exists.role.json");
 		} catch (SynchronizerException e) {
 			assertEquals(e.getMessage(), "Item with id 'data-test/roles/file-not-exists.role.json' could not be loaded with File Synchronizer.");

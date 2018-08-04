@@ -22,9 +22,8 @@ import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.RoleDataitem;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
-import org.rogatio.circlead.view.IWorkitemRenderer;
-import org.rogatio.circlead.view.AtlassianRenderer;
 import org.rogatio.circlead.view.ISynchronizerRenderer;
+import org.rogatio.circlead.view.IWorkitemRenderer;
 
 /**
  * The Class Role.
@@ -506,6 +505,11 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		return element;
 	}
 
+	/**
+	 * Checks for abbreviation.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean hasAbbreviation() {
 		if (this.getDataitem().getAbbreviation() != null) {
 			return true;

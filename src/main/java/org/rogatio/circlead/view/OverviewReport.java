@@ -12,7 +12,6 @@ import java.util.List;
 
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.Repository;
-import org.rogatio.circlead.control.ValidationMessage;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;

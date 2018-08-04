@@ -35,7 +35,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * The Class Repository.
+ * The Class Repository is a sigleton-representation of all loaded and handled data while runtime. This is the real core of the circlead-application.
  */
 public class Repository {
 
@@ -295,39 +295,15 @@ public class Repository {
 	 */
 	public Person getPerson(String identifier) {
 
-		// if (identifier.contains("arsten")) {
-		// logger.debug("i: " + identifier + " (" + identifier.length() + ")");
-		// }
-
 		for (Person person : getPersons()) {
-			// if (WorkitemType.PERSON.isTypeOf(workitem)) {
-			// Person person = (Person) workitem;
 			if (person.containsId(identifier)) {
 				return person;
 			}
 
 			String fullname = person.getFullname();
-
-			// if (fullname.contains("arsten")) {
-			// logger.debug("p: " + fullname + " (" + fullname.length() + ")");
-			// }
-
-			/*
-			 * String match = "arsten ";
-			 * 
-			 * if (identifier.contains(match) && person.getFullname().contains(match)) { logger.debug("identifier=" + identifier+ " "+identifier.length());
-			 * String fullname = person.getFullname(); logger.debug("fullname=" + person.getFullname()+" "+fullname.length());
-			 * logger.debug(identifier.equals(person.getFullname())); for (int i = 0; i < identifier.length(); i++) { char c = identifier.charAt(i);
-			 * logger.debug("id: "+c); } for (int i = 0; i < fullname.length(); i++) { char c = fullname.charAt(i); logger.debug("fu: "+c); } }
-			 */
-
 			if (fullname.equals(identifier)) {
-				// if (identifier.contains("arsten")) {
-				// logger.debug(identifier + " = " + fullname);
-				// }
 				return person;
 			}
-			// }
 		}
 		return null;
 	}
@@ -456,13 +432,10 @@ public class Repository {
 			}
 		}
 
-		// List<String> abbreviations = new ArrayList<String>();
-
 		int counter = 0;
 
 		for (Role role : this.getRoles()) {
 			if (role.hasAbbreviation()) {
-				// abbreviations.add(role.getAbbreviation());
 				if (role.getAbbreviation().equals(abr)) {
 					counter++;
 				}
@@ -629,11 +602,9 @@ public class Repository {
 		}
 
 		for (Rolegroup rolegroup : this.getRolegroups()) {
-
 			if (rolegroupIdentifier.equalsIgnoreCase(rolegroup.getParentIdentifier())) {
 				childRolegroups.add(rolegroup);
 			}
-
 		}
 
 		return childRolegroups;

@@ -115,6 +115,7 @@ public class Connector {
 				} else {
 					int idx = workitems.indexOf(wi);
 					IWorkitem r = workitems.get(idx);
+					@SuppressWarnings("unused")
 					IWorkitem merged = merge(r, wi);
 				}
 			}

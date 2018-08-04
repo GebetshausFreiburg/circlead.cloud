@@ -11,12 +11,12 @@ package org.rogatio.circlead.control;
 import java.util.List;
 
 /**
- * The Interface IValidator.
+ * The Interface IValidator allows data-validation
  */
 public interface IValidator {
 	
 	/**
-	 * Validate.
+	 * Validation method
 	 *
 	 * @return the list
 	 */

@@ -14,7 +14,6 @@ import org.rogatio.circlead.control.synchronizer.atlassian.content.Metadata;
 import org.rogatio.circlead.control.synchronizer.atlassian.content.Page;
 import org.rogatio.circlead.control.synchronizer.atlassian.content.Space;
 import org.rogatio.circlead.control.synchronizer.atlassian.content.Storage;
-import org.rogatio.circlead.control.synchronizer.atlassian.search.Result;
 import org.rogatio.circlead.control.synchronizer.atlassian.search.Results;
 import org.rogatio.circlead.model.StatusParameter;
 import org.rogatio.circlead.model.data.ActivityDataitem;

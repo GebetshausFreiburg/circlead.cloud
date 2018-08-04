@@ -91,6 +91,7 @@ public class FileRenderer implements ISynchronizerRenderer {
 				Element ul = element.appendElement("div").appendElement("ul");
 				for (Role role : list) {
 					Element li = ul.appendElement("li");
+					@SuppressWarnings("unused")
 					Role r = Repository.getInstance().getRole(role.getTitle());
 					li.appendElement("a").attr("href", role.getId(synchronizer) + ".html").appendText(role.getTitle());
 				}

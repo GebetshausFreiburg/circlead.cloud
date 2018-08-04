@@ -16,16 +16,12 @@ import org.rogatio.circlead.control.IValidator;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.ValidationMessage;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
-import org.rogatio.circlead.control.synchronizer.atlassian.parser.ListParserElement;
-import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.RolegroupDataitem;
 import org.rogatio.circlead.util.StringUtil;
-import org.rogatio.circlead.view.IWorkitemRenderer;
-import org.rogatio.circlead.view.AtlassianRenderer;
 import org.rogatio.circlead.view.ISynchronizerRenderer;
+import org.rogatio.circlead.view.IWorkitemRenderer;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Rolegroup.
  */

@@ -6,11 +6,7 @@ import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.USER;
 
 import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
 import org.rogatio.circlead.control.synchronizer.atlassian.ConfluenceClient;
-import org.rogatio.circlead.control.synchronizer.atlassian.content.Page;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
-
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import junit.framework.TestCase;
 
@@ -28,6 +24,7 @@ public class ConfluenceClientTest extends TestCase {
 	}
 
 	public void testSystemInfo() {
+		@SuppressWarnings("unused")
 		String s = "{\"cloudId\":\"66709d16-7978-485f-9461-387711ced4b9\",\"commitHash\":\"dbd53831988249326fc09786b14a9b8c2f96f6e8\"}";
 		assertTrue(client.getSysteminfo().getContent().contains("66709d16-7978-485f-9461-387711ced4b9"));
 	}

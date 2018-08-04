@@ -22,57 +22,64 @@ import org.rogatio.circlead.model.work.Activity;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
+import org.rogatio.circlead.util.ObjectUtil;
 
 /**
- * The Class RenderUtil.
+ * The Class Atlassian Renderer allows rendering from object-data to html for atlassian-confluence including valid links.
  */
 public class AtlassianRenderer implements ISynchronizerRenderer {
 
-	/** The synchronizer. */
+	/** The correlated synchronizer */
 	private ISynchronizer synchronizer;
-	
+
 	/**
 	 * Instantiates a new atlassian renderer.
 	 *
-	 * @param synchronizer the synchronizer
+	 * @param synchronizer
+	 *            the synchronizer
 	 */
 	public AtlassianRenderer(ISynchronizer synchronizer) {
 		this.synchronizer = synchronizer;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#getSynchronizer()
 	 */
 	public ISynchronizer getSynchronizer() {
 		return synchronizer;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#addActivityList(org.jsoup.nodes.Element, java.util.List)
 	 */
 	public void addActivityList(Element element, List<Activity> list) {
-		if (list != null) {
-			if (list.size() > 0) {
-				Element ul = element.appendElement("div").appendElement("ul");
-				for (Activity activity : list) {
-					Element li = ul.appendElement("li");
-					li.appendElement("ac:link").append("<ri:page ri:content-title=\"" + activity.getTitle() + "\" ri:version-at-save=\"1\" />");
-				}
+		if (ObjectUtil.isListNotNullAndEmpty(list)) {
+			// Open html-list
+			Element ul = element.appendElement("div").appendElement("ul");
+			for (Activity activity : list) {
+				// Create html-List-item
+				Element li = ul.appendElement("li");
+				// Add activity-title to list with valid link
+				li.appendElement("ac:link").append("<ri:page ri:content-title=\"" + activity.getTitle() + "\" ri:version-at-save=\"1\" />");
 			}
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#addRolegroupList(org.jsoup.nodes.Element, java.util.List)
 	 */
 	public void addRolegroupList(Element element, List<Rolegroup> list) {
-		if (list != null) {
-			if (list.size() > 0) {
-				Element ul = element.appendElement("div").appendElement("ul");
-				for (Rolegroup rolegroup : list) {
-					Element li = ul.appendElement("li");
-					li.appendElement("ac:link").append("<ri:page ri:content-title=\"" + rolegroup.getTitle() + "\" ri:version-at-save=\"1\" />");
-				}
+		if (ObjectUtil.isListNotNullAndEmpty(list)) {
+			Element ul = element.appendElement("div").appendElement("ul");
+			for (Rolegroup rolegroup : list) {
+				Element li = ul.appendElement("li");
+				li.appendElement("ac:link").append("<ri:page ri:content-title=\"" + rolegroup.getTitle() + "\" ri:version-at-save=\"1\" />");
 			}
 		}
 	}
@@ -86,14 +93,11 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 	 *            the list
 	 */
 	public void addRoleList(Element element, List<Role> list) {
-		if (list != null) {
-			if (list.size() > 0) {
-				Element ul = element.appendElement("div").appendElement("ul");
-				for (Role role : list) {
-					Element li = ul.appendElement("li");
-					Role r = Repository.getInstance().getRole(role.getTitle());
-					li.appendElement("ac:link").append("<ri:page ri:content-title=\"" + role.getTitle() + "\" ri:version-at-save=\"1\" />");
-				}
+		if (ObjectUtil.isListNotNullAndEmpty(list)) {
+			Element ul = element.appendElement("div").appendElement("ul");
+			for (Role role : list) {
+				Element li = ul.appendElement("li");
+				li.appendElement("ac:link").append("<ri:page ri:content-title=\"" + role.getTitle() + "\" ri:version-at-save=\"1\" />");
 			}
 		}
 	}
@@ -109,33 +113,31 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 	 *            the person
 	 */
 	public void addRoleList(Element element, List<Role> list, Person person) {
-		if (list != null) {
-			if (list.size() > 0) {
-				Element ul = element.appendElement("div").appendElement("ul");
-				for (Role role : list) {
-					Element li = ul.appendElement("li");
-					Role r = Repository.getInstance().getRole(role.getTitle());
-					if (r != null) {
-						li.appendElement("ac:link").append("<ri:page ri:content-title=\"" + role.getTitle() + "\" ri:version-at-save=\"1\" />");
+		if (ObjectUtil.isListNotNullAndEmpty(list)) {
+			Element ul = element.appendElement("div").appendElement("ul");
+			for (Role role : list) {
+				Element li = ul.appendElement("li");
+				Role r = Repository.getInstance().getRole(role.getTitle());
+				if (r != null) {
+					li.appendElement("ac:link").append("<ri:page ri:content-title=\"" + role.getTitle() + "\" ri:version-at-save=\"1\" />");
 
-					} else {
-						li.appendText(role.getTitle());
-					}
+				} else {
+					li.appendText(role.getTitle());
+				}
 
-					if (role.getDataitem().hasRepresentation(person.getFullname())) {
-						String representation = role.getDataitem().getRepresentation(person.getFullname());
-						StatusParameter status = StatusParameter.get(representation);
-						if (status != null) {
-							Element s = Parser.getStatus(status.getName());
-							li.append("&nbsp;");
-							s.appendTo(li);
-						}
-					}
-					if (role.getDataitem().hasSkill(person.getFullname())) {
-						String skill = role.getDataitem().getSkill(person.getFullname());
+				if (role.getDataitem().hasRepresentation(person.getFullname())) {
+					String representation = role.getDataitem().getRepresentation(person.getFullname());
+					StatusParameter status = StatusParameter.get(representation);
+					if (status != null) {
+						Element s = Parser.getStatus(status.getName());
 						li.append("&nbsp;");
-						li.appendText("" + skill + "%");
+						s.appendTo(li);
 					}
+				}
+				if (role.getDataitem().hasSkill(person.getFullname())) {
+					String skill = role.getDataitem().getSkill(person.getFullname());
+					li.append("&nbsp;");
+					li.appendText("" + skill + "%");
 				}
 			}
 		}
@@ -153,14 +155,17 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 	 */
 	private void addDataPair(String key, String value, Element table) {
 		if (value != null) {
+			// Add new row to html-table-element
 			Element tr = table.appendElement("tr");
+			// Add column to row with header-style
 			tr.appendElement("th").appendText(key.trim());
+			// Add column to row with cell-value-style
 			tr.appendElement("td").appendText(value.trim());
 		}
 	}
 
 	/**
-	 * Adds the table.
+	 * Adds the html-table
 	 *
 	 * @param element
 	 *            the element
@@ -179,7 +184,9 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#addStatus(org.jsoup.nodes.Element, java.lang.String)
 	 */
 	public void addStatus(Element element, String statusValue) {
@@ -189,7 +196,7 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 			s.appendTo(element);
 		}
 	}
-	
+
 	/**
 	 * Adds the person list.
 	 *
@@ -201,7 +208,6 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 	 *            the role
 	 */
 	public void addPersonList(Element element, List<String> list, Role role) {
-		// if (type==WorkitemType.PERSON) {
 		Element ul = element.appendElement("div").appendElement("ul");
 		for (String identifier : list) {
 			Person person = Repository.getInstance().getPerson(identifier);
@@ -227,7 +233,6 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 			}
 		}
 
-		// }
 	}
 
 	/**
@@ -243,7 +248,6 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 	 *            the lead person
 	 */
 	public void addPersonList(Element element, List<String> list, Role role, String leadPerson) {
-		// if (type==WorkitemType.PERSON) {
 		Element ul = element.appendElement("div").appendElement("ul");
 		for (String identifier : list) {
 			Person person = Repository.getInstance().getPerson(identifier);
@@ -278,8 +282,6 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 				li.appendText("" + skill + "%");
 			}
 		}
-
-		// }
 	}
 
 	/**
@@ -293,16 +295,14 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 	 *            the underlined element
 	 */
 	public void addList(Element element, List<String> list, String underlinedElement) {
-		if (list != null) {
-			if (list.size() > 0) {
-				Element ul = element.appendElement("div").appendElement("ul");
-				for (String item : list) {
+		if (ObjectUtil.isListNotNullAndEmpty(list)) {
+			Element ul = element.appendElement("div").appendElement("ul");
+			for (String item : list) {
 
-					if (item.equals(underlinedElement)) {
-						ul.appendElement("li").appendElement("u").appendText(item);
-					} else {
-						ul.appendElement("li").appendText(item);
-					}
+				if (item.equals(underlinedElement)) {
+					ul.appendElement("li").appendElement("u").appendText(item);
+				} else {
+					ul.appendElement("li").appendText(item);
 				}
 			}
 		}
@@ -317,12 +317,10 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 	 *            the list
 	 */
 	public void addList(Element element, List<String> list) {
-		if (list != null) {
-			if (list.size() > 0) {
-				Element ul = element.appendElement("div").appendElement("ul");
-				for (String item : list) {
-					ul.appendElement("li").appendText(item);
-				}
+		if (ObjectUtil.isListNotNullAndEmpty(list)) {
+			Element ul = element.appendElement("div").appendElement("ul");
+			for (String item : list) {
+				ul.appendElement("li").appendText(item);
 			}
 		}
 	}
@@ -363,7 +361,9 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#addHowToItem(org.jsoup.nodes.Element, java.lang.String, java.lang.String)
 	 */
 	public void addHowToItem(Element element, String description, String content) {
@@ -382,7 +382,7 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 			div.appendText("-");
 		}
 	}
-	
+
 	/**
 	 * Adds the role item.
 	 *
@@ -493,17 +493,18 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 	public void addH3(Element element, String header) {
 		element.appendElement("h3").appendText(header);
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#addValidationList(org.jsoup.nodes.Element, java.util.List)
 	 */
 	@Override
 	public void addValidationList(Element element, List<ValidationMessage> list) {
-		
 		Element table = element.appendElement("div").appendElement("table");
 		for (ValidationMessage vm : list) {
 			addDataPair(vm.getType().name(), vm.getMessage(), table);
 		}
-		
+
 	}
 }

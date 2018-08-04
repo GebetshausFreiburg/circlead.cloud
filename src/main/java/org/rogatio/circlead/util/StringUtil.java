@@ -20,9 +20,8 @@ import java.util.Locale;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class StringUtil.
+ * The Class StringUtil is a simple helper for text-parsing
  */
 public class StringUtil {
 
@@ -30,7 +29,7 @@ public class StringUtil {
 	final static Logger logger = LogManager.getLogger(StringUtil.class);
 
 	/**
-	 * Count matches.
+	 * Count matches in string of given symbol
 	 *
 	 * @param string the string
 	 * @param symbol the symbol
@@ -43,7 +42,7 @@ public class StringUtil {
 	}
 
 	/**
-	 * Beautify.
+	 * Beautify a string by setting first letter to upper case
 	 *
 	 * @param s the s
 	 * @return the string
@@ -53,7 +52,7 @@ public class StringUtil {
 	}
 	
 	/**
-	 * Checks if is not null and not empty.
+	 * Checks if string is not null and not empty.
 	 *
 	 * @param s the s
 	 * @return true, if is not null and not empty
@@ -68,7 +67,7 @@ public class StringUtil {
 	}
 
 	/**
-	 * Clean.
+	 * Clean a list, so no null and empty value is inside. If null a empty list is returned.
 	 *
 	 * @param rawList the raw list
 	 * @return the list
@@ -86,7 +85,7 @@ public class StringUtil {
 	}
 
 	/**
-	 * To int.
+	 * Converts a string to a int value if possible. If exception occurs int is set to 0.
 	 *
 	 * @param value the value
 	 * @return the int
@@ -103,7 +102,7 @@ public class StringUtil {
 	}
 
 	/**
-	 * To date.
+	 * Converts a xml-date to an java.util.Date.
 	 *
 	 * @param date the date
 	 * @return the date
@@ -119,7 +118,7 @@ public class StringUtil {
 	}
 
 	/**
-	 * From date.
+	 * Converts a java.util.Date to a xml-representation of a date
 	 *
 	 * @param date the date
 	 * @return the string

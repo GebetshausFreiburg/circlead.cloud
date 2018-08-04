@@ -1,16 +1,11 @@
 package org.rogatio.circlead.control;
 
-import java.util.Date;
-import java.util.List;
-
 import org.rogatio.circlead.control.synchronizer.AtlassianSynchronizer;
 import org.rogatio.circlead.control.synchronizer.FileSynchronizer;
 import org.rogatio.circlead.control.synchronizer.SynchronizerException;
 import org.rogatio.circlead.control.synchronizer.SynchronizerFactory;
 import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
-import org.rogatio.circlead.model.WorkitemType;
-import org.rogatio.circlead.model.work.DefaultWorkitem;
 import org.rogatio.circlead.model.work.IWorkitem;
 
 import junit.framework.TestCase;
