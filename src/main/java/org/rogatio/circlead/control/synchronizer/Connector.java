@@ -13,7 +13,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-import java.util.Vector;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -294,6 +293,12 @@ public class Connector {
 		return results;
 	}
 	
+	/**
+	 * Adds the.
+	 *
+	 * @param report the report
+	 * @return the list
+	 */
 	public List<SynchronizerResult> add(IReport report) {
 		List<SynchronizerResult> results = new ArrayList<SynchronizerResult>();
 		List<ISynchronizer> synchronizers = SynchronizerFactory.getInstance().getSynchronizers();
@@ -338,6 +343,12 @@ public class Connector {
 		return results;
 	}
 	
+	/**
+	 * Update.
+	 *
+	 * @param report the report
+	 * @return the list
+	 */
 	public List<SynchronizerResult> update(IReport report) {
 		List<SynchronizerResult> results = new ArrayList<SynchronizerResult>();
 

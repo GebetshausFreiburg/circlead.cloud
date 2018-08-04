@@ -59,6 +59,11 @@ public class ValidationMessage {
 		return result;
 	}
 	
+	/**
+	 * Sets the solution.
+	 *
+	 * @param solution the new solution
+	 */
 	public void setSolution(String solution) {
 		this.solution = solution;
 	}

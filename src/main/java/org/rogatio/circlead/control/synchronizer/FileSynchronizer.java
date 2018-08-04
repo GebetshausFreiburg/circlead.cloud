@@ -8,8 +8,6 @@
  */
 package org.rogatio.circlead.control.synchronizer;
 
-import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.URL;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,7 +19,6 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,7 +36,6 @@ import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.FileUtil;
-import org.rogatio.circlead.view.AtlassianRenderer;
 import org.rogatio.circlead.view.FileRenderer;
 import org.rogatio.circlead.view.IReport;
 import org.rogatio.circlead.view.ISynchronizerRenderer;
@@ -56,6 +52,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  */
 public class FileSynchronizer extends DefaultSynchronizer {
 
+	/** The Constant logger. */
 	private final static Logger logger = LogManager.getLogger(FileSynchronizer.class);
 
 	/** The data directory. */
@@ -121,6 +118,9 @@ public class FileSynchronizer extends DefaultSynchronizer {
 		return add(workitem);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#update(org.rogatio.circlead.view.IReport)
+	 */
 	@Override
 	public SynchronizerResult update(IReport report) {
 		SynchronizerFactory.getInstance().setActual(this);
@@ -159,6 +159,9 @@ public class FileSynchronizer extends DefaultSynchronizer {
 		return res;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#add(org.rogatio.circlead.view.IReport)
+	 */
 	@Override
 	public SynchronizerResult add(IReport report) {
 		SynchronizerFactory.getInstance().setActual(this);
@@ -256,6 +259,11 @@ public class FileSynchronizer extends DefaultSynchronizer {
 
 	}
 
+	/**
+	 * Write report rendered.
+	 *
+	 * @param report the report
+	 */
 	private void writeReportRendered(IReport report) {
 		if (report instanceof IWorkitemRenderer) {
 			IWorkitemRenderer renderer = (IWorkitemRenderer) report;
@@ -526,6 +534,9 @@ public class FileSynchronizer extends DefaultSynchronizer {
 		return "NIO";
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#getRenderer()
+	 */
 	@Override
 	public ISynchronizerRenderer getRenderer() {
 		return new FileRenderer(this);

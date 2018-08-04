@@ -11,7 +11,6 @@ package org.rogatio.circlead.control.synchronizer;
 import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.PASSWORD;
 import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.URL;
 import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.USER;
-import static org.rogatio.circlead.model.WorkitemType.ROLE;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -59,13 +58,13 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
  * The Class AtlassianSynchronizer.
  */
 public class AtlassianSynchronizer extends DefaultSynchronizer {
 
+	/** The Constant logger. */
 	private final static Logger logger = LogManager.getLogger(AtlassianSynchronizer.class);
 
 	/** The circlead space. */
@@ -146,6 +145,9 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#add(org.rogatio.circlead.view.IReport)
+	 */
 	@Override
 	public SynchronizerResult add(IReport report) throws SynchronizerException {
 		SynchronizerFactory.getInstance().setActual(this);
@@ -258,6 +260,9 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#update(org.rogatio.circlead.view.IReport)
+	 */
 	@Override
 	public SynchronizerResult update(IReport report) {
 		SynchronizerFactory.getInstance().setActual(this);
@@ -763,6 +768,9 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		return fileIndex;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#getRenderer()
+	 */
 	@Override
 	public ISynchronizerRenderer getRenderer() {
 		return new AtlassianRenderer(this);

@@ -15,14 +15,11 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.rogatio.circlead.control.ValidationMessage.Type;
-import org.rogatio.circlead.control.synchronizer.AtlassianSynchronizer;
 import org.rogatio.circlead.control.synchronizer.Connector;
-import org.rogatio.circlead.control.synchronizer.FileSynchronizer;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.data.HowTo;
 import org.rogatio.circlead.model.data.Report;
-import org.rogatio.circlead.model.data.RoleDataitem;
 import org.rogatio.circlead.model.work.Activity;
 import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
@@ -37,7 +34,6 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Repository.
  */
@@ -64,6 +60,11 @@ public class Repository {
 	/** The connector. */
 	private Connector connector;
 
+	/**
+	 * Adds the synchronizer.
+	 *
+	 * @param synchronizer the synchronizer
+	 */
 	public void addSynchronizer(ISynchronizer synchronizer) {
 		connector.addSynchronizer(synchronizer);
 	}
@@ -132,6 +133,11 @@ public class Repository {
 		return ObjectUtil.castList(Role.class, roles);
 	}
 
+	/**
+	 * Load activities.
+	 *
+	 * @return the list
+	 */
 	public List<Activity> loadActivities() {
 		List<IWorkitem> activities = connector.load(WorkitemType.ACTIVITY);
 		this.addItems(activities);
@@ -149,10 +155,17 @@ public class Repository {
 		return ObjectUtil.castList(Person.class, persons);
 	}
 
+	/** The index reports. */
 	private List<String> indexReports = new ArrayList<String>();
 
+	/** The index howtos. */
 	private List<String> indexHowtos = new ArrayList<String>();
 
+	/**
+	 * Gets the index how tos.
+	 *
+	 * @return the index how tos
+	 */
 	public List<HowTo> getIndexHowTos() {
 
 		List<HowTo> howtos = new ArrayList<HowTo>();
@@ -173,6 +186,11 @@ public class Repository {
 		return howtos;
 	}
 
+	/**
+	 * Gets the index reports.
+	 *
+	 * @return the index reports
+	 */
 	public List<Report> getIndexReports() {
 
 		List<Report> rs = new ArrayList<Report>();
@@ -193,10 +211,16 @@ public class Repository {
 		return rs;
 	}
 
+	/**
+	 * Load index reports.
+	 */
 	public void loadIndexReports() {
 		indexReports = connector.loadIndex(WorkitemType.REPORT);
 	}
 
+	/**
+	 * Load index how tos.
+	 */
 	public void loadIndexHowTos() {
 		indexHowtos = connector.loadIndex(WorkitemType.HOWTO);
 	}
@@ -232,6 +256,11 @@ public class Repository {
 		return rolegroups;
 	}
 
+	/**
+	 * Gets the persons.
+	 *
+	 * @return the persons
+	 */
 	public List<Person> getPersons() {
 		List<Person> roles = new ArrayList<Person>();
 		for (IWorkitem workitem : workitems) {
@@ -303,6 +332,9 @@ public class Repository {
 		return null;
 	}
 
+	/**
+	 * Update workitems.
+	 */
 	public void updateWorkitems() {
 		for (IWorkitem workitem : getWorkitems()) {
 			getConnector().update(workitem);
@@ -333,6 +365,12 @@ public class Repository {
 		return roleIdentifiers;
 	}
 
+	/**
+	 * Gets the activities.
+	 *
+	 * @param roleIdentifier the role identifier
+	 * @return the activities
+	 */
 	public List<Activity> getActivities(String roleIdentifier) {
 		List<Activity> activityIdentifiers = new ArrayList<Activity>();
 		for (IWorkitem workitem : workitems) {
@@ -398,6 +436,12 @@ public class Repository {
 		return null;
 	}
 
+	/**
+	 * Checks for unique role identity.
+	 *
+	 * @param r the r
+	 * @return true, if successful
+	 */
 	public boolean hasUniqueRoleIdentity(Role r) {
 
 		String abr = null;
@@ -465,6 +509,12 @@ public class Repository {
 		return null;
 	}
 
+	/**
+	 * Gets the report.
+	 *
+	 * @param identifier the identifier
+	 * @return the report
+	 */
 	public Report getReport(String identifier) {
 		for (Report ht : this.getIndexReports()) {
 
@@ -481,6 +531,12 @@ public class Repository {
 	}
 
 	
+	/**
+	 * Gets the how to.
+	 *
+	 * @param identifier the identifier
+	 * @return the how to
+	 */
 	public HowTo getHowTo(String identifier) {
 		for (HowTo ht : this.getIndexHowTos()) {
 
@@ -496,6 +552,12 @@ public class Repository {
 		return null;
 	}
 
+	/**
+	 * Gets the role children.
+	 *
+	 * @param roleIdentifier the role identifier
+	 * @return the role children
+	 */
 	public List<Role> getRoleChildren(String roleIdentifier) {
 		List<Role> childRoles = new ArrayList<Role>();
 
@@ -514,28 +576,51 @@ public class Repository {
 		return childRoles;
 	}
 
+	/**
+	 * Adds the reports.
+	 */
 	public void addReports() {
 		for (IReport report : this.reports) {
 			this.getConnector().add(report);			
 		}
 	}
 	
+	/**
+	 * Update reports.
+	 */
 	public void updateReports() {
 		for (IReport report : this.reports) {
 			this.getConnector().update(report);			
 		}
 	}
 	
+	/** The reports. */
 	private List<IReport> reports = new ArrayList<IReport>();
 
+	/**
+	 * Adds the report.
+	 *
+	 * @param report the report
+	 */
 	public void addReport(IReport report) {
 		reports.add(report);
 	}
 
+	/**
+	 * Gets the reports.
+	 *
+	 * @return the reports
+	 */
 	public List<IReport> getReports() {
 		return reports;
 	}
 
+	/**
+	 * Gets the rolegroup children.
+	 *
+	 * @param rolegroupIdentifier the rolegroup identifier
+	 * @return the rolegroup children
+	 */
 	public List<Rolegroup> getRolegroupChildren(String rolegroupIdentifier) {
 		List<Rolegroup> childRolegroups = new ArrayList<Rolegroup>();
 

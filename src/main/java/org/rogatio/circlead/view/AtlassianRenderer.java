@@ -17,7 +17,6 @@ import org.rogatio.circlead.control.ValidationMessage;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
 import org.rogatio.circlead.model.StatusParameter;
-import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.data.HowTo;
 import org.rogatio.circlead.model.work.Activity;
 import org.rogatio.circlead.model.work.Person;
@@ -29,16 +28,28 @@ import org.rogatio.circlead.model.work.Rolegroup;
  */
 public class AtlassianRenderer implements ISynchronizerRenderer {
 
+	/** The synchronizer. */
 	private ISynchronizer synchronizer;
 	
+	/**
+	 * Instantiates a new atlassian renderer.
+	 *
+	 * @param synchronizer the synchronizer
+	 */
 	public AtlassianRenderer(ISynchronizer synchronizer) {
 		this.synchronizer = synchronizer;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#getSynchronizer()
+	 */
 	public ISynchronizer getSynchronizer() {
 		return synchronizer;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#addActivityList(org.jsoup.nodes.Element, java.util.List)
+	 */
 	public void addActivityList(Element element, List<Activity> list) {
 		if (list != null) {
 			if (list.size() > 0) {
@@ -51,6 +62,9 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#addRolegroupList(org.jsoup.nodes.Element, java.util.List)
+	 */
 	public void addRolegroupList(Element element, List<Rolegroup> list) {
 		if (list != null) {
 			if (list.size() > 0) {
@@ -165,6 +179,9 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#addStatus(org.jsoup.nodes.Element, java.lang.String)
+	 */
 	public void addStatus(Element element, String statusValue) {
 		StatusParameter status = StatusParameter.get(statusValue);
 		if (status != null) {
@@ -346,6 +363,9 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#addHowToItem(org.jsoup.nodes.Element, java.lang.String, java.lang.String)
+	 */
 	public void addHowToItem(Element element, String description, String content) {
 		HowTo r = Repository.getInstance().getHowTo(content);
 
@@ -474,6 +494,9 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 		element.appendElement("h3").appendText(header);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#addValidationList(org.jsoup.nodes.Element, java.util.List)
+	 */
 	@Override
 	public void addValidationList(Element element, List<ValidationMessage> list) {
 		

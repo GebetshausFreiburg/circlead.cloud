@@ -41,6 +41,12 @@ public class StringUtil {
 		return i;
 	}
 
+	/**
+	 * Beautify.
+	 *
+	 * @param s the s
+	 * @return the string
+	 */
 	public static String beautify(String s) {
 		return s.substring(0,1).toUpperCase()+s.substring(1, s.length());
 	}
