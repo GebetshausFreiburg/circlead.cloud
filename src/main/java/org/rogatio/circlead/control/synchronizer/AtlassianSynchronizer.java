@@ -51,7 +51,10 @@ import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.AtlassianRenderer;
+<<<<<<< HEAD
 import org.rogatio.circlead.view.IReport;
+=======
+>>>>>>> branch 'master' of https://github.com/GebetshausFreiburg/circlead.cloud.git
 import org.rogatio.circlead.view.ISynchronizerRenderer;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -761,6 +764,11 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		}
 
 		return fileIndex;
+	}
+	
+	@Override
+	public ISynchronizerRenderer getRenderer() {
+		return new AtlassianRenderer(this);
 	}
 
 	@Override

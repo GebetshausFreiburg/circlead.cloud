@@ -16,7 +16,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+<<<<<<< HEAD
 import java.net.MalformedURLException;
+=======
+>>>>>>> branch 'master' of https://github.com/GebetshausFreiburg/circlead.cloud.git
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
@@ -41,7 +44,10 @@ import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.FileUtil;
 import org.rogatio.circlead.view.AtlassianRenderer;
 import org.rogatio.circlead.view.FileRenderer;
+<<<<<<< HEAD
 import org.rogatio.circlead.view.IReport;
+=======
+>>>>>>> branch 'master' of https://github.com/GebetshausFreiburg/circlead.cloud.git
 import org.rogatio.circlead.view.ISynchronizerRenderer;
 import org.rogatio.circlead.view.IWorkitemRenderer;
 
@@ -307,9 +313,15 @@ public class FileSynchronizer extends DefaultSynchronizer {
 			head.append("<meta charset=\"utf-8\">");
 			html.appendElement("body");
 			Element body = html.appendElement("body");
+<<<<<<< HEAD
 
 			body.appendElement("H1").appendText(workitem.getTitle());
 
+=======
+			
+			body.appendElement("H1").appendText(workitem.getTitle());
+			
+>>>>>>> branch 'master' of https://github.com/GebetshausFreiburg/circlead.cloud.git
 			renderer.render(this).appendTo(body);
 
 			try {
@@ -525,6 +537,10 @@ public class FileSynchronizer extends DefaultSynchronizer {
 		}
 		return "NIO";
 	}
+<<<<<<< HEAD
+=======
+	
+>>>>>>> branch 'master' of https://github.com/GebetshausFreiburg/circlead.cloud.git
 
 	@Override
 	public ISynchronizerRenderer getRenderer() {

@@ -431,7 +431,11 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	@Override
 	public Element render(ISynchronizer synchronizer) {
 		ISynchronizerRenderer renderer = synchronizer.getRenderer();
+<<<<<<< HEAD
 
+=======
+		
+>>>>>>> branch 'master' of https://github.com/GebetshausFreiburg/circlead.cloud.git
 		Element element = new Element("p");
 
 		renderer.addItem(element, "Abkürzung", this.getAbbreviation());
@@ -474,7 +478,15 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		}
 
 		renderer.addH2(element, "Aufgaben");
+<<<<<<< HEAD
+=======
+		if (ObjectUtil.isListNotNullAndEmpty(this.getActivities())) {
+			renderer.addList(element, this.getActivities());
+		}
+		
+>>>>>>> branch 'master' of https://github.com/GebetshausFreiburg/circlead.cloud.git
 		List<Activity> a = Repository.getInstance().getActivities(this.getTitle());
+<<<<<<< HEAD
 
 		if (ObjectUtil.isListNotNullAndEmpty(this.getActivities())) {
 
@@ -497,6 +509,11 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			} else {
 				renderer.addList(element, this.getActivities());
 			}
+=======
+		if (ObjectUtil.isListNotNullAndEmpty(a)) {
+		//	RenderUtil.addH2(element, "Aufgaben");
+			renderer.addActivityList(element, a);
+>>>>>>> branch 'master' of https://github.com/GebetshausFreiburg/circlead.cloud.git
 		}
 
 		if (ObjectUtil.isListNotNullAndEmpty(a)) {

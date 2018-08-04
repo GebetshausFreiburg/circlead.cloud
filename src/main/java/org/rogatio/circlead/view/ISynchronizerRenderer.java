@@ -13,6 +13,7 @@ import java.util.Map;
 
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.Repository;
+<<<<<<< HEAD
 import org.rogatio.circlead.control.ValidationMessage;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
@@ -46,6 +47,36 @@ public interface ISynchronizerRenderer {
 
 	public void addValidationList(Element element, List<ValidationMessage> list);
 	
+=======
+import org.rogatio.circlead.control.synchronizer.ISynchronizer;
+import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
+import org.rogatio.circlead.model.StatusParameter;
+import org.rogatio.circlead.model.work.Activity;
+import org.rogatio.circlead.model.work.Person;
+import org.rogatio.circlead.model.work.Role;
+import org.rogatio.circlead.model.work.Rolegroup;
+
+public interface ISynchronizerRenderer {
+
+	public ISynchronizer getSynchronizer();
+
+	public void addActivityList(Element element, List<Activity> list);
+
+	public void addRolegroupList(Element element, List<Rolegroup> list);
+
+	public void addRoleList(Element element, List<Role> list);
+
+	public void addRoleList(Element element, List<Role> list, Person person);
+
+	public void addTable(Element element, Map<String, String> map);
+
+	public void addPersonList(Element element, List<String> list, Role role);
+
+	public void addPersonList(Element element, List<String> list, Role role, String leadPerson);
+
+	public void addList(Element element, List<String> list, String underlinedElement);
+
+>>>>>>> branch 'master' of https://github.com/GebetshausFreiburg/circlead.cloud.git
 	public void addList(Element element, List<String> list);
 
 	public void addItem(Element element, String description);

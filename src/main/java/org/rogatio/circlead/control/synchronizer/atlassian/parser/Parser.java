@@ -27,7 +27,10 @@ import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
+<<<<<<< HEAD
 import org.rogatio.circlead.view.IReport;
+=======
+>>>>>>> branch 'master' of https://github.com/GebetshausFreiburg/circlead.cloud.git
 import org.rogatio.circlead.view.IWorkitemRenderer;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;

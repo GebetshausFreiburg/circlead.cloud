@@ -87,7 +87,13 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	@Override
 	public Element render(ISynchronizer synchronizer) {
 		ISynchronizerRenderer renderer = synchronizer.getRenderer();
+<<<<<<< HEAD
+=======
+		
+		Element element = new Element("p");
+>>>>>>> branch 'master' of https://github.com/GebetshausFreiburg/circlead.cloud.git
 
+<<<<<<< HEAD
 		Element element = new Element("p");
 		renderer.addRoleItem(element, "Rolle", this.getRoleIdentifier());
 
@@ -103,6 +109,9 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 				}
 			}
 		}
+=======
+		renderer.addRoleItem(element, "Rolle", this.getRoleIdentifier());
+>>>>>>> branch 'master' of https://github.com/GebetshausFreiburg/circlead.cloud.git
 		
 		return element;
 	}

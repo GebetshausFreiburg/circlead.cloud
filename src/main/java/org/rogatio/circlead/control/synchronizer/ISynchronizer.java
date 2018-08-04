@@ -12,7 +12,10 @@ import java.util.List;
 
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.work.IWorkitem;
+<<<<<<< HEAD
 import org.rogatio.circlead.view.IReport;
+=======
+>>>>>>> branch 'master' of https://github.com/GebetshausFreiburg/circlead.cloud.git
 import org.rogatio.circlead.view.ISynchronizerRenderer;
 
 /**

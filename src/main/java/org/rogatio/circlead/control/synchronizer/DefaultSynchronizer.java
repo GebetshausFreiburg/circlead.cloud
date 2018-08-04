@@ -14,7 +14,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.work.IWorkitem;
+<<<<<<< HEAD
 import org.rogatio.circlead.view.IReport;
+=======
+>>>>>>> branch 'master' of https://github.com/GebetshausFreiburg/circlead.cloud.git
 import org.rogatio.circlead.view.ISynchronizerRenderer;
 
 // TODO: Auto-generated Javadoc
@@ -133,6 +136,7 @@ public class DefaultSynchronizer implements ISynchronizer {
 		return null;
 	}
 
+<<<<<<< HEAD
 	@Override
 	public SynchronizerResult add(IReport report) throws SynchronizerException {
 		return null;
@@ -143,4 +147,6 @@ public class DefaultSynchronizer implements ISynchronizer {
 		return null;
 	}
 
+=======
+>>>>>>> branch 'master' of https://github.com/GebetshausFreiburg/circlead.cloud.git
 }
