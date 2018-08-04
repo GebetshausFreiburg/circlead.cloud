@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 import java.util.Vector;
 
 import org.apache.logging.log4j.LogManager;
@@ -316,6 +317,17 @@ public class Connector {
 		List<SynchronizerResult> results = new ArrayList<SynchronizerResult>();
 
 		List<ISynchronizer> synchronizers = SynchronizerFactory.getInstance().getSynchronizers();
+	
+		// It is necessary to add a id to filesynchronizer if it has none. The id must be set before the atlassian-synhronizer writes the update,
+		// so the correlated file is set with the right uuid
+		for (ISynchronizer synchronizer : synchronizers) {
+			if (synchronizer.toString().equals("FileSynchronizer")) {
+				if (workitem.getId(synchronizer) == null) {
+					workitem.setId(UUID.randomUUID().toString(), synchronizer);
+				}
+			}
+		}
+		
 		for (ISynchronizer synchronizer : synchronizers) {
 			try {
 				results.add(synchronizer.update(workitem));

@@ -210,7 +210,7 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 
 		if (StringUtil.isNotNullAndNotEmpty(this.getResponsibleIdentifier())) {
 			Role role = Repository.getInstance().getRole(this.getResponsibleIdentifier());
-			if (role != null) {
+			if (role != null) { 
 				renderer.addRoleItem(element, "Verantwortliche Rolle", this.getResponsibleIdentifier());
 
 				List<String> personIdentifiers = role.getPersonIdentifiers();

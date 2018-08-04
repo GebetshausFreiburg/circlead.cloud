@@ -218,10 +218,6 @@ public class FileSynchronizer extends DefaultSynchronizer {
 		mapper.setSerializationInclusion(Include.NON_NULL);
 		mapper.enable(SerializationFeature.INDENT_OUTPUT);
 
-		if (workitem.getId(this) == null) {
-			workitem.setId(UUID.randomUUID().toString(), this);
-		}
-
 		String result = "";
 
 		try {
