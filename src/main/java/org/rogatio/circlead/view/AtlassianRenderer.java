@@ -24,7 +24,7 @@ import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 
 /**
- * The Class RenderUtil.
+ * The Class Atlassian Renderer allows rendering from object-data to html for atlassian-confluence including valid links.
  */
 public class AtlassianRenderer implements ISynchronizerRenderer {
 
