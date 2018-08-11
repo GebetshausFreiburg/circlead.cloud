@@ -15,8 +15,11 @@ import org.apache.logging.log4j.Logger;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.AtlassianSynchronizer;
 import org.rogatio.circlead.control.synchronizer.FileSynchronizer;
+import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.view.OverviewReport;
+import org.rogatio.circlead.view.PersonListReport;
+import org.rogatio.circlead.view.ReworkReport;
 import org.rogatio.circlead.view.RolegroupReport;
 import org.rogatio.circlead.view.ValidationReport;
 
@@ -31,31 +34,32 @@ public class Sync {
 	/**
 	 * The main method of the application
 	 *
-	 * @param args the arguments
+	 * @param args
+	 *            the arguments
 	 */
 	public static void main(String[] args) {
 		Repository repository = Repository.getInstance();
 
-		/* Add both syncronizers. One for atlassian-confluence for space 'CIRCLEAD' and one for the Filesystem in folder 'data'*/
+		/* Add both syncronizers. One for atlassian-confluence for space 'CIRCLEAD' and one for the Filesystem in folder 'data' */
 		FileSynchronizer fsynchronizer = new FileSynchronizer("data");
 		AtlassianSynchronizer asynchronizer = new AtlassianSynchronizer("CIRCLEAD");
 		repository.addSynchronizer(asynchronizer);
 		repository.addSynchronizer(fsynchronizer);
-		
-		/* Delete all workitem-folders, so the merging is not needed because confluence is in lead of the data. Gives speed to the data-synchronization.*/ 
+
+		/* Delete all workitem-folders, so the merging is not needed because confluence is in lead of the data. Gives speed to the data-synchronization. */
 		fsynchronizer.deleteAll();
 
-		/* Loads all data (from confluence, because the folders are emtpy)*/
+		/* Loads all data (from confluence, because the folders are emtpy) */
 		repository.loadRoles();
 		repository.loadRolegroups();
 		repository.loadPersons();
 		repository.loadActivities();
-		
+
 		/* Loads the index of howtos and reports from both interfaces */
 		repository.loadIndexHowTos();
 		repository.loadIndexReports();
 
-		/* Re-Render loaded data back to set interfaces. Update pages in confluence and writes html-pages to local folder 'web'*/
+		/* Re-Render loaded data back to set interfaces. Update pages in confluence and writes html-pages to local folder 'web' */
 		repository.updateWorkitems();
 
 		/* Add report-handler */
@@ -67,10 +71,20 @@ public class Sync {
 		}
 		repository.addReport(new OverviewReport());
 		repository.addReport(new ValidationReport());
+		repository.addReport(new ReworkReport());
+		repository.addReport(new PersonListReport());
 
 		/* Rewrite Reports */
 		//repository.addReports();
-		repository.updateReports();
+
+		List<SynchronizerResult> results = repository.updateReports();
+		/*if (results != null) {
+			for (SynchronizerResult synchronizerResult : results) {
+				if (synchronizerResult != null) {
+					logger.debug(synchronizerResult.getMessage() + ": " + synchronizerResult.getCode() + " - " + synchronizerResult.getContent());
+				}
+			}
+		}*/
 
 	}
 

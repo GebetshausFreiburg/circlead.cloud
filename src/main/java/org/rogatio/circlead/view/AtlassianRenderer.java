@@ -19,6 +19,7 @@ import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
 import org.rogatio.circlead.model.StatusParameter;
 import org.rogatio.circlead.model.data.HowTo;
 import org.rogatio.circlead.model.work.Activity;
+import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
@@ -407,6 +408,25 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 			}
 		} else {
 			div.appendText("-");
+		}
+	}
+
+	public void addWorkitemTable(Element element, List<IWorkitem> workitem) {
+		if (ObjectUtil.isListNotNullAndEmpty(workitem)) {
+			Element table = element.appendElement("div").appendElement("table");
+
+			Element tr = table.appendElement("tr");
+			tr.appendElement("th").appendText("Title");
+			tr.appendElement("th").appendText("Typ");
+			tr.appendElement("th").appendText("Status");
+
+			for (IWorkitem w : workitem) {
+				tr = table.appendElement("tr");
+				tr.appendElement("td").appendElement("ac:link").append("<ri:page ri:content-title=\"" + w.getTitle() + "\" ri:version-at-save=\"1\" />");
+				tr.appendElement("td").appendText(w.getType());
+				Element td = tr.appendElement("td");
+				addStatus(td, w.getStatus());
+			}
 		}
 	}
 

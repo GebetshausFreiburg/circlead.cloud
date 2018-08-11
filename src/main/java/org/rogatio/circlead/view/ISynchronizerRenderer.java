@@ -15,6 +15,7 @@ import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.ValidationMessage;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.model.work.Activity;
+import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
@@ -200,4 +201,6 @@ public interface ISynchronizerRenderer {
 	 * @param header the header
 	 */
 	public void addH3(Element element, String header);
+	
+	public void addWorkitemTable(Element element, List<IWorkitem> workitem);
 }

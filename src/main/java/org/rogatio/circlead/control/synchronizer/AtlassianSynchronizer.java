@@ -52,6 +52,7 @@ import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.AtlassianRenderer;
 import org.rogatio.circlead.view.IReport;
 import org.rogatio.circlead.view.ISynchronizerRenderer;
+import org.rogatio.circlead.view.ReworkReport;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -297,6 +298,11 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 				String data = mapper.writeValueAsString(page);
 				String uri = "wiki/rest/api/content/" + repo.getId();
 				SynchronizerResult res = confluenceClient.put(uri, data);
+				
+//				if (report instanceof ReworkReport) {
+//					System.out.println("!!! "+res.getCode()+":"+res.getMessage()+" - "+res.getContent());
+//				}
+				
 				return res;
 			} catch (JsonProcessingException e) {
 				logger.error(e);
@@ -624,6 +630,10 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 					rolegroup.setVersion(value.toString());
 				} else if (key.equalsIgnoreCase("Ansprechpartner")) {
 					rolegroup.setLeadIdentifier(value.toString());
+				} else if (WorkitemParameter.ABBREVIATION.has(key)) {
+					rolegroup.setAbbreviation(value.toString());
+				} else if (WorkitemParameter.SYNONYM.has(key)) {
+					rolegroup.setSynonyms(value.toString());
 				} else if (key.equalsIgnoreCase("Vorgänger")) {
 					rolegroup.setParentIdentifier(value.toString());
 				} else if (key.equalsIgnoreCase("Verantwortlicher")) {

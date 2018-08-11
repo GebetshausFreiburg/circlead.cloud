@@ -18,6 +18,7 @@ import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.ValidationMessage;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.ListParserElement;
+import org.rogatio.circlead.model.StatusParameter;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.RoleDataitem;
 import org.rogatio.circlead.util.ObjectUtil;
@@ -561,6 +562,12 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			m.error("No unique abbreviation", "Role '" + this.getTitle() + "' has no unique abbreviation");
 			messages.add(m);
 		}
+		
+		/*if (this.getTitle().contains(" ")) {
+			ValidationMessage m = new ValidationMessage(this);
+			m.warning("Title has Whitespace", "Role '" + this.getTitle() + "' has whitespace in title");
+			messages.add(m);
+		}*/
 
 		if (!this.hasOrganisationIdentifier()) {
 			ValidationMessage m = new ValidationMessage(this);
@@ -609,6 +616,21 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			ValidationMessage m = new ValidationMessage(this);
 			m.error("Role lost", "Role '" + this.getTitle() + "' has no predecessor and no siblings.");
 			messages.add(m);
+		}
+
+		for (String identifier : this.getPersonIdentifiers()) {
+			Person person = Repository.getInstance().getPerson(identifier);
+			if (getDataitem().hasRepresentation(identifier)) {
+				String representation = getDataitem().getRepresentation(identifier);
+				StatusParameter status = StatusParameter.get(representation);
+				if (status != null) {
+					if (status == StatusParameter.CRITICAL) {
+						ValidationMessage m = new ValidationMessage(this);
+						m.error("Person-Status invalid", "Role '" + this.getTitle() + "' has no clear status for person '" + identifier + "'");
+						messages.add(m);
+					}
+				}
+			}
 		}
 
 		return messages;

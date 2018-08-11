@@ -283,6 +283,9 @@ public class FileSynchronizer extends DefaultSynchronizer {
 
 			try {
 				String f = "reports/" + filename + ".html";
+				
+				logger.info("Write/Update file '" + f + "'");
+				
 				File ff = new File("reports");
 				ff.mkdirs();
 				Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"));

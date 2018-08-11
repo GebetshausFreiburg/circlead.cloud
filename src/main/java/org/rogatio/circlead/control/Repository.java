@@ -17,6 +17,8 @@ import org.apache.logging.log4j.Logger;
 import org.rogatio.circlead.control.ValidationMessage.Type;
 import org.rogatio.circlead.control.synchronizer.Connector;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
+import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
+import org.rogatio.circlead.model.StatusParameter;
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.data.HowTo;
 import org.rogatio.circlead.model.data.Report;
@@ -60,10 +62,37 @@ public class Repository {
 	/** The connector. */
 	private Connector connector;
 
+	public List<Role> getRoles(StatusParameter status) {
+		List<Role> roles = new ArrayList<Role>();
+		if (Repository.getInstance().getRolegroups().size() > 0) {
+			for (Role role : getRoles()) {
+				StatusParameter s = StatusParameter.get(role.getStatus());
+				if (s == status) {
+					roles.add(role);
+				}
+			}
+		}
+		return roles;
+	}
+
+	public List<Rolegroup> getRolegroups(StatusParameter status) {
+		List<Rolegroup> rolegroups = new ArrayList<Rolegroup>();
+		if (Repository.getInstance().getRolegroups().size() > 0) {
+			for (Rolegroup rolegroup : getRolegroups()) {
+				StatusParameter s = StatusParameter.get(rolegroup.getStatus());
+				if (s == status) {
+					rolegroups.add(rolegroup);
+				}
+			}
+		}
+		return rolegroups;
+	}
+
 	/**
 	 * Adds the synchronizer.
 	 *
-	 * @param synchronizer the synchronizer
+	 * @param synchronizer
+	 *            the synchronizer
 	 */
 	public void addSynchronizer(ISynchronizer synchronizer) {
 		connector.addSynchronizer(synchronizer);
@@ -256,6 +285,27 @@ public class Repository {
 		return rolegroups;
 	}
 
+	public boolean isPersonDataValueEntity(String key, String value) {
+		for (String v : getPersonDataValues(key)) {
+			if (v.equalsIgnoreCase(value)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	
+	public List<String> getPersonDataValues(String key) {
+		List<String> abbr = new ArrayList<String>();
+		for (Person person : getPersons()) {
+			String a = person.getDataValue(key);
+			if (a!=null) {
+				abbr.add(a);
+			}
+		}
+		return abbr;
+	}
+	
 	/**
 	 * Gets the persons.
 	 *
@@ -344,7 +394,8 @@ public class Repository {
 	/**
 	 * Gets the activities.
 	 *
-	 * @param roleIdentifier the role identifier
+	 * @param roleIdentifier
+	 *            the role identifier
 	 * @return the activities
 	 */
 	public List<Activity> getActivities(String roleIdentifier) {
@@ -415,7 +466,8 @@ public class Repository {
 	/**
 	 * Checks for unique role identity.
 	 *
-	 * @param r the r
+	 * @param r
+	 *            the r
 	 * @return true, if successful
 	 */
 	public boolean hasUniqueRoleIdentity(Role r) {
@@ -485,7 +537,8 @@ public class Repository {
 	/**
 	 * Gets the report.
 	 *
-	 * @param identifier the identifier
+	 * @param identifier
+	 *            the identifier
 	 * @return the report
 	 */
 	public Report getReport(String identifier) {
@@ -503,11 +556,11 @@ public class Repository {
 		return null;
 	}
 
-	
 	/**
 	 * Gets the how to.
 	 *
-	 * @param identifier the identifier
+	 * @param identifier
+	 *            the identifier
 	 * @return the how to
 	 */
 	public HowTo getHowTo(String identifier) {
@@ -528,7 +581,8 @@ public class Repository {
 	/**
 	 * Gets the role children.
 	 *
-	 * @param roleIdentifier the role identifier
+	 * @param roleIdentifier
+	 *            the role identifier
 	 * @return the role children
 	 */
 	public List<Role> getRoleChildren(String roleIdentifier) {
@@ -554,26 +608,29 @@ public class Repository {
 	 */
 	public void addReports() {
 		for (IReport report : this.reports) {
-			this.getConnector().add(report);			
+			this.getConnector().add(report);
 		}
 	}
-	
+
 	/**
 	 * Update reports.
 	 */
-	public void updateReports() {
+	public List<SynchronizerResult> updateReports() {
+		List<SynchronizerResult> results = new ArrayList<SynchronizerResult>();
 		for (IReport report : this.reports) {
-			this.getConnector().update(report);			
+			results.addAll(this.getConnector().update(report));
 		}
+		return results;
 	}
-	
+
 	/** The reports. */
 	private List<IReport> reports = new ArrayList<IReport>();
 
 	/**
 	 * Adds the report.
 	 *
-	 * @param report the report
+	 * @param report
+	 *            the report
 	 */
 	public void addReport(IReport report) {
 		reports.add(report);
@@ -591,7 +648,8 @@ public class Repository {
 	/**
 	 * Gets the rolegroup children.
 	 *
-	 * @param rolegroupIdentifier the rolegroup identifier
+	 * @param rolegroupIdentifier
+	 *            the rolegroup identifier
 	 * @return the rolegroup children
 	 */
 	public List<Rolegroup> getRolegroupChildren(String rolegroupIdentifier) {

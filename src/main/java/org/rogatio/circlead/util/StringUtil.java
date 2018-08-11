@@ -28,6 +28,10 @@ public class StringUtil {
 	/** The Constant logger. */
 	final static Logger logger = LogManager.getLogger(StringUtil.class);
 
+	public static String join(List<String> list) {
+		return String.join(",", list);
+	}
+	
 	/**
 	 * Count matches in string of given symbol
 	 *

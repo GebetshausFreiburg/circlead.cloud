@@ -8,11 +8,14 @@
  */
 package org.rogatio.circlead.model.work;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.jsoup.nodes.Element;
+import org.rogatio.circlead.control.IValidator;
 import org.rogatio.circlead.control.Repository;
+import org.rogatio.circlead.control.ValidationMessage;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.TablesParserElement;
 import org.rogatio.circlead.model.data.ContactDataitem;
@@ -24,7 +27,7 @@ import org.rogatio.circlead.view.IWorkitemRenderer;
 /**
  * The Class Person.
  */
-public class Person extends DefaultWorkitem implements IWorkitemRenderer {
+public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValidator {
 
 	/**
 	 * Instantiates a new person.
@@ -142,6 +145,15 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer {
 	public PersonDataitem getDataitem() {
 		return (PersonDataitem) dataitem;
 	}
+	
+	public String getDataValue(String dataKey) {
+		if (this.getData()!=null) {
+			if (this.getData().containsKey(dataKey)) {
+				return this.getData().get(dataKey);
+			}
+		}
+		return null;
+	}
 
 	/* (non-Javadoc)
 	 * @see org.rogatio.circlead.model.work.DefaultWorkitem#toString()
@@ -149,6 +161,20 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer {
 	@Override
 	public String toString() {
 		return this.getDataitem().toString() + ", type=" + getType();
+	}
+
+	@Override
+	public List<ValidationMessage> validate() {
+		List<ValidationMessage> messages = new ArrayList<ValidationMessage>();
+
+//		this.getData().c
+		
+		/*if (!this.hasAbbreviation()) {
+			ValidationMessage m = new ValidationMessage(this);
+			m.warning("No abbreviation added", "Role '" + this.getTitle() + "' has no abbreviation");
+			messages.add(m);
+		}*/
+		return messages;
 	}
 
 }

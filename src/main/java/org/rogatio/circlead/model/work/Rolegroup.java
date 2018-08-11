@@ -9,6 +9,7 @@
 package org.rogatio.circlead.model.work;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.jsoup.nodes.Element;
@@ -99,6 +100,25 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 	 */
 	public void setSummary(String summary) {
 		this.getDataitem().setSummary(summary);
+	}
+	
+	/**
+	 * Gets the abbreviation.
+	 *
+	 * @return the abbreviation
+	 */
+	public String getAbbreviation() {
+		return this.getDataitem().getAbbreviation();
+	}
+	
+	/**
+	 * Sets the abbreviation.
+	 *
+	 * @param abbreviation
+	 *            the new abbreviation
+	 */
+	public void setAbbreviation(String abbreviation) {
+		this.getDataitem().setAbbreviation(abbreviation);
 	}
 
 	/**
@@ -217,6 +237,10 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 		if (StringUtil.isNotNullAndNotEmpty(this.getParentIdentifier())) {
 			renderer.addRolegroupItem(element, "Vererber: ", this.getParentIdentifier());
 		}
+		if (StringUtil.isNotNullAndNotEmpty(this.getAbbreviation())) {
+			renderer.addItem(element, "Abkürzung", this.getAbbreviation());
+		}
+		renderer.addItem(element, "Synonyme", this.getSynonyms());
 
 		renderer.addH2(element, "Zusammenfassung");
 		renderer.addItem(element, this.getSummary());
@@ -260,6 +284,12 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 				messages.add(m);
 			}
 		}
+		
+		/*if (this.getTitle().contains(" ")) {
+			ValidationMessage m = new ValidationMessage(this);
+			m.warning("Title has Whitespace", "Rolegroup '" + this.getTitle() + "' has whitespace in title");
+			messages.add(m);
+		}*/
 
 		List<Role> roles = Repository.getInstance().getRoles(this.getTitle());
 		if (roles.size() == 0) {
@@ -297,5 +327,23 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 
 		return messages;
 	}
+	
+	public List<String> getSynonyms() {
+		return this.getDataitem().getSynonyms();
+	}
+	
+	public void setSynonyms(String synonyms) {
+		List<String> list = Arrays.asList(synonyms.split("[\\s,]+"));
+		this.setSynonyms(list);
+	}
 
+	/**
+	 * Sets the synonyms.
+	 *
+	 * @param synonyms
+	 *            the new synonyms
+	 */
+	public void setSynonyms(List<String> synonyms) {
+		this.getDataitem().setSynonyms(synonyms);
+	}
 }

@@ -10,6 +10,12 @@ a:link {
    text-decoration: none;
 }
 
+img{
+   height:100%;
+   max-height:80px;
+   max-width:80px;
+}
+
 /* visited link */
 a:visited {
    color: #54585A;

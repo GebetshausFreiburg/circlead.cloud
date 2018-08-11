@@ -33,7 +33,7 @@ public enum StatusParameter {
 	INPROGRESS("Yellow", "In Bearbeitung", "In Progress"),
 	
 	/** The critical. */
-	CRITICAL("Red", "Kritisch", "Critical", "Widersprüchlich"),
+	CRITICAL("Red", "Unklar", "Undefined", "Kritisch", "Critical", "Widersprüchlich"),
 	
 	/** The draft. */
 	DRAFT("Blue", "Entwurf", "Draft");

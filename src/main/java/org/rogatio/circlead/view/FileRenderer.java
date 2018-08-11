@@ -19,9 +19,11 @@ import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.model.StatusParameter;
 import org.rogatio.circlead.model.data.HowTo;
 import org.rogatio.circlead.model.work.Activity;
+import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
+import org.rogatio.circlead.util.ObjectUtil;
 
 /**
  * The Class RenderUtil.
@@ -34,20 +36,25 @@ public class FileRenderer implements ISynchronizerRenderer {
 	/**
 	 * Instantiates a new file renderer.
 	 *
-	 * @param synchronizer the synchronizer
+	 * @param synchronizer
+	 *            the synchronizer
 	 */
 	public FileRenderer(ISynchronizer synchronizer) {
 		this.synchronizer = synchronizer;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#getSynchronizer()
 	 */
 	public ISynchronizer getSynchronizer() {
 		return synchronizer;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#addActivityList(org.jsoup.nodes.Element, java.util.List)
 	 */
 	public void addActivityList(Element element, List<Activity> list) {
@@ -62,7 +69,29 @@ public class FileRenderer implements ISynchronizerRenderer {
 		}
 	}
 
-	/* (non-Javadoc)
+	public void addWorkitemTable(Element element, List<IWorkitem> workitem) {
+		if (ObjectUtil.isListNotNullAndEmpty(workitem)) {
+			Element table = element.appendElement("div").appendElement("table");
+
+			Element tr = table.appendElement("tr");
+			tr.appendElement("th").appendText("Title");
+			tr.appendElement("th").appendText("Typ");
+			tr.appendElement("th").appendText("Status");
+
+			for (IWorkitem w : workitem) {
+				tr = table.appendElement("tr");
+				tr.appendElement("td").appendElement("a").attr("href", w.getId(synchronizer) + ".html").appendText(w.getTitle());
+				;
+				tr.appendElement("td").appendText(w.getType());
+				Element td = tr.appendElement("td");
+				addStatus(td, w.getStatus());
+			}
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#addRolegroupList(org.jsoup.nodes.Element, java.util.List)
 	 */
 	public void addRolegroupList(Element element, List<Rolegroup> list) {
@@ -212,8 +241,10 @@ public class FileRenderer implements ISynchronizerRenderer {
 		}
 
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#addStatus(org.jsoup.nodes.Element, java.lang.String)
 	 */
 	public void addStatus(Element element, String statusValue) {
@@ -351,7 +382,9 @@ public class FileRenderer implements ISynchronizerRenderer {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#addHowToItem(org.jsoup.nodes.Element, java.lang.String, java.lang.String)
 	 */
 	public void addHowToItem(Element element, String description, String content) {
@@ -362,7 +395,7 @@ public class FileRenderer implements ISynchronizerRenderer {
 		div.appendText(":").append("&nbsp;");
 		if (content != null) {
 			if (r != null) {
-				div.appendElement("a").attr("href", r.getUrl() ).appendText(r.getTitle());
+				div.appendElement("a").attr("href", r.getUrl()).appendText(r.getTitle());
 			} else {
 				div.appendText(content);
 			}
@@ -370,7 +403,7 @@ public class FileRenderer implements ISynchronizerRenderer {
 			div.appendText("-");
 		}
 	}
-	
+
 	/**
 	 * Adds the role item.
 	 *
@@ -482,7 +515,9 @@ public class FileRenderer implements ISynchronizerRenderer {
 		element.appendElement("h3").appendText(header);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#addValidationList(org.jsoup.nodes.Element, java.util.List)
 	 */
 	@Override

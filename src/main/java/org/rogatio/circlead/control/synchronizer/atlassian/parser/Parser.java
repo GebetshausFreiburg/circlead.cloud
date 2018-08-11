@@ -45,6 +45,35 @@ public class Parser {
 		content.appendTo(body);
 		return macro;
 	}
+	
+	public static Element getJiraMacro(String columns, int maximumIssues, String jqlQuery, String serverId) {
+		Element macro = new Element("ac:structured-macro");
+		macro.attr("ac:name", "jira");
+		macro.attr("ac:schema-version", "1");
+		macro.attr("ac:macro-id", UUID.randomUUID().toString());
+		
+		Element param = macro.appendElement("ac:parameter");
+		param.attr("ac:name", "server");
+		param.appendText("System JIRA");
+		
+		param = macro.appendElement("ac:parameter");
+		param.attr("ac:name", "columns");
+		param.appendText(columns);
+		
+		param = macro.appendElement("ac:parameter");
+		param.attr("ac:name", "maximumIssues");
+		param.appendText(""+maximumIssues);
+		
+		param = macro.appendElement("ac:parameter");
+		param.attr("ac:name", "jqlQuery");
+		param.appendText(jqlQuery);
+		
+		param = macro.appendElement("ac:parameter");
+		param.attr("ac:name", "serverId");
+		param.appendText(serverId);
+		
+		return macro;
+	}
 
 	private static Element createDataTable(IWorkitem workitem, ISynchronizer synchronizer) {
 		Element table = new Element("table");
@@ -80,7 +109,9 @@ public class Parser {
 			Rolegroup w = (Rolegroup) workitem;
 			RolegroupDataitem d = w.getDataitem();
 			addDataPair("Id", d.getIds(), table);
+			addDataPair("Abkürzung", d.getAbbreviation(), table);
 			addDataPair("Ansprechpartner", d.getLead(), table);
+			addCommaList("Synonyme", d.getSynonyms(), table);
 			addDataPair("Vorgänger", d.getParent(), table);
 			addDataPair("Verantwortlicher", d.getResponsible(), table);
 			addDataPair("Zusammenfassung", d.getSummary(), table);
