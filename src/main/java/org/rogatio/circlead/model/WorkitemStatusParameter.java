@@ -13,9 +13,9 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * The Enum StatusParameter allows different status values which are normalized to a given state and color.
+ * The Enum WorkitemStatusParameter allows different status values which are normalized to a given state and color.
  */
-public enum StatusParameter {
+public enum WorkitemStatusParameter {
 
 	/** The active. */
 	ACTIVE("Green", "Aktiv", "Active"),
@@ -54,7 +54,7 @@ public enum StatusParameter {
      * @param name the name
      * @param aliases the aliases
      */
-    private StatusParameter(String color, String name, String... aliases) {
+    private WorkitemStatusParameter(String color, String name, String... aliases) {
         this.color = color;
         this.name = name;
         this.aliases.add(name.toUpperCase());
@@ -98,9 +98,9 @@ public enum StatusParameter {
      * @param statusValue the status value
      * @return the status parameter
      */
-    public static StatusParameter get(String statusValue) {
-    	StatusParameter[] statusParameters = StatusParameter.values();
-		for (StatusParameter statusParameter : statusParameters) {
+    public static WorkitemStatusParameter get(String statusValue) {
+    	WorkitemStatusParameter[] statusParameters = WorkitemStatusParameter.values();
+		for (WorkitemStatusParameter statusParameter : statusParameters) {
 			if (statusParameter.isEquals(statusValue)) {
 				return statusParameter;
 			}

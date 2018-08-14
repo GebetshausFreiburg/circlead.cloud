@@ -16,7 +16,7 @@ import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.ValidationMessage;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 //import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
-import org.rogatio.circlead.model.StatusParameter;
+import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.data.HowTo;
 import org.rogatio.circlead.model.work.Activity;
 import org.rogatio.circlead.model.work.IWorkitem;
@@ -153,7 +153,7 @@ public class FileRenderer implements ISynchronizerRenderer {
 
 					if (role.getDataitem().hasRepresentation(person.getFullname())) {
 						String representation = role.getDataitem().getRepresentation(person.getFullname());
-						StatusParameter status = StatusParameter.get(representation);
+						WorkitemStatusParameter status = WorkitemStatusParameter.get(representation);
 						if (status != null) {
 							li.append("&nbsp;").appendElement("div").attr("id", "status" + status.getColor()).appendText(status.getName());
 						}
@@ -228,7 +228,7 @@ public class FileRenderer implements ISynchronizerRenderer {
 			}
 			if (role.getDataitem().hasRepresentation(identifier)) {
 				String representation = role.getDataitem().getRepresentation(identifier);
-				StatusParameter status = StatusParameter.get(representation);
+				WorkitemStatusParameter status = WorkitemStatusParameter.get(representation);
 				if (status != null) {
 					li.append("&nbsp;").appendElement("div").attr("id", "status" + status.getColor()).appendText(status.getName());
 				}
@@ -248,7 +248,7 @@ public class FileRenderer implements ISynchronizerRenderer {
 	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#addStatus(org.jsoup.nodes.Element, java.lang.String)
 	 */
 	public void addStatus(Element element, String statusValue) {
-		StatusParameter status = StatusParameter.get(statusValue);
+		WorkitemStatusParameter status = WorkitemStatusParameter.get(statusValue);
 		if (status != null) {
 			element.append("&nbsp;").appendElement("div").attr("id", "status" + status.getColor()).appendText(status.getName());
 		}
@@ -287,7 +287,7 @@ public class FileRenderer implements ISynchronizerRenderer {
 			}
 			if (role.getDataitem().hasRepresentation(identifier)) {
 				String representation = role.getDataitem().getRepresentation(identifier);
-				StatusParameter status = StatusParameter.get(representation);
+				WorkitemStatusParameter status = WorkitemStatusParameter.get(representation);
 				if (status != null) {
 					li.append("&nbsp;").appendElement("div").attr("id", "status" + status.getColor()).appendText(status.getName());
 				}

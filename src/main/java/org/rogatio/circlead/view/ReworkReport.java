@@ -14,7 +14,7 @@ import java.util.List;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
-import org.rogatio.circlead.model.StatusParameter;
+import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
@@ -40,19 +40,19 @@ public class ReworkReport extends DefaultReport {
 		Element element = new Element("p");
 
 		List<Rolegroup> rolegroups = new ArrayList<Rolegroup>();
-		rolegroups.addAll(Repository.getInstance().getRolegroups(StatusParameter.DRAFT));
-		rolegroups.addAll(Repository.getInstance().getRolegroups(StatusParameter.CRITICAL));
-		rolegroups.addAll(Repository.getInstance().getRolegroups(StatusParameter.INPROGRESS));
-		rolegroups.addAll(Repository.getInstance().getRolegroups(StatusParameter.TEMPORARY));
+		rolegroups.addAll(Repository.getInstance().getRolegroups(WorkitemStatusParameter.DRAFT));
+		rolegroups.addAll(Repository.getInstance().getRolegroups(WorkitemStatusParameter.CRITICAL));
+		rolegroups.addAll(Repository.getInstance().getRolegroups(WorkitemStatusParameter.INPROGRESS));
+		rolegroups.addAll(Repository.getInstance().getRolegroups(WorkitemStatusParameter.TEMPORARY));
 		renderer.addWorkitemTable(element, ObjectUtil.castList(IWorkitem.class, rolegroups));
 		
 		element.appendElement("p");
 		
 		List<Role> roles = new ArrayList<Role>();
-		roles.addAll(Repository.getInstance().getRoles(StatusParameter.DRAFT));
-		roles.addAll(Repository.getInstance().getRoles(StatusParameter.CRITICAL));
-		roles.addAll(Repository.getInstance().getRoles(StatusParameter.INPROGRESS));
-		roles.addAll(Repository.getInstance().getRoles(StatusParameter.TEMPORARY));
+		roles.addAll(Repository.getInstance().getRoles(WorkitemStatusParameter.DRAFT));
+		roles.addAll(Repository.getInstance().getRoles(WorkitemStatusParameter.CRITICAL));
+		roles.addAll(Repository.getInstance().getRoles(WorkitemStatusParameter.INPROGRESS));
+		roles.addAll(Repository.getInstance().getRoles(WorkitemStatusParameter.TEMPORARY));
 		renderer.addWorkitemTable(element, ObjectUtil.castList(IWorkitem.class, roles));
 
 		//System.out.println(element);

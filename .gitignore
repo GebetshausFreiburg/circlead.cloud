@@ -2,7 +2,6 @@
 /archiv/
 /.settings/
 archiv/
-data/
 .settings/
 logs/
 /logs/
@@ -13,4 +12,3 @@ web/
 reports/
 /reports/
 /src/main/java/org/rogatio/circlead/control/synchronizer/atlassian/Constant.java
-/bfg-1.13.0.jar

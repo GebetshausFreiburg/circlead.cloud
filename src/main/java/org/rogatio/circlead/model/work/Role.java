@@ -18,7 +18,7 @@ import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.ValidationMessage;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.ListParserElement;
-import org.rogatio.circlead.model.StatusParameter;
+import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.RoleDataitem;
 import org.rogatio.circlead.util.ObjectUtil;
@@ -622,9 +622,9 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			Person person = Repository.getInstance().getPerson(identifier);
 			if (getDataitem().hasRepresentation(identifier)) {
 				String representation = getDataitem().getRepresentation(identifier);
-				StatusParameter status = StatusParameter.get(representation);
+				WorkitemStatusParameter status = WorkitemStatusParameter.get(representation);
 				if (status != null) {
-					if (status == StatusParameter.CRITICAL) {
+					if (status == WorkitemStatusParameter.CRITICAL) {
 						ValidationMessage m = new ValidationMessage(this);
 						m.error("Person-Status invalid", "Role '" + this.getTitle() + "' has no clear status for person '" + identifier + "'");
 						messages.add(m);

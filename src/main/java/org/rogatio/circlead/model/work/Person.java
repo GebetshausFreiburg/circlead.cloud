@@ -24,6 +24,8 @@ import org.rogatio.circlead.model.data.PersonDataitem;
 import org.rogatio.circlead.view.ISynchronizerRenderer;
 import org.rogatio.circlead.view.IWorkitemRenderer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * The Class Person.
  */
@@ -39,10 +41,26 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	/**
 	 * Instantiates a new person.
 	 *
-	 * @param dataitem the dataitem
+	 * @param dataitem
+	 *            the dataitem
 	 */
 	public Person(IDataitem dataitem) {
 		super(dataitem);
+	}
+
+	public String getFamilyname() {
+		return this.getDataitem().getFamilyname();
+	}
+
+	public String getNames() {
+		StringBuilder sb = new StringBuilder();
+		if (this.getDataitem().getFirstname() != null) {
+			sb.append(this.getDataitem().getFirstname() + " ");
+		}
+		if (this.getDataitem().getSecondname() != null) {
+			sb.append(this.getDataitem().getSecondname() + " ");
+		}
+		return sb.toString().trim();
 	}
 
 	/**
@@ -57,7 +75,8 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	/**
 	 * Sets the fullname.
 	 *
-	 * @param name the new fullname
+	 * @param name
+	 *            the new fullname
 	 */
 	public void setFullname(String name) {
 		this.getDataitem().setFullname(name);
@@ -66,10 +85,21 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	/**
 	 * Sets the contacts.
 	 *
-	 * @param contacts the new contacts
+	 * @param contacts
+	 *            the new contacts
 	 */
 	public void setContacts(List<ContactDataitem> contacts) {
 		this.getDataitem().setContacts(contacts);
+	}
+
+	public ContactDataitem getFirstPrivateContact() {
+		List<ContactDataitem> contacts = this.getDataitem().getContacts();
+		for (ContactDataitem contactDataitem : contacts) {
+			if (contactDataitem.getName().equalsIgnoreCase("Privat")) {
+				return contactDataitem;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -84,7 +114,8 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	/**
 	 * Sets the data.
 	 *
-	 * @param contactTables the new data
+	 * @param contactTables
+	 *            the new data
 	 */
 	public void setData(TablesParserElement contactTables) {
 		this.getDataitem().setData(contactTables.getData());
@@ -102,19 +133,22 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	/**
 	 * Sets the contacts.
 	 *
-	 * @param contactTables the new contacts
+	 * @param contactTables
+	 *            the new contacts
 	 */
 	public void setContacts(TablesParserElement contactTables) {
 		this.getDataitem().setContacts(contactTables.getContacts());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.view.IRenderer#render()
 	 */
 	@Override
 	public Element render(ISynchronizer synchronizer) {
 		ISynchronizerRenderer renderer = synchronizer.getRenderer();
-		
+
 		Element element = new Element("p");
 
 		renderer.addH2(element, "Kontaktdaten");
@@ -138,16 +172,18 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		return element;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.model.work.DefaultWorkitem#getDataitem()
 	 */
 	@Override
 	public PersonDataitem getDataitem() {
 		return (PersonDataitem) dataitem;
 	}
-	
+
 	public String getDataValue(String dataKey) {
-		if (this.getData()!=null) {
+		if (this.getData() != null) {
 			if (this.getData().containsKey(dataKey)) {
 				return this.getData().get(dataKey);
 			}
@@ -155,7 +191,9 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.model.work.DefaultWorkitem#toString()
 	 */
 	@Override
@@ -167,13 +205,17 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	public List<ValidationMessage> validate() {
 		List<ValidationMessage> messages = new ArrayList<ValidationMessage>();
 
-//		this.getData().c
-		
-		/*if (!this.hasAbbreviation()) {
+		ArrayList<Role> roles = Repository.getInstance().getRolesWithPerson(this.getFullname());
+		if (roles.size() == 0) {
 			ValidationMessage m = new ValidationMessage(this);
-			m.warning("No abbreviation added", "Role '" + this.getTitle() + "' has no abbreviation");
+			m.error("Person has no role", "Person '" + this.getFullname() + "' has no related role");
 			messages.add(m);
-		}*/
+		}
+
+		/*
+		 * if (!this.hasAbbreviation()) { ValidationMessage m = new ValidationMessage(this); m.warning("No abbreviation added", "Role '" + this.getTitle() +
+		 * "' has no abbreviation"); messages.add(m); }
+		 */
 		return messages;
 	}
 

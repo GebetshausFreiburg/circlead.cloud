@@ -2,6 +2,7 @@ package org.rogatio.circlead.control.synchronizer.atlassian.parser;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -15,7 +16,7 @@ import org.rogatio.circlead.control.synchronizer.atlassian.content.Page;
 import org.rogatio.circlead.control.synchronizer.atlassian.content.Space;
 import org.rogatio.circlead.control.synchronizer.atlassian.content.Storage;
 import org.rogatio.circlead.control.synchronizer.atlassian.search.Results;
-import org.rogatio.circlead.model.StatusParameter;
+import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.data.ActivityDataitem;
 import org.rogatio.circlead.model.data.ContactDataitem;
 import org.rogatio.circlead.model.data.PersonDataitem;
@@ -125,9 +126,6 @@ public class Parser {
 			addDataPair("Id", d.getIds(), table);
 			addDataPair("Name", d.getFullname(), table);
 			addDataPair("Kontakte", Parser.getContacts(d.getContacts()), table);
-			// addDataPair("Verantwortlicher", d.getResponsible(), table);
-			// addDataPair("Zusammenfassung", d.getSummary(), table);
-			// addBulletList("Rollen", d.getRoles(), table);
 			addDataPair("Status", Parser.getStatus(d.getStatus()), table);
 			addDataPair("Daten", Parser.getDataTable(d.getData()), table);
 		}
@@ -136,6 +134,14 @@ public class Parser {
 	}
 
 	public static Element getDataTable(Map<String, String> map) {
+		
+		Map<String, String> emptyMap = new HashMap<String, String>();
+		
+		emptyMap.put("Kürzel", "-");
+		emptyMap.put("NAS", "-");
+		emptyMap.put("Berechtigung", "-");
+		emptyMap.put("Gemeinde", "-");
+		
 		if (map!=null) {
 			if (map.size()>0) {
 				Element table = new Element("table");
@@ -144,9 +150,23 @@ public class Parser {
 					addDataPair(key, value, table);
 				}
 				return table;
+			} else {
+				Element table = new Element("table");
+				for (String key : emptyMap.keySet()) {
+					String value = emptyMap.get(key);
+					addDataPair(key, value, table);
+				}
+				return table;
 			}
+		} else {
+			Element table = new Element("table");
+			for (String key : emptyMap.keySet()) {
+				String value = emptyMap.get(key);
+				addDataPair(key, value, table);
+			}
+			return table;
 		}
-		return new Element("div").appendText("-");
+	//	return new Element("div").appendText("-");
 	}
 	
 	
@@ -352,9 +372,9 @@ public class Parser {
 		return c;
 	}
 
-	private static StatusParameter getStatusParameter(String statusId) {
-		StatusParameter[] params = StatusParameter.values();
-		for (StatusParameter statusParameter : params) {
+	private static WorkitemStatusParameter getStatusParameter(String statusId) {
+		WorkitemStatusParameter[] params = WorkitemStatusParameter.values();
+		for (WorkitemStatusParameter statusParameter : params) {
 			if (statusParameter.isEquals(statusId)) {
 				return statusParameter;
 			}
@@ -385,7 +405,7 @@ public class Parser {
 		String color = "Red";
 		String name = "Unknown";
 
-		StatusParameter s = getStatusParameter(title);
+		WorkitemStatusParameter s = getStatusParameter(title);
 		if (s != null) {
 			color = s.getColor();
 			name = s.getName();

@@ -18,7 +18,7 @@ import org.rogatio.circlead.control.ValidationMessage.Type;
 import org.rogatio.circlead.control.synchronizer.Connector;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
-import org.rogatio.circlead.model.StatusParameter;
+import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.data.HowTo;
 import org.rogatio.circlead.model.data.Report;
@@ -62,11 +62,11 @@ public class Repository {
 	/** The connector. */
 	private Connector connector;
 
-	public List<Role> getRoles(StatusParameter status) {
+	public List<Role> getRoles(WorkitemStatusParameter status) {
 		List<Role> roles = new ArrayList<Role>();
 		if (Repository.getInstance().getRolegroups().size() > 0) {
 			for (Role role : getRoles()) {
-				StatusParameter s = StatusParameter.get(role.getStatus());
+				WorkitemStatusParameter s = WorkitemStatusParameter.get(role.getStatus());
 				if (s == status) {
 					roles.add(role);
 				}
@@ -75,11 +75,11 @@ public class Repository {
 		return roles;
 	}
 
-	public List<Rolegroup> getRolegroups(StatusParameter status) {
+	public List<Rolegroup> getRolegroups(WorkitemStatusParameter status) {
 		List<Rolegroup> rolegroups = new ArrayList<Rolegroup>();
 		if (Repository.getInstance().getRolegroups().size() > 0) {
 			for (Rolegroup rolegroup : getRolegroups()) {
-				StatusParameter s = StatusParameter.get(rolegroup.getStatus());
+				WorkitemStatusParameter s = WorkitemStatusParameter.get(rolegroup.getStatus());
 				if (s == status) {
 					rolegroups.add(rolegroup);
 				}
