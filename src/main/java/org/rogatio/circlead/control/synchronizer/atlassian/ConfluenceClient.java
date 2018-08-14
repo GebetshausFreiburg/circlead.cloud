@@ -15,15 +15,25 @@ import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
  */
 public class ConfluenceClient extends HttpClient {
 
-	public ConfluenceClient(String baseUrl, String user, String password) {
+	private String restPrefix = null;
+	
+	public ConfluenceClient(String baseUrl, String user, String password, boolean server) {
 		this.baseUrl = baseUrl;
 		this.user = user;
 		this.password = password;
+		
+		if (server) {
+			// Set rest-prefix if atlassian-dedicated-server
+			restPrefix = "rest/api/";
+		} else {
+			// Set rest-prefix if atlassian-cloud-server
+			restPrefix = "wiki/rest/api/";
+		}
 	}
 	
 	public SynchronizerResult getPageSpace(int id) {
 		try {
-			return this.get("wiki/rest/api/content/" + id + "?" + "expand=space");
+			return this.get(restPrefix+"content/" + id + "?" + "expand=space");
 		} catch (IOException e) {
 			return null;
 		}
@@ -31,7 +41,7 @@ public class ConfluenceClient extends HttpClient {
 
 	public SynchronizerResult getPageVersion(int id) {
 		try {
-			return this.get("wiki/rest/api/content/" + id + "?" + "expand=version");
+			return this.get(restPrefix+"content/" + id + "?" + "expand=version");
 		} catch (IOException e) {
 			return null;
 		}
@@ -39,7 +49,7 @@ public class ConfluenceClient extends HttpClient {
 	
 	public SynchronizerResult getPageHistory(int id) {
 		try {
-			return this.get("wiki/rest/api/content/" + id + "?" + "expand=history,history.lastUpdated");
+			return this.get(restPrefix+"content/" + id + "?" + "expand=history,history.lastUpdated");
 		} catch (IOException e) {
 			return null;
 		}
@@ -47,7 +57,7 @@ public class ConfluenceClient extends HttpClient {
 	
 	public SynchronizerResult getPage(int id) {
 		try {
-			return this.get("wiki/rest/api/content/" + id + "?" + "expand=body.storage,metadata.labels,history,history.lastUpdated,space,version,ancestors");
+			return this.get(restPrefix+"content/" + id + "?" + "expand=body.storage,metadata.labels,history,history.lastUpdated,space,version,ancestors");
 		} catch (IOException e) {
 			return null;
 		}
@@ -55,7 +65,7 @@ public class ConfluenceClient extends HttpClient {
 	
 	public SynchronizerResult getPageContent(int id) {
 		try {
-			return this.get("wiki/rest/api/content/" + id + "?" + "expand=body.storage");
+			return this.get(restPrefix+"content/" + id + "?" + "expand=body.storage");
 		} catch (IOException e) {
 			return null;
 		}
@@ -63,7 +73,7 @@ public class ConfluenceClient extends HttpClient {
 
 	public SynchronizerResult getCurrentUser() {
 		try {
-			return this.get("wiki/rest/api/user/current");
+			return this.get(restPrefix+"user/current");
 		} catch (IOException e) {
 			return null;
 		}
@@ -71,7 +81,7 @@ public class ConfluenceClient extends HttpClient {
 
 	public SynchronizerResult getSysteminfo() {
 		try {
-			return this.get("wiki/rest/api/settings/systemInfo");
+			return this.get(restPrefix+"settings/systemInfo");
 		} catch (IOException e) {
 			return null;
 		}
@@ -79,7 +89,7 @@ public class ConfluenceClient extends HttpClient {
 
 	public SynchronizerResult getMetadata(int pageId) {
 		try {
-			return this.get("wiki/rest/api/content/" + pageId + "/property");
+			return this.get(restPrefix+"content/" + pageId + "/property");
 		} catch (IOException e) {
 			return null;
 		}
@@ -87,7 +97,7 @@ public class ConfluenceClient extends HttpClient {
 
 	public SynchronizerResult purgePage(int pageId) {
 		try {
-			return this.delete("wiki/rest/api/content/" + pageId+"?status=trashed");
+			return this.delete(restPrefix+"content/" + pageId+"?status=trashed");
 		} catch (UnsupportedEncodingException e1) {
 		} catch (IOException e) {
 		}
@@ -96,7 +106,7 @@ public class ConfluenceClient extends HttpClient {
 	
 	public SynchronizerResult deletePage(int pageId) {
 		try {
-			return this.delete("wiki/rest/api/content/" + pageId);
+			return this.delete(restPrefix+"content/" + pageId);
 		} catch (UnsupportedEncodingException e1) {
 		} catch (IOException e) {
 		}
@@ -105,7 +115,7 @@ public class ConfluenceClient extends HttpClient {
 	
 	public SynchronizerResult deleteMetadata(int pageId, String key) {
 		try {
-			return this.delete("wiki/rest/api/content/" + pageId + "/property/" + key);
+			return this.delete(restPrefix+"content/" + pageId + "/property/" + key);
 		} catch (UnsupportedEncodingException e1) {
 		} catch (IOException e) {
 		}
@@ -129,7 +139,7 @@ public class ConfluenceClient extends HttpClient {
 		            + "}";
 
 		try {
-			SynchronizerResult response = this.post("wiki/rest/api/content/" + pageId + "/label" , data);
+			SynchronizerResult response = this.post(restPrefix+"content/" + pageId + "/label" , data);
 			return response;
 		} catch (UnsupportedEncodingException e1) {
 			return null;
@@ -150,8 +160,7 @@ public class ConfluenceClient extends HttpClient {
 				+ "}";
 
 		try {
-			return this.put("wiki/rest/api/content/" + pageId + "/property/" + key, data);
-//			return response;
+			return this.put(restPrefix+"content/" + pageId + "/property/" + key, data);
 		} catch (UnsupportedEncodingException e1) {
 			return null;
 		} catch (IOException e) {
@@ -169,7 +178,7 @@ public class ConfluenceClient extends HttpClient {
 
 		String data = "{ " + "\"key\" : \"" + key + "\", " + "\"value\" : " + value + "}";
 		try {
-			SynchronizerResult response = this.post("wiki/rest/api/content/" + pageId + "/property", data);
+			SynchronizerResult response = this.post(restPrefix+"content/" + pageId + "/property", data);
 			return response;
 		} catch (UnsupportedEncodingException e1) {
 			return null;
@@ -181,7 +190,7 @@ public class ConfluenceClient extends HttpClient {
 	public SynchronizerResult search(String cql) {
 		try {
 			String encoded = URLEncoder.encode(cql, "UTF-8");
-			return this.get("wiki/rest/api/search?limit="+Constant.LIMIT+"&cql=" + encoded);
+			return this.get(restPrefix+"search?limit="+Constant.LIMIT+"&cql=" + encoded);
 		} catch (UnsupportedEncodingException e1) {
 			return null;
 		} catch (IOException e) {
@@ -196,7 +205,7 @@ public class ConfluenceClient extends HttpClient {
 	 */
 	public SynchronizerResult browseContent() {
 		try {
-			return this.get("wiki/rest/api/content?expand=space&limit="+Constant.LIMIT);
+			return this.get(restPrefix+"content?expand=space&limit="+Constant.LIMIT);
 		} catch (IOException e) {
 			return null;
 		}
@@ -209,7 +218,7 @@ public class ConfluenceClient extends HttpClient {
 	public SynchronizerResult newPage(String title, String spaceKey, String content) {
 		try {
 			String data = "{\"type\":\"page\",\"title\":\""+title+"\",\"space\":{\"key\":\""+spaceKey+"\"},\"body\":{\"storage\":{\"value\":\""+content+"\",\"representation\":\"storage\"}}}";
-			return this.post("wiki/rest/api/content/", data);
+			return this.post(restPrefix+"content/", data);
 		} catch (IOException e) {
 			return null;
 		}
