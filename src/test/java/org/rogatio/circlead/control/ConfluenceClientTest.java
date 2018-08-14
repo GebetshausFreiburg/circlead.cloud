@@ -18,7 +18,7 @@ public class ConfluenceClientTest extends TestCase {
 	
 	protected void setUp() throws Exception {
 		super.setUp();
-		client = new ConfluenceClient(URL, USER, PASSWORD);
+		client = new ConfluenceClient(URL, USER, PASSWORD, false);
 		SynchronizerResult page = client.newPage("JUNIT Add Label Test", "CIRCLEADTEST", "tbd");
 		pageId = Parser.getIdFromPage(page.getContent());
 	}

@@ -107,7 +107,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	 */
 	@Override
 	public void init() {
-		confluenceClient = new ConfluenceClient(URL, USER, PASSWORD);
+		confluenceClient = new ConfluenceClient(URL, USER, PASSWORD, false);
 	}
 
 	/**
@@ -440,19 +440,28 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 			String type = null;
 			String acestorId = null;
 			for (org.rogatio.circlead.control.synchronizer.atlassian.content.Result result : p.getMetadata().getLabels().getResults()) {
-				if (result.getLabel().equalsIgnoreCase("role")) {
+				
+				String label = null;
+				
+				if (result.getName()!=null) {
+					label = result.getName();
+				} else if (result.getLabel()!=null) {
+					label = result.getLabel();
+				}
+				
+				if (label.equalsIgnoreCase("role")) {
 					type = "role";
 					acestorId = getAcestorId("Roles", p);
 				}
-				if (result.getLabel().equalsIgnoreCase("activity")) {
+				if (label.equalsIgnoreCase("activity")) {
 					type = "activity";
 					acestorId = getAcestorId("Activities", p);
 				}
-				if (result.getLabel().equalsIgnoreCase("rolegroup")) {
+				if (label.equalsIgnoreCase("rolegroup")) {
 					type = "rolegroup";
 					acestorId = getAcestorId("Rolegroups", p);
 				}
-				if (result.getLabel().equalsIgnoreCase("person")) {
+				if (label.equalsIgnoreCase("person")) {
 					type = "person";
 					acestorId = getAcestorId("Persons", p);
 				}
