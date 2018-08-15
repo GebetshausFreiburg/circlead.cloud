@@ -302,6 +302,9 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 				ObjectMapper mapper = new ObjectMapper();
 				mapper.setSerializationInclusion(Include.NON_NULL);
 
+				Metadata m = Parser.getLabelMetadata(report);
+				page.setMetadata(m);
+				
 				Version v = new Version();
 				v.setNumber(version);
 				page.setVersion(v);

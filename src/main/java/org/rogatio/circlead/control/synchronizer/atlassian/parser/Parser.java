@@ -138,9 +138,9 @@ public class Parser {
 		Map<String, String> emptyMap = new HashMap<String, String>();
 		
 		emptyMap.put("Kürzel", "-");
-		emptyMap.put("NAS", "-");
-		emptyMap.put("Berechtigung", "-");
-		emptyMap.put("Gemeinde", "-");
+//		emptyMap.put("NAS", "-");
+//		emptyMap.put("Berechtigung", "-");
+//		emptyMap.put("Gemeinde", "-");
 		
 		if (map!=null) {
 			if (map.size()>0) {
@@ -365,7 +365,8 @@ public class Parser {
 
 	public static String clean(Element element) {
 		String c = "";
-		String[] lines = element.toString().split(System.getProperty("line.separator"));
+		// To avoid linebreak in atlassian html-tags the html needs to be "reduced".
+		String[] lines = element.toString().split("[\\r\\n]+");
 		for (String string : lines) {
 			c += string.trim();
 		}
