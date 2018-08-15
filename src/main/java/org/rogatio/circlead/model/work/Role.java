@@ -451,6 +451,9 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		if (ObjectUtil.isListNotNullAndEmpty(this.getPersonIdentifiers())) {
 			renderer.addH2(element, "Rollenträger");
 			renderer.addPersonList(element, this.getPersonIdentifiers(), this);
+		} else {
+			renderer.addH2(element, "Rollenträger");
+			renderer.addStatus(element, "Unbesetzt");
 		}
 
 		if (ObjectUtil.isListNotNullAndEmpty(this.getCompetences())) {

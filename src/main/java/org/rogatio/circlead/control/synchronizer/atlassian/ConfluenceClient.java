@@ -10,8 +10,13 @@ import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
 /**
  * 
  * @author Matthias Wegner
+ * 
+ * CLOUD
  * @see https://developer.atlassian.com/cloud/confluence/rest-api-examples/
  * @see https://developer.atlassian.com/cloud/confluence/rest/#api-content-get
+ * 
+ * DEDICATED
+ * @see https://docs.atlassian.com/atlassian-confluence/REST/6.6.0/
  */
 public class ConfluenceClient extends HttpClient {
 
