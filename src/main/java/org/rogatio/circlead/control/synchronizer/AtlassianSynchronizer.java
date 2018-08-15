@@ -11,6 +11,7 @@ package org.rogatio.circlead.control.synchronizer;
 import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.PASSWORD;
 import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.URL;
 import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.USER;
+import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.DEDICATEDSERVER;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -105,7 +106,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	 */
 	@Override
 	public void init() {
-		confluenceClient = new ConfluenceClient(URL, USER, PASSWORD, false);
+		confluenceClient = new ConfluenceClient(URL, USER, PASSWORD, DEDICATEDSERVER);
 	}
 
 	/**
