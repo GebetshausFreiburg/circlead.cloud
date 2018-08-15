@@ -105,7 +105,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	 */
 	@Override
 	public void init() {
-		confluenceClient = new ConfluenceClient(URL, USER, PASSWORD, true);
+		confluenceClient = new ConfluenceClient(URL, USER, PASSWORD, false);
 	}
 
 	/**
@@ -765,9 +765,9 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		ArrayList<String> fileIndex = new ArrayList<String>();
 
 		try {
-			logger.info("Loading Index from system '" + confluenceClient.getSysteminfo().getContent() + "'");
+			logger.info("Loading Index '"+workitemType.getName()+"' from system '" + confluenceClient.getSysteminfo().getContent() + "'");
 		} catch (Exception e) {
-			logger.info("Loading Index from system '" + URL + "'");
+			logger.info("Loading Index '"+workitemType.getName()+"' from system '" + URL + "'");
 		}
 
 		SynchronizerResult results = confluenceClient.search("label = \"" + type + "\"");

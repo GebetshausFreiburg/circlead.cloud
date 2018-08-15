@@ -106,14 +106,14 @@ public class StringUtil {
 	}
 
 	/**
-	 * Converts a xml-date to an java.util.Date.
+	 * Converts a xml-date to an java.util.Date, i.e. "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
 	 *
 	 * @param date the date
 	 * @return the date
 	 */
-	public static Date toDate(String date) {
+	public static Date toDate(String date, String f) {
 		try {
-			DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.GERMANY);
+			DateFormat format = new SimpleDateFormat(f, Locale.GERMANY);
 			return format.parse(date);
 		} catch (ParseException e) {
 			logger.error(e);
@@ -127,8 +127,8 @@ public class StringUtil {
 	 * @param date the date
 	 * @return the string
 	 */
-	public static String fromDate(Date date) {
-		DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.GERMANY);
+	public static String fromDate(Date date, String f) {
+		DateFormat format = new SimpleDateFormat(f, Locale.GERMANY);
 		return format.format(date);
 	}
 	

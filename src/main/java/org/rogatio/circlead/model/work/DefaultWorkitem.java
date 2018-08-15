@@ -8,6 +8,7 @@
  */
 package org.rogatio.circlead.model.work;
 
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
@@ -125,7 +126,8 @@ public class DefaultWorkitem implements IWorkitem {
 	 */
 	@Override
 	public void setCreated(String xmlDate) {
-		dataitem.setCreated(StringUtil.toDate(xmlDate));
+		ZonedDateTime zoneDateTime = ZonedDateTime.parse(xmlDate);
+		dataitem.setCreated(Date.from(zoneDateTime.toInstant()));
 	}
 
 	/*
@@ -135,7 +137,8 @@ public class DefaultWorkitem implements IWorkitem {
 	 */
 	@Override
 	public void setModified(String xmlDate) {
-		dataitem.setModified(StringUtil.toDate(xmlDate));
+		ZonedDateTime zoneDateTime = ZonedDateTime.parse(xmlDate);
+		dataitem.setModified(Date.from(zoneDateTime.toInstant()));
 	}
 
 	/*

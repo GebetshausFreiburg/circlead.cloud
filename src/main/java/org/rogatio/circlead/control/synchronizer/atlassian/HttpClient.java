@@ -39,6 +39,8 @@ public class HttpClient {
 		URL url = new URL(baseUrl + getUrl);
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
+		//logger.debug("GET "+url);
+		
 		connection.setRequestMethod("GET");
 		connection.setRequestProperty("Accept", "*/*");
 		connection.setRequestProperty("Content-Type", "application/json");

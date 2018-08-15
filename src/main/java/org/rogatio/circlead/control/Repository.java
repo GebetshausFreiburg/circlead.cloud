@@ -361,10 +361,12 @@ public class Repository {
 	/**
 	 * Update workitems.
 	 */
-	public void updateWorkitems() {
+	public List<SynchronizerResult> updateWorkitems() {
+		List<SynchronizerResult> results = new ArrayList<SynchronizerResult>();
 		for (IWorkitem workitem : getWorkitems()) {
-			getConnector().update(workitem);
+			results.addAll(getConnector().update(workitem));
 		}
+		return results;
 	}
 
 	/**

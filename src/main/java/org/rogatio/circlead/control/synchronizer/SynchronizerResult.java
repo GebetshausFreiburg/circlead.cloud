@@ -96,5 +96,10 @@ public class SynchronizerResult {
 	public void setSource(String source) {
 		this.source = source;
 	}
+	
+	@Override
+	public String toString() {
+		return "Result [code = "+this.getCode()+", msg="+this.getMessage()+"]: "+this.getContent();
+	}
 
 }
