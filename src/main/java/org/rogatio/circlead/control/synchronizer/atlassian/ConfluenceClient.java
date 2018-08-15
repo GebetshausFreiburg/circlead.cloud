@@ -99,6 +99,10 @@ public class ConfluenceClient extends HttpClient {
 			return null;
 		}
 	}
+	
+	public String getRestPrefix() {
+		return restPrefix;
+	}
 
 	public SynchronizerResult purgePage(int pageId) {
 		try {

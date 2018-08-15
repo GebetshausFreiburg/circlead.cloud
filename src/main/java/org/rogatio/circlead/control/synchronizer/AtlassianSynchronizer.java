@@ -52,7 +52,6 @@ import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.AtlassianRenderer;
 import org.rogatio.circlead.view.IReport;
 import org.rogatio.circlead.view.ISynchronizerRenderer;
-import org.rogatio.circlead.view.ReworkReport;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -90,8 +89,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	/**
 	 * Instantiates a new atlassian synchronizer.
 	 *
-	 * @param spaceKey
-	 *            the space key
+	 * @param spaceKey the space key
 	 */
 	public AtlassianSynchronizer(String spaceKey) {
 		circleadSpace = spaceKey;
@@ -107,14 +105,13 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	 */
 	@Override
 	public void init() {
-		confluenceClient = new ConfluenceClient(URL, USER, PASSWORD, false);
+		confluenceClient = new ConfluenceClient(URL, USER, PASSWORD, true);
 	}
 
 	/**
 	 * Gets the single acestor list.
 	 *
-	 * @param wi
-	 *            the wi
+	 * @param wi the wi
 	 * @return the single acestor list
 	 */
 	private List<Ancestor> getSingleAcestorList(IWorkitem wi) {
@@ -146,8 +143,12 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#add(org.rogatio.circlead.view.IReport)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#add(org.rogatio
+	 * .circlead.view.IReport)
 	 */
 	@Override
 	public SynchronizerResult add(IReport report) throws SynchronizerException {
@@ -171,8 +172,9 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 			mapper.setSerializationInclusion(Include.NON_NULL);
 			String data = mapper.writeValueAsString(page);
 
-			SynchronizerResult res = confluenceClient.post("wiki/rest/api/content/", data);
-			// logger.info("Write '" + URL + "wiki/rest/api/content/" + workitem.getId(this) + "'");
+			SynchronizerResult res = confluenceClient.post(confluenceClient.getRestPrefix()+"content/", data);
+			// logger.info("Write '" + URL + "wiki/rest/api/content/" + workitem.getId(this)
+			// + "'");
 			return res;
 		} catch (JsonProcessingException e) {
 			logger.error(e);
@@ -185,7 +187,9 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#add(org.rogatio.circlead.model.work.IWorkitem)
+	 * @see
+	 * org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#add(org.rogatio
+	 * .circlead.model.work.IWorkitem)
 	 */
 	@Override
 	public SynchronizerResult add(IWorkitem workitem) throws SynchronizerException {
@@ -212,8 +216,9 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 			// SynchronizerResult r = new SynchronizerResult();
 			// System.out.println(data);
 
-			SynchronizerResult res = confluenceClient.post("wiki/rest/api/content/", data);
-			// logger.info("Write '" + URL + "wiki/rest/api/content/" + workitem.getId(this) + "'");
+			SynchronizerResult res = confluenceClient.post(confluenceClient.getRestPrefix()+"content/", data);
+			// logger.info("Write '" + URL + "wiki/rest/api/content/" + workitem.getId(this)
+			// + "'");
 			return res;
 		} catch (JsonProcessingException e) {
 			logger.error(e);
@@ -226,7 +231,9 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#update(org.rogatio.circlead.model.work.IWorkitem)
+	 * @see
+	 * org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#update(org.
+	 * rogatio.circlead.model.work.IWorkitem)
 	 */
 	@Override
 	public SynchronizerResult update(IWorkitem workitem) {
@@ -234,7 +241,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 
 		Page page = Parser.createPage(workitem, circleadSpace, this);
 
-		logger.info("Update '" + URL + "wiki/rest/api/content/" + workitem.getId(this) + "'");
+		logger.info("Update '" + URL + confluenceClient.getRestPrefix()+"content/" + workitem.getId(this) + "'");
 
 		if (workitem.getVersion() != null) {
 			Version v = new Version();
@@ -250,7 +257,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.setSerializationInclusion(Include.NON_NULL);
 			String data = mapper.writeValueAsString(page);
-			String uri = "wiki/rest/api/content/" + workitem.getId(this);
+			String uri = confluenceClient.getRestPrefix()+"content/" + workitem.getId(this);
 			SynchronizerResult res = confluenceClient.put(uri, data);
 			return res;
 		} catch (JsonProcessingException e) {
@@ -261,8 +268,12 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#update(org.rogatio.circlead.view.IReport)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#update(org.
+	 * rogatio.circlead.view.IReport)
 	 */
 	@Override
 	public SynchronizerResult update(IReport report) {
@@ -273,8 +284,8 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		Report repo = Repository.getInstance().getReport(report.getName());
 		if (repo != null) {
 
-			logger.info("Update '" + URL + "wiki/rest/api/content/" + repo.getId()+ "' ("+report.getName()+")");
-			
+			logger.info("Update '" + URL + confluenceClient.getRestPrefix()+"content/" + repo.getId() + "' (" + report.getName() + ")");
+
 			Integer version = 0;
 			try {
 				ObjectMapper omapper = new ObjectMapper();
@@ -296,13 +307,13 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 				page.setVersion(v);
 
 				String data = mapper.writeValueAsString(page);
-				String uri = "wiki/rest/api/content/" + repo.getId();
+				String uri = confluenceClient.getRestPrefix()+"content/" + repo.getId();
 				SynchronizerResult res = confluenceClient.put(uri, data);
-				
+
 //				if (report instanceof ReworkReport) {
 //					System.out.println("!!! "+res.getCode()+":"+res.getMessage()+" - "+res.getContent());
 //				}
-				
+
 				return res;
 			} catch (JsonProcessingException e) {
 				logger.error(e);
@@ -316,7 +327,8 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#getIdPattern()
+	 * @see
+	 * org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#getIdPattern()
 	 */
 	@Override
 	public String getIdPattern() {
@@ -326,10 +338,8 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	/**
 	 * Gets the acestor id.
 	 *
-	 * @param title
-	 *            the title
-	 * @param page
-	 *            the page
+	 * @param title the title
+	 * @param page  the page
 	 * @return the acestor id
 	 */
 	private String getAcestorId(String title, Page page) {
@@ -347,8 +357,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	/**
 	 * Gets the acestor id.
 	 *
-	 * @param type
-	 *            the type
+	 * @param type the type
 	 * @return the acestor id
 	 */
 	public String getAcestorId(String type) {
@@ -391,7 +400,9 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#get(java.lang.String)
+	 * @see
+	 * org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#get(java.lang.
+	 * String)
 	 */
 	@Override
 	public IWorkitem get(String indexId) throws SynchronizerException {
@@ -400,7 +411,8 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		// System.out.println("XXX: "+indexId);
 
 		if (indexId.endsWith(".json")) {
-			throw new SynchronizerException("Item with id '" + indexId + "' could not be loaded with Atlassian Synchronizer.");
+			throw new SynchronizerException(
+					"Item with id '" + indexId + "' could not be loaded with Atlassian Synchronizer.");
 		}
 
 		int idx = indexId.lastIndexOf("/");
@@ -421,7 +433,8 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 			SynchronizerResult page = confluenceClient.getPage(Integer.parseInt(indexId));
 
 			if (page == null) {
-				throw new SynchronizerException("Item with id '" + indexId + "' could not be founded/loaded with Atlassian Synchronizer.");
+				throw new SynchronizerException(
+						"Item with id '" + indexId + "' could not be founded/loaded with Atlassian Synchronizer.");
 			}
 
 			Page p = mapper.readValue(page.getContent(), Page.class);
@@ -439,13 +452,15 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 
 			String type = null;
 			String acestorId = null;
-			for (org.rogatio.circlead.control.synchronizer.atlassian.content.Result result : p.getMetadata().getLabels().getResults()) {
-				
+			
+			for (org.rogatio.circlead.control.synchronizer.atlassian.content.Result result : p.getMetadata().getLabels()
+					.getResults()) {
+			
 				String label = null;
-				
 				if (result.getName()!=null) {
 					label = result.getName();
-				} else if (result.getLabel()!=null) {
+				}
+				if (result.getLabel()!=null) {
 					label = result.getLabel();
 				}
 				
@@ -520,14 +535,18 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 			wi = setData(pairs, type, indexId);
 			wi.setTitle(p.getTitle());
 
-			logger.debug("Load: code=" + page.getCode() + ", message=" + page.getMessage() + ", source=" + page.getSource() + ", title=" + p.getTitle());
+			logger.debug("Load: code=" + page.getCode() + ", message=" + page.getMessage() + ", source="
+					+ page.getSource() + ", title=" + p.getTitle());
 
 		} catch (JsonParseException e) {
-			throw new SynchronizerException("Error (JsonParse) loading item '" + indexId + "'. " + e.getMessage(), e.getCause());
+			throw new SynchronizerException("Error (JsonParse) loading item '" + indexId + "'. " + e.getMessage(),
+					e.getCause());
 		} catch (JsonMappingException e) {
-			throw new SynchronizerException("Error (JsonMapping) loading item '" + indexId + "'. " + e.getMessage(), e.getCause());
+			throw new SynchronizerException("Error (JsonMapping) loading item '" + indexId + "'. " + e.getMessage(),
+					e.getCause());
 		} catch (IOException e) {
-			throw new SynchronizerException("Error (IOException) loading item '" + indexId + "'. " + e.getMessage(), e.getCause());
+			throw new SynchronizerException("Error (IOException) loading item '" + indexId + "'. " + e.getMessage(),
+					e.getCause());
 		}
 
 		return wi;
@@ -536,12 +555,9 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	/**
 	 * Sets the data.
 	 *
-	 * @param pairs
-	 *            the pairs
-	 * @param type
-	 *            the type
-	 * @param indexId
-	 *            the index id
+	 * @param pairs   the pairs
+	 * @param type    the type
+	 * @param indexId the index id
 	 * @return the i workitem
 	 */
 	private IWorkitem setData(Map<String, IParserElement> pairs, String type, String indexId) {
@@ -587,7 +603,8 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 					person.setCreated(value.toString());
 				} else if (key.equalsIgnoreCase("Modified")) {
 					person.setModified(value.toString());
-				} else if (key.equalsIgnoreCase("Adresse") || key.equalsIgnoreCase("Mobil") || key.equalsIgnoreCase("Mail") || key.equalsIgnoreCase("Festnetz")
+				} else if (key.equalsIgnoreCase("Adresse") || key.equalsIgnoreCase("Mobil")
+						|| key.equalsIgnoreCase("Mail") || key.equalsIgnoreCase("Festnetz")
 						|| key.equalsIgnoreCase("Typ") || key.equalsIgnoreCase("Subtyp")) {
 					// Ignore, because its inner table
 					// Do explicit nothing
@@ -714,7 +731,9 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#delete(org.rogatio.circlead.model.work.IWorkitem)
+	 * @see
+	 * org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#delete(org.
+	 * rogatio.circlead.model.work.IWorkitem)
 	 */
 	@Override
 	public String delete(IWorkitem workitem) throws SynchronizerException {
@@ -726,8 +745,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	/**
 	 * Delete.
 	 *
-	 * @param pageId
-	 *            the page id
+	 * @param pageId the page id
 	 * @return the synchronizer result
 	 */
 	public SynchronizerResult delete(int pageId) {
@@ -738,13 +756,20 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#loadIndex(org.rogatio.circlead.model.WorkitemType)
+	 * @see
+	 * org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#loadIndex(org.
+	 * rogatio.circlead.model.WorkitemType)
 	 */
 	public List<String> loadIndex(WorkitemType workitemType) {
 		String type = workitemType.getName().toLowerCase();
 		ArrayList<String> fileIndex = new ArrayList<String>();
 
-		logger.info("Loading Index from system '" + confluenceClient.getSysteminfo().getContent() + "'");
+		try {
+			logger.info("Loading Index from system '" + confluenceClient.getSysteminfo().getContent() + "'");
+		} catch (Exception e) {
+			logger.info("Loading Index from system '" + URL + "'");
+		}
+
 		SynchronizerResult results = confluenceClient.search("label = \"" + type + "\"");
 
 		ObjectMapper mapper = new ObjectMapper();
@@ -759,7 +784,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 						ht.setType(type);
 						ht.setId(result.getContent().getId());
 						ht.setTitle(new String(result.getContent().getTitle().trim().getBytes(), "UTF-8"));
-						ht.setUrl("wiki/rest/api/content/" + type + "/" + result.getContent().getId());
+						ht.setUrl(confluenceClient.getRestPrefix()+"content/" + type + "/" + result.getContent().getId());
 						fileIndex.add(ht.toString());
 						logger.debug("Found HowTo '" + ht.getTitle() + "' with '" + this.toString() + "'");
 					} else if (type.equals("report")) {
@@ -768,11 +793,11 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 						ht.setType(type);
 						ht.setId(result.getContent().getId());
 						ht.setTitle(new String(result.getContent().getTitle().trim().getBytes(), "UTF-8"));
-						ht.setUrl("wiki/rest/api/content/" + type + "/" + result.getContent().getId());
+						ht.setUrl(confluenceClient.getRestPrefix()+"content/" + type + "/" + result.getContent().getId());
 						fileIndex.add(ht.toString());
 						logger.debug("Found Report '" + ht.getTitle() + "' with '" + this.toString() + "'");
 					} else {
-						fileIndex.add(URL + "wiki/rest/api/content/" + type + "/" + result.getContent().getId());
+						fileIndex.add(URL + confluenceClient.getRestPrefix()+"content/" + type + "/" + result.getContent().getId());
 					}
 				}
 			}
@@ -787,8 +812,11 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		return fileIndex;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#getRenderer()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#getRenderer()
 	 */
 	@Override
 	public ISynchronizerRenderer getRenderer() {
