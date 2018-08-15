@@ -1,29 +1,47 @@
+/*
+ * Circlead - Develop and structure evolutionary Organisations
+ * 
+ * @author Matthias Wegner
+ * @version 0.1
+ * @since 01.07.2018
+ * 
+ */
 package org.rogatio.circlead.control.synchronizer.atlassian.parser;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+/**
+ * The Class StatusParserElement.
+ */
 public class StatusParserElement implements IParserElement {
 
+	/** The status. */
 	private String status;
 
+	/**
+	 * Instantiates a new status parser element.
+	 *
+	 * @param text the text
+	 */
 	public StatusParserElement(Object text) {
 		parse(text);
 	}
 
+	/**
+	 * Parses the.
+	 *
+	 * @param text the text
+	 */
 	private void parse(Object text) {
 		if (text instanceof Element) {
 			Element e = (Element) text;
 
 			Elements tag = e.getElementsByAttributeValue("ac:name", "title");
 
-//			System.out.println("T" + tag.toString());
-
 			if (tag.size() > 0) {
-//				System.out.println("D " + e.text());
 				status = tag.text().trim();
 			} else {
-//				System.out.println("E " + e.text());
 				status = e.text();
 			}
 		} else {
@@ -31,6 +49,9 @@ public class StatusParserElement implements IParserElement {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	public String toString() {
 		return status;
 	}

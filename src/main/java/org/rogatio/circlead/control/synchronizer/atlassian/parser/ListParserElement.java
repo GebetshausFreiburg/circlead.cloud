@@ -1,3 +1,11 @@
+/*
+ * Circlead - Develop and structure evolutionary Organisations
+ * 
+ * @author Matthias Wegner
+ * @version 0.1
+ * @since 01.07.2018
+ * 
+ */
 package org.rogatio.circlead.control.synchronizer.atlassian.parser;
 
 import java.util.ArrayList;
@@ -9,18 +17,37 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.rogatio.circlead.util.StringUtil;
 
+/**
+ * The Class ListParserElement.
+ */
 public class ListParserElement implements IParserElement {
 
+	/** The list. */
 	List<String> list = new ArrayList<>();
 
+	/**
+	 * Instantiates a new list parser element.
+	 *
+	 * @param text the text
+	 */
 	public ListParserElement(Object text) {
 		parse(text);
 	}
 
+	/**
+	 * Gets the list.
+	 *
+	 * @return the list
+	 */
 	public List<String> getList() {
 		return list;
 	}
 
+	/**
+	 * Adds the items.
+	 *
+	 * @param elements the elements
+	 */
 	private void addItems(Elements elements) {
 		if (elements.size() > 0) {
 			Elements liElements = elements.get(0).getElementsByTag("li");
@@ -33,11 +60,22 @@ public class ListParserElement implements IParserElement {
 		}
 	}
 
+	/**
+	 * Contains list elements.
+	 *
+	 * @param element the element
+	 * @return true, if successful
+	 */
 	private boolean containsListElements(Element element) {
 		Elements elements = element.getElementsByTag("li");
 		return elements.size() > 0;
 	}
 
+	/**
+	 * Parses the.
+	 *
+	 * @param text the text
+	 */
 	private void parse(Object text) {
 		if (text instanceof Element) {
 			Element e = (Element) text;
@@ -74,6 +112,9 @@ public class ListParserElement implements IParserElement {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	public String toString() {
 		return list.toString();
 	}

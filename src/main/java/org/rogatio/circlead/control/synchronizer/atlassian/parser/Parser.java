@@ -1,3 +1,11 @@
+/*
+ * Circlead - Develop and structure evolutionary Organisations
+ * 
+ * @author Matthias Wegner
+ * @version 0.1
+ * @since 01.07.2018
+ * 
+ */
 package org.rogatio.circlead.control.synchronizer.atlassian.parser;
 
 import java.io.IOException;
@@ -35,8 +43,18 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * The Class Parser.
+ */
 public class Parser {
 
+	/**
+	 * Gets the page properties macro.
+	 *
+	 * @param content
+	 *            the content
+	 * @return the page properties macro
+	 */
 	public static Element getPagePropertiesMacro(Element content) {
 		Element macro = new Element("ac:structured-macro");
 		macro.attr("ac:name", "details");
@@ -46,36 +64,58 @@ public class Parser {
 		content.appendTo(body);
 		return macro;
 	}
-	
+
+	/**
+	 * Gets the jira macro.
+	 *
+	 * @param columns
+	 *            the columns
+	 * @param maximumIssues
+	 *            the maximum issues
+	 * @param jqlQuery
+	 *            the jql query
+	 * @param serverId
+	 *            the server id
+	 * @return the jira macro
+	 */
 	public static Element getJiraMacro(String columns, int maximumIssues, String jqlQuery, String serverId) {
 		Element macro = new Element("ac:structured-macro");
 		macro.attr("ac:name", "jira");
 		macro.attr("ac:schema-version", "1");
 		macro.attr("ac:macro-id", UUID.randomUUID().toString());
-		
+
 		Element param = macro.appendElement("ac:parameter");
 		param.attr("ac:name", "server");
 		param.appendText("System JIRA");
-		
+
 		param = macro.appendElement("ac:parameter");
 		param.attr("ac:name", "columns");
 		param.appendText(columns);
-		
+
 		param = macro.appendElement("ac:parameter");
 		param.attr("ac:name", "maximumIssues");
-		param.appendText(""+maximumIssues);
-		
+		param.appendText("" + maximumIssues);
+
 		param = macro.appendElement("ac:parameter");
 		param.attr("ac:name", "jqlQuery");
 		param.appendText(jqlQuery);
-		
+
 		param = macro.appendElement("ac:parameter");
 		param.attr("ac:name", "serverId");
 		param.appendText(serverId);
-		
+
 		return macro;
 	}
 
+	/**
+	 * Creates the data table.
+	 *
+	 * @param workitem
+	 *            the workitem
+	 * @param synchronizer
+	 *            the synchronizer
+	 * @return the element
+	 */
 	private static Element createDataTable(IWorkitem workitem, ISynchronizer synchronizer) {
 		Element table = new Element("table");
 
@@ -105,7 +145,7 @@ public class Parser {
 			addCommaList("HowTos", d.getHowtos(), table);
 			addDataPair("Status", Parser.getStatus(d.getStatus()), table);
 		}
-		
+
 		if (workitem instanceof Rolegroup) {
 			Rolegroup w = (Rolegroup) workitem;
 			RolegroupDataitem d = w.getDataitem();
@@ -116,7 +156,7 @@ public class Parser {
 			addDataPair("Vorgänger", d.getParent(), table);
 			addDataPair("Verantwortlicher", d.getResponsible(), table);
 			addDataPair("Zusammenfassung", d.getSummary(), table);
-//			addBulletList("Rollen", d.getRoles(), table);
+			// addBulletList("Rollen", d.getRoles(), table);
 			addDataPair("Status", Parser.getStatus(d.getStatus()), table);
 		}
 
@@ -133,17 +173,21 @@ public class Parser {
 		return table;
 	}
 
+	/**
+	 * Gets the data table.
+	 *
+	 * @param map
+	 *            the map
+	 * @return the data table
+	 */
 	public static Element getDataTable(Map<String, String> map) {
-		
+
 		Map<String, String> emptyMap = new HashMap<String, String>();
-		
+
 		emptyMap.put("Kürzel", "-");
-//		emptyMap.put("NAS", "-");
-//		emptyMap.put("Berechtigung", "-");
-//		emptyMap.put("Gemeinde", "-");
-		
-		if (map!=null) {
-			if (map.size()>0) {
+
+		if (map != null) {
+			if (map.size() > 0) {
 				Element table = new Element("table");
 				for (String key : map.keySet()) {
 					String value = map.get(key);
@@ -166,16 +210,34 @@ public class Parser {
 			}
 			return table;
 		}
-	//	return new Element("div").appendText("-");
 	}
-	
-	
+
+	/**
+	 * Adds the data pair.
+	 *
+	 * @param key
+	 *            the key
+	 * @param value
+	 *            the value
+	 * @param table
+	 *            the table
+	 */
 	private static void addDataPair(String key, Element value, Element table) {
 		Element tr = table.appendElement("tr");
 		tr.appendElement("th").appendText(key.trim());
 		tr.appendElement("td").append(value.toString().trim());
 	}
 
+	/**
+	 * Adds the comma list.
+	 *
+	 * @param key
+	 *            the key
+	 * @param dataList
+	 *            the data list
+	 * @param table
+	 *            the table
+	 */
 	private static void addCommaList(String key, List<String> dataList, Element table) {
 		if (dataList == null) {
 			dataList = new ArrayList<String>();
@@ -192,6 +254,16 @@ public class Parser {
 
 	}
 
+	/**
+	 * Adds the bullet list.
+	 *
+	 * @param key
+	 *            the key
+	 * @param dataList
+	 *            the data list
+	 * @param table
+	 *            the table
+	 */
 	private static void addBulletList(String key, List<String> dataList, Element table) {
 		Element tr = table.appendElement("tr");
 		tr.appendElement("th").appendText(key.trim());
@@ -204,6 +276,16 @@ public class Parser {
 		}
 	}
 
+	/**
+	 * Adds the data pair.
+	 *
+	 * @param key
+	 *            the key
+	 * @param value
+	 *            the value
+	 * @param table
+	 *            the table
+	 */
 	private static void addDataPair(String key, String value, Element table) {
 		if (value != null) {
 			Element tr = table.appendElement("tr");
@@ -212,6 +294,17 @@ public class Parser {
 		}
 	}
 
+	/**
+	 * Creates the page.
+	 *
+	 * @param workitem
+	 *            the workitem
+	 * @param spaceKey
+	 *            the space key
+	 * @param synchronizer
+	 *            the synchronizer
+	 * @return the page
+	 */
 	public static Page createPage(IWorkitem workitem, String spaceKey, ISynchronizer synchronizer) {
 		Element table = createDataTable(workitem, synchronizer);
 
@@ -248,6 +341,17 @@ public class Parser {
 		return page;
 	}
 
+	/**
+	 * Creates the page.
+	 *
+	 * @param report
+	 *            the report
+	 * @param spaceKey
+	 *            the space key
+	 * @param synchronizer
+	 *            the synchronizer
+	 * @return the page
+	 */
 	public static Page createPage(IReport report, String spaceKey, ISynchronizer synchronizer) {
 		Page page = new Page();
 		page.setType("page");
@@ -261,7 +365,7 @@ public class Parser {
 		Storage storage = new Storage();
 		storage.setRepresentation("storage");
 		body.setStorage(storage);
-	
+
 		Element paragraph = new Element("div");
 		if (report instanceof IWorkitemRenderer) {
 			IWorkitemRenderer r = (IWorkitemRenderer) report;
@@ -275,14 +379,18 @@ public class Parser {
 		return page;
 	}
 
-	
+	/**
+	 * Gets the id from result.
+	 *
+	 * @param result
+	 *            the result
+	 * @return the id from result
+	 */
 	public static int getIdFromResult(String result) {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.setSerializationInclusion(Include.NON_NULL);
 			Results r = mapper.readValue(result, Results.class);
-
-			// System.out.println("IIID"+p.getId());
 
 			return Integer.parseInt(r.getResults().get(0).getContent().getId());
 		} catch (JsonParseException e) {
@@ -294,13 +402,18 @@ public class Parser {
 		return 0;
 	}
 
+	/**
+	 * Gets the id from page.
+	 *
+	 * @param page
+	 *            the page
+	 * @return the id from page
+	 */
 	public static int getIdFromPage(String page) {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.setSerializationInclusion(Include.NON_NULL);
 			Page p = mapper.readValue(page, Page.class);
-
-			// System.out.println("IIID"+p.getId());
 
 			return Integer.parseInt(p.getId());
 		} catch (JsonParseException e) {
@@ -312,6 +425,13 @@ public class Parser {
 		return 0;
 	}
 
+	/**
+	 * Gets the label metadata.
+	 *
+	 * @param re
+	 *            the re
+	 * @return the label metadata
+	 */
 	public static Metadata getLabelMetadata(IReport re) {
 		Metadata m = new Metadata();
 		Labels l = new Labels();
@@ -324,7 +444,14 @@ public class Parser {
 		m.setLabels(l);
 		return m;
 	}
-	
+
+	/**
+	 * Gets the label metadata.
+	 *
+	 * @param wi
+	 *            the wi
+	 * @return the label metadata
+	 */
 	public static Metadata getLabelMetadata(IWorkitem wi) {
 		Metadata m = new Metadata();
 		Labels l = new Labels();
@@ -338,6 +465,13 @@ public class Parser {
 		return m;
 	}
 
+	/**
+	 * Gets the label metadata.
+	 *
+	 * @param label
+	 *            the label
+	 * @return the label metadata
+	 */
 	public static Metadata getLabelMetadata(String label) {
 		Metadata m = new Metadata();
 		Labels l = new Labels();
@@ -351,6 +485,13 @@ public class Parser {
 		return m;
 	}
 
+	/**
+	 * Gets the expand macro.
+	 *
+	 * @param content
+	 *            the content
+	 * @return the expand macro
+	 */
 	public static Element getExpandMacro(Element content) {
 		Element macro = new Element("ac:structured-macro");
 		macro.attr("ac:name", "expand");
@@ -363,9 +504,16 @@ public class Parser {
 		return macro;
 	}
 
+	/**
+	 * Clean.
+	 *
+	 * @param element
+	 *            the element
+	 * @return the string
+	 */
 	public static String clean(Element element) {
 		String c = "";
-		// To avoid linebreak in atlassian html-tags the html needs to be "reduced".
+		// To avoid linebreak in atlassian html-content the html needs to be "reduced". If not it disable correct status-macro-rendering.
 		String[] lines = element.toString().split("[\\r\\n]+");
 		for (String string : lines) {
 			c += string.trim();
@@ -373,6 +521,13 @@ public class Parser {
 		return c;
 	}
 
+	/**
+	 * Gets the status parameter.
+	 *
+	 * @param statusId
+	 *            the status id
+	 * @return the status parameter
+	 */
 	private static WorkitemStatusParameter getStatusParameter(String statusId) {
 		WorkitemStatusParameter[] params = WorkitemStatusParameter.values();
 		for (WorkitemStatusParameter statusParameter : params) {
@@ -383,6 +538,13 @@ public class Parser {
 		return null;
 	}
 
+	/**
+	 * Gets the contacts.
+	 *
+	 * @param contacts
+	 *            the contacts
+	 * @return the contacts
+	 */
 	public static Element getContacts(List<ContactDataitem> contacts) {
 		Element div = new Element("div");
 
@@ -395,12 +557,18 @@ public class Parser {
 			addDataPair("Mail", contact.getMail(), table);
 			addDataPair("Mobil", contact.getMobile(), table);
 			addDataPair("Festnetz", contact.getPhone(), table);
-			// div.appendElement("br");
 		}
 
 		return div;
 	}
 
+	/**
+	 * Gets the status.
+	 *
+	 * @param title
+	 *            the title
+	 * @return the status
+	 */
 	public static Element getStatus(String title) {
 
 		String color = "Red";
