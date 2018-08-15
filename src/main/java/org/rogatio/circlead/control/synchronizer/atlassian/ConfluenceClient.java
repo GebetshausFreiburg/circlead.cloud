@@ -318,7 +318,7 @@ public class ConfluenceClient extends HttpClient {
 	}
 
 	/**
-	 * Search.
+	 * Search for content in confluence
 	 *
 	 * @param cql the cql
 	 * @return the synchronizer result
