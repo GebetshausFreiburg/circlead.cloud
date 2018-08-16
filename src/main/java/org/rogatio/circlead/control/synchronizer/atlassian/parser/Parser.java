@@ -35,6 +35,8 @@ import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
+import org.rogatio.circlead.util.ObjectUtil;
+import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.IReport;
 import org.rogatio.circlead.view.IWorkitemRenderer;
 
@@ -107,6 +109,74 @@ public class Parser {
 		return macro;
 	}
 
+	public static Element createHeaderTable(List<ActivityDataitem> activities, ISynchronizer synchronizer) {
+
+		if (!ObjectUtil.isListNotNullAndEmpty(activities)) {
+			Element e = new Element("p");
+			return e.appendText("-");
+		}
+
+		Element table = new Element("table");
+		table.attr("class", "wrapped");
+		Element tbody = table.appendElement("tbody");
+
+		Element tr = tbody.appendElement("tr");
+		tr.appendElement("th").attr("colspan", "1").appendText("Aid");
+		tr.appendElement("th").attr("colspan", "1").appendText("Aktivität");
+		tr.appendElement("th").attr("colspan", "1").appendText("Beschreibung");
+		tr.appendElement("th").attr("colspan", "1").appendText("Erwartetes Ergebnis");
+		tr.appendElement("th").attr("colspan", "1").appendText("Durchführender");
+		tr.appendElement("th").attr("colspan", "1").appendText("Unterstützer");
+		tr.appendElement("th").attr("colspan", "1").appendText("Berater");
+		tr.appendElement("th").attr("colspan", "1").appendText("Informierter");
+
+		for (ActivityDataitem activity : activities) {
+			tr = tbody.appendElement("tr");
+			if (StringUtil.isNotNullAndNotEmpty(activity.getAid())) {
+				tr.appendElement("td").attr("colspan", "1").appendText(activity.getAid());
+			} else {
+				tr.appendElement("td").attr("colspan", "1").appendText("");
+			}
+			if (StringUtil.isNotNullAndNotEmpty(activity.getTitle())) {
+				tr.appendElement("td").attr("colspan", "1").appendText(activity.getTitle());
+			} else {
+				tr.appendElement("td").attr("colspan", "1").appendText("");
+			}
+			if (StringUtil.isNotNullAndNotEmpty(activity.getDescription())) {
+				tr.appendElement("td").attr("colspan", "1").appendText(activity.getDescription());
+			} else {
+				tr.appendElement("td").attr("colspan", "1").appendText("");
+			}
+			if (StringUtil.isNotNullAndNotEmpty(activity.getResults())) {
+				tr.appendElement("td").attr("colspan", "1").appendText(activity.getResults());
+			} else {
+				tr.appendElement("td").attr("colspan", "1").appendText("");
+			}
+			if (StringUtil.isNotNullAndNotEmpty(activity.getResponsible())) {
+				tr.appendElement("td").attr("colspan", "1").appendText(activity.getResponsible());
+			} else {
+				tr.appendElement("td").attr("colspan", "1").appendText("");
+			}
+			if (ObjectUtil.isListNotNullAndEmpty(activity.getSupplier())) {
+				tr.appendElement("td").attr("colspan", "1").appendText(StringUtil.join(activity.getSupplier()));
+			} else {
+				tr.appendElement("td").attr("colspan", "1").appendText("");
+			}
+			if (ObjectUtil.isListNotNullAndEmpty(activity.getConsultant())) {
+				tr.appendElement("td").attr("colspan", "1").appendText(StringUtil.join(activity.getConsultant()));
+			} else {
+				tr.appendElement("td").attr("colspan", "1").appendText("");
+			}
+			if (ObjectUtil.isListNotNullAndEmpty(activity.getInformed())) {
+				tr.appendElement("td").attr("colspan", "1").appendText(StringUtil.join(activity.getInformed()));
+			} else {
+				tr.appendElement("td").attr("colspan", "1").appendText("");
+			}
+		}
+
+		return table;
+	}
+
 	/**
 	 * Creates the data table.
 	 *
@@ -141,8 +211,16 @@ public class Parser {
 			Activity w = (Activity) workitem;
 			ActivityDataitem d = w.getDataitem();
 			addDataPair("Id", d.getIds(), table);
-			addDataPair("Rolle", d.getRole(), table);
+			addDataPair("Aid", d.getAid(), table);
+			addDataPair("Vorgänger", d.getParent(), table);
+			addDataPair("Beschreibung", d.getDescription(), table);
+			addDataPair("Erwartetes Ergebnis", d.getResults(), table);
+			addDataPair("Durchführender", d.getResponsible(), table);
+			addCommaList("Unterstützer", d.getSupplier(), table);
+			addCommaList("Berater", d.getConsultant(), table);
+			addCommaList("Informierte", d.getInformed(), table);
 			addCommaList("HowTos", d.getHowtos(), table);
+			addDataPair("Teilaktivitäten", Parser.createHeaderTable(d.getSubactivities(), synchronizer), table);
 			addDataPair("Status", Parser.getStatus(d.getStatus()), table);
 		}
 

@@ -397,7 +397,7 @@ public class Repository {
 	 * Gets the activities.
 	 *
 	 * @param roleIdentifier
-	 *            the role identifier
+	 *            the responsible role identifier
 	 * @return the activities
 	 */
 	public List<Activity> getActivities(String roleIdentifier) {
@@ -405,8 +405,8 @@ public class Repository {
 		for (IWorkitem workitem : workitems) {
 			if (workitem instanceof Activity) {
 				Activity a = (Activity) workitem;
-				if (StringUtil.isNotNullAndNotEmpty(a.getRoleIdentifier())) {
-					if (a.getRoleIdentifier().equals(roleIdentifier)) {
+				if (StringUtil.isNotNullAndNotEmpty(a.getResponsibleIdentifier())) {
+					if (a.getResponsibleIdentifier().equals(roleIdentifier)) {
 						if (!activityIdentifiers.contains(a)) {
 							activityIdentifiers.add(a);
 						}
@@ -499,6 +499,20 @@ public class Repository {
 		return counter == 1;
 	}
 
+	public List<Role> getRoles(List<String> roleIdentifiers) {
+		List<Role> foundRoles = new ArrayList<Role>();
+		if (roleIdentifiers==null) {
+			return foundRoles;
+		}
+		for (String identifier : roleIdentifiers) {
+			Role r = getRole(identifier);
+			if (r!=null) {
+				foundRoles.add(r);
+			}
+		}
+		return foundRoles;
+	}
+	
 	/**
 	 * Gets the role.
 	 *

@@ -8,37 +8,151 @@
  */
 package org.rogatio.circlead.model.data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.rogatio.circlead.util.StringUtil;
+
+import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaDescription;
+import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaTitle;
 
 /**
  * The Class ActivityDataitem.
  */
 public class ActivityDataitem extends DefaultDataitem {
 
-	/** The role. */
-	private String role;
+	/** The responsible. */
+	@JsonSchemaTitle("Responsible")
+	@JsonSchemaDescription("Responsible role")
+	private String responsible;
+
+	/** The accountable. */
+	@JsonSchemaTitle("Accountable")
+	@JsonSchemaDescription("Accountable role")
+	private String accountable;
+
+	/** The parent. */
+	private String parent;
 	
+	/** The subactivities. */
+	private List<ActivityDataitem> subactivities;
+	
+	/** The description. */
+	private String description;
+
+	/** The aid. */
+	private String aid;
+	
+	/** The results. */
+	private String results;
+
 	/** The howtos. */
 	private List<String> howtos;
+
+	/** The supplier. */
+	@JsonSchemaTitle("Supplier")
+	@JsonSchemaDescription("Supplier role")
+	private List<String> supplier = new ArrayList<String>();
+
+	/** The consultant. */
+	@JsonSchemaTitle("Consultant")
+	@JsonSchemaDescription("Consultant role")
+	private List<String> consultant = new ArrayList<String>();
+
+	/** The informed. */
+	@JsonSchemaTitle("Informed")
+	@JsonSchemaDescription("Informed role")
+	private List<String> informed = new ArrayList<String>();
 
 	/**
 	 * Gets the role.
 	 *
 	 * @return the role
 	 */
-	public String getRole() {
-		return role;
+	public String getResponsible() {
+		return responsible;
 	}
 
 	/**
 	 * Sets the role.
 	 *
-	 * @param role the new role
+	 * @param role
+	 *            the new role
 	 */
-	public void setRole(String role) {
-		this.role = role;
+	public void setResponsible(String role) {
+		this.responsible = role;
+	}
+
+	/**
+	 * Gets the accountable.
+	 *
+	 * @return the accountable
+	 */
+	public String getAccountable() {
+		return accountable;
+	}
+
+	/**
+	 * Sets the accountable.
+	 *
+	 * @param accountable the new accountable
+	 */
+	public void setAccountable(String accountable) {
+		this.accountable = accountable;
+	}
+
+	/**
+	 * Gets the supplier.
+	 *
+	 * @return the supplier
+	 */
+	public List<String> getSupplier() {
+		return supplier;
+	}
+
+	/**
+	 * Sets the supplier.
+	 *
+	 * @param supplier the new supplier
+	 */
+	public void setSupplier(List<String> supplier) {
+		this.supplier = supplier;
+	}
+
+	/**
+	 * Gets the consultant.
+	 *
+	 * @return the consultant
+	 */
+	public List<String> getConsultant() {
+		return consultant;
+	}
+
+	/**
+	 * Sets the consultant.
+	 *
+	 * @param consultant the new consultant
+	 */
+	public void setConsultant(List<String> consultant) {
+		this.consultant = consultant;
+	}
+
+	/**
+	 * Gets the informed.
+	 *
+	 * @return the informed
+	 */
+	public List<String> getInformed() {
+		return informed;
+	}
+
+	/**
+	 * Sets the informed.
+	 *
+	 * @param informed the new informed
+	 */
+	public void setInformed(List<String> informed) {
+		this.informed = informed;
 	}
 
 	/**
@@ -53,10 +167,101 @@ public class ActivityDataitem extends DefaultDataitem {
 	/**
 	 * Sets the howtos.
 	 *
-	 * @param howtos the new howtos
+	 * @param howtos
+	 *            the new howtos
 	 */
 	public void setHowtos(List<String> howtos) {
 		this.howtos = StringUtil.clean(howtos);
 	}
 
+	/**
+	 * Gets the description.
+	 *
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * Sets the description.
+	 *
+	 * @param description the new description
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	/**
+	 * Gets the results.
+	 *
+	 * @return the results
+	 */
+	public String getResults() {
+		return results;
+	}
+
+	/**
+	 * Sets the results.
+	 *
+	 * @param results the new results
+	 */
+	public void setResults(String results) {
+		this.results = results;
+	}
+
+	/**
+	 * Gets the aid.
+	 *
+	 * @return the aid
+	 */
+	public String getAid() {
+		return aid;
+	}
+
+	/**
+	 * Sets the aid.
+	 *
+	 * @param aid the new aid
+	 */
+	public void setAid(String aid) {
+		this.aid = aid;
+	}
+
+	/**
+	 * Gets the parent.
+	 *
+	 * @return the parent
+	 */
+	public String getParent() {
+		return parent;
+	}
+
+	/**
+	 * Sets the parent.
+	 *
+	 * @param parent the new parent
+	 */
+	public void setParent(String parent) {
+		this.parent = parent;
+	}
+
+	/**
+	 * Gets the subactivities.
+	 *
+	 * @return the subactivities
+	 */
+	public List<ActivityDataitem> getSubactivities() {
+		return subactivities;
+	}
+
+	/**
+	 * Sets the subactivities.
+	 *
+	 * @param subactivities the new subactivities
+	 */
+	public void setSubactivities(List<ActivityDataitem> subactivities) {
+		this.subactivities = subactivities;
+	}
+	
 }

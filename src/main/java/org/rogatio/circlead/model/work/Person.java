@@ -17,7 +17,7 @@ import org.rogatio.circlead.control.IValidator;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.ValidationMessage;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
-import org.rogatio.circlead.control.synchronizer.atlassian.parser.TablesParserElement;
+import org.rogatio.circlead.control.synchronizer.atlassian.parser.PairTableParserElement;
 import org.rogatio.circlead.model.data.ContactDataitem;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.PersonDataitem;
@@ -117,7 +117,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	 * @param contactTables
 	 *            the new data
 	 */
-	public void setData(TablesParserElement contactTables) {
+	public void setData(PairTableParserElement contactTables) {
 		this.getDataitem().setData(contactTables.getData());
 	}
 
@@ -136,7 +136,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	 * @param contactTables
 	 *            the new contacts
 	 */
-	public void setContacts(TablesParserElement contactTables) {
+	public void setContacts(PairTableParserElement contactTables) {
 		this.getDataitem().setContacts(contactTables.getContacts());
 	}
 

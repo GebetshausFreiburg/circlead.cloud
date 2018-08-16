@@ -31,12 +31,34 @@ public class StringUtil {
 	public static String join(List<String> list) {
 		return String.join(",", list);
 	}
-	
+
+	public static List<String> toList(String string) {
+		List<String> identifiers = new ArrayList<String>();
+
+		if (StringUtil.isNotNullAndNotEmpty(string)) {
+
+			if (string.contains(",")) {
+				String[] i = string.split(",");
+				for (int j = 0; j < i.length; j++) {
+					String id = i[j];
+					identifiers.add(id);
+				}
+			} else {
+				identifiers.add(string);
+			}
+
+			return identifiers;
+		}
+		return null;
+	}
+
 	/**
 	 * Count matches in string of given symbol
 	 *
-	 * @param string the string
-	 * @param symbol the symbol
+	 * @param string
+	 *            the string
+	 * @param symbol
+	 *            the symbol
 	 * @return the int
 	 */
 	public static int countMatches(String string, String symbol) {
@@ -48,17 +70,19 @@ public class StringUtil {
 	/**
 	 * Beautify a string by setting first letter to upper case
 	 *
-	 * @param s the s
+	 * @param s
+	 *            the s
 	 * @return the string
 	 */
 	public static String beautify(String s) {
-		return s.substring(0,1).toUpperCase()+s.substring(1, s.length());
+		return s.substring(0, 1).toUpperCase() + s.substring(1, s.length());
 	}
-	
+
 	/**
 	 * Checks if string is not null and not empty.
 	 *
-	 * @param s the s
+	 * @param s
+	 *            the s
 	 * @return true, if is not null and not empty
 	 */
 	public static boolean isNotNullAndNotEmpty(String s) {
@@ -73,7 +97,8 @@ public class StringUtil {
 	/**
 	 * Clean a list, so no null and empty value is inside. If null a empty list is returned.
 	 *
-	 * @param rawList the raw list
+	 * @param rawList
+	 *            the raw list
 	 * @return the list
 	 */
 	public static List<String> clean(List<String> rawList) {
@@ -91,7 +116,8 @@ public class StringUtil {
 	/**
 	 * Converts a string to a int value if possible. If exception occurs int is set to 0.
 	 *
-	 * @param value the value
+	 * @param value
+	 *            the value
 	 * @return the int
 	 */
 	public static int toInt(String value) {
@@ -108,7 +134,8 @@ public class StringUtil {
 	/**
 	 * Converts a xml-date to an java.util.Date, i.e. "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
 	 *
-	 * @param date the date
+	 * @param date
+	 *            the date
 	 * @return the date
 	 */
 	public static Date toDate(String date, String f) {
@@ -124,12 +151,13 @@ public class StringUtil {
 	/**
 	 * Converts a java.util.Date to a xml-representation of a date
 	 *
-	 * @param date the date
+	 * @param date
+	 *            the date
 	 * @return the string
 	 */
 	public static String fromDate(Date date, String f) {
 		DateFormat format = new SimpleDateFormat(f, Locale.GERMANY);
 		return format.format(date);
 	}
-	
+
 }

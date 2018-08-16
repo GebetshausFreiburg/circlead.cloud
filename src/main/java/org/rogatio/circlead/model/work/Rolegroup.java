@@ -139,60 +139,7 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 	public void setResponsibleIdentifier(String identifier) {
 		this.getDataitem().setResponsible(identifier);
 	}
-	//
-	// /**
-	// * Gets the role identifiers.
-	// *
-	// * @return the role identifiers
-	// */
-	// public List<String> getRoleIdentifiers() {
-	// return getDataitem().getRoles();
-	// }
-	//
-	// /**
-	// * Adds the role.
-	// *
-	// * @param role
-	// * the role
-	// */
-	// public void addRole(Role role) {
-	// this.getDataitem().addRole(role);
-	// }
-	//
-	// /**
-	// * Sets the role identifiers.
-	// *
-	// * @param identifiers
-	// * the new role identifiers
-	// */
-	// public void setRoleIdentifiers(List<String> identifiers) {
-	// this.getDataitem().setRoles(identifiers);
-	// }
-
-	// public void setRoleIdentifiers(ListParserElement element) {
-	// this.setRoleIdentifiers(element.getList());
-	// }
-
-	/*
-	 * public List<Person> getPersons() { List<String> roleNames = getRoleIdentifiers(); List<Person> persons = new ArrayList<Person>(); for (String roleName :
-	 * roleNames) { Role r = Roles.getInstance().getRole(roleName); if (r != null) { List<String> ps = r.getPersonIdentifiers(); for (String p : ps) { if
-	 * (!persons.contains(p)) { Person per = Persons.getInstance().getPerson(p); if (per != null) { persons.add(per); } } } } }
-	 * 
-	 * return persons; }
-	 * 
-	 * public List<String> getPersonIdentifiers() { List<String> roleNames = getRoleIdentifiers(); List<String> persons = new ArrayList<String>(); for (String
-	 * roleName : roleNames) { Role r = Roles.getInstance().getRole(roleName); if (r != null) { List<String> ps = r.getPersonIdentifiers(); for (String p : ps)
-	 * { if (!persons.contains(p)) { persons.add(p); } } } }
-	 * 
-	 * return persons; }
-	 * 
-	 * public int getPersonSize() { List<String> roleNames = getRoleIdentifiers(); List<String> persons = new ArrayList<String>(); for (String roleName :
-	 * roleNames) { Role r = Roles.getInstance().getRole(roleName); if (r != null) { List<String> ps = r.getPersonIdentifiers(); for (String p : ps) { if
-	 * (!persons.contains(p)) { persons.add(p); } } } }
-	 * 
-	 * return persons.size(); }
-	 */
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 

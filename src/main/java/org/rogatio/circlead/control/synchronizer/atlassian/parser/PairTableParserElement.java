@@ -20,7 +20,7 @@ import org.rogatio.circlead.model.data.ContactDataitem;
 /**
  * The Class TablesParserElement.
  */
-public class TablesParserElement implements IParserElement {
+public class PairTableParserElement implements IParserElement {
 
 	/**
 	 * Instantiates a new tables parser element.
@@ -28,7 +28,7 @@ public class TablesParserElement implements IParserElement {
 	 * @param text
 	 *            the text
 	 */
-	public TablesParserElement(Object text) {
+	public PairTableParserElement(Object text) {
 		parse(text);
 	}
 

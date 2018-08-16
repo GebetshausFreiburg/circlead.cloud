@@ -38,6 +38,8 @@ public class Sync {
 	 *            the arguments
 	 */
 	public static void main(String[] args) {
+		List<SynchronizerResult> results = null;
+
 		Repository repository = Repository.getInstance();
 
 		/* Add both syncronizers. One for atlassian-confluence for space 'CIRCLEAD' and one for the Filesystem in folder 'data' */
@@ -60,7 +62,7 @@ public class Sync {
 		repository.loadIndexReports();
 
 		/* Re-Render loaded data back to set interfaces. Update pages in confluence and writes html-pages to local folder 'web' */
-		repository.updateWorkitems();
+		results = repository.updateWorkitems();
 
 		/* Add report-handler */
 		if (repository.getRolegroups().size() > 0) {
@@ -75,17 +77,8 @@ public class Sync {
 		repository.addReport(new PersonListReport());
 
 		/* Rewrite Reports */
-		//repository.addReports();
-
-		List<SynchronizerResult> results = repository.updateReports();
-		/*if (results != null) {
-			for (SynchronizerResult synchronizerResult : results) {
-				if (synchronizerResult != null) {
-					logger.debug(synchronizerResult.getMessage() + ": " + synchronizerResult.getCode() + " - " + synchronizerResult.getContent());
-				}
-			}
-		}*/
-
+		// repository.addReports();
+		results = repository.updateReports();
 	}
 
 }
