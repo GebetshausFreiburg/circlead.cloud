@@ -151,6 +151,8 @@ public interface ISynchronizerRenderer {
 	 */
 	public void addItem(Element element, String description, List<String> list);
 
+	public void addActivityItem(Element element, String description, String content);
+	
 	/**
 	 * Adds the role item.
 	 *

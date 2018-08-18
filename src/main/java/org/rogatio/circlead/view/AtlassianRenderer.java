@@ -384,6 +384,25 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 		}
 	}
 
+	public void addActivityItem(Element element, String description, String content) {
+		Activity r = Repository.getInstance().getActivity(content);
+
+		Element div = element.appendElement("div");
+		if (description != null) {
+			div.appendElement("b").appendText(description);
+			div.appendText(":").append("&nbsp;");
+		}
+		if (content != null) {
+			if (r != null) {
+				div.appendElement("ac:link").append("<ri:page ri:content-title=\"" + r.getTitle() + "\" ri:version-at-save=\"1\" />");
+			} else {
+				div.appendText(content);
+			}
+		} else {
+			div.appendText("-");
+		}
+	}
+
 	/**
 	 * Adds the role item.
 	 *
@@ -398,8 +417,10 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 		Role r = Repository.getInstance().getRole(content);
 
 		Element div = element.appendElement("div");
-		div.appendElement("b").appendText(description);
-		div.appendText(":").append("&nbsp;");
+		if (description != null) {
+			div.appendElement("b").appendText(description);
+			div.appendText(":").append("&nbsp;");
+		}
 		if (content != null) {
 			if (r != null) {
 				div.appendElement("ac:link").append("<ri:page ri:content-title=\"" + r.getTitle() + "\" ri:version-at-save=\"1\" />");

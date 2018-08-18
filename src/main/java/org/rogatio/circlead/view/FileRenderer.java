@@ -404,6 +404,25 @@ public class FileRenderer implements ISynchronizerRenderer {
 		}
 	}
 
+	public void addActivityItem(Element element, String description, String content) {
+		Activity r = Repository.getInstance().getActivity(content);
+
+		Element div = element.appendElement("div");
+		if (description != null) {
+			div.appendElement("b").appendText(description);
+			div.appendText(":").append("&nbsp;");
+		}
+		if (content != null) {
+			if (r != null) {
+				div.appendElement("a").attr("href", r.getId(synchronizer) + ".html").appendText(r.getTitle());
+			} else {
+				div.appendText(content);
+			}
+		} else {
+			div.appendText("-");
+		}
+	}
+
 	/**
 	 * Adds the role item.
 	 *
@@ -418,8 +437,10 @@ public class FileRenderer implements ISynchronizerRenderer {
 		Role r = Repository.getInstance().getRole(content);
 
 		Element div = element.appendElement("div");
-		div.appendElement("b").appendText(description);
-		div.appendText(":").append("&nbsp;");
+		if (description != null) {
+			div.appendElement("b").appendText(description);
+			div.appendText(":").append("&nbsp;");
+		}
 		if (content != null) {
 			if (r != null) {
 				div.appendElement("a").attr("href", r.getId(synchronizer) + ".html").appendText(r.getTitle());

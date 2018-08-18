@@ -80,7 +80,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	}
 
 	/**
-	 * Gets the space key.
+	 * Gets the set key of circlead-space 
 	 *
 	 * @return the space key
 	 */
@@ -92,7 +92,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	 * Instantiates a new atlassian synchronizer.
 	 *
 	 * @param spaceKey
-	 *            the space key
+	 *            the key of the circlead space
 	 */
 	public AtlassianSynchronizer(String spaceKey) {
 		circleadSpace = spaceKey;
@@ -108,11 +108,13 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	 */
 	@Override
 	public void init() {
+		// Initliaize the confluence client interface. Uses static parameters to secure credetials with gitignore
 		confluenceClient = new ConfluenceClient(URL, USER, PASSWORD, DEDICATEDSERVER);
 	}
 
 	/**
-	 * Gets the single acestor list.
+	 * Gets the single acestor list. Is the parent page in confluence.
+	 * Page in confluence must be named similar to plural name of holded Workitem-Class
 	 *
 	 * @param wi
 	 *            the wi
@@ -154,14 +156,18 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	 */
 	@Override
 	public SynchronizerResult add(IReport report) throws SynchronizerException {
+		//Set actual used synchronizer to singleton. Is needed for correct finding and setting of id
 		SynchronizerFactory.getInstance().setActual(this);
 
+		// Create confluence-page-object from report
 		Page page = Parser.createPage(report, circleadSpace, this);
 
 		try {
+			// Create label for confluence-page
 			Metadata m = Parser.getLabelMetadata(report);
 			page.setMetadata(m);
 
+			// Set parent-oage to report
 			List<Ancestor> ancestors = new ArrayList<Ancestor>();
 			Ancestor a = new Ancestor();
 			a.setId(getAcestorId("report"));
@@ -170,17 +176,23 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 			ancestors.add(a);
 			page.setAncestors(ancestors);
 
+			// Instantiate Jackson-JSON_Mapper and create valid json-string
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.setSerializationInclusion(Include.NON_NULL);
 			String data = mapper.writeValueAsString(page);
 
+			//Post json to rest. Save response
 			SynchronizerResult res = confluenceClient.post(confluenceClient.getRestPrefix() + "content/", data);
+			
+			// return result
 			return res;
 		} catch (JsonProcessingException e) {
 			logger.error(e);
 		} catch (IOException e) {
 			logger.error(e);
 		}
+		
+		//return null if something went wrong
 		return null;
 	}
 
@@ -191,6 +203,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	 */
 	@Override
 	public SynchronizerResult add(IWorkitem workitem) throws SynchronizerException {
+		//Set actual used synchronizer to singleton. Is needed for correct finding and setting of id
 		SynchronizerFactory.getInstance().setActual(this);
 
 		Page page = Parser.createPage(workitem, circleadSpace, this);
@@ -225,6 +238,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	 */
 	@Override
 	public SynchronizerResult update(IWorkitem workitem) {
+		//Set actual used synchronizer to singleton. Is needed for correct finding and setting of id
 		SynchronizerFactory.getInstance().setActual(this);
 
 		Page page = Parser.createPage(workitem, circleadSpace, this);
@@ -266,6 +280,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	 */
 	@Override
 	public SynchronizerResult update(IReport report) {
+		//Set actual used synchronizer to singleton. Is needed for correct finding and setting of id
 		SynchronizerFactory.getInstance().setActual(this);
 
 		Page page = Parser.createPage(report, circleadSpace, this);
@@ -387,6 +402,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	 */
 	@Override
 	public IWorkitem get(String indexId) throws SynchronizerException {
+		//Set actual used synchronizer to singleton. Is needed for correct finding and setting of id
 		SynchronizerFactory.getInstance().setActual(this);
 
 		if (indexId.endsWith(".json")) {
@@ -553,8 +569,6 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 					activity.setModified(value.toString());
 				} else if (WorkitemParameter.HOWTOS.has(key)) {
 					activity.setHowTos(value.toString());
-				} else if (key.equalsIgnoreCase("Vorgänger")) {
-					activity.setParent(value.toString());
 				} else if (key.equalsIgnoreCase("Teilaktivitäten")) {
 					activity.setSubactivities((HeadTableParserElement) value);
 				} else if (key.equalsIgnoreCase("AID")) {
@@ -739,6 +753,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	 * @return the synchronizer result
 	 */
 	public SynchronizerResult delete(int pageId) {
+		//Set actual used synchronizer to singleton. Is needed for correct finding and setting of id
 		SynchronizerFactory.getInstance().setActual(this);
 		return confluenceClient.deletePage(pageId);
 	}

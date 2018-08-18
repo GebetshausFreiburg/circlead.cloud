@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.rogatio.circlead.control.IValidator;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.ValidationMessage;
@@ -244,25 +245,6 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 		this.getDataitem().setAccountable(roleIdentifier);
 	}
 
-	/**
-	 * Gets the parent.
-	 *
-	 * @return the parent
-	 */
-	public String getParent() {
-		return this.getDataitem().getParent();
-	}
-
-	/**
-	 * Sets the parent.
-	 *
-	 * @param parent
-	 *            the new parent
-	 */
-	public void setParent(String parent) {
-		this.getDataitem().setParent(parent);
-	}
-
 	public void setSubactivities(HeadTableParserElement table) {
 		this.setSubactivities(table.getActivities());
 	}
@@ -346,35 +328,62 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 		ISynchronizerRenderer renderer = synchronizer.getRenderer();
 
 		Element element = new Element("p");
-		renderer.addItem(element, "AID", this.getAid());
-		renderer.addItem(element, "Parent", this.getParent());
+		if (StringUtil.isNotNullAndNotEmpty(getAid())) {
+			renderer.addItem(element, "AID", this.getAid());
+		}
 
+		Activity a = Repository.getInstance().getActivityWithSubactivity(this.getTitle());
+		if (a != null) {
+			renderer.addActivityItem(element, "Übergeordnete Aktivität", a.getTitle());
+		}
+	
 		renderer.addH2(element, "Beteiligte Rollen");
-		renderer.addRoleItem(element, "Durchführender", this.getResponsibleIdentifier());
-		renderer.addRoleItem(element, "Rechenschaftsgebender", this.getAccountableIdentifier());
+		if (StringUtil.isNotNullAndNotEmpty(getResponsibleIdentifier())) {
+			renderer.addRoleItem(element, "Durchführender", this.getResponsibleIdentifier());
+		}
+
+		if (StringUtil.isNotNullAndNotEmpty(getAccountableIdentifier())) {
+			renderer.addRoleItem(element, "Rechenschaftsgebender", this.getAccountableIdentifier());
+		}
 
 		renderer.addItem(element, "Unterstützer:", "");
 		List<Role> roles = Repository.getInstance().getRoles(this.getSupplierIdentifiers());
 		renderer.addRoleList(element, roles);
 
-		renderer.addItem(element, "Berater:", "");
 		roles = Repository.getInstance().getRoles(this.getConsultantIdentifiers());
-		renderer.addRoleList(element, roles);
+		if (ObjectUtil.isListNotNullAndEmpty(roles)) {
+			renderer.addItem(element, "Berater:", "");
+			renderer.addRoleList(element, roles);
+		}
 
-		renderer.addItem(element, "Informierte:", "");
 		roles = Repository.getInstance().getRoles(this.getInformedIdentifiers());
-		renderer.addRoleList(element, roles);
+		if (ObjectUtil.isListNotNullAndEmpty(roles)) {
+			renderer.addItem(element, "Informierte:", "");
+			renderer.addRoleList(element, roles);
+		}
 
-		renderer.addH2(element, "Beschreibung");
-		renderer.addItem(element, this.getDescription());
+		if (StringUtil.isNotNullAndNotEmpty(this.getDescription())) {
+			renderer.addH2(element, "Beschreibung");
+			renderer.addItem(element, this.getDescription());
+		}
 
-		renderer.addH2(element, "Erwartetes Ergebnis");
-		renderer.addItem(element, this.getResults());
+		if (StringUtil.isNotNullAndNotEmpty(this.getResults())) {
+			renderer.addH2(element, "Erwartetes Ergebnis");
+			renderer.addItem(element, this.getResults());
+		}
 
 		if (ObjectUtil.isListNotNullAndEmpty(this.getSubactivities())) {
-			Parser.createHeaderTable(this.getSubactivities(), synchronizer).appendTo(element);
+			Element table = Parser.createHeaderTable(this.getSubactivities(), synchronizer, true);
+
+			/*
+			 * for (ActivityDataitem subactivity : getSubactivities()) { Activity a = Repository.getInstance().getActivity(subactivity.getTitle()); if (a !=
+			 * null) { Elements es = table.getElementsContainingText(subactivity.getTitle()); System.out.println(es); Element e = es.get(0); e.text("");
+			 * renderer.addActivityItem(e, null, subactivity.getTitle()); } }
+			 */
+
+			table.appendTo(element);
 		}
-		
+
 		List<HowTo> howtos = Repository.getInstance().getIndexHowTos();
 		if (this.getHowTos() != null) {
 			for (String ht : this.getHowTos()) {

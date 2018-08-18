@@ -480,7 +480,6 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		List<Activity> a = Repository.getInstance().getActivities(this.getTitle());
 
 		if (ObjectUtil.isListNotNullAndEmpty(this.getActivities())) {
-
 			if (ObjectUtil.isListNotNullAndEmpty(a)) {
 				List<String> alist = new ArrayList<String>();
 				for (String actRole : getActivities()) {

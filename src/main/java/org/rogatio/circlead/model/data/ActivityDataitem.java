@@ -30,9 +30,6 @@ public class ActivityDataitem extends DefaultDataitem {
 	@JsonSchemaTitle("Accountable")
 	@JsonSchemaDescription("Accountable role")
 	private String accountable;
-
-	/** The parent. */
-	private String parent;
 	
 	/** The subactivities. */
 	private List<ActivityDataitem> subactivities;
@@ -227,25 +224,7 @@ public class ActivityDataitem extends DefaultDataitem {
 	public void setAid(String aid) {
 		this.aid = aid;
 	}
-
-	/**
-	 * Gets the parent.
-	 *
-	 * @return the parent
-	 */
-	public String getParent() {
-		return parent;
-	}
-
-	/**
-	 * Sets the parent.
-	 *
-	 * @param parent the new parent
-	 */
-	public void setParent(String parent) {
-		this.parent = parent;
-	}
-
+	
 	/**
 	 * Gets the subactivities.
 	 *

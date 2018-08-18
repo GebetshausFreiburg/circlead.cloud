@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.jsoup.nodes.Element;
+import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.content.Body;
 import org.rogatio.circlead.control.synchronizer.atlassian.content.Labels;
@@ -109,7 +110,19 @@ public class Parser {
 		return macro;
 	}
 
-	public static Element createHeaderTable(List<ActivityDataitem> activities, ISynchronizer synchronizer) {
+	/**
+	 * Creates the header table for activity-subactivties. Is a critical method, because it renders master-data-table in atlassian confluence and render-result. If
+	 * this is changed or not correct it deletes master-data.
+	 *
+	 * @param activities
+	 *            the activities
+	 * @param synchronizer
+	 *            the synchronizer
+	 * @param activatedLinks
+	 *            the activated links
+	 * @return the element
+	 */
+	public static Element createHeaderTable(List<ActivityDataitem> activities, ISynchronizer synchronizer, boolean activatedLinks) {
 
 		if (!ObjectUtil.isListNotNullAndEmpty(activities)) {
 			Element e = new Element("p");
@@ -138,7 +151,13 @@ public class Parser {
 				tr.appendElement("td").attr("colspan", "1").appendText("");
 			}
 			if (StringUtil.isNotNullAndNotEmpty(activity.getTitle())) {
-				tr.appendElement("td").attr("colspan", "1").appendText(activity.getTitle());
+				Element td = tr.appendElement("td").attr("colspan", "1");
+				Activity a = Repository.getInstance().getActivity(activity.getTitle());
+				if ((a != null) && activatedLinks) {
+					synchronizer.getRenderer().addActivityItem(td, null, activity.getTitle());
+				} else {
+					td.attr("colspan", "1").appendText(activity.getTitle());
+				}
 			} else {
 				tr.appendElement("td").attr("colspan", "1").appendText("");
 			}
@@ -153,21 +172,32 @@ public class Parser {
 				tr.appendElement("td").attr("colspan", "1").appendText("");
 			}
 			if (StringUtil.isNotNullAndNotEmpty(activity.getResponsible())) {
-				tr.appendElement("td").attr("colspan", "1").appendText(activity.getResponsible());
+				Element td = tr.appendElement("td").attr("colspan", "1");
+				Role r = Repository.getInstance().getRole(activity.getResponsible());
+				if ((r != null) && activatedLinks) {
+					synchronizer.getRenderer().addRoleItem(td, null, activity.getResponsible());
+				} else {
+					td.attr("colspan", "1").appendText(activity.getResponsible());
+				}
 			} else {
 				tr.appendElement("td").attr("colspan", "1").appendText("");
 			}
 			if (ObjectUtil.isListNotNullAndEmpty(activity.getSupplier())) {
+				// addRoleListToTableCell(tr, activity.getSupplier(), synchronizer);
 				tr.appendElement("td").attr("colspan", "1").appendText(StringUtil.join(activity.getSupplier()));
+
 			} else {
 				tr.appendElement("td").attr("colspan", "1").appendText("");
 			}
 			if (ObjectUtil.isListNotNullAndEmpty(activity.getConsultant())) {
+				// addRoleListToTableCell(tr, activity.getConsultant(), synchronizer);
 				tr.appendElement("td").attr("colspan", "1").appendText(StringUtil.join(activity.getConsultant()));
+
 			} else {
 				tr.appendElement("td").attr("colspan", "1").appendText("");
 			}
 			if (ObjectUtil.isListNotNullAndEmpty(activity.getInformed())) {
+				// addRoleListToTableCell(tr, activity.getInformed(), synchronizer);
 				tr.appendElement("td").attr("colspan", "1").appendText(StringUtil.join(activity.getInformed()));
 			} else {
 				tr.appendElement("td").attr("colspan", "1").appendText("");
@@ -175,6 +205,29 @@ public class Parser {
 		}
 
 		return table;
+	}
+
+	/**
+	 * Not correctly working.
+	 * 
+		 * @param tr
+	 *            the tr
+	 * @param roleIdentifiers
+	 *            the role identifiers
+	 * @param synchronizer
+	 *            the synchronizer
+	 */
+	@Deprecated
+	private static void addRoleListToTableCell(Element tr, List<String> roleIdentifiers, ISynchronizer synchronizer) {
+		Element td = tr.appendElement("td").attr("colspan", "1");
+		int counter = 1;
+		for (String roleIdentifier : roleIdentifiers) {
+			synchronizer.getRenderer().addRoleItem(td, null, roleIdentifier);
+			if (counter < roleIdentifiers.size()) {
+				td.appendText(", ");
+			}
+			counter++;
+		}
 	}
 
 	/**
@@ -212,7 +265,7 @@ public class Parser {
 			ActivityDataitem d = w.getDataitem();
 			addDataPair("Id", d.getIds(), table);
 			addDataPair("Aid", d.getAid(), table);
-			addDataPair("Vorgänger", d.getParent(), table);
+			// addDataPair("Vorgänger", d.getParent(), table);
 			addDataPair("Beschreibung", d.getDescription(), table);
 			addDataPair("Erwartetes Ergebnis", d.getResults(), table);
 			addDataPair("Durchführender", d.getResponsible(), table);
@@ -220,7 +273,7 @@ public class Parser {
 			addCommaList("Berater", d.getConsultant(), table);
 			addCommaList("Informierte", d.getInformed(), table);
 			addCommaList("HowTos", d.getHowtos(), table);
-			addDataPair("Teilaktivitäten", Parser.createHeaderTable(d.getSubactivities(), synchronizer), table);
+			addDataPair("Teilaktivitäten", Parser.createHeaderTable(d.getSubactivities(), synchronizer, false), table);
 			addDataPair("Status", Parser.getStatus(d.getStatus()), table);
 		}
 

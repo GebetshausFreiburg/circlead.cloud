@@ -20,6 +20,7 @@ import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
 import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.WorkitemType;
+import org.rogatio.circlead.model.data.ActivityDataitem;
 import org.rogatio.circlead.model.data.HowTo;
 import org.rogatio.circlead.model.data.Report;
 import org.rogatio.circlead.model.work.Activity;
@@ -294,18 +295,17 @@ public class Repository {
 		return true;
 	}
 
-	
 	public List<String> getPersonDataValues(String key) {
 		List<String> abbr = new ArrayList<String>();
 		for (Person person : getPersons()) {
 			String a = person.getDataValue(key);
-			if (a!=null) {
+			if (a != null) {
 				abbr.add(a);
 			}
 		}
 		return abbr;
 	}
-	
+
 	/**
 	 * Gets the persons.
 	 *
@@ -501,18 +501,18 @@ public class Repository {
 
 	public List<Role> getRoles(List<String> roleIdentifiers) {
 		List<Role> foundRoles = new ArrayList<Role>();
-		if (roleIdentifiers==null) {
+		if (roleIdentifiers == null) {
 			return foundRoles;
 		}
 		for (String identifier : roleIdentifiers) {
 			Role r = getRole(identifier);
-			if (r!=null) {
+			if (r != null) {
 				foundRoles.add(r);
 			}
 		}
 		return foundRoles;
 	}
-	
+
 	/**
 	 * Gets the role.
 	 *
@@ -544,6 +544,54 @@ public class Repository {
 					}
 				}
 
+			}
+		}
+
+		return null;
+	}
+
+	public Activity getActivityWithSubactivity(String identifier) {
+		for (IWorkitem workitem : workitems) {
+			if (WorkitemType.ACTIVITY.isTypeOf(workitem)) {
+				Activity activity = (Activity) workitem;
+				List<ActivityDataitem> subactivities = activity.getSubactivities();
+				if (subactivities != null) {
+					for (ActivityDataitem activityDataitem : subactivities) {
+						if (activityDataitem.containsId(identifier)) {
+							return activity;
+						}
+						if (StringUtil.isNotNullAndNotEmpty(activity.getAid())) {
+							if (activityDataitem.getAid().equals(identifier)) {
+								return activity;
+							}
+						}
+						if (activityDataitem.getTitle().equals(identifier)) {
+							return activity;
+						}
+					}
+				}
+			}
+		}
+
+		return null;
+	}
+
+	public Activity getActivity(String identifier) {
+		for (IWorkitem workitem : workitems) {
+			if (WorkitemType.ACTIVITY.isTypeOf(workitem)) {
+				Activity activity = (Activity) workitem;
+
+				if (activity.containsId(identifier)) {
+					return activity;
+				}
+				if (StringUtil.isNotNullAndNotEmpty(activity.getAid())) {
+					if (activity.getAid().equals(identifier)) {
+						return activity;
+					}
+				}
+				if (activity.getTitle().equals(identifier)) {
+					return activity;
+				}
 			}
 		}
 
