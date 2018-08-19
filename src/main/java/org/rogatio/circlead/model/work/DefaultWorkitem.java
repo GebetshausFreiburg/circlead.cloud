@@ -13,14 +13,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
 
+import org.rogatio.circlead.control.Comparators;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.model.data.IDataitem;
-import org.rogatio.circlead.util.StringUtil;
 
 /**
  * The Class DefaultWorkitem.
  */
-public class DefaultWorkitem implements IWorkitem {
+public class DefaultWorkitem implements IWorkitem, Comparable<DefaultWorkitem> {
 
 	/**
 	 * Instantiates a new default workitem.
@@ -255,7 +255,7 @@ public class DefaultWorkitem implements IWorkitem {
 	}
 
 	/**
-	 * Contains id.
+	 * Checks if id is existent for any synchronizer
 	 *
 	 * @param id
 	 *            the id
@@ -266,10 +266,10 @@ public class DefaultWorkitem implements IWorkitem {
 	}
 
 	/**
-	 * Sets the id.
+	 * Sets the id's of the workitem as map. One id per synchronizer
 	 *
 	 * @param id
-	 *            the id
+	 *            the id-map.
 	 */
 	public void setId(HashMap<String, ISynchronizer> id) {
 		Vector<String> keys = new Vector<String>(id.keySet());
@@ -322,6 +322,14 @@ public class DefaultWorkitem implements IWorkitem {
 	@Override
 	public void setIds(HashMap<String, ISynchronizer> ids) {
 		this.getDataitem().setIds(ids);
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	@Override
+	public int compareTo(DefaultWorkitem o) {
+		return Comparators.TITLE.compare(this, o);
 	}
 
 }

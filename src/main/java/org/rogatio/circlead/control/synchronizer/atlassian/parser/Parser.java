@@ -111,8 +111,8 @@ public class Parser {
 	}
 
 	/**
-	 * Creates the header table for activity-subactivties. Is a critical method, because it renders master-data-table in atlassian confluence and render-result. If
-	 * this is changed or not correct it deletes master-data.
+	 * Creates the header table for activity-subactivties. Is a critical method, because it renders master-data-table in atlassian confluence and render-result.
+	 * If this is changed or not correct it deletes master-data.
 	 *
 	 * @param activities
 	 *            the activities
@@ -183,22 +183,29 @@ public class Parser {
 				tr.appendElement("td").attr("colspan", "1").appendText("");
 			}
 			if (ObjectUtil.isListNotNullAndEmpty(activity.getSupplier())) {
-				// addRoleListToTableCell(tr, activity.getSupplier(), synchronizer);
-				tr.appendElement("td").attr("colspan", "1").appendText(StringUtil.join(activity.getSupplier()));
-
+				if (!activatedLinks) {
+					tr.appendElement("td").attr("colspan", "1").appendText(StringUtil.join(activity.getSupplier()));
+				} else {
+					addRoleListToTableCell(tr, activity.getSupplier(), synchronizer);		
+				}
 			} else {
 				tr.appendElement("td").attr("colspan", "1").appendText("");
 			}
 			if (ObjectUtil.isListNotNullAndEmpty(activity.getConsultant())) {
-				// addRoleListToTableCell(tr, activity.getConsultant(), synchronizer);
-				tr.appendElement("td").attr("colspan", "1").appendText(StringUtil.join(activity.getConsultant()));
-
+				if (!activatedLinks) {
+					tr.appendElement("td").attr("colspan", "1").appendText(StringUtil.join(activity.getConsultant()));
+				} else {
+					addRoleListToTableCell(tr, activity.getConsultant(), synchronizer);		
+				}
 			} else {
 				tr.appendElement("td").attr("colspan", "1").appendText("");
 			}
 			if (ObjectUtil.isListNotNullAndEmpty(activity.getInformed())) {
-				// addRoleListToTableCell(tr, activity.getInformed(), synchronizer);
-				tr.appendElement("td").attr("colspan", "1").appendText(StringUtil.join(activity.getInformed()));
+				if (!activatedLinks) {
+					tr.appendElement("td").attr("colspan", "1").appendText(StringUtil.join(activity.getInformed()));
+				} else {
+					addRoleListToTableCell(tr, activity.getInformed(), synchronizer);		
+				}
 			} else {
 				tr.appendElement("td").attr("colspan", "1").appendText("");
 			}
@@ -208,25 +215,20 @@ public class Parser {
 	}
 
 	/**
-	 * Not correctly working.
 	 * 
-		 * @param tr
+	 * @param tr
 	 *            the tr
 	 * @param roleIdentifiers
 	 *            the role identifiers
 	 * @param synchronizer
 	 *            the synchronizer
 	 */
-	@Deprecated
 	private static void addRoleListToTableCell(Element tr, List<String> roleIdentifiers, ISynchronizer synchronizer) {
 		Element td = tr.appendElement("td").attr("colspan", "1");
-		int counter = 1;
+		Element ul = td.appendElement("ul");
 		for (String roleIdentifier : roleIdentifiers) {
-			synchronizer.getRenderer().addRoleItem(td, null, roleIdentifier);
-			if (counter < roleIdentifiers.size()) {
-				td.appendText(", ");
-			}
-			counter++;
+			Element li = ul.appendElement("li");
+			synchronizer.getRenderer().addRoleItem(li, null, roleIdentifier);
 		}
 	}
 

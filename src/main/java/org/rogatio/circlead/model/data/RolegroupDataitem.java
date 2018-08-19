@@ -16,6 +16,7 @@ import org.rogatio.circlead.util.StringUtil;
 import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaDescription;
 import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaTitle;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class RolegroupDataitem.
  */

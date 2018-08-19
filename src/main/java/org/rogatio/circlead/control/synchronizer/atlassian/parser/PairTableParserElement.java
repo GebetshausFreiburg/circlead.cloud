@@ -18,7 +18,7 @@ import org.jsoup.select.Elements;
 import org.rogatio.circlead.model.data.ContactDataitem;
 
 /**
- * The Class TablesParserElement.
+ * The Class TablesParserElement. Is used for process-tabel in activity with subactivities.
  */
 public class PairTableParserElement implements IParserElement {
 

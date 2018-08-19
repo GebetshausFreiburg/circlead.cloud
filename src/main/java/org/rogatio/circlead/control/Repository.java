@@ -10,6 +10,7 @@ package org.rogatio.circlead.control;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -63,6 +64,12 @@ public class Repository {
 	/** The connector. */
 	private Connector connector;
 
+	/**
+	 * Gets the roles.
+	 *
+	 * @param status the status
+	 * @return the roles
+	 */
 	public List<Role> getRoles(WorkitemStatusParameter status) {
 		List<Role> roles = new ArrayList<Role>();
 		if (Repository.getInstance().getRolegroups().size() > 0) {
@@ -76,6 +83,12 @@ public class Repository {
 		return roles;
 	}
 
+	/**
+	 * Gets the rolegroups.
+	 *
+	 * @param status the status
+	 * @return the rolegroups
+	 */
 	public List<Rolegroup> getRolegroups(WorkitemStatusParameter status) {
 		List<Rolegroup> rolegroups = new ArrayList<Rolegroup>();
 		if (Repository.getInstance().getRolegroups().size() > 0) {
@@ -283,9 +296,17 @@ public class Repository {
 				rolegroups.add((Rolegroup) workitem);
 			}
 		}
+		Collections.sort(rolegroups);
 		return rolegroups;
 	}
 
+	/**
+	 * Checks if is person data value entity.
+	 *
+	 * @param key the key
+	 * @param value the value
+	 * @return true, if is person data value entity
+	 */
 	public boolean isPersonDataValueEntity(String key, String value) {
 		for (String v : getPersonDataValues(key)) {
 			if (v.equalsIgnoreCase(value)) {
@@ -295,6 +316,12 @@ public class Repository {
 		return true;
 	}
 
+	/**
+	 * Gets the person data values.
+	 *
+	 * @param key the key
+	 * @return the person data values
+	 */
 	public List<String> getPersonDataValues(String key) {
 		List<String> abbr = new ArrayList<String>();
 		for (Person person : getPersons()) {
@@ -312,13 +339,14 @@ public class Repository {
 	 * @return the persons
 	 */
 	public List<Person> getPersons() {
-		List<Person> roles = new ArrayList<Person>();
+		List<Person> persons = new ArrayList<Person>();
 		for (IWorkitem workitem : workitems) {
 			if (WorkitemType.PERSON.isTypeOf(workitem)) {
-				roles.add((Person) workitem);
+				persons.add((Person) workitem);
 			}
 		}
-		return roles;
+		Collections.sort(persons);
+		return persons;
 	}
 
 	/**
@@ -333,6 +361,9 @@ public class Repository {
 				roles.add((Role) workitem);
 			}
 		}
+		
+		Collections.sort(roles);
+		
 		return roles;
 	}
 
@@ -360,6 +391,8 @@ public class Repository {
 
 	/**
 	 * Update workitems.
+	 *
+	 * @return the list
 	 */
 	public List<SynchronizerResult> updateWorkitems() {
 		List<SynchronizerResult> results = new ArrayList<SynchronizerResult>();
@@ -499,6 +532,12 @@ public class Repository {
 		return counter == 1;
 	}
 
+	/**
+	 * Gets the roles.
+	 *
+	 * @param roleIdentifiers the role identifiers
+	 * @return the roles
+	 */
 	public List<Role> getRoles(List<String> roleIdentifiers) {
 		List<Role> foundRoles = new ArrayList<Role>();
 		if (roleIdentifiers == null) {
@@ -533,8 +572,10 @@ public class Repository {
 						return role;
 					}
 				}
-				if (role.getTitle().equals(identifier)) {
-					return role;
+				if (identifier != null) {
+					if (role.getTitle().equals(identifier.trim())) {
+						return role;
+					}
 				}
 				if (role.getSynonyms() != null) {
 					for (String synonym : role.getSynonyms()) {
@@ -550,6 +591,12 @@ public class Repository {
 		return null;
 	}
 
+	/**
+	 * Gets the activity with subactivity.
+	 *
+	 * @param identifier the identifier
+	 * @return the activity with subactivity
+	 */
 	public Activity getActivityWithSubactivity(String identifier) {
 		for (IWorkitem workitem : workitems) {
 			if (WorkitemType.ACTIVITY.isTypeOf(workitem)) {
@@ -576,6 +623,12 @@ public class Repository {
 		return null;
 	}
 
+	/**
+	 * Gets the activity.
+	 *
+	 * @param identifier the identifier
+	 * @return the activity
+	 */
 	public Activity getActivity(String identifier) {
 		for (IWorkitem workitem : workitems) {
 			if (WorkitemType.ACTIVITY.isTypeOf(workitem)) {
@@ -678,6 +731,8 @@ public class Repository {
 
 	/**
 	 * Update reports.
+	 *
+	 * @return the list
 	 */
 	public List<SynchronizerResult> updateReports() {
 		List<SynchronizerResult> results = new ArrayList<SynchronizerResult>();

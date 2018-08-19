@@ -275,10 +275,20 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 		return messages;
 	}
 	
+	/**
+	 * Gets the synonyms.
+	 *
+	 * @return the synonyms
+	 */
 	public List<String> getSynonyms() {
 		return this.getDataitem().getSynonyms();
 	}
 	
+	/**
+	 * Sets the synonyms.
+	 *
+	 * @param synonyms the new synonyms
+	 */
 	public void setSynonyms(String synonyms) {
 		List<String> list = Arrays.asList(synonyms.split("[\\s,]+"));
 		this.setSynonyms(list);

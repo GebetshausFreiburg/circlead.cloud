@@ -29,6 +29,7 @@ import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.ISynchronizerRenderer;
 import org.rogatio.circlead.view.IWorkitemRenderer;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class Activity.
  */
@@ -51,6 +52,11 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 		super(dataitem);
 	}
 
+	/**
+	 * Instantiates a new activity.
+	 *
+	 * @param data the data
+	 */
 	public Activity(Map<String, String> data) {
 		this.dataitem = new ActivityDataitem();
 		this.setAid(data.get("Aid"));
@@ -245,6 +251,11 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 		this.getDataitem().setAccountable(roleIdentifier);
 	}
 
+	/**
+	 * Sets the subactivities.
+	 *
+	 * @param table the new subactivities
+	 */
 	public void setSubactivities(HeadTableParserElement table) {
 		this.setSubactivities(table.getActivities());
 	}

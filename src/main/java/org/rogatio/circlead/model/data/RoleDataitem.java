@@ -9,6 +9,7 @@
 package org.rogatio.circlead.model.data;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -80,7 +81,6 @@ public class RoleDataitem extends DefaultDataitem {
 	 * Instantiates a new role data.
 	 */
 	public RoleDataitem() {
-		// this.setId(UUID.randomUUID().toString());
 		this.setCreated(new Date());
 		this.setModified(new Date());
 	}
@@ -345,6 +345,7 @@ public class RoleDataitem extends DefaultDataitem {
 	 */
 	@JsonIgnore
 	public List<String> getPersonIdentifiers() {
+		Collections.sort(persons);
 		return persons;
 	}
 
@@ -467,18 +468,12 @@ public class RoleDataitem extends DefaultDataitem {
 		List<String> list = new ArrayList<String>();
 		
 		for (String person : persons) {
-
-//			if (!person.contains("[")) {
-//				person = person + " [active]";
-//			}
 			
 			int idx = person.indexOf("[");
 			if (idx != -1) {
 				String skill_status = person.substring(idx, person.length()).replace("[", "").replace("]", "").trim();
 
 				String fullname = person.substring(0, idx).trim();
-
-				// logger.debug("XXX: "+fullname);
 
 				if (skill_status.contains(",")) {
 					String[] values = skill_status.split(",");
@@ -492,30 +487,12 @@ public class RoleDataitem extends DefaultDataitem {
 						if (value.equals("100") || value.equals("75") || value.equals("50") || value.equals("25") || value.equals("0")) {
 							skills.put(fullname, value);
 						}
-
-						// StatusParameter[] statusParameters = StatusParameter.values();
-						// for (StatusParameter statusParameter : statusParameters) {
-						// if (statusParameter.isEquals(value)) {
 						WorkitemStatusParameter status = WorkitemStatusParameter.get(value);
 						if (status != null) {
 							value = status.getName();
 							representations.put(fullname, value.toLowerCase());
-							// }
-							// }
 						}
 
-						// if (value.equalsIgnoreCase("active") || value.equalsIgnoreCase("aktiv") || value.equalsIgnoreCase("inaktiv")
-						// || value.equalsIgnoreCase("inactive") || value.equalsIgnoreCase("temporary") || value.equalsIgnoreCase("fallback")) {
-						//
-						// if (value.equalsIgnoreCase("inaktiv")) {
-						// value = "inactive";
-						// }
-						//
-						// if (value.equalsIgnoreCase("aktiv")) {
-						// value = "active";
-						// }
-
-						// }
 					}
 				} else {
 					String value = skill_status.trim();
@@ -527,28 +504,13 @@ public class RoleDataitem extends DefaultDataitem {
 					if (value.equals("100") || value.equals("75") || value.equals("50") || value.equals("25") || value.equals("0")) {
 						skills.put(fullname, value);
 					}
-					// StatusParameter[] statusParameters = StatusParameter.values();
-					// for (StatusParameter statusParameter : statusParameters) {
-					// if (statusParameter.isEquals(value)) {
+
 					WorkitemStatusParameter status = WorkitemStatusParameter.get(value);
 					if (status != null) {
 						value = status.getName();
 						representations.put(fullname, value.toLowerCase());
 
 					}
-					// if (value.equalsIgnoreCase("active") || value.equalsIgnoreCase("aktiv") || value.equalsIgnoreCase("inaktiv")
-					// || value.equalsIgnoreCase("inactive") || value.equalsIgnoreCase("temporary") || value.equalsIgnoreCase("fallback")) {
-					//
-					// if (value.equalsIgnoreCase("inaktiv")) {
-					// value = "inactive";
-					// }
-					//
-					// if (value.equalsIgnoreCase("aktiv")) {
-					// value = "active";
-					// }
-					//
-					// representations.put(fullname, value.toLowerCase());
-					// }
 				}
 
 				list.add(fullname);
@@ -562,7 +524,7 @@ public class RoleDataitem extends DefaultDataitem {
 	}
 
 	/**
-	 * Gets the synonyms.
+	 * Gets the synonyms of the role title.
 	 *
 	 * @return the synonyms
 	 */

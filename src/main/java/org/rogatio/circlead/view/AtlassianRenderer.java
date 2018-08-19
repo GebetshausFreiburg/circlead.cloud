@@ -466,7 +466,7 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 
 		Element div = element.appendElement("div");
 		div.appendElement("b").appendText(description);
-		div.appendText(": ");
+		div.appendText(":").append("&nbsp;");
 		if (content != null) {
 			if (rg != null) {
 				div.appendElement("ac:link").append("<ri:page ri:content-title=\"" + rg.getTitle() + "\" ri:version-at-save=\"1\" />");

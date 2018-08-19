@@ -38,7 +38,8 @@ public class PersonDataitem extends DefaultDataitem {
 	/**
 	 * Sets the fullname.
 	 *
-	 * @param fullname the new fullname
+	 * @param fullname
+	 *            the new fullname
 	 */
 	public void setFullname(String fullname) {
 		if (fullname == null) {
@@ -58,10 +59,11 @@ public class PersonDataitem extends DefaultDataitem {
 			this.setFamilyname(parts[2]);
 		}
 
-		// this.setTitle(this.getFullname());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.model.data.DefaultDataitem#setTitle(java.lang.String)
 	 */
 	@Override
@@ -170,7 +172,9 @@ public class PersonDataitem extends DefaultDataitem {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.model.data.DefaultDataitem#getTitle()
 	 */
 	@Override

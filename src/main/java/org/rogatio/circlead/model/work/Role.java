@@ -459,6 +459,8 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		if (ObjectUtil.isListNotNullAndEmpty(this.getCompetences())) {
 			renderer.addH2(element, "Kompetenzen");
 			renderer.addList(element, this.getCompetences());
+
+			renderImplicitCompetence(this.getParentIdentifier(), element, renderer);
 		}
 
 		if (ObjectUtil.isListNotNullAndEmpty(this.getResponsibilities())) {
@@ -506,6 +508,28 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		}
 
 		return element;
+	}
+
+	/**
+	 * Render implicit competences. Recursive method which looks for role-parents. If parent exists and contains competences then render them.
+	 *
+	 * @param parentIdentifier the parent identifier
+	 * @param element the element
+	 * @param renderer the renderer
+	 */
+	private void renderImplicitCompetence(String parentIdentifier, Element element, ISynchronizerRenderer renderer) {
+		if (parentIdentifier != null) {
+			if (!parentIdentifier.equals(this.getTitle())) {
+				Role p = Repository.getInstance().getRole(parentIdentifier);
+				if (p != null) {
+					if (ObjectUtil.isListNotNullAndEmpty(p.getCompetences())) {
+						renderer.addRoleItem(element, "Implizit von", p.getTitle());
+						renderer.addList(element, p.getCompetences());
+					}
+					renderImplicitCompetence(p.getParentIdentifier(), element, renderer);
+				}
+			}
+		}
 	}
 
 	/**
@@ -564,12 +588,11 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			m.error("No unique abbreviation", "Role '" + this.getTitle() + "' has no unique abbreviation");
 			messages.add(m);
 		}
-		
-		/*if (this.getTitle().contains(" ")) {
-			ValidationMessage m = new ValidationMessage(this);
-			m.warning("Title has Whitespace", "Role '" + this.getTitle() + "' has whitespace in title");
-			messages.add(m);
-		}*/
+
+		/*
+		 * if (this.getTitle().contains(" ")) { ValidationMessage m = new ValidationMessage(this); m.warning("Title has Whitespace", "Role '" + this.getTitle()
+		 * + "' has whitespace in title"); messages.add(m); }
+		 */
 
 		if (!this.hasOrganisationIdentifier()) {
 			ValidationMessage m = new ValidationMessage(this);

@@ -24,8 +24,6 @@ import org.rogatio.circlead.model.data.PersonDataitem;
 import org.rogatio.circlead.view.ISynchronizerRenderer;
 import org.rogatio.circlead.view.IWorkitemRenderer;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 /**
  * The Class Person.
  */
@@ -48,10 +46,20 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		super(dataitem);
 	}
 
+	/**
+	 * Gets the familyname.
+	 *
+	 * @return the familyname
+	 */
 	public String getFamilyname() {
 		return this.getDataitem().getFamilyname();
 	}
 
+	/**
+	 * Gets the names.
+	 *
+	 * @return the names
+	 */
 	public String getNames() {
 		StringBuilder sb = new StringBuilder();
 		if (this.getDataitem().getFirstname() != null) {
@@ -92,6 +100,11 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		this.getDataitem().setContacts(contacts);
 	}
 
+	/**
+	 * Gets the first private contact.
+	 *
+	 * @return the first private contact
+	 */
 	public ContactDataitem getFirstPrivateContact() {
 		List<ContactDataitem> contacts = this.getDataitem().getContacts();
 		for (ContactDataitem contactDataitem : contacts) {
@@ -182,6 +195,13 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		return (PersonDataitem) dataitem;
 	}
 
+	/**
+	 * Gets the data value.
+	 *
+	 * @param dataKey
+	 *            the data key
+	 * @return the data value
+	 */
 	public String getDataValue(String dataKey) {
 		if (this.getData() != null) {
 			if (this.getData().containsKey(dataKey)) {
@@ -201,6 +221,11 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		return this.getDataitem().toString() + ", type=" + getType();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.rogatio.circlead.control.IValidator#validate()
+	 */
 	@Override
 	public List<ValidationMessage> validate() {
 		List<ValidationMessage> messages = new ArrayList<ValidationMessage>();

@@ -80,7 +80,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	}
 
 	/**
-	 * Gets the set key of circlead-space 
+	 * Gets the set key of circlead-space .
 	 *
 	 * @return the space key
 	 */

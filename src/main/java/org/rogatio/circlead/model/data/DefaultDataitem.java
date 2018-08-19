@@ -93,7 +93,6 @@ public class DefaultDataitem implements IDataitem {
 	 * Instantiates a new default dataitem.
 	 */
 	public DefaultDataitem() {
-		// this.setId(UUID.randomUUID().toString());
 		this.setCreated(new Date());
 		this.setModified(new Date());
 	}
