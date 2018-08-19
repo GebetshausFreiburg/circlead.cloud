@@ -11,8 +11,8 @@ This application synchronizes and merge all the data and write back simple html-
 The main-layers for the application are
 * Repository: Repository is a Singleton-Class. Its the backbone of the application. Contains all loaded data as workitems.
 * Connector: The connector contains all synchronizers. Enables loading, updating, deleting and adding of workitems.
-** FileSynchronizer: Read json-files from directory 'data' and writes back html-files to 'web'. Id of files is UUID-v4.
-** AtlassianSynchronizer: Read data from Confluence Pages in page-property-table (over rest with json) and writes back rendered confluence-content to same page appended after page-properties
+  * FileSynchronizer: Read json-files from directory 'data' and writes back html-files to 'web'. Id of files is UUID-v4.
+  * AtlassianSynchronizer: Read data from Confluence Pages in page-property-table (over rest with json) and writes back rendered confluence-content to same page appended after page-properties
 * Storage: Hold all data, content and reports. Default space in confluence is space 'circlead'.
 
 ![circlead-api](https://github.com/GebetshausFreiburg/circlead.cloud/blob/master/src/main/resources/circlead-api.jpg)
