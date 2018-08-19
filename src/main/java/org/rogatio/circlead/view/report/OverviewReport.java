@@ -6,7 +6,7 @@
  * @since 01.07.2018
  * 
  */
-package org.rogatio.circlead.view;
+package org.rogatio.circlead.view.report;
 
 import java.util.List;
 
@@ -16,6 +16,7 @@ import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.ObjectUtil;
+import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
 /**
  * The Class OverviewReport.
@@ -36,7 +37,7 @@ public class OverviewReport extends DefaultReport {
 	 */
 	@Override
 	public Element render(ISynchronizer synchronizer) {
-		ISynchronizerRenderer renderer = synchronizer.getRenderer();
+		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 		Element element = new Element("p");
 
 		element.append("<p style=\"page-break-before: always\">");

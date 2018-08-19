@@ -6,7 +6,7 @@
  * @since 01.07.2018
  * 
  */
-package org.rogatio.circlead.view;
+package org.rogatio.circlead.view.report;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +19,7 @@ import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.ObjectUtil;
+import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
 public class ReworkReport extends DefaultReport {
 
@@ -36,7 +37,7 @@ public class ReworkReport extends DefaultReport {
 	 */
 	@Override
 	public Element render(ISynchronizer synchronizer) {
-		ISynchronizerRenderer renderer = synchronizer.getRenderer();
+		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 		Element element = new Element("p");
 
 		List<Rolegroup> rolegroups = new ArrayList<Rolegroup>();

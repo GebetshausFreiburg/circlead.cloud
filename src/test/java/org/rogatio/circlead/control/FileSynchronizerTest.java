@@ -3,11 +3,11 @@ package org.rogatio.circlead.control;
 import java.util.List;
 import java.util.UUID;
 
-import org.rogatio.circlead.control.synchronizer.FileSynchronizer;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.SynchronizerException;
 import org.rogatio.circlead.control.synchronizer.SynchronizerFactory;
 import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
+import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.work.IWorkitem;
 

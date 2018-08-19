@@ -13,17 +13,17 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.jsoup.nodes.Element;
-import org.rogatio.circlead.control.IValidator;
 import org.rogatio.circlead.control.Repository;
-import org.rogatio.circlead.control.ValidationMessage;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.ListParserElement;
+import org.rogatio.circlead.control.validator.IValidator;
+import org.rogatio.circlead.control.validator.ValidationMessage;
 import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.RoleDataitem;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
-import org.rogatio.circlead.view.ISynchronizerRenderer;
+import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.IWorkitemRenderer;
 
 /**
@@ -430,7 +430,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	 */
 	@Override
 	public Element render(ISynchronizer synchronizer) {
-		ISynchronizerRenderer renderer = synchronizer.getRenderer();
+		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 
 		Element element = new Element("p");
 
@@ -517,7 +517,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	 * @param element the element
 	 * @param renderer the renderer
 	 */
-	private void renderImplicitCompetence(String parentIdentifier, Element element, ISynchronizerRenderer renderer) {
+	private void renderImplicitCompetence(String parentIdentifier, Element element, ISynchronizerRendererEngine renderer) {
 		if (parentIdentifier != null) {
 			if (!parentIdentifier.equals(this.getTitle())) {
 				Role p = Repository.getInstance().getRole(parentIdentifier);

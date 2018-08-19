@@ -6,7 +6,7 @@
  * @since 01.07.2018
  * 
  */
-package org.rogatio.circlead.control.synchronizer;
+package org.rogatio.circlead.control.synchronizer.file;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -24,6 +24,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.rogatio.circlead.control.synchronizer.DefaultSynchronizer;
+import org.rogatio.circlead.control.synchronizer.SynchronizerException;
+import org.rogatio.circlead.control.synchronizer.SynchronizerFactory;
+import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.data.ActivityDataitem;
 import org.rogatio.circlead.model.data.HowTo;
@@ -36,10 +40,10 @@ import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.FileUtil;
-import org.rogatio.circlead.view.FileRenderer;
-import org.rogatio.circlead.view.IReport;
-import org.rogatio.circlead.view.ISynchronizerRenderer;
+import org.rogatio.circlead.view.FileRendererEngine;
+import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.IWorkitemRenderer;
+import org.rogatio.circlead.view.report.IReport;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -541,7 +545,7 @@ public class FileSynchronizer extends DefaultSynchronizer {
 	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#getRenderer()
 	 */
 	@Override
-	public ISynchronizerRenderer getRenderer() {
-		return new FileRenderer(this);
+	public ISynchronizerRendererEngine getRenderer() {
+		return new FileRendererEngine(this);
 	}
 }

@@ -13,9 +13,9 @@ import java.util.Map;
 
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.Repository;
-import org.rogatio.circlead.control.ValidationMessage;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
-import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
+import org.rogatio.circlead.control.validator.ValidationMessage;
+//import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
 import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.data.HowTo;
 import org.rogatio.circlead.model.work.Activity;
@@ -26,20 +26,20 @@ import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.ObjectUtil;
 
 /**
- * The Class Atlassian Renderer allows rendering from object-data to html for atlassian-confluence including valid links.
+ * The Class RenderUtil.
  */
-public class AtlassianRenderer implements ISynchronizerRenderer {
+public class FileRendererEngine implements ISynchronizerRendererEngine {
 
-	/** The correlated synchronizer */
+	/** The synchronizer. */
 	private ISynchronizer synchronizer;
 
 	/**
-	 * Instantiates a new atlassian renderer.
+	 * Instantiates a new file renderer.
 	 *
 	 * @param synchronizer
 	 *            the synchronizer
 	 */
-	public AtlassianRenderer(ISynchronizer synchronizer) {
+	public FileRendererEngine(ISynchronizer synchronizer) {
 		this.synchronizer = synchronizer;
 	}
 
@@ -58,14 +58,33 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#addActivityList(org.jsoup.nodes.Element, java.util.List)
 	 */
 	public void addActivityList(Element element, List<Activity> list) {
-		if (ObjectUtil.isListNotNullAndEmpty(list)) {
-			// Open html-list
-			Element ul = element.appendElement("div").appendElement("ul");
-			for (Activity activity : list) {
-				// Create html-List-item
-				Element li = ul.appendElement("li");
-				// Add activity-title to list with valid link
-				li.appendElement("ac:link").append("<ri:page ri:content-title=\"" + activity.getTitle() + "\" ri:version-at-save=\"1\" />");
+		if (list != null) {
+			if (list.size() > 0) {
+				Element ul = element.appendElement("div").appendElement("ul");
+				for (Activity activity : list) {
+					Element li = ul.appendElement("li");
+					li.appendElement("a").attr("href", activity.getId(synchronizer) + ".html").appendText(activity.getTitle());
+				}
+			}
+		}
+	}
+
+	public void addWorkitemTable(Element element, List<IWorkitem> workitem) {
+		if (ObjectUtil.isListNotNullAndEmpty(workitem)) {
+			Element table = element.appendElement("div").appendElement("table");
+
+			Element tr = table.appendElement("tr");
+			tr.appendElement("th").appendText("Title");
+			tr.appendElement("th").appendText("Typ");
+			tr.appendElement("th").appendText("Status");
+
+			for (IWorkitem w : workitem) {
+				tr = table.appendElement("tr");
+				tr.appendElement("td").appendElement("a").attr("href", w.getId(synchronizer) + ".html").appendText(w.getTitle());
+				;
+				tr.appendElement("td").appendText(w.getType());
+				Element td = tr.appendElement("td");
+				addStatus(td, w.getStatus());
 			}
 		}
 	}
@@ -76,11 +95,13 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#addRolegroupList(org.jsoup.nodes.Element, java.util.List)
 	 */
 	public void addRolegroupList(Element element, List<Rolegroup> list) {
-		if (ObjectUtil.isListNotNullAndEmpty(list)) {
-			Element ul = element.appendElement("div").appendElement("ul");
-			for (Rolegroup rolegroup : list) {
-				Element li = ul.appendElement("li");
-				li.appendElement("ac:link").append("<ri:page ri:content-title=\"" + rolegroup.getTitle() + "\" ri:version-at-save=\"1\" />");
+		if (list != null) {
+			if (list.size() > 0) {
+				Element ul = element.appendElement("div").appendElement("ul");
+				for (Rolegroup rolegroup : list) {
+					Element li = ul.appendElement("li");
+					li.appendElement("a").attr("href", rolegroup.getId(synchronizer) + ".html").appendText(rolegroup.getTitle());
+				}
 			}
 		}
 	}
@@ -94,11 +115,15 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 	 *            the list
 	 */
 	public void addRoleList(Element element, List<Role> list) {
-		if (ObjectUtil.isListNotNullAndEmpty(list)) {
-			Element ul = element.appendElement("div").appendElement("ul");
-			for (Role role : list) {
-				Element li = ul.appendElement("li");
-				li.appendElement("ac:link").append("<ri:page ri:content-title=\"" + role.getTitle() + "\" ri:version-at-save=\"1\" />");
+		if (list != null) {
+			if (list.size() > 0) {
+				Element ul = element.appendElement("div").appendElement("ul");
+				for (Role role : list) {
+					Element li = ul.appendElement("li");
+					@SuppressWarnings("unused")
+					Role r = Repository.getInstance().getRole(role.getTitle());
+					li.appendElement("a").attr("href", role.getId(synchronizer) + ".html").appendText(role.getTitle());
+				}
 			}
 		}
 	}
@@ -114,31 +139,30 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 	 *            the person
 	 */
 	public void addRoleList(Element element, List<Role> list, Person person) {
-		if (ObjectUtil.isListNotNullAndEmpty(list)) {
-			Element ul = element.appendElement("div").appendElement("ul");
-			for (Role role : list) {
-				Element li = ul.appendElement("li");
-				Role r = Repository.getInstance().getRole(role.getTitle());
-				if (r != null) {
-					li.appendElement("ac:link").append("<ri:page ri:content-title=\"" + role.getTitle() + "\" ri:version-at-save=\"1\" />");
-
-				} else {
-					li.appendText(role.getTitle());
-				}
-
-				if (role.getDataitem().hasRepresentation(person.getFullname())) {
-					String representation = role.getDataitem().getRepresentation(person.getFullname());
-					WorkitemStatusParameter status = WorkitemStatusParameter.get(representation);
-					if (status != null) {
-						Element s = Parser.getStatus(status.getName());
-						li.append("&nbsp;");
-						s.appendTo(li);
+		if (list != null) {
+			if (list.size() > 0) {
+				Element ul = element.appendElement("div").appendElement("ul");
+				for (Role role : list) {
+					Element li = ul.appendElement("li");
+					Role r = Repository.getInstance().getRole(role.getTitle());
+					if (r != null) {
+						li.appendElement("a").attr("href", role.getId(synchronizer) + ".html").appendText(role.getTitle());
+					} else {
+						li.appendText(role.getTitle());
 					}
-				}
-				if (role.getDataitem().hasSkill(person.getFullname())) {
-					String skill = role.getDataitem().getSkill(person.getFullname());
-					li.append("&nbsp;");
-					li.appendText("" + skill + "%");
+
+					if (role.getDataitem().hasRepresentation(person.getFullname())) {
+						String representation = role.getDataitem().getRepresentation(person.getFullname());
+						WorkitemStatusParameter status = WorkitemStatusParameter.get(representation);
+						if (status != null) {
+							li.append("&nbsp;").appendElement("div").attr("id", "status" + status.getColor()).appendText(status.getName());
+						}
+					}
+					if (role.getDataitem().hasSkill(person.getFullname())) {
+						String skill = role.getDataitem().getSkill(person.getFullname());
+						li.append("&nbsp;");
+						li.appendText("" + skill + "%");
+					}
 				}
 			}
 		}
@@ -156,17 +180,14 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 	 */
 	private void addDataPair(String key, String value, Element table) {
 		if (value != null) {
-			// Add new row to html-table-element
 			Element tr = table.appendElement("tr");
-			// Add column to row with header-style
 			tr.appendElement("th").appendText(key.trim());
-			// Add column to row with cell-value-style
 			tr.appendElement("td").appendText(value.trim());
 		}
 	}
 
 	/**
-	 * Adds the html-table
+	 * Adds the table.
 	 *
 	 * @param element
 	 *            the element
@@ -182,19 +203,6 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 					addDataPair(key, value, table);
 				}
 			}
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#addStatus(org.jsoup.nodes.Element, java.lang.String)
-	 */
-	public void addStatus(Element element, String statusValue) {
-		WorkitemStatusParameter status = WorkitemStatusParameter.get(statusValue);
-		if (status != null) {
-			Element s = Parser.getStatus(status.getName());
-			s.appendTo(element);
 		}
 	}
 
@@ -214,7 +222,7 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 			Person person = Repository.getInstance().getPerson(identifier);
 			Element li = ul.appendElement("li");
 			if (person != null) {
-				li.appendElement("ac:link").append("<ri:page ri:content-title=\"" + person.getTitle() + "\" ri:version-at-save=\"1\" />");
+				li.appendElement("a").attr("href", person.getId(synchronizer) + ".html").appendText(person.getTitle());
 			} else {
 				li.appendText(identifier);
 			}
@@ -222,9 +230,7 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 				String representation = role.getDataitem().getRepresentation(identifier);
 				WorkitemStatusParameter status = WorkitemStatusParameter.get(representation);
 				if (status != null) {
-					Element s = Parser.getStatus(status.getName());
-					li.append("&nbsp;");
-					s.appendTo(li);
+					li.append("&nbsp;").appendElement("div").attr("id", "status" + status.getColor()).appendText(status.getName());
 				}
 			}
 			if (role.getDataitem().hasSkill(identifier)) {
@@ -234,6 +240,18 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 			}
 		}
 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#addStatus(org.jsoup.nodes.Element, java.lang.String)
+	 */
+	public void addStatus(Element element, String statusValue) {
+		WorkitemStatusParameter status = WorkitemStatusParameter.get(statusValue);
+		if (status != null) {
+			element.append("&nbsp;").appendElement("div").attr("id", "status" + status.getColor()).appendText(status.getName());
+		}
 	}
 
 	/**
@@ -256,10 +274,9 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 
 			if (person != null) {
 				if (identifier.equals(leadPerson)) {
-					li.appendElement("u").appendElement("ac:link")
-							.append("<ri:page ri:content-title=\"" + person.getTitle() + "\" ri:version-at-save=\"1\" />");
+					li.appendElement("u").appendElement("a").attr("href", person.getId(synchronizer) + ".html").appendText(person.getTitle());
 				} else {
-					li.appendElement("ac:link").append("<ri:page ri:content-title=\"" + person.getTitle() + "\" ri:version-at-save=\"1\" />");
+					li.appendElement("a").attr("href", person.getId(synchronizer) + ".html").appendText(person.getTitle());
 				}
 			} else {
 				if (identifier.equals(leadPerson)) {
@@ -272,9 +289,7 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 				String representation = role.getDataitem().getRepresentation(identifier);
 				WorkitemStatusParameter status = WorkitemStatusParameter.get(representation);
 				if (status != null) {
-					Element s = Parser.getStatus(status.getName());
-					li.append("&nbsp;");
-					s.appendTo(li);
+					li.append("&nbsp;").appendElement("div").attr("id", "status" + status.getColor()).appendText(status.getName());
 				}
 			}
 			if (role.getDataitem().hasSkill(identifier)) {
@@ -283,6 +298,7 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 				li.appendText("" + skill + "%");
 			}
 		}
+
 	}
 
 	/**
@@ -296,14 +312,16 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 	 *            the underlined element
 	 */
 	public void addList(Element element, List<String> list, String underlinedElement) {
-		if (ObjectUtil.isListNotNullAndEmpty(list)) {
-			Element ul = element.appendElement("div").appendElement("ul");
-			for (String item : list) {
+		if (list != null) {
+			if (list.size() > 0) {
+				Element ul = element.appendElement("div").appendElement("ul");
+				for (String item : list) {
 
-				if (item.equals(underlinedElement)) {
-					ul.appendElement("li").appendElement("u").appendText(item);
-				} else {
-					ul.appendElement("li").appendText(item);
+					if (item.equals(underlinedElement)) {
+						ul.appendElement("li").appendElement("u").appendText(item);
+					} else {
+						ul.appendElement("li").appendText(item);
+					}
 				}
 			}
 		}
@@ -318,10 +336,12 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 	 *            the list
 	 */
 	public void addList(Element element, List<String> list) {
-		if (ObjectUtil.isListNotNullAndEmpty(list)) {
-			Element ul = element.appendElement("div").appendElement("ul");
-			for (String item : list) {
-				ul.appendElement("li").appendText(item);
+		if (list != null) {
+			if (list.size() > 0) {
+				Element ul = element.appendElement("div").appendElement("ul");
+				for (String item : list) {
+					ul.appendElement("li").appendText(item);
+				}
 			}
 		}
 	}
@@ -375,7 +395,7 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 		div.appendText(":").append("&nbsp;");
 		if (content != null) {
 			if (r != null) {
-				div.appendElement("ac:link").append("<ri:page ri:content-title=\"" + r.getTitle() + "\" ri:version-at-save=\"1\" />");
+				div.appendElement("a").attr("href", r.getUrl()).appendText(r.getTitle());
 			} else {
 				div.appendText(content);
 			}
@@ -394,7 +414,7 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 		}
 		if (content != null) {
 			if (r != null) {
-				div.appendElement("ac:link").append("<ri:page ri:content-title=\"" + r.getTitle() + "\" ri:version-at-save=\"1\" />");
+				div.appendElement("a").attr("href", r.getId(synchronizer) + ".html").appendText(r.getTitle());
 			} else {
 				div.appendText(content);
 			}
@@ -423,31 +443,12 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 		}
 		if (content != null) {
 			if (r != null) {
-				div.appendElement("ac:link").append("<ri:page ri:content-title=\"" + r.getTitle() + "\" ri:version-at-save=\"1\" />");
+				div.appendElement("a").attr("href", r.getId(synchronizer) + ".html").appendText(r.getTitle());
 			} else {
 				div.appendText(content);
 			}
 		} else {
 			div.appendText("-");
-		}
-	}
-
-	public void addWorkitemTable(Element element, List<IWorkitem> workitem) {
-		if (ObjectUtil.isListNotNullAndEmpty(workitem)) {
-			Element table = element.appendElement("div").appendElement("table");
-
-			Element tr = table.appendElement("tr");
-			tr.appendElement("th").appendText("Title");
-			tr.appendElement("th").appendText("Typ");
-			tr.appendElement("th").appendText("Status");
-
-			for (IWorkitem w : workitem) {
-				tr = table.appendElement("tr");
-				tr.appendElement("td").appendElement("ac:link").append("<ri:page ri:content-title=\"" + w.getTitle() + "\" ri:version-at-save=\"1\" />");
-				tr.appendElement("td").appendText(w.getType());
-				Element td = tr.appendElement("td");
-				addStatus(td, w.getStatus());
-			}
 		}
 	}
 
@@ -466,10 +467,10 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 
 		Element div = element.appendElement("div");
 		div.appendElement("b").appendText(description);
-		div.appendText(":").append("&nbsp;");
+		div.appendText(": ");
 		if (content != null) {
 			if (rg != null) {
-				div.appendElement("ac:link").append("<ri:page ri:content-title=\"" + rg.getTitle() + "\" ri:version-at-save=\"1\" />");
+				div.appendElement("a").attr("href", rg.getId(synchronizer) + ".html").appendText(rg.getTitle());
 			} else {
 				div.appendText(content);
 			}
@@ -546,6 +547,5 @@ public class AtlassianRenderer implements ISynchronizerRenderer {
 		for (ValidationMessage vm : list) {
 			addDataPair(vm.getType().name(), vm.getMessage(), table);
 		}
-
 	}
 }

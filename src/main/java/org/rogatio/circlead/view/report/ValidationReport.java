@@ -6,14 +6,15 @@
  * @since 01.07.2018
  * 
  */
-package org.rogatio.circlead.view;
+package org.rogatio.circlead.view.report;
 
 import java.util.List;
 
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.Repository;
-import org.rogatio.circlead.control.ValidationMessage;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
+import org.rogatio.circlead.control.validator.ValidationMessage;
+import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
 /**
  * The ValidationReport shows all Messages which are thrown from the validation engine, so the consistence of the role-model could be optimized.
@@ -32,7 +33,7 @@ public class ValidationReport extends DefaultReport {
 	 */
 	@Override
 	public Element render(ISynchronizer synchronizer) {
-		ISynchronizerRenderer renderer = synchronizer.getRenderer();
+		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 		Element element = new Element("p");
 
 		List<ValidationMessage> messages = Repository.getInstance().validate();

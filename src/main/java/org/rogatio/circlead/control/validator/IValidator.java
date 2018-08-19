@@ -6,7 +6,7 @@
  * @since 01.07.2018
  * 
  */
-package org.rogatio.circlead.control;
+package org.rogatio.circlead.control.validator;
 
 import java.util.List;
 

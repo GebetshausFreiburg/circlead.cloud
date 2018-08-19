@@ -13,15 +13,15 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.rogatio.circlead.control.Repository;
-import org.rogatio.circlead.control.synchronizer.AtlassianSynchronizer;
-import org.rogatio.circlead.control.synchronizer.FileSynchronizer;
 import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
+import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer;
+import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.model.work.Rolegroup;
-import org.rogatio.circlead.view.OverviewReport;
-import org.rogatio.circlead.view.PersonListReport;
-import org.rogatio.circlead.view.ReworkReport;
-import org.rogatio.circlead.view.RolegroupReport;
-import org.rogatio.circlead.view.ValidationReport;
+import org.rogatio.circlead.view.report.OverviewReport;
+import org.rogatio.circlead.view.report.PersonListReport;
+import org.rogatio.circlead.view.report.ReworkReport;
+import org.rogatio.circlead.view.report.RolegroupReport;
+import org.rogatio.circlead.view.report.ValidationReport;
 
 /**
  * Synchronize-Starter

@@ -6,7 +6,7 @@
  * @since 01.07.2018
  * 
  */
-package org.rogatio.circlead.control.synchronizer;
+package org.rogatio.circlead.control.synchronizer.atlassian;
 
 import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.PASSWORD;
 import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.URL;
@@ -27,7 +27,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.rogatio.circlead.control.Repository;
-import org.rogatio.circlead.control.synchronizer.atlassian.ConfluenceClient;
+import org.rogatio.circlead.control.synchronizer.DefaultSynchronizer;
+import org.rogatio.circlead.control.synchronizer.SynchronizerException;
+import org.rogatio.circlead.control.synchronizer.SynchronizerFactory;
+import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
 import org.rogatio.circlead.control.synchronizer.atlassian.content.Ancestor;
 import org.rogatio.circlead.control.synchronizer.atlassian.content.Metadata;
 import org.rogatio.circlead.control.synchronizer.atlassian.content.Page;
@@ -51,9 +54,9 @@ import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.StringUtil;
-import org.rogatio.circlead.view.AtlassianRenderer;
-import org.rogatio.circlead.view.IReport;
-import org.rogatio.circlead.view.ISynchronizerRenderer;
+import org.rogatio.circlead.view.AtlassianRendererEngine;
+import org.rogatio.circlead.view.ISynchronizerRendererEngine;
+import org.rogatio.circlead.view.report.IReport;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -825,8 +828,8 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#getRenderer()
 	 */
 	@Override
-	public ISynchronizerRenderer getRenderer() {
-		return new AtlassianRenderer(this);
+	public ISynchronizerRendererEngine getRenderer() {
+		return new AtlassianRendererEngine(this);
 	}
 
 }

@@ -12,8 +12,8 @@ import java.util.List;
 
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.work.IWorkitem;
-import org.rogatio.circlead.view.IReport;
-import org.rogatio.circlead.view.ISynchronizerRenderer;
+import org.rogatio.circlead.view.ISynchronizerRendererEngine;
+import org.rogatio.circlead.view.report.IReport;
 
 /**
  * The Interface ISynchronizer.
@@ -99,5 +99,5 @@ public interface ISynchronizer {
 	 *
 	 * @return the renderer
 	 */
-	public ISynchronizerRenderer getRenderer();
+	public ISynchronizerRendererEngine getRenderer();
 }

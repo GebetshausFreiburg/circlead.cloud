@@ -13,14 +13,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.jsoup.nodes.Element;
-import org.rogatio.circlead.control.IValidator;
 import org.rogatio.circlead.control.Repository;
-import org.rogatio.circlead.control.ValidationMessage;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
+import org.rogatio.circlead.control.validator.IValidator;
+import org.rogatio.circlead.control.validator.ValidationMessage;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.RolegroupDataitem;
 import org.rogatio.circlead.util.StringUtil;
-import org.rogatio.circlead.view.ISynchronizerRenderer;
+import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.IWorkitemRenderer;
 
 /**
@@ -167,7 +167,7 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 	 */
 	@Override
 	public Element render(ISynchronizer synchronizer) {
-		ISynchronizerRenderer renderer = synchronizer.getRenderer();
+		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 		
 		Element element = new Element("p");
 

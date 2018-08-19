@@ -15,18 +15,18 @@ import java.util.Map;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.rogatio.circlead.control.IValidator;
 import org.rogatio.circlead.control.Repository;
-import org.rogatio.circlead.control.ValidationMessage;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.HeadTableParserElement;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
+import org.rogatio.circlead.control.validator.IValidator;
+import org.rogatio.circlead.control.validator.ValidationMessage;
 import org.rogatio.circlead.model.data.ActivityDataitem;
 import org.rogatio.circlead.model.data.HowTo;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
-import org.rogatio.circlead.view.ISynchronizerRenderer;
+import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.IWorkitemRenderer;
 
 // TODO: Auto-generated Javadoc
@@ -336,7 +336,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	 */
 	@Override
 	public Element render(ISynchronizer synchronizer) {
-		ISynchronizerRenderer renderer = synchronizer.getRenderer();
+		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 
 		Element element = new Element("p");
 		if (StringUtil.isNotNullAndNotEmpty(getAid())) {

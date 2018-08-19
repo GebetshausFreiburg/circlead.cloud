@@ -15,10 +15,12 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.rogatio.circlead.control.ValidationMessage.Type;
 import org.rogatio.circlead.control.synchronizer.Connector;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
+import org.rogatio.circlead.control.validator.IValidator;
+import org.rogatio.circlead.control.validator.ValidationMessage;
+import org.rogatio.circlead.control.validator.ValidationMessage.Type;
 import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.data.ActivityDataitem;
@@ -31,7 +33,7 @@ import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
-import org.rogatio.circlead.view.IReport;
+import org.rogatio.circlead.view.report.IReport;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonParseException;

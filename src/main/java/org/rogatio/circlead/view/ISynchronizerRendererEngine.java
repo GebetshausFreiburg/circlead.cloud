@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.jsoup.nodes.Element;
-import org.rogatio.circlead.control.ValidationMessage;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
+import org.rogatio.circlead.control.validator.ValidationMessage;
 import org.rogatio.circlead.model.work.Activity;
 import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
@@ -23,7 +23,7 @@ import org.rogatio.circlead.model.work.Rolegroup;
 /**
  * The Interface ISynchronizerRenderer.
  */
-public interface ISynchronizerRenderer {
+public interface ISynchronizerRendererEngine {
 
 	/**
 	 * Gets the synchronizer.

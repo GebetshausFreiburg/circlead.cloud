@@ -22,7 +22,7 @@ import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.StringUtil;
-import org.rogatio.circlead.view.IReport;
+import org.rogatio.circlead.view.report.IReport;
 
 // TODO: Auto-generated Javadoc
 /**
