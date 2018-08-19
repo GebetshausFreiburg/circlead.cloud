@@ -6,8 +6,10 @@ This is a version written in java to create the role model logic on a minimal da
 * a cloud or dedicated version of atlassian confluence https://de.atlassian.com/software/confluence (or)
 * a flat file repository of json-files.
 
-This application synchronizes and merge all the data and write back simple html-files or confluence-pages.
-
-To understood the model a story in a blog is written at https://circleadonline.wordpress.com/.
+This application synchronizes and merge all the data and write back simple html-files or confluence-pages. Two synchronizers are implemented:
+* FileSynchronizer: Read json-files and writes back html-files
+* AtlassianSynchronizer: Read Confluence Pages with datatables (over rest with json) and writes back rendered confluence-pages
 
 ![circlead-api](https://github.com/GebetshausFreiburg/circlead.cloud/blob/master/src/main/resources/circlead-api.jpg)
+
+To understood the philosophy (and model) of circlead read the blog (only in german) at https://circleadonline.wordpress.com/.
