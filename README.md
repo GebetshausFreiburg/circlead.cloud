@@ -9,3 +9,5 @@ This is a version written in java to create the role model logic on a minimal da
 This application synchronizes and merge all the data and write back simple html-files or confluence-pages.
 
 To understood the model a story in a blog is written at https://circleadonline.wordpress.com/.
+
+![circlead-api](https://github.com/GebetshausFreiburg/circlead.cloud/blob/master/src/main/resources/circlead-api.jpg)
