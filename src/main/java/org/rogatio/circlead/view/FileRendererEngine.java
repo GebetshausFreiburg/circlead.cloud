@@ -63,7 +63,7 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 				Element ul = element.appendElement("div").appendElement("ul");
 				for (Activity activity : list) {
 					Element li = ul.appendElement("li");
-					li.appendElement("a").attr("href", activity.getId(synchronizer) + ".html").appendText(activity.getTitle());
+					li.appendElement("a").attr("href", "../web/"+activity.getId(synchronizer) + ".html").appendText(activity.getTitle());
 				}
 			}
 		}
@@ -80,7 +80,7 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 
 			for (IWorkitem w : workitem) {
 				tr = table.appendElement("tr");
-				tr.appendElement("td").appendElement("a").attr("href", w.getId(synchronizer) + ".html").appendText(w.getTitle());
+				tr.appendElement("td").appendElement("a").attr("href", "../web/"+w.getId(synchronizer) + ".html").appendText(w.getTitle());
 				;
 				tr.appendElement("td").appendText(w.getType());
 				Element td = tr.appendElement("td");
@@ -100,7 +100,7 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 				Element ul = element.appendElement("div").appendElement("ul");
 				for (Rolegroup rolegroup : list) {
 					Element li = ul.appendElement("li");
-					li.appendElement("a").attr("href", rolegroup.getId(synchronizer) + ".html").appendText(rolegroup.getTitle());
+					li.appendElement("a").attr("href", "../web/"+rolegroup.getId(synchronizer) + ".html").appendText(rolegroup.getTitle());
 				}
 			}
 		}
@@ -122,7 +122,7 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 					Element li = ul.appendElement("li");
 					@SuppressWarnings("unused")
 					Role r = Repository.getInstance().getRole(role.getTitle());
-					li.appendElement("a").attr("href", role.getId(synchronizer) + ".html").appendText(role.getTitle());
+					li.appendElement("a").attr("href", "../web/"+role.getId(synchronizer) + ".html").appendText(role.getTitle());
 				}
 			}
 		}
@@ -146,7 +146,7 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 					Element li = ul.appendElement("li");
 					Role r = Repository.getInstance().getRole(role.getTitle());
 					if (r != null) {
-						li.appendElement("a").attr("href", role.getId(synchronizer) + ".html").appendText(role.getTitle());
+						li.appendElement("a").attr("href", "../web/"+role.getId(synchronizer) + ".html").appendText(role.getTitle());
 					} else {
 						li.appendText(role.getTitle());
 					}
@@ -222,7 +222,7 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 			Person person = Repository.getInstance().getPerson(identifier);
 			Element li = ul.appendElement("li");
 			if (person != null) {
-				li.appendElement("a").attr("href", person.getId(synchronizer) + ".html").appendText(person.getTitle());
+				li.appendElement("a").attr("href", "../web/"+person.getId(synchronizer) + ".html").appendText(person.getTitle());
 			} else {
 				li.appendText(identifier);
 			}
@@ -274,9 +274,9 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 
 			if (person != null) {
 				if (identifier.equals(leadPerson)) {
-					li.appendElement("u").appendElement("a").attr("href", person.getId(synchronizer) + ".html").appendText(person.getTitle());
+					li.appendElement("u").appendElement("a").attr("href", "../web/"+person.getId(synchronizer) + ".html").appendText(person.getTitle());
 				} else {
-					li.appendElement("a").attr("href", person.getId(synchronizer) + ".html").appendText(person.getTitle());
+					li.appendElement("a").attr("href", "../web/"+person.getId(synchronizer) + ".html").appendText(person.getTitle());
 				}
 			} else {
 				if (identifier.equals(leadPerson)) {
@@ -395,7 +395,7 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		div.appendText(":").append("&nbsp;");
 		if (content != null) {
 			if (r != null) {
-				div.appendElement("a").attr("href", r.getUrl()).appendText(r.getTitle());
+				div.appendElement("a").attr("href", "../data/howtos/"+r.getUrl()).appendText(r.getTitle());
 			} else {
 				div.appendText(content);
 			}
@@ -414,7 +414,7 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		}
 		if (content != null) {
 			if (r != null) {
-				div.appendElement("a").attr("href", r.getId(synchronizer) + ".html").appendText(r.getTitle());
+				div.appendElement("a").attr("href", "../web/"+r.getId(synchronizer) + ".html").appendText(r.getTitle());
 			} else {
 				div.appendText(content);
 			}
@@ -443,7 +443,7 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		}
 		if (content != null) {
 			if (r != null) {
-				div.appendElement("a").attr("href", r.getId(synchronizer) + ".html").appendText(r.getTitle());
+				div.appendElement("a").attr("href", "../web/"+r.getId(synchronizer) + ".html").appendText(r.getTitle());
 			} else {
 				div.appendText(content);
 			}
@@ -470,7 +470,7 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		div.appendText(": ");
 		if (content != null) {
 			if (rg != null) {
-				div.appendElement("a").attr("href", rg.getId(synchronizer) + ".html").appendText(rg.getTitle());
+				div.appendElement("a").attr("href", "../web/"+rg.getId(synchronizer) + ".html").appendText(rg.getTitle());
 			} else {
 				div.appendText(content);
 			}
