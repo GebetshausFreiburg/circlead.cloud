@@ -124,8 +124,10 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	 * @return the single acestor list
 	 */
 	private List<Ancestor> getSingleAcestorList(IWorkitem wi) {
+		// Check if parent-workitem could be found and load id via rest
 		String id = this.getAcestorId(wi.getType());
 		if (id != null) {
+			//if not found, then create one valid json-parent, called acestor-page in confluence 
 			if (!id.equals("0")) {
 				List<Ancestor> list = new ArrayList<Ancestor>();
 				Ancestor a = new Ancestor();
@@ -209,12 +211,15 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		//Set actual used synchronizer to singleton. Is needed for correct finding and setting of id
 		SynchronizerFactory.getInstance().setActual(this);
 
+		// Create Confluence-POJO-Object from workitem
 		Page page = Parser.createPage(workitem, circleadSpace, this);
 		page.setTitle(workitem.getTitle());
 
+		// Add label to confluence-page. Called metadata in confluence
 		Metadata m = Parser.getLabelMetadata(workitem);
 		page.setMetadata(m);
 
+		// Add parent-page to confluence-page.
 		List<Ancestor> ancestors = getSingleAcestorList(workitem);
 		if (ancestors != null) {
 			page.setAncestors(ancestors);
@@ -223,7 +228,9 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.setSerializationInclusion(Include.NON_NULL);
+			// Create valid json from POJO-Object
 			String data = mapper.writeValueAsString(page);
+			// Catch result from rest-interface writing confluence-page
 			SynchronizerResult res = confluenceClient.post(confluenceClient.getRestPrefix() + "content/", data);
 			return res;
 		} catch (JsonProcessingException e) {
@@ -244,15 +251,18 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		//Set actual used synchronizer to singleton. Is needed for correct finding and setting of id
 		SynchronizerFactory.getInstance().setActual(this);
 
+		// Create Confluence-POJO-Object from workitem
 		Page page = Parser.createPage(workitem, circleadSpace, this);
 
 		logger.info("Update '" + URL + confluenceClient.getRestPrefix() + "content/" + workitem.getId(this) + "'");
 
+		// Increment version-number if version and page already exists
 		if (workitem.getVersion() != null) {
 			Version v = new Version();
 			v.setNumber(StringUtil.toInt(workitem.getVersion()) + 1);
 			page.setVersion(v);
 		} else {
+			// If version not exists, then create it with version 1
 			Version v = new Version();
 			v.setNumber(1);
 			page.setVersion(v);
@@ -261,8 +271,10 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.setSerializationInclusion(Include.NON_NULL);
+			// Create valid json from POJO-Object
 			String data = mapper.writeValueAsString(page);
 			String uri = confluenceClient.getRestPrefix() + "content/" + workitem.getId(this);
+			// Catch result from rest-interface writing confluence-page
 			SynchronizerResult res = confluenceClient.put(uri, data);
 
 			logger.debug(workitem.getTitle() + ": " + res.toString());
@@ -286,6 +298,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		//Set actual used synchronizer to singleton. Is needed for correct finding and setting of id
 		SynchronizerFactory.getInstance().setActual(this);
 
+		// Create Confluence-POJO-Object from report
 		Page page = Parser.createPage(report, circleadSpace, this);
 
 		Report repo = Repository.getInstance().getReport(report.getName());
@@ -408,12 +421,13 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		//Set actual used synchronizer to singleton. Is needed for correct finding and setting of id
 		SynchronizerFactory.getInstance().setActual(this);
 
+		// If index is not correct, then throw exception
 		if (indexId.endsWith(".json")) {
 			throw new SynchronizerException("Item with id '" + indexId + "' could not be loaded with Atlassian Synchronizer.");
 		}
 
+		// ignore all prefix, because id in atlassian-confluence is a numeric int. So parse for correct id on right side
 		int idx = indexId.lastIndexOf("/");
-
 		if (idx > 0) {
 			indexId = indexId.substring(idx + 1, indexId.length());
 		}

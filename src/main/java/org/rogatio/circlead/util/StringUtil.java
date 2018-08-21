@@ -21,17 +21,29 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * The Class StringUtil is a simple helper for text-parsing
+ * The Class StringUtil is a simple helper for text-parsing.
  */
 public class StringUtil {
 
 	/** The Constant logger. */
 	final static Logger logger = LogManager.getLogger(StringUtil.class);
 
+	/**
+	 * Default java-method to join comma-separated string to list od strings
+	 *
+	 * @param list the list
+	 * @return the string
+	 */
 	public static String join(List<String> list) {
 		return String.join(",", list);
 	}
 
+	/**
+	 * Convert comma-separated string to list of strings. Only add item if found string between commas is not empty or null
+	 *
+	 * @param string the string
+	 * @return the list
+	 */
 	public static List<String> toList(String string) {
 		List<String> identifiers = new ArrayList<String>();
 
@@ -53,12 +65,10 @@ public class StringUtil {
 	}
 
 	/**
-	 * Count matches in string of given symbol
+	 * Count matches in string of given symbol.
 	 *
-	 * @param string
-	 *            the string
-	 * @param symbol
-	 *            the symbol
+	 * @param string            the string
+	 * @param symbol            the symbol
 	 * @return the int
 	 */
 	public static int countMatches(String string, String symbol) {
@@ -68,10 +78,9 @@ public class StringUtil {
 	}
 
 	/**
-	 * Beautify a string by setting first letter to upper case
+	 * Beautify a string by setting first letter to upper case.
 	 *
-	 * @param s
-	 *            the s
+	 * @param s            the s
 	 * @return the string
 	 */
 	public static String beautify(String s) {
@@ -134,8 +143,8 @@ public class StringUtil {
 	/**
 	 * Converts a xml-date to an java.util.Date, i.e. "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
 	 *
-	 * @param date
-	 *            the date
+	 * @param date            the date
+	 * @param f the f
 	 * @return the date
 	 */
 	public static Date toDate(String date, String f) {
@@ -151,8 +160,8 @@ public class StringUtil {
 	/**
 	 * Converts a java.util.Date to a xml-representation of a date
 	 *
-	 * @param date
-	 *            the date
+	 * @param date            the date
+	 * @param f the f
 	 * @return the string
 	 */
 	public static String fromDate(Date date, String f) {

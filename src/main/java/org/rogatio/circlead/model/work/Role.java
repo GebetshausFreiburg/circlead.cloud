@@ -607,10 +607,22 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 					ValidationMessage m = new ValidationMessage(this);
 					m.warning("Person not found", "Person '" + identifier + "' in role '" + this.getTitle() + "' not found.");
 					messages.add(m);
+				} else {
+					if (this.getDataitem().hasRepresentation(identifier)) {
+						String representation = this.getDataitem().getRepresentation(identifier);
+						WorkitemStatusParameter status = WorkitemStatusParameter.get(representation);
+						if (status != null) {
+							if (status==WorkitemStatusParameter.TEMPORARY) {
+								ValidationMessage m = new ValidationMessage(this);
+								m.info("Person '" + identifier + "' holds role '" + this.getTitle() + "' temporarily.");
+								messages.add(m);					
+							}
+						}
+					}
 				}
 			}
 		}
-
+		
 		if (!this.hasRolegroupIdentifier()) {
 			ValidationMessage m = new ValidationMessage(this);
 			m.error("Rolegroup not set", "Rolegroup in role '" + this.getTitle() + "' not set.");

@@ -16,9 +16,9 @@ import java.util.List;
 public interface IValidator {
 	
 	/**
-	 * Validation method
+	 * Validation method. Checks for valid data
 	 *
-	 * @return the list
+	 * @return list of validation-messages
 	 */
 	public abstract List<ValidationMessage> validate();
 }
