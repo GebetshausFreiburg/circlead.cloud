@@ -32,16 +32,21 @@ public class FileUtil {
 	/**
 	 * Delete recursively a directory
 	 *
-	 * @param f the f
-	 * @throws Exception the exception
+	 * @param f
+	 *            the f
+	 * @throws Exception
+	 *             the exception
 	 */
 	public static void deleteRecursive(File f) throws Exception {
 		try {
+			// check for directory
 			if (f.isDirectory()) {
+				// list content of directory
 				for (File c : f.listFiles()) {
 					deleteRecursive(c);
 				}
 			}
+			// delete, whatever is found
 			if (!f.delete()) {
 				throw new Exception("Delete command returned false for file: " + f);
 			}
@@ -53,9 +58,12 @@ public class FileUtil {
 	/**
 	 * Write json-schema from object. Could be used for schema-validation of the workitem-json-format (FileSynchronizer)
 	 *
-	 * @param dir the dir
-	 * @param name the name
-	 * @param clazz the clazz
+	 * @param dir
+	 *            the dir
+	 * @param name
+	 *            the name
+	 * @param clazz
+	 *            the clazz
 	 */
 	@SuppressWarnings("unchecked")
 	public static void writeSchema(File dir, String name, @SuppressWarnings("rawtypes") Class clazz) {
@@ -66,16 +74,19 @@ public class FileUtil {
 
 		File fs = new File(dir.toString() + File.separatorChar + name + ".schema.json");
 		if (fs.exists()) {
+			// delete schema if it already exists
 			fs.delete();
 		}
 		try {
+			// create new empty file
 			fs.createNewFile();
 		} catch (IOException e) {
 			logger.error(e);
 		}
 		try {
+			// write schema-data to new created file
 			schemaMapper.writeValue(fs, jsonSchema);
-			logger.info("Schema '"+name+"' written.");
+			logger.info("Schema '" + name + "' written.");
 		} catch (JsonGenerationException e) {
 			logger.error(e);
 		} catch (JsonMappingException e) {
