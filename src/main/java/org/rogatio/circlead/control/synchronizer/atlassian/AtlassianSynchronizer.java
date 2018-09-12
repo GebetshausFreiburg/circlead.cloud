@@ -723,6 +723,8 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 					role.setSynonyms(value.toString());
 				} else if (WorkitemParameter.ABBREVIATION.has(key)) {
 					role.setAbbreviation(value.toString());
+				} else if (WorkitemParameter.PURPOSE.has(key)) {
+					role.setPurpose(value.toString());
 				} else if (WorkitemParameter.PARENT.has(key)) {
 					role.setParent(value.toString());
 				} else if (WorkitemParameter.ACTIVITY.has(key)) {
@@ -789,8 +791,10 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		} catch (Exception e) {
 			logger.info("Loading Index '" + workitemType.getName() + "' from system '" + URL + "'");
 		}
-
-		SynchronizerResult results = confluenceClient.search("label = \"" + type + "\"");
+		
+		// To Avoid loading of wrong labeld pages (and simplify writing) the loading of index is reduced to space of circlead. 
+		// THis must be done here, because the url seems not be always correct. It not always includes space in url. It seems it only works correct on cloud-version. On dedicated server german umlaute have different urls
+		SynchronizerResult results = confluenceClient.search("space = \""+circleadSpace+"\" AND label = \"" + type + "\"");
 
 		if (results.getContent() == null) {
 			logger.error("Error occured: Loading Index returns no content in result-set.");
@@ -801,7 +805,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		try {
 			Results queryResults = mapper.readValue(results.getContent(), Results.class);
 			for (Result result : queryResults.getResults()) {
-				if (result.getUrl().contains("/" + circleadSpace + "/")) {
+//				if (result.getUrl().contains("/" + circleadSpace + "/")) {
 					if (type.equals("howto")) {
 						HowTo ht = new HowTo();
 						ht.setSynchronizer(this.toString());
@@ -823,7 +827,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 					} else {
 						fileIndex.add(URL + confluenceClient.getRestPrefix() + "content/" + type + "/" + result.getContent().getId());
 					}
-				}
+//				}
 			}
 		} catch (JsonParseException e) {
 			logger.error("Error loading " + type + " from confluence", e);

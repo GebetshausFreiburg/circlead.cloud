@@ -29,7 +29,6 @@ import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.IWorkitemRenderer;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Activity.
  */

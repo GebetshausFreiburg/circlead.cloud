@@ -251,6 +251,7 @@ public class Parser {
 			addDataPair("Abkürzung", d.getAbbreviation(), table);
 			addDataPair("Rollengruppe", d.getRolegroup(), table);
 			addDataPair("Vorgänger", d.getParent(), table);
+			addDataPair("Zweck", d.getPurpose(), table);
 			addDataPair("Status", Parser.getStatus(d.getStatus()), table);
 			addDataPair("Organisation", w.getOrganisationIdentifier(), table);
 			addCommaList("Synonyme", d.getSynonyms(), table);

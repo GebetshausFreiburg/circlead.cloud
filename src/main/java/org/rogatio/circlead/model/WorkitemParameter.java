@@ -53,6 +53,8 @@ public enum WorkitemParameter {
 	/** The parent. */
 	PARENT("Parent", "Vorgänger"),  
 	
+	PURPOSE("Zweck", "Kurzbeschreibung", "Purpose", "Bedeutung"), 
+	
 	/** The contacts. */
 	CONTACTS("Kontakte", "Contacts"),  
 	

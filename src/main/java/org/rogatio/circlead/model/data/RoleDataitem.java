@@ -42,6 +42,11 @@ public class RoleDataitem extends DefaultDataitem {
 	@JsonSchemaDescription("Parent role of the role. Set as identifier.")
 	private String parent;
 
+	/** The purpose. */
+	@JsonSchemaTitle("Purpose")
+	@JsonSchemaDescription("Purpose of the role. Optional.")
+	private String purpose;
+	
 	/** The rolegroup. */
 	@JsonSchemaTitle("Rolegroup")
 	@JsonSchemaDescription("Rolegroup of the role. Set as identifier.")
@@ -194,6 +199,24 @@ public class RoleDataitem extends DefaultDataitem {
 	 */
 	public List<String> getResponsibilities() {
 		return responsibilities;
+	}
+	
+	/**
+	 * Gets the purpose.
+	 *
+	 * @return the purpose
+	 */
+	public String getPurpose() {
+		return purpose;
+	}
+
+	/**
+	 * Sets the purpose.
+	 *
+	 * @param purpose the new purpose
+	 */
+	public void setPurpose(String purpose) {
+		this.purpose = purpose;
 	}
 
 	/**

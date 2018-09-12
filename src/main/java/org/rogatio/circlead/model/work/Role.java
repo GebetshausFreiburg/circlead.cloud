@@ -456,6 +456,11 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			renderer.addStatus(element, "Unbesetzt");
 		}
 
+		if (StringUtil.isNotNullAndNotEmpty(this.getPurpose())) {
+			renderer.addH2(element, "Zweck / Kurzbeschreibung");
+			element.appendText(this.getPurpose());
+		}
+		
 		if (ObjectUtil.isListNotNullAndEmpty(this.getCompetences())) {
 			renderer.addH2(element, "Kompetenzen");
 			renderer.addList(element, this.getCompetences());
@@ -532,6 +537,14 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		}
 	}
 
+	public void setPurpose(String purpose) {
+		this.getDataitem().setPurpose(purpose);
+	}
+	
+	public String getPurpose() {
+		return this.getDataitem().getPurpose();
+	}
+	
 	/**
 	 * Checks for abbreviation.
 	 *
