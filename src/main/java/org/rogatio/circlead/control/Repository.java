@@ -104,6 +104,24 @@ public class Repository {
 		return rolegroups;
 	}
 
+	public boolean isRoleName(String roleName) {
+		for (String name : this.getRoleNames()) {
+			if (name.equalsIgnoreCase(roleName)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public List<String> getRoleNames() {
+		List<Role> roles = this.getRoles();
+		List<String> roleNames = new ArrayList<String>();
+		for (Role role : roles) {
+			roleNames.add(role.getTitle());
+		}
+		return roleNames;
+	}
+	
 	/**
 	 * Adds the synchronizer.
 	 *

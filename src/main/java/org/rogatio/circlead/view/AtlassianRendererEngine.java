@@ -321,11 +321,25 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 		if (ObjectUtil.isListNotNullAndEmpty(list)) {
 			Element ul = element.appendElement("div").appendElement("ul");
 			for (String item : list) {
-				ul.appendElement("li").appendText(item);
+				
+				item = replaceRolenameWithLink(item);
+				
+				ul.appendElement("li").append(item);
 			}
 		}
 	}
 
+	private String replaceRolenameWithLink(String item) {
+		List<String> rn= Repository.getInstance().getRoleNames();
+		for (String name : rn) {
+			if (item.contains(name)) {
+				String link = "&nbsp;<ac:link><ri:page ri:content-title=\"" + name + "\" ri:version-at-save=\"1\" /></ac:link>";
+				item = item.replace(name, link);
+			}
+		}
+		return item;
+	}
+	
 	/**
 	 * Adds the item.
 	 *

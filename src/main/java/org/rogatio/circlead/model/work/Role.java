@@ -446,7 +446,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 				renderer.addH2(element, "Erben");
 				renderer.addRoleList(element, childRoles);
 			}
-		}
+		} 
 
 		if (ObjectUtil.isListNotNullAndEmpty(this.getPersonIdentifiers())) {
 			renderer.addH2(element, "Rollenträger");
@@ -460,14 +460,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			renderer.addH2(element, "Zweck / Kurzbeschreibung");
 			element.appendText(this.getPurpose());
 		}
-		
-		if (ObjectUtil.isListNotNullAndEmpty(this.getCompetences())) {
-			renderer.addH2(element, "Kompetenzen");
-			renderer.addList(element, this.getCompetences());
-
-			renderImplicitCompetence(this.getParentIdentifier(), element, renderer);
-		}
-
+	
 		renderer.addH2(element, "Aufgaben");
 		List<Activity> a = Repository.getInstance().getActivities(this.getTitle());
 
@@ -500,6 +493,13 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		if (ObjectUtil.isListNotNullAndEmpty(this.getResponsibilities())) {
 			renderer.addH2(element, "Verantwortungen");
 			renderer.addList(element, this.getResponsibilities());
+		}
+		
+		if (ObjectUtil.isListNotNullAndEmpty(this.getCompetences())) {
+			renderer.addH2(element, "Kompetenzen");
+			renderer.addList(element, this.getCompetences());
+
+			renderImplicitCompetence(this.getParentIdentifier(), element, renderer);
 		}
 
 		if (ObjectUtil.isListNotNullAndEmpty(this.getOpportunities())) {
