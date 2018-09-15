@@ -8,10 +8,10 @@
  */
 package org.rogatio.circlead.control.synchronizer.atlassian;
 
+import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.DEDICATEDSERVER;
 import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.PASSWORD;
 import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.URL;
 import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.USER;
-import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.DEDICATEDSERVER;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,14 +38,15 @@ import org.rogatio.circlead.control.synchronizer.atlassian.content.Version;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.HeadTableParserElement;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.IParserElement;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.ListParserElement;
+import org.rogatio.circlead.control.synchronizer.atlassian.parser.PairTableParserElement;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.StatusParserElement;
-import org.rogatio.circlead.control.synchronizer.atlassian.parser.PairTableParserElement;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.TextParserElement;
 import org.rogatio.circlead.control.synchronizer.atlassian.search.Result;
 import org.rogatio.circlead.control.synchronizer.atlassian.search.Results;
 import org.rogatio.circlead.model.WorkitemParameter;
 import org.rogatio.circlead.model.WorkitemType;
+import static org.rogatio.circlead.model.WorkitemType.*;
 import org.rogatio.circlead.model.data.HowTo;
 import org.rogatio.circlead.model.data.Report;
 import org.rogatio.circlead.model.work.Activity;
@@ -69,6 +70,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class AtlassianSynchronizer extends DefaultSynchronizer {
 
+	private final String ROLESPAGE = "Roles";
+	private final String ACTIVITIESPAGE = "Activities";
+	private final String ROLEGROUPSPAGE = "Rolegroups";
+	private final String PERSONSPAGE = "Persons";
+	
 	/** The Constant logger. */
 	private final static Logger logger = LogManager.getLogger(AtlassianSynchronizer.class);
 
@@ -134,16 +140,16 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 				a.setId(id);
 
 				if (wi instanceof Activity) {
-					a.setTitle("Activities");
+					a.setTitle(ACTIVITIESPAGE);
 				}
 				if (wi instanceof Role) {
-					a.setTitle("Roles");
+					a.setTitle(ROLESPAGE);
 				}
 				if (wi instanceof Rolegroup) {
-					a.setTitle("Rolegroups");
+					a.setTitle(ROLEGROUPSPAGE);
 				}
 				if (wi instanceof Person) {
-					a.setTitle("Persons");
+					a.setTitle(PERSONSPAGE);
 				}
 
 				a.setType("page");
@@ -386,23 +392,23 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		String id = acestorPages.get(type.toLowerCase());
 
 		if (id == null) {
-			if (type.equalsIgnoreCase("report")) {
+			if (REPORT.isEquals(type)) {
 				SynchronizerResult page = confluenceClient.search("type=\"page\" and title=\"Reports\"");
 				id = "" + Parser.getIdFromResult(page.getContent());
 			}
-			if (type.equalsIgnoreCase("role")) {
+			if (ROLE.isEquals(type)) {
 				SynchronizerResult page = confluenceClient.search("type=\"page\" and title=\"Roles\"");
 				id = "" + Parser.getIdFromResult(page.getContent());
 			}
-			if (type.equalsIgnoreCase("activity")) {
+			if (ACTIVITY.isEquals(type)) {
 				SynchronizerResult page = confluenceClient.search("type=\"page\" and title=\"Activities\"");
 				id = "" + Parser.getIdFromResult(page.getContent());
 			}
-			if (type.equalsIgnoreCase("rolegroup")) {
+			if (ROLEGROUP.isEquals(type)) {
 				SynchronizerResult page = confluenceClient.search("type=\"page\" and title=\"Rolegroups\"");
 				id = "" + Parser.getIdFromResult(page.getContent());
 			}
-			if (type.equalsIgnoreCase("person")) {
+			if (PERSON.isEquals(type)) {
 				SynchronizerResult page = confluenceClient.search("type=\"page\" and title=\"Persons\"");
 				id = "" + Parser.getIdFromResult(page.getContent());
 			}
@@ -467,21 +473,21 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 					label = result.getLabel();
 				}
 
-				if (label.equalsIgnoreCase("role")) {
-					type = "role";
-					acestorId = getAcestorId("Roles", p);
+				if (ROLE.isEquals(label)) {
+					type = ROLE.getLowerName();
+					acestorId = getAcestorId(ROLESPAGE, p);
 				}
-				if (label.equalsIgnoreCase("activity")) {
-					type = "activity";
-					acestorId = getAcestorId("Activities", p);
+				if (ACTIVITY.isEquals(label)) {
+					type = ACTIVITY.getLowerName();
+					acestorId = getAcestorId(ACTIVITIESPAGE, p);
 				}
-				if (label.equalsIgnoreCase("rolegroup")) {
-					type = "rolegroup";
-					acestorId = getAcestorId("Rolegroups", p);
+				if (ROLEGROUP.isEquals(label)) {
+					type = ROLEGROUP.getLowerName();
+					acestorId = getAcestorId(ROLEGROUPSPAGE, p);
 				}
-				if (label.equalsIgnoreCase("person")) {
-					type = "person";
-					acestorId = getAcestorId("Persons", p);
+				if (PERSON.isEquals(label)) {
+					type = PERSON.getLowerName();
+					acestorId = getAcestorId(PERSONSPAGE, p);
 				}
 				acestorPages.put(type, acestorId);
 			}
@@ -520,7 +526,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 								parserElement = new PairTableParserElement(unparsedValue);
 							} else if (WorkitemParameter.ACTIVITY.has(key)) {
 								parserElement = new ListParserElement(unparsedValue);
-							} else if (key.equalsIgnoreCase("Teilaktivitäten")) {
+							} else if (WorkitemParameter.SUBACTIVITY.has(key)) {
 								parserElement = new HeadTableParserElement(unparsedValue);
 							} else if (WorkitemParameter.CONTACTS.has(key)) {
 								parserElement = new PairTableParserElement(unparsedValue);
@@ -573,36 +579,36 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	private IWorkitem setData(Map<String, IParserElement> pairs, String type, String indexId) {
 		Vector<String> keys = new Vector<String>(pairs.keySet());
 
-		if (type.equalsIgnoreCase("activity")) {
+		if (ACTIVITY.isEquals(type)) {
 			Activity activity = new Activity();
 
 			for (String key : keys) {
 				IParserElement value = pairs.get(key);
-				if (key.equalsIgnoreCase("Id")) {
+				if (WorkitemParameter.ID.has(key)) {
 					activity.getDataitem().setUid(value.toString());
-				} else if (key.equalsIgnoreCase("Created")) {
+				} else if (WorkitemParameter.CREATED.has(key)) {
 					activity.setCreated(value.toString());
-				} else if (key.equalsIgnoreCase("Modified")) {
+				} else if (WorkitemParameter.MODIFIED.has(key)) {
 					activity.setModified(value.toString());
 				} else if (WorkitemParameter.HOWTOS.has(key)) {
 					activity.setHowTos(value.toString());
-				} else if (key.equalsIgnoreCase("Teilaktivitäten")) {
+				} else if (WorkitemParameter.SUBACTIVITY.has(key)) {
 					activity.setSubactivities((HeadTableParserElement) value);
-				} else if (key.equalsIgnoreCase("AID")) {
+				} else if (WorkitemParameter.ACTIVITYID.has(key)) {
 					activity.setAid(value.toString());
-				} else if (key.equalsIgnoreCase("Beschreibung")) {
+				} else if (WorkitemParameter.DESCRIPTION.has(key)) {
 					activity.setDescription(value.toString());
-				} else if (key.contains("Ergebnis")) {
+				} else if (WorkitemParameter.RESULT.has(key)) {
 					activity.setResults(value.toString());
-				} else if (key.equalsIgnoreCase("Version")) {
+				} else if (WorkitemParameter.VERSION.has(key)) {
 					activity.setVersion(value.toString());
-				} else if (key.equalsIgnoreCase("Rolle") || key.equalsIgnoreCase("Verantwortlicher") || key.equalsIgnoreCase("Durchführender")) {
+				} else if (WorkitemParameter.RESPONSIBLE.has(key)) {
 					activity.setResponsibleIdentifier(value.toString());
-				} else if (key.equalsIgnoreCase("Informierte")) {
+				} else if (WorkitemParameter.INFORMED.has(key)) {
 					activity.setInformedIdentifier(value.toString());
-				} else if (key.equalsIgnoreCase("Unterstützer")) {
+				} else if (WorkitemParameter.SUPPORTER.has(key)) {
 					activity.setSupplierIdentifier(value.toString());
-				} else if (key.equalsIgnoreCase("Berater")) {
+				} else if (WorkitemParameter.CONSULTANT.has(key)) {
 					activity.setConsultantIdentifier(value.toString());
 				} else if (WorkitemParameter.STATUS.has(key)) {
 					activity.setStatus(value.toString());
@@ -616,28 +622,27 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 			return activity;
 		}
 
-		if (type.equalsIgnoreCase("person")) {
+		if (PERSON.isEquals(type)) {
 			Person person = new Person();
 
 			for (String key : keys) {
 				IParserElement value = pairs.get(key);
-				if (key.equalsIgnoreCase("Id")) {
+				if (WorkitemParameter.ID.has(key)) {
 					person.getDataitem().setUid(value.toString());
-				} else if (key.equalsIgnoreCase("Created")) {
+				} else if (WorkitemParameter.CREATED.has(key)) {
 					person.setCreated(value.toString());
-				} else if (key.equalsIgnoreCase("Modified")) {
+				} else if (WorkitemParameter.MODIFIED.has(key)) {
 					person.setModified(value.toString());
-				} else if (key.equalsIgnoreCase("Adresse") || key.equalsIgnoreCase("Mobil") || key.equalsIgnoreCase("Mail") || key.equalsIgnoreCase("Festnetz")
-						|| key.equalsIgnoreCase("Typ") || key.equalsIgnoreCase("Subtyp")) {
+				} else if (WorkitemParameter.IGNORE.has(key)) {
 					// Ignore, because its inner table
 					// Do explicit nothing
-				} else if (key.equalsIgnoreCase("Version")) {
+				} else if (WorkitemParameter.VERSION.has(key)) {
 					person.setVersion(value.toString());
-				} else if (key.equalsIgnoreCase("Name")) {
+				} else if (WorkitemParameter.NAME.has(key)) {
 					person.setFullname(value.toString());
-				} else if (key.equalsIgnoreCase("Kontakte")) {
+				} else if (WorkitemParameter.CONTACTS.has(key)) {
 					person.setContacts((PairTableParserElement) value);
-				} else if (key.equalsIgnoreCase("Daten")) {
+				} else if (WorkitemParameter.DATA.has(key)) {
 					person.setData((PairTableParserElement) value);
 				} else if (WorkitemParameter.STATUS.has(key)) {
 					person.setStatus(value.toString());
@@ -663,30 +668,30 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 			return person;
 		}
 
-		if (type.equalsIgnoreCase("rolegroup")) {
+		if (ROLEGROUP.isEquals(type)) {
 			Rolegroup rolegroup = new Rolegroup();
 
 			for (String key : keys) {
 				IParserElement value = pairs.get(key);
-				if (key.equalsIgnoreCase("Id")) {
+				if (WorkitemParameter.ID.has(key)) {
 					rolegroup.getDataitem().setUid(value.toString());
-				} else if (key.equalsIgnoreCase("Created")) {
+				} else if (WorkitemParameter.CREATED.has(key)) {
 					rolegroup.setCreated(value.toString());
-				} else if (key.equalsIgnoreCase("Modified")) {
+				} else if (WorkitemParameter.MODIFIED.has(key)) {
 					rolegroup.setModified(value.toString());
-				} else if (key.equalsIgnoreCase("Version")) {
+				} else if (WorkitemParameter.VERSION.has(key)) {
 					rolegroup.setVersion(value.toString());
-				} else if (key.equalsIgnoreCase("Ansprechpartner")) {
+				} else if (WorkitemParameter.LEAD.has(key)) {
 					rolegroup.setLeadIdentifier(value.toString());
 				} else if (WorkitemParameter.ABBREVIATION.has(key)) {
 					rolegroup.setAbbreviation(value.toString());
 				} else if (WorkitemParameter.SYNONYM.has(key)) {
 					rolegroup.setSynonyms(value.toString());
-				} else if (key.equalsIgnoreCase("Vorgänger")) {
+				} else if (WorkitemParameter.PARENT.has(key)) {
 					rolegroup.setParentIdentifier(value.toString());
-				} else if (key.equalsIgnoreCase("Verantwortlicher")) {
+				} else if (WorkitemParameter.RESPONSIBLE.has(key)) {
 					rolegroup.setResponsibleIdentifier(value.toString());
-				} else if (key.equalsIgnoreCase("Zusammenfassung")) {
+				} else if (WorkitemParameter.SUMMARY.has(key)) {
 					rolegroup.setSummary(value.toString());
 				} else if (WorkitemParameter.STATUS.has(key)) {
 					rolegroup.setStatus(value.toString());
@@ -700,18 +705,18 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 			return rolegroup;
 		}
 
-		if (type.equalsIgnoreCase("role")) {
+		if (ROLE.isEquals(type)) {
 			Role role = new Role();
 
 			for (String key : keys) {
 				IParserElement value = pairs.get(key);
-				if (key.equalsIgnoreCase("Id")) {
+				if (WorkitemParameter.ID.has(key)) {
 					role.getDataitem().setUid(value.toString());
-				} else if (key.equalsIgnoreCase("Created")) {
+				} else if (WorkitemParameter.CREATED.has(key)) {
 					role.setCreated(value.toString());
-				} else if (key.equalsIgnoreCase("Modified")) {
+				} else if (WorkitemParameter.MODIFIED.has(key)) {
 					role.setModified(value.toString());
-				} else if (key.equalsIgnoreCase("Version")) {
+				} else if (WorkitemParameter.VERSION.has(key)) {
 					role.setVersion(value.toString());
 				} else if (WorkitemParameter.STATUS.has(key)) {
 					role.setStatus(value.toString());
@@ -806,7 +811,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 			Results queryResults = mapper.readValue(results.getContent(), Results.class);
 			for (Result result : queryResults.getResults()) {
 //				if (result.getUrl().contains("/" + circleadSpace + "/")) {
-					if (type.equals("howto")) {
+					if (HOWTO.isEquals(type)) {
 						HowTo ht = new HowTo();
 						ht.setSynchronizer(this.toString());
 						ht.setType(type);
@@ -815,7 +820,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 						ht.setUrl(confluenceClient.getRestPrefix() + "content/" + type + "/" + result.getContent().getId());
 						fileIndex.add(ht.toString());
 						logger.debug("Found HowTo '" + ht.getTitle() + "' with '" + this.toString() + "'");
-					} else if (type.equals("report")) {
+					} else if (REPORT.isEquals(type)) {
 						Report ht = new Report();
 						ht.setSynchronizer(this.toString());
 						ht.setType(type);
