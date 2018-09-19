@@ -44,8 +44,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	/**
 	 * Instantiates a new activity.
 	 *
-	 * @param dataitem
-	 *            the dataitem
+	 * @param dataitem the dataitem
 	 */
 	public Activity(IDataitem dataitem) {
 		super(dataitem);
@@ -116,8 +115,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	/**
 	 * Sets the role identifier.
 	 *
-	 * @param roleIdentifier
-	 *            the new responsible role identifier
+	 * @param roleIdentifier the new responsible role identifier
 	 */
 	public void setResponsibleIdentifier(String roleIdentifier) {
 		this.getDataitem().setResponsible(roleIdentifier);
@@ -153,8 +151,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	/**
 	 * Sets the results.
 	 *
-	 * @param results
-	 *            the new results
+	 * @param results the new results
 	 */
 	public void setResults(String results) {
 		this.getDataitem().setResults(results);
@@ -163,8 +160,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	/**
 	 * Sets the aid.
 	 *
-	 * @param aid
-	 *            the new aid
+	 * @param aid the new aid
 	 */
 	public void setAid(String aid) {
 		this.getDataitem().setAid(aid);
@@ -173,8 +169,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	/**
 	 * Sets the description.
 	 *
-	 * @param description
-	 *            the new description
+	 * @param description the new description
 	 */
 	public void setDescription(String description) {
 		this.getDataitem().setDescription(description);
@@ -183,8 +178,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	/**
 	 * Sets the consultant identifier.
 	 *
-	 * @param roleIdentifiers
-	 *            the new consultant identifier
+	 * @param roleIdentifiers the new consultant identifier
 	 */
 	public void setConsultantIdentifier(String roleIdentifiers) {
 		this.setConsultantIdentifier(StringUtil.toList(roleIdentifiers));
@@ -193,8 +187,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	/**
 	 * Sets the informed identifier.
 	 *
-	 * @param roleIdentifiers
-	 *            the new informed identifier
+	 * @param roleIdentifiers the new informed identifier
 	 */
 	public void setInformedIdentifier(String roleIdentifiers) {
 		this.setInformedIdentifier(StringUtil.toList(roleIdentifiers));
@@ -203,8 +196,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	/**
 	 * Sets the supplier identifier.
 	 *
-	 * @param roleIdentifiers
-	 *            the new supplier identifier
+	 * @param roleIdentifiers the new supplier identifier
 	 */
 	public void setSupplierIdentifier(String roleIdentifiers) {
 		this.setSupplierIdentifier(StringUtil.toList(roleIdentifiers));
@@ -213,8 +205,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	/**
 	 * Sets the supplier identifier.
 	 *
-	 * @param roleIdentifiers
-	 *            the new supplier identifier
+	 * @param roleIdentifiers the new supplier identifier
 	 */
 	public void setSupplierIdentifier(List<String> roleIdentifiers) {
 		this.getDataitem().setSupplier(roleIdentifiers);
@@ -223,8 +214,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	/**
 	 * Sets the consultant identifier.
 	 *
-	 * @param roleIdentifiers
-	 *            the new consultant identifier
+	 * @param roleIdentifiers the new consultant identifier
 	 */
 	public void setConsultantIdentifier(List<String> roleIdentifiers) {
 		this.getDataitem().setConsultant(roleIdentifiers);
@@ -233,8 +223,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	/**
 	 * Sets the informed identifier.
 	 *
-	 * @param roleIdentifiers
-	 *            the new informed identifier
+	 * @param roleIdentifiers the new informed identifier
 	 */
 	public void setInformedIdentifier(List<String> roleIdentifiers) {
 		this.getDataitem().setInformed(roleIdentifiers);
@@ -243,8 +232,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	/**
 	 * Sets the accountable identifier.
 	 *
-	 * @param roleIdentifier
-	 *            the new accountable identifier
+	 * @param roleIdentifier the new accountable identifier
 	 */
 	public void setAccountableIdentifier(String roleIdentifier) {
 		this.getDataitem().setAccountable(roleIdentifier);
@@ -262,11 +250,36 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	/**
 	 * Sets the subactivities.
 	 *
-	 * @param subactivities
-	 *            the new subactivities
+	 * @param subactivities the new subactivities
 	 */
 	public void setSubactivities(List<ActivityDataitem> subactivities) {
 		this.getDataitem().setSubactivities(subactivities);
+	}
+
+	public List<ActivityDataitem> getSubactivitiesWithResponsible(String responsible) {
+		List<ActivityDataitem> list = new ArrayList<ActivityDataitem>();
+		if (ObjectUtil.isListNotNullAndEmpty(this.getSubactivities())) {
+			for (ActivityDataitem sub : this.getSubactivities()) {
+				if (StringUtil.isNotNullAndNotEmpty(sub.getResponsible())) {
+					if (sub.getResponsible().equals(responsible)) {
+						list.add(sub);
+					}
+				}
+			}
+		}
+		return list;
+	}
+
+	public List<ActivityDataitem> getSubactivitiesWithResponsible() {
+		List<ActivityDataitem> list = new ArrayList<ActivityDataitem>();
+		if (ObjectUtil.isListNotNullAndEmpty(this.getSubactivities())) {
+			for (ActivityDataitem sub : this.getSubactivities()) {
+				if (StringUtil.isNotNullAndNotEmpty(sub.getResponsible())) {
+					list.add(sub);
+				}
+			}
+		}
+		return list;
 	}
 
 	/**
@@ -281,8 +294,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	/**
 	 * Sets the how tos.
 	 *
-	 * @param howtos
-	 *            the new how tos
+	 * @param howtos the new how tos
 	 */
 	public void setHowTos(List<String> howtos) {
 		this.getDataitem().setHowtos(howtos);
@@ -300,8 +312,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	/**
 	 * Sets the how tos.
 	 *
-	 * @param howtos
-	 *            the new how tos
+	 * @param howtos the new how tos
 	 */
 	public void setHowTos(String howtos) {
 		List<String> list = Arrays.asList(howtos.split(","));
@@ -346,19 +357,25 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 		if (a != null) {
 			renderer.addActivityItem(element, "Übergeordnete Aktivität", a.getTitle());
 		}
-	
+
 		renderer.addH2(element, "Beteiligte Rollen");
 		if (StringUtil.isNotNullAndNotEmpty(getResponsibleIdentifier())) {
 			renderer.addRoleItem(element, "Durchführender", this.getResponsibleIdentifier());
+		} else {
+			renderer.addRoleItem(element, "Durchführender", "-");
 		}
 
 		if (StringUtil.isNotNullAndNotEmpty(getAccountableIdentifier())) {
 			renderer.addRoleItem(element, "Rechenschaftsgebender", this.getAccountableIdentifier());
+		} else {
+			renderer.addRoleItem(element, "Rechenschaftsgebender", "-");
 		}
 
-		renderer.addItem(element, "Unterstützer:", "");
 		List<Role> roles = Repository.getInstance().getRoles(this.getSupplierIdentifiers());
-		renderer.addRoleList(element, roles);
+		if (ObjectUtil.isListNotNullAndEmpty(roles)) {
+			renderer.addItem(element, "Unterstützer:", "");
+			renderer.addRoleList(element, roles);
+		}
 
 		roles = Repository.getInstance().getRoles(this.getConsultantIdentifiers());
 		if (ObjectUtil.isListNotNullAndEmpty(roles)) {
@@ -386,8 +403,10 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 			Element table = Parser.createHeaderTable(this.getSubactivities(), synchronizer, true);
 
 			/*
-			 * for (ActivityDataitem subactivity : getSubactivities()) { Activity a = Repository.getInstance().getActivity(subactivity.getTitle()); if (a !=
-			 * null) { Elements es = table.getElementsContainingText(subactivity.getTitle()); System.out.println(es); Element e = es.get(0); e.text("");
+			 * for (ActivityDataitem subactivity : getSubactivities()) { Activity a =
+			 * Repository.getInstance().getActivity(subactivity.getTitle()); if (a != null)
+			 * { Elements es = table.getElementsContainingText(subactivity.getTitle());
+			 * System.out.println(es); Element e = es.get(0); e.text("");
 			 * renderer.addActivityItem(e, null, subactivity.getTitle()); } }
 			 */
 
@@ -424,6 +443,48 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 			m.error("Role Responsible missing", "Activity '" + this.getTitle() + "' has no responsible role named");
 			messages.add(m);
 		}
+
+		if (ObjectUtil.isListNotNullAndEmpty(this.getSubactivities())) {
+			for (ActivityDataitem activity : this.getSubactivities()) {
+				Activity a = Repository.getInstance().getActivity(activity.getTitle());
+				if (a != null) {
+					String actR = a.getResponsibleIdentifier();
+					String subR = activity.getResponsible();
+					if (StringUtil.isNotNullAndNotEmpty(actR)) {
+						if (!StringUtil.isNotNullAndNotEmpty(subR)) {
+							ValidationMessage m = new ValidationMessage(this);
+							m.error("Responsible missing", "Subactivity '" + activity.getTitle()
+									+ "' has not named responsible '" + actR + "'");
+							messages.add(m);
+						}
+					}
+					if (StringUtil.isNotNullAndNotEmpty(subR)) {
+						if (!StringUtil.isNotNullAndNotEmpty(actR)) {
+							ValidationMessage m = new ValidationMessage(this);
+							m.error("Responsible missing",
+									"Activity '" + a.getTitle() + "' has not named responsible '" + subR + "'");
+							messages.add(m);
+						}
+					}
+					
+					if (StringUtil.isNotNullAndNotEmpty(subR)) {
+						if (StringUtil.isNotNullAndNotEmpty(actR)) {
+							if (subR.equals(actR)) {
+								ValidationMessage m = new ValidationMessage(this);
+								m.error("Responsible unequal", "Activity '" + a.getTitle()
+										+ "' has unequal responsible '" + subR + "'!='" + actR + "'");
+								messages.add(m);
+							}
+						}
+					}
+				}
+			}
+		}
+
+//		Activity parentActivity = Repository.getInstance().getActivityWithSubactivity(this.getTitle());
+//		if (parentActivity != null) {
+//			x
+//		}
 
 		return messages;
 	}

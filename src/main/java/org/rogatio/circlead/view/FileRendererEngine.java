@@ -17,6 +17,7 @@ import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.validator.ValidationMessage;
 //import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
 import org.rogatio.circlead.model.WorkitemStatusParameter;
+import org.rogatio.circlead.model.data.ActivityDataitem;
 import org.rogatio.circlead.model.data.HowTo;
 import org.rogatio.circlead.model.work.Activity;
 import org.rogatio.circlead.model.work.IWorkitem;
@@ -106,6 +107,21 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		}
 	}
 
+	public void addSubActivityList(Element element, List<ActivityDataitem> list, Activity activity) {
+		if (ObjectUtil.isListNotNullAndEmpty(list)) {
+			// Open html-list
+			Element ul = element.appendElement("div").appendElement("ul");
+			for (ActivityDataitem activitydataitem : list) {
+				// Create html-List-item
+				Element li = ul.appendElement("li");
+				// Add activity-title to list with valid link
+				li.appendText(activitydataitem.getTitle());
+				li.appendText(" (").appendElement("a").attr("href", "../web/"+activity.getId(synchronizer) + ".html").appendText(activity.getTitle());
+				li.appendText(")");
+			}
+		}
+	}
+	
 	/**
 	 * Adds the role list.
 	 *

@@ -11,12 +11,16 @@ package org.rogatio.circlead.view;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Element;
+import org.rogatio.circlead.Sync;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
 import org.rogatio.circlead.control.validator.ValidationMessage;
 import org.rogatio.circlead.model.WorkitemStatusParameter;
+import org.rogatio.circlead.model.data.ActivityDataitem;
 import org.rogatio.circlead.model.data.HowTo;
 import org.rogatio.circlead.model.work.Activity;
 import org.rogatio.circlead.model.work.IWorkitem;
@@ -26,7 +30,8 @@ import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.ObjectUtil;
 
 /**
- * The Class Atlassian Renderer allows rendering from object-data to html for atlassian-confluence including valid links.
+ * The Class Atlassian Renderer allows rendering from object-data to html for
+ * atlassian-confluence including valid links.
  */
 public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 
@@ -36,8 +41,7 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 	/**
 	 * Instantiates a new atlassian renderer.
 	 *
-	 * @param synchronizer
-	 *            the synchronizer
+	 * @param synchronizer the synchronizer
 	 */
 	public AtlassianRendererEngine(ISynchronizer synchronizer) {
 		this.synchronizer = synchronizer;
@@ -52,10 +56,31 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 		return synchronizer;
 	}
 
+	final static Logger logger = LogManager.getLogger(AtlassianRendererEngine.class);
+
+	public void addSubActivityList(Element element, List<ActivityDataitem> list, Activity activity) {
+		if (ObjectUtil.isListNotNullAndEmpty(list)) {
+			// Open html-list
+			Element ul = element.appendElement("div").appendElement("ul");
+			for (ActivityDataitem activitydataitem : list) {
+				// Create html-List-item
+				Element li = ul.appendElement("li");
+
+				// Add subactivity-title to list with valid link
+				li.appendText(activitydataitem.getTitle());
+				li.appendText(" (").appendElement("ac:link").append(
+						"<ri:page ri:content-title=\"" + activity.getTitle() + "\" ri:version-at-save=\"1\" />");
+				li.appendText(")");
+			}
+		}
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#addActivityList(org.jsoup.nodes.Element, java.util.List)
+	 * @see
+	 * org.rogatio.circlead.view.ISynchronizerRenderer#addActivityList(org.jsoup.
+	 * nodes.Element, java.util.List)
 	 */
 	public void addActivityList(Element element, List<Activity> list) {
 		if (ObjectUtil.isListNotNullAndEmpty(list)) {
@@ -65,7 +90,8 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 				// Create html-List-item
 				Element li = ul.appendElement("li");
 				// Add activity-title to list with valid link
-				li.appendElement("ac:link").append("<ri:page ri:content-title=\"" + activity.getTitle() + "\" ri:version-at-save=\"1\" />");
+				li.appendElement("ac:link").append(
+						"<ri:page ri:content-title=\"" + activity.getTitle() + "\" ri:version-at-save=\"1\" />");
 			}
 		}
 	}
@@ -73,14 +99,17 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#addRolegroupList(org.jsoup.nodes.Element, java.util.List)
+	 * @see
+	 * org.rogatio.circlead.view.ISynchronizerRenderer#addRolegroupList(org.jsoup.
+	 * nodes.Element, java.util.List)
 	 */
 	public void addRolegroupList(Element element, List<Rolegroup> list) {
 		if (ObjectUtil.isListNotNullAndEmpty(list)) {
 			Element ul = element.appendElement("div").appendElement("ul");
 			for (Rolegroup rolegroup : list) {
 				Element li = ul.appendElement("li");
-				li.appendElement("ac:link").append("<ri:page ri:content-title=\"" + rolegroup.getTitle() + "\" ri:version-at-save=\"1\" />");
+				li.appendElement("ac:link").append(
+						"<ri:page ri:content-title=\"" + rolegroup.getTitle() + "\" ri:version-at-save=\"1\" />");
 			}
 		}
 	}
@@ -88,17 +117,16 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 	/**
 	 * Adds the role list.
 	 *
-	 * @param element
-	 *            the element
-	 * @param list
-	 *            the list
+	 * @param element the element
+	 * @param list    the list
 	 */
 	public void addRoleList(Element element, List<Role> list) {
 		if (ObjectUtil.isListNotNullAndEmpty(list)) {
 			Element ul = element.appendElement("div").appendElement("ul");
 			for (Role role : list) {
 				Element li = ul.appendElement("li");
-				li.appendElement("ac:link").append("<ri:page ri:content-title=\"" + role.getTitle() + "\" ri:version-at-save=\"1\" />");
+				li.appendElement("ac:link")
+						.append("<ri:page ri:content-title=\"" + role.getTitle() + "\" ri:version-at-save=\"1\" />");
 			}
 		}
 	}
@@ -106,12 +134,9 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 	/**
 	 * Adds the role list.
 	 *
-	 * @param element
-	 *            the element
-	 * @param list
-	 *            the list
-	 * @param person
-	 *            the person
+	 * @param element the element
+	 * @param list    the list
+	 * @param person  the person
 	 */
 	public void addRoleList(Element element, List<Role> list, Person person) {
 		if (ObjectUtil.isListNotNullAndEmpty(list)) {
@@ -120,7 +145,8 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 				Element li = ul.appendElement("li");
 				Role r = Repository.getInstance().getRole(role.getTitle());
 				if (r != null) {
-					li.appendElement("ac:link").append("<ri:page ri:content-title=\"" + role.getTitle() + "\" ri:version-at-save=\"1\" />");
+					li.appendElement("ac:link").append(
+							"<ri:page ri:content-title=\"" + role.getTitle() + "\" ri:version-at-save=\"1\" />");
 
 				} else {
 					li.appendText(role.getTitle());
@@ -147,12 +173,9 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 	/**
 	 * Adds the data pair.
 	 *
-	 * @param key
-	 *            the key
-	 * @param value
-	 *            the value
-	 * @param table
-	 *            the table
+	 * @param key   the key
+	 * @param value the value
+	 * @param table the table
 	 */
 	private void addDataPair(String key, String value, Element table) {
 		if (value != null) {
@@ -168,10 +191,8 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 	/**
 	 * Adds the html-table
 	 *
-	 * @param element
-	 *            the element
-	 * @param map
-	 *            the map
+	 * @param element the element
+	 * @param map     the map
 	 */
 	public void addTable(Element element, Map<String, String> map) {
 		if (map != null) {
@@ -188,7 +209,9 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#addStatus(org.jsoup.nodes.Element, java.lang.String)
+	 * @see
+	 * org.rogatio.circlead.view.ISynchronizerRenderer#addStatus(org.jsoup.nodes.
+	 * Element, java.lang.String)
 	 */
 	public void addStatus(Element element, String statusValue) {
 		WorkitemStatusParameter status = WorkitemStatusParameter.get(statusValue);
@@ -201,12 +224,9 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 	/**
 	 * Adds the person list.
 	 *
-	 * @param element
-	 *            the element
-	 * @param list
-	 *            the list
-	 * @param role
-	 *            the role
+	 * @param element the element
+	 * @param list    the list
+	 * @param role    the role
 	 */
 	public void addPersonList(Element element, List<String> list, Role role) {
 		Element ul = element.appendElement("div").appendElement("ul");
@@ -214,7 +234,8 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 			Person person = Repository.getInstance().getPerson(identifier);
 			Element li = ul.appendElement("li");
 			if (person != null) {
-				li.appendElement("ac:link").append("<ri:page ri:content-title=\"" + person.getTitle() + "\" ri:version-at-save=\"1\" />");
+				li.appendElement("ac:link")
+						.append("<ri:page ri:content-title=\"" + person.getTitle() + "\" ri:version-at-save=\"1\" />");
 			} else {
 				li.appendText(identifier);
 			}
@@ -239,14 +260,10 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 	/**
 	 * Adds the person list.
 	 *
-	 * @param element
-	 *            the element
-	 * @param list
-	 *            the list
-	 * @param role
-	 *            the role
-	 * @param leadPerson
-	 *            the lead person
+	 * @param element    the element
+	 * @param list       the list
+	 * @param role       the role
+	 * @param leadPerson the lead person
 	 */
 	public void addPersonList(Element element, List<String> list, Role role, String leadPerson) {
 		Element ul = element.appendElement("div").appendElement("ul");
@@ -256,10 +273,11 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 
 			if (person != null) {
 				if (identifier.equals(leadPerson)) {
-					li.appendElement("u").appendElement("ac:link")
-							.append("<ri:page ri:content-title=\"" + person.getTitle() + "\" ri:version-at-save=\"1\" />");
+					li.appendElement("u").appendElement("ac:link").append(
+							"<ri:page ri:content-title=\"" + person.getTitle() + "\" ri:version-at-save=\"1\" />");
 				} else {
-					li.appendElement("ac:link").append("<ri:page ri:content-title=\"" + person.getTitle() + "\" ri:version-at-save=\"1\" />");
+					li.appendElement("ac:link").append(
+							"<ri:page ri:content-title=\"" + person.getTitle() + "\" ri:version-at-save=\"1\" />");
 				}
 			} else {
 				if (identifier.equals(leadPerson)) {
@@ -288,12 +306,9 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 	/**
 	 * Adds the list.
 	 *
-	 * @param element
-	 *            the element
-	 * @param list
-	 *            the list
-	 * @param underlinedElement
-	 *            the underlined element
+	 * @param element           the element
+	 * @param list              the list
+	 * @param underlinedElement the underlined element
 	 */
 	public void addList(Element element, List<String> list, String underlinedElement) {
 		if (ObjectUtil.isListNotNullAndEmpty(list)) {
@@ -312,41 +327,38 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 	/**
 	 * Adds the list.
 	 *
-	 * @param element
-	 *            the element
-	 * @param list
-	 *            the list
+	 * @param element the element
+	 * @param list    the list
 	 */
 	public void addList(Element element, List<String> list) {
 		if (ObjectUtil.isListNotNullAndEmpty(list)) {
 			Element ul = element.appendElement("div").appendElement("ul");
 			for (String item : list) {
-				
+
 				item = replaceRolenameWithLink(item);
-				
+
 				ul.appendElement("li").append(item);
 			}
 		}
 	}
 
 	private String replaceRolenameWithLink(String item) {
-		List<String> rn= Repository.getInstance().getRoleNames();
+		List<String> rn = Repository.getInstance().getRoleNames();
 		for (String name : rn) {
 			if (item.contains(name)) {
-				String link = "&nbsp;<ac:link><ri:page ri:content-title=\"" + name + "\" ri:version-at-save=\"1\" /></ac:link>";
+				String link = "&nbsp;<ac:link><ri:page ri:content-title=\"" + name
+						+ "\" ri:version-at-save=\"1\" /></ac:link>";
 				item = item.replace(name, link);
 			}
 		}
 		return item;
 	}
-	
+
 	/**
 	 * Adds the item.
 	 *
-	 * @param element
-	 *            the element
-	 * @param description
-	 *            the description
+	 * @param element     the element
+	 * @param description the description
 	 */
 	public void addItem(Element element, String description) {
 		if (description != null) {
@@ -358,12 +370,9 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 	/**
 	 * Adds the item.
 	 *
-	 * @param element
-	 *            the element
-	 * @param description
-	 *            the description
-	 * @param list
-	 *            the list
+	 * @param element     the element
+	 * @param description the description
+	 * @param list        the list
 	 */
 	public void addItem(Element element, String description, List<String> list) {
 		Element div = element.appendElement("div");
@@ -379,7 +388,9 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#addHowToItem(org.jsoup.nodes.Element, java.lang.String, java.lang.String)
+	 * @see
+	 * org.rogatio.circlead.view.ISynchronizerRenderer#addHowToItem(org.jsoup.nodes.
+	 * Element, java.lang.String, java.lang.String)
 	 */
 	public void addHowToItem(Element element, String description, String content) {
 		HowTo r = Repository.getInstance().getHowTo(content);
@@ -389,7 +400,8 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 		div.appendText(":").append("&nbsp;");
 		if (content != null) {
 			if (r != null) {
-				div.appendElement("ac:link").append("<ri:page ri:content-title=\"" + r.getTitle() + "\" ri:version-at-save=\"1\" />");
+				div.appendElement("ac:link")
+						.append("<ri:page ri:content-title=\"" + r.getTitle() + "\" ri:version-at-save=\"1\" />");
 			} else {
 				div.appendText(content);
 			}
@@ -408,7 +420,8 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 		}
 		if (content != null) {
 			if (r != null) {
-				div.appendElement("ac:link").append("<ri:page ri:content-title=\"" + r.getTitle() + "\" ri:version-at-save=\"1\" />");
+				div.appendElement("ac:link")
+						.append("<ri:page ri:content-title=\"" + r.getTitle() + "\" ri:version-at-save=\"1\" />");
 			} else {
 				div.appendText(content);
 			}
@@ -420,12 +433,9 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 	/**
 	 * Adds the role item.
 	 *
-	 * @param element
-	 *            the element
-	 * @param description
-	 *            the description
-	 * @param content
-	 *            the content
+	 * @param element     the element
+	 * @param description the description
+	 * @param content     the content
 	 */
 	public void addRoleItem(Element element, String description, String content) {
 		Role r = Repository.getInstance().getRole(content);
@@ -437,7 +447,8 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 		}
 		if (content != null) {
 			if (r != null) {
-				div.appendElement("ac:link").append("<ri:page ri:content-title=\"" + r.getTitle() + "\" ri:version-at-save=\"1\" />");
+				div.appendElement("ac:link")
+						.append("<ri:page ri:content-title=\"" + r.getTitle() + "\" ri:version-at-save=\"1\" />");
 			} else {
 				div.appendText(content);
 			}
@@ -457,7 +468,8 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 
 			for (IWorkitem w : workitem) {
 				tr = table.appendElement("tr");
-				tr.appendElement("td").appendElement("ac:link").append("<ri:page ri:content-title=\"" + w.getTitle() + "\" ri:version-at-save=\"1\" />");
+				tr.appendElement("td").appendElement("ac:link")
+						.append("<ri:page ri:content-title=\"" + w.getTitle() + "\" ri:version-at-save=\"1\" />");
 				tr.appendElement("td").appendText(w.getType());
 				Element td = tr.appendElement("td");
 				addStatus(td, w.getStatus());
@@ -468,12 +480,9 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 	/**
 	 * Adds the rolegroup item.
 	 *
-	 * @param element
-	 *            the element
-	 * @param description
-	 *            the description
-	 * @param content
-	 *            the content
+	 * @param element     the element
+	 * @param description the description
+	 * @param content     the content
 	 */
 	public void addRolegroupItem(Element element, String description, String content) {
 		Rolegroup rg = Repository.getInstance().getRolegroup(content);
@@ -483,7 +492,8 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 		div.appendText(":").append("&nbsp;");
 		if (content != null) {
 			if (rg != null) {
-				div.appendElement("ac:link").append("<ri:page ri:content-title=\"" + rg.getTitle() + "\" ri:version-at-save=\"1\" />");
+				div.appendElement("ac:link")
+						.append("<ri:page ri:content-title=\"" + rg.getTitle() + "\" ri:version-at-save=\"1\" />");
 			} else {
 				div.appendText(content);
 			}
@@ -495,12 +505,9 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 	/**
 	 * Adds the item.
 	 *
-	 * @param element
-	 *            the element
-	 * @param description
-	 *            the description
-	 * @param content
-	 *            the content
+	 * @param element     the element
+	 * @param description the description
+	 * @param content     the content
 	 */
 	public void addItem(Element element, String description, String content) {
 		Element div = element.appendElement("div");
@@ -516,10 +523,8 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 	/**
 	 * Adds the H 1.
 	 *
-	 * @param element
-	 *            the element
-	 * @param header
-	 *            the header
+	 * @param element the element
+	 * @param header  the header
 	 */
 	public void addH1(Element element, String header) {
 		element.appendElement("h1").appendText(header);
@@ -528,10 +533,8 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 	/**
 	 * Adds the H 2.
 	 *
-	 * @param element
-	 *            the element
-	 * @param header
-	 *            the header
+	 * @param element the element
+	 * @param header  the header
 	 */
 	public void addH2(Element element, String header) {
 		element.appendElement("h2").appendText(header);
@@ -540,10 +543,8 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 	/**
 	 * Adds the H 3.
 	 *
-	 * @param element
-	 *            the element
-	 * @param header
-	 *            the header
+	 * @param element the element
+	 * @param header  the header
 	 */
 	public void addH3(Element element, String header) {
 		element.appendElement("h3").appendText(header);
@@ -552,7 +553,9 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#addValidationList(org.jsoup.nodes.Element, java.util.List)
+	 * @see
+	 * org.rogatio.circlead.view.ISynchronizerRenderer#addValidationList(org.jsoup.
+	 * nodes.Element, java.util.List)
 	 */
 	@Override
 	public void addValidationList(Element element, List<ValidationMessage> list) {

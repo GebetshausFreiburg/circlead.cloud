@@ -64,6 +64,16 @@
     <artifactId>mbknor-jackson-jsonschema_2.12</artifactId>
     <version>1.0.29</version>
 </dependency>
+<dependency>
+   <groupId>org.ops4j.pax.logging</groupId>
+   <artifactId>pax-logging-api</artifactId>
+   <version>1.10.1</version>
+</dependency>
+<dependency>
+   <groupId>org.ops4j.pax.logging</groupId>
+   <artifactId>pax-logging-log4j2</artifactId>
+   <version>1.10.1</version>
+</dependency>
   </dependencies>
    <build>
     <testResources>

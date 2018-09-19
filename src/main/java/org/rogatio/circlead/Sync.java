@@ -7,6 +7,7 @@
  * 
  */
 package org.rogatio.circlead;
+
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,13 +21,17 @@ import org.rogatio.circlead.view.report.PersonListReport;
 import org.rogatio.circlead.view.report.ReworkReport;
 import org.rogatio.circlead.view.report.RolegroupReport;
 import org.rogatio.circlead.view.report.ValidationReport;
+
 /**
  * Synchronize-Starter
  */
 public class Sync {
 	// TODO Velocity als Render-Changer nutzen
-	// TODO WorkitemParameter vervollständigen mit properties-file, damit HardCoded Begriffe aus Code entfernt werden
+	// TODO WorkitemParameter vervollständigen mit properties-file, damit HardCoded
+	// Begriffe aus Code entfernt werden
 	// TODO Activity-Process-Builder erzeugen
+
+//	System.setProperty("log4j.configurationFile","./src/resources/log4j2.properties");
 
 	/** The Constant logger. */
 	final static Logger logger = LogManager.getLogger(Sync.class);
@@ -34,21 +39,26 @@ public class Sync {
 	/**
 	 * The main method of the application
 	 *
-	 * @param args
-	 *            the arguments
+	 * @param args the arguments
 	 */
 	public static void main(String[] args) {
 		List<SynchronizerResult> results = null;
 
 		Repository repository = Repository.getInstance();
 
-		/* Add both syncronizers. One for atlassian-confluence for space 'CIRCLEAD' and one for the Filesystem in folder 'data' */
+		/*
+		 * Add both syncronizers. One for atlassian-confluence for space 'CIRCLEAD' and
+		 * one for the Filesystem in folder 'data'
+		 */
 		FileSynchronizer fsynchronizer = new FileSynchronizer("data");
 		AtlassianSynchronizer asynchronizer = new AtlassianSynchronizer("CIRCLEAD");
 		repository.addSynchronizer(asynchronizer);
 		repository.addSynchronizer(fsynchronizer);
 
-		/* Delete all workitem-folders, so the merging is not needed because confluence is in lead of the data. Gives speed to the data-synchronization. */
+		/*
+		 * Delete all workitem-folders, so the merging is not needed because confluence
+		 * is in lead of the data. Gives speed to the data-synchronization.
+		 */
 		fsynchronizer.deleteAll();
 
 		/* Loads all data (from confluence, because the folders are emtpy) */
@@ -61,7 +71,10 @@ public class Sync {
 		repository.loadIndexHowTos();
 		repository.loadIndexReports();
 
-		/* Re-Render loaded data back to set interfaces. Update pages in confluence and writes html-pages to local folder 'web' */
+		/*
+		 * Re-Render loaded data back to set interfaces. Update pages in confluence and
+		 * writes html-pages to local folder 'web'
+		 */
 		results = repository.updateWorkitems();
 
 		/* Add report-handler */

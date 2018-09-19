@@ -19,6 +19,7 @@ import org.rogatio.circlead.control.synchronizer.atlassian.parser.ListParserElem
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
 import org.rogatio.circlead.model.WorkitemStatusParameter;
+import org.rogatio.circlead.model.data.ActivityDataitem;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.RoleDataitem;
 import org.rogatio.circlead.util.ObjectUtil;
@@ -41,8 +42,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	/**
 	 * Instantiates a new role.
 	 *
-	 * @param dataitem
-	 *            the dataitem
+	 * @param dataitem the dataitem
 	 */
 	public Role(IDataitem dataitem) {
 		super(dataitem);
@@ -60,8 +60,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	/**
 	 * Sets the organisation identifier.
 	 *
-	 * @param organisation
-	 *            the new organisation identifier
+	 * @param organisation the new organisation identifier
 	 */
 	public void setOrganisationIdentifier(String organisation) {
 		this.getDataitem().setOrganisation(organisation);
@@ -70,8 +69,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	/**
 	 * Sets the rolegroup identifier.
 	 *
-	 * @param rolegroup
-	 *            the new rolegroup identifier
+	 * @param rolegroup the new rolegroup identifier
 	 */
 	public void setRolegroupIdentifier(String rolegroup) {
 		this.getDataitem().setRolegroup(rolegroup);
@@ -89,8 +87,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	/**
 	 * Sets the person identifiers.
 	 *
-	 * @param element
-	 *            the new person identifiers
+	 * @param element the new person identifiers
 	 */
 	public void setPersonIdentifiers(ListParserElement element) {
 		this.setPersons(element.getList());
@@ -99,8 +96,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	/**
 	 * Sets the person identifiers.
 	 *
-	 * @param persons
-	 *            the new person identifiers
+	 * @param persons the new person identifiers
 	 */
 	public void setPersonIdentifiers(String persons) {
 		List<String> list = Arrays.asList(persons.split("[\\s,]+"));
@@ -110,8 +106,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	/**
 	 * Sets the persons.
 	 *
-	 * @param persons
-	 *            the new persons
+	 * @param persons the new persons
 	 */
 	public void setPersons(List<String> persons) {
 		this.getDataitem().setPersons(persons);
@@ -120,8 +115,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	/**
 	 * Sets the competences.
 	 *
-	 * @param element
-	 *            the new competences
+	 * @param element the new competences
 	 */
 	public void setCompetences(ListParserElement element) {
 		this.setCompetences(element.getList());
@@ -130,8 +124,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	/**
 	 * Sets the competences.
 	 *
-	 * @param competences
-	 *            the new competences
+	 * @param competences the new competences
 	 */
 	public void setCompetences(String competences) {
 		List<String> list = Arrays.asList(competences.split("[\\s,]+"));
@@ -141,8 +134,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	/**
 	 * Sets the competences.
 	 *
-	 * @param competences
-	 *            the new competences
+	 * @param competences the new competences
 	 */
 	public void setCompetences(List<String> competences) {
 		this.getDataitem().setCompetences(competences);
@@ -151,8 +143,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	/**
 	 * Sets the guidelines.
 	 *
-	 * @param element
-	 *            the new guidelines
+	 * @param element the new guidelines
 	 */
 	public void setGuidelines(ListParserElement element) {
 		this.setGuidelines(element.getList());
@@ -161,8 +152,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	/**
 	 * Sets the guidelines.
 	 *
-	 * @param guidelines
-	 *            the new guidelines
+	 * @param guidelines the new guidelines
 	 */
 	public void setGuidelines(String guidelines) {
 		List<String> list = Arrays.asList(guidelines.split("[\\s,]+"));
@@ -172,8 +162,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	/**
 	 * Sets the guidelines.
 	 *
-	 * @param guidelines
-	 *            the new guidelines
+	 * @param guidelines the new guidelines
 	 */
 	public void setGuidelines(List<String> guidelines) {
 		this.getDataitem().setGuidelines(guidelines);
@@ -182,8 +171,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	/**
 	 * Sets the opportunities.
 	 *
-	 * @param element
-	 *            the new opportunities
+	 * @param element the new opportunities
 	 */
 	public void setOpportunities(ListParserElement element) {
 		this.setOpportunities(element.getList());
@@ -192,8 +180,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	/**
 	 * Sets the opportunities.
 	 *
-	 * @param opportunities
-	 *            the new opportunities
+	 * @param opportunities the new opportunities
 	 */
 	public void setOpportunities(String opportunities) {
 		List<String> list = Arrays.asList(opportunities.split("[\\s,]+"));
@@ -203,8 +190,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	/**
 	 * Sets the opportunities.
 	 *
-	 * @param opportunities
-	 *            the new opportunities
+	 * @param opportunities the new opportunities
 	 */
 	public void setOpportunities(List<String> opportunities) {
 		this.getDataitem().setOpportunities(opportunities);
@@ -213,8 +199,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	/**
 	 * Sets the responsibilities.
 	 *
-	 * @param element
-	 *            the new responsibilities
+	 * @param element the new responsibilities
 	 */
 	public void setResponsibilities(ListParserElement element) {
 		this.setResponsibilities(element.getList());
@@ -223,7 +208,8 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.rogatio.circlead.model.work.DefaultWorkitem#setVersion(java.lang.String)
+	 * @see
+	 * org.rogatio.circlead.model.work.DefaultWorkitem#setVersion(java.lang.String)
 	 */
 	public void setVersion(String version) {
 		this.getDataitem().setVersion(version);
@@ -232,8 +218,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	/**
 	 * Sets the responsibilities.
 	 *
-	 * @param responsibilities
-	 *            the new responsibilities
+	 * @param responsibilities the new responsibilities
 	 */
 	public void setResponsibilities(String responsibilities) {
 		List<String> list = Arrays.asList(responsibilities.split("[\\s,]+"));
@@ -252,8 +237,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	/**
 	 * Sets the responsibilities.
 	 *
-	 * @param responsibilities
-	 *            the new responsibilities
+	 * @param responsibilities the new responsibilities
 	 */
 	public void setResponsibilities(List<String> responsibilities) {
 		this.getDataitem().setResponsibilities(responsibilities);
@@ -325,8 +309,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	/**
 	 * Sets the activities.
 	 *
-	 * @param element
-	 *            the new activities
+	 * @param element the new activities
 	 */
 	public void setActivities(ListParserElement element) {
 		this.setActivities(element.getList());
@@ -335,8 +318,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	/**
 	 * Sets the activities.
 	 *
-	 * @param activities
-	 *            the new activities
+	 * @param activities the new activities
 	 */
 	public void setActivities(String activities) {
 		List<String> list = Arrays.asList(activities.split("[\\s,]+"));
@@ -346,8 +328,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	/**
 	 * Sets the activities.
 	 *
-	 * @param activities
-	 *            the new activities
+	 * @param activities the new activities
 	 */
 	public void setActivities(List<String> activities) {
 		this.getDataitem().setActivities(activities);
@@ -356,8 +337,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	/**
 	 * Sets the synonyms.
 	 *
-	 * @param synonyms
-	 *            the new synonyms
+	 * @param synonyms the new synonyms
 	 */
 	public void setSynonyms(String synonyms) {
 		List<String> list = Arrays.asList(synonyms.split("[\\s,]+"));
@@ -367,8 +347,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	/**
 	 * Sets the synonyms.
 	 *
-	 * @param synonyms
-	 *            the new synonyms
+	 * @param synonyms the new synonyms
 	 */
 	public void setSynonyms(List<String> synonyms) {
 		this.getDataitem().setSynonyms(synonyms);
@@ -387,8 +366,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	/**
 	 * Sets the parent.
 	 *
-	 * @param parentRole
-	 *            the new parent
+	 * @param parentRole the new parent
 	 */
 	public void setParent(String parentRole) {
 		this.getDataitem().setParent(parentRole);
@@ -397,8 +375,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	/**
 	 * Sets the abbreviation.
 	 *
-	 * @param abbreviation
-	 *            the new abbreviation
+	 * @param abbreviation the new abbreviation
 	 */
 	public void setAbbreviation(String abbreviation) {
 		this.getDataitem().setAbbreviation(abbreviation);
@@ -446,7 +423,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 				renderer.addH2(element, "Erben");
 				renderer.addRoleList(element, childRoles);
 			}
-		} 
+		}
 
 		if (ObjectUtil.isListNotNullAndEmpty(this.getPersonIdentifiers())) {
 			renderer.addH2(element, "Rollenträger");
@@ -460,7 +437,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			renderer.addH2(element, "Zweck / Kurzbeschreibung");
 			element.appendText(this.getPurpose());
 		}
-	
+
 		renderer.addH2(element, "Aufgaben");
 		List<Activity> a = Repository.getInstance().getActivities(this.getTitle());
 
@@ -480,6 +457,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 						}
 					}
 				}
+
 				renderer.addList(element, alist);
 			} else {
 				renderer.addList(element, this.getActivities());
@@ -489,12 +467,20 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		if (ObjectUtil.isListNotNullAndEmpty(a)) {
 			renderer.addActivityList(element, a);
 		}
-		
+
+		List<Activity> allA = Repository.getInstance().getActivities();
+		for (Activity activity : allA) {
+			List<ActivityDataitem> ac = activity.getSubactivitiesWithResponsible(this.getTitle());
+			if (ObjectUtil.isListNotNullAndEmpty(ac)) {
+				renderer.addSubActivityList(element, ac, activity);
+			}
+		}
+
 		if (ObjectUtil.isListNotNullAndEmpty(this.getResponsibilities())) {
 			renderer.addH2(element, "Verantwortungen");
 			renderer.addList(element, this.getResponsibilities());
 		}
-		
+
 		if (ObjectUtil.isListNotNullAndEmpty(this.getCompetences())) {
 			renderer.addH2(element, "Kompetenzen");
 			renderer.addList(element, this.getCompetences());
@@ -516,13 +502,15 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Render implicit competences. Recursive method which looks for role-parents. If parent exists and contains competences then render them.
+	 * Render implicit competences. Recursive method which looks for role-parents.
+	 * If parent exists and contains competences then render them.
 	 *
 	 * @param parentIdentifier the parent identifier
-	 * @param element the element
-	 * @param renderer the renderer
+	 * @param element          the element
+	 * @param renderer         the renderer
 	 */
-	private void renderImplicitCompetence(String parentIdentifier, Element element, ISynchronizerRendererEngine renderer) {
+	private void renderImplicitCompetence(String parentIdentifier, Element element,
+			ISynchronizerRendererEngine renderer) {
 		if (parentIdentifier != null) {
 			if (!parentIdentifier.equals(this.getTitle())) {
 				Role p = Repository.getInstance().getRole(parentIdentifier);
@@ -540,11 +528,11 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	public void setPurpose(String purpose) {
 		this.getDataitem().setPurpose(purpose);
 	}
-	
+
 	public String getPurpose() {
 		return this.getDataitem().getPurpose();
 	}
-	
+
 	/**
 	 * Checks for abbreviation.
 	 *
@@ -603,8 +591,9 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		}
 
 		/*
-		 * if (this.getTitle().contains(" ")) { ValidationMessage m = new ValidationMessage(this); m.warning("Title has Whitespace", "Role '" + this.getTitle()
-		 * + "' has whitespace in title"); messages.add(m); }
+		 * if (this.getTitle().contains(" ")) { ValidationMessage m = new
+		 * ValidationMessage(this); m.warning("Title has Whitespace", "Role '" +
+		 * this.getTitle() + "' has whitespace in title"); messages.add(m); }
 		 */
 
 		if (!this.hasOrganisationIdentifier()) {
@@ -618,24 +607,25 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 				Person person = Repository.getInstance().getPerson(identifier);
 				if (person == null) {
 					ValidationMessage m = new ValidationMessage(this);
-					m.warning("Person not found", "Person '" + identifier + "' in role '" + this.getTitle() + "' not found.");
+					m.warning("Person not found",
+							"Person '" + identifier + "' in role '" + this.getTitle() + "' not found.");
 					messages.add(m);
 				} else {
 					if (this.getDataitem().hasRepresentation(identifier)) {
 						String representation = this.getDataitem().getRepresentation(identifier);
 						WorkitemStatusParameter status = WorkitemStatusParameter.get(representation);
 						if (status != null) {
-							if (status==WorkitemStatusParameter.TEMPORARY) {
+							if (status == WorkitemStatusParameter.TEMPORARY) {
 								ValidationMessage m = new ValidationMessage(this);
 								m.info("Person '" + identifier + "' holds role '" + this.getTitle() + "' temporarily.");
-								messages.add(m);					
+								messages.add(m);
 							}
 						}
 					}
 				}
 			}
 		}
-		
+
 		if (!this.hasRolegroupIdentifier()) {
 			ValidationMessage m = new ValidationMessage(this);
 			m.error("Rolegroup not set", "Rolegroup in role '" + this.getTitle() + "' not set.");
@@ -644,7 +634,8 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			Rolegroup rg = Repository.getInstance().getRolegroup(this.getRolegroupIdentifier());
 			if (rg == null) {
 				ValidationMessage m = new ValidationMessage(this);
-				m.error("Rolegroup not found", "Rolegroup '" + this.getRolegroupIdentifier() + "' in role '" + this.getTitle() + "' not found.");
+				m.error("Rolegroup not found", "Rolegroup '" + this.getRolegroupIdentifier() + "' in role '"
+						+ this.getTitle() + "' not found.");
 				messages.add(m);
 			}
 		}
@@ -676,7 +667,8 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 				if (status != null) {
 					if (status == WorkitemStatusParameter.CRITICAL) {
 						ValidationMessage m = new ValidationMessage(this);
-						m.error("Person-Status invalid", "Role '" + this.getTitle() + "' has no clear status for person '" + identifier + "'");
+						m.error("Person-Status invalid",
+								"Role '" + this.getTitle() + "' has no clear status for person '" + identifier + "'");
 						messages.add(m);
 					}
 				}

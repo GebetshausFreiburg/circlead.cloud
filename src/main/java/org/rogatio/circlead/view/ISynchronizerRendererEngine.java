@@ -14,6 +14,7 @@ import java.util.Map;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.validator.ValidationMessage;
+import org.rogatio.circlead.model.data.ActivityDataitem;
 import org.rogatio.circlead.model.work.Activity;
 import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
@@ -81,6 +82,8 @@ public interface ISynchronizerRendererEngine {
 	 * @param content the content
 	 */
 	public void addHowToItem(Element element, String description, String content);
+	
+	public void addSubActivityList(Element element, List<ActivityDataitem> list, Activity activity);
 	
 	/**
 	 * Adds the table.

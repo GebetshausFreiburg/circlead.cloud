@@ -369,6 +369,19 @@ public class Repository {
 		return persons;
 	}
 
+	public List<Activity> getActivities() {
+		List<Activity> activities = new ArrayList<Activity>();
+		for (IWorkitem workitem : workitems) {
+			if (WorkitemType.ACTIVITY.isTypeOf(workitem)) {
+				activities.add((Activity) workitem);
+			}
+		}
+		
+		Collections.sort(activities);
+		
+		return activities;
+	}
+	
 	/**
 	 * Gets the roles.
 	 *
