@@ -107,7 +107,7 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		}
 	}
 
-	public void addSubActivityList(Element element, List<ActivityDataitem> list, Activity activity) {
+	public void addSubActivityList(Element element, List<ActivityDataitem> list, Activity activity, Role role) {
 		if (ObjectUtil.isListNotNullAndEmpty(list)) {
 			// Open html-list
 			Element ul = element.appendElement("div").appendElement("ul");

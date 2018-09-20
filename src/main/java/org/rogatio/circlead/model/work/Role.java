@@ -11,6 +11,7 @@ package org.rogatio.circlead.model.work;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.TreeMap;
 
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.Repository;
@@ -439,42 +440,55 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		}
 
 		renderer.addH2(element, "Aufgaben");
-		List<Activity> a = Repository.getInstance().getActivities(this.getTitle());
 
-		if (ObjectUtil.isListNotNullAndEmpty(this.getActivities())) {
-			if (ObjectUtil.isListNotNullAndEmpty(a)) {
-				List<String> alist = new ArrayList<String>();
-				for (String actRole : getActivities()) {
-					boolean found = false;
-					for (Activity activity : a) {
-						if (activity.getTitle().equals(actRole)) {
-							found = true;
-						}
-					}
-					if (!found) {
-						if (!alist.contains(actRole)) {
-							alist.add(actRole);
-						}
-					}
-				}
+		List<String> divActivities = getActivitiesNotGlobal();
+		if (ObjectUtil.isListNotNullAndEmpty(divActivities)) {
+			renderer.addList(element, divActivities);
+		}
 
-				renderer.addList(element, alist);
-			} else {
-				renderer.addList(element, this.getActivities());
+		/*
+		 * List<Activity> a = Repository.getInstance().getActivities(this.getTitle());
+		 * 
+		 * if (ObjectUtil.isListNotNullAndEmpty(this.getActivities())) { if
+		 * (ObjectUtil.isListNotNullAndEmpty(a)) { List<String> alist = new
+		 * ArrayList<String>(); for (String actRole : getActivities()) { boolean found =
+		 * false; for (Activity activity : a) { if (activity.getTitle().equals(actRole))
+		 * { found = true; } } if (!found) { if (!alist.contains(actRole)) {
+		 * alist.add(actRole); } } }
+		 * 
+		 * renderer.addList(element, alist); } else { renderer.addList(element,
+		 * this.getActivities()); } }
+		 */
+
+		TreeMap<Activity, List<ActivityDataitem>> map = Repository.getInstance()
+				.getSubactivitiesWithResponsible(this.getTitle());
+
+		List<Activity> globalActivities = Repository.getInstance().getActivities(this.getTitle());
+		List<Activity> ga = new ArrayList<Activity>();
+		for (Activity activity : globalActivities) {
+			if (!containsActivityInSubactivities(activity)) {
+				ga.add(activity);
+			}
+		}
+		
+		if (ObjectUtil.isListNotNullAndEmpty(ga)) {
+			renderer.addActivityList(element, ga);
+		}
+
+		for (Activity activity : map.keySet()) {
+			List<ActivityDataitem> subactivities = map.get(activity);
+			if (ObjectUtil.isListNotNullAndEmpty(subactivities)) {
+				renderer.addSubActivityList(element, subactivities, activity, this);
 			}
 		}
 
-		if (ObjectUtil.isListNotNullAndEmpty(a)) {
-			renderer.addActivityList(element, a);
-		}
-
-		List<Activity> allA = Repository.getInstance().getActivities();
-		for (Activity activity : allA) {
-			List<ActivityDataitem> ac = activity.getSubactivitiesWithResponsible(this.getTitle());
-			if (ObjectUtil.isListNotNullAndEmpty(ac)) {
-				renderer.addSubActivityList(element, ac, activity);
-			}
-		}
+		/*
+		 * List<Activity> allA = Repository.getInstance().getActivities(); for (Activity
+		 * activity : allA) { List<ActivityDataitem> ac =
+		 * activity.getSubactivitiesWithResponsible(this.getTitle()); if
+		 * (ObjectUtil.isListNotNullAndEmpty(ac)) { renderer.addSubActivityList(element,
+		 * ac, activity); } }
+		 */
 
 		if (ObjectUtil.isListNotNullAndEmpty(this.getResponsibilities())) {
 			renderer.addH2(element, "Verantwortungen");
@@ -499,6 +513,62 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		}
 
 		return element;
+	}
+
+	private boolean containsActivityInSubactivities(Activity a) {
+		TreeMap<Activity, List<ActivityDataitem>> map = Repository.getInstance()
+				.getSubactivitiesWithResponsible(this.getTitle());
+
+		for (Activity activity : map.keySet()) {
+			List<ActivityDataitem> subactivities = map.get(activity);
+			if (ObjectUtil.isListNotNullAndEmpty(subactivities)) {
+				for (ActivityDataitem x : subactivities) {
+					if (x.getTitle().equals(a.getTitle())) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	private List<String> getActivitiesNotGlobal() {
+		List<Activity> a = Repository.getInstance().getActivities(this.getTitle());
+		TreeMap<Activity, List<ActivityDataitem>> map = Repository.getInstance()
+				.getSubactivitiesWithResponsible(this.getTitle());
+
+		List<String> alist = new ArrayList<String>();
+
+		if (ObjectUtil.isListNotNullAndEmpty(this.getActivities())) {
+			if (ObjectUtil.isListNotNullAndEmpty(a)) {
+				for (String actRole : getActivities()) {
+					boolean found = false;
+
+					for (Activity activity : map.keySet()) {
+						List<ActivityDataitem> subactivities = map.get(activity);
+						if (ObjectUtil.isListNotNullAndEmpty(subactivities)) {
+							for (ActivityDataitem x : subactivities) {
+								if (x.getTitle().equals(actRole)) {
+									found = true;
+								}
+							}
+						}
+					}
+
+					for (Activity activity : a) {
+						if (activity.getTitle().equals(actRole)) {
+							found = true;
+						}
+					}
+					if (!found) {
+						if (!alist.contains(actRole)) {
+							alist.add(actRole);
+						}
+					}
+				}
+			}
+		}
+		return alist;
 	}
 
 	/**

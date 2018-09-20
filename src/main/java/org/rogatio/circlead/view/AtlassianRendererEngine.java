@@ -58,7 +58,10 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 
 	final static Logger logger = LogManager.getLogger(AtlassianRendererEngine.class);
 
-	public void addSubActivityList(Element element, List<ActivityDataitem> list, Activity activity) {
+	public void addSubActivityList(Element element, List<ActivityDataitem> list, Activity activity, Role role) {
+		
+		List<Activity> a = Repository.getInstance().getActivities(role.getTitle());
+		
 		if (ObjectUtil.isListNotNullAndEmpty(list)) {
 			// Open html-list
 			Element ul = element.appendElement("div").appendElement("ul");
@@ -67,7 +70,25 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 				Element li = ul.appendElement("li");
 
 				// Add subactivity-title to list with valid link
-				li.appendText(activitydataitem.getTitle());
+				
+				boolean found = false;
+				for (Activity act : a) {
+					if (act.getTitle().equals(activitydataitem.getTitle())) {
+						found = true;
+					}
+				}
+				
+				if (found) {
+					for (Activity act : a) {
+						if (act.getTitle().equals(activitydataitem.getTitle())) {
+							li.appendElement("ac:link").append(
+									"<ri:page ri:content-title=\"" + activitydataitem.getTitle() + "\" ri:version-at-save=\"1\" />");
+						}
+					}	
+				} else {
+				    li.appendText(activitydataitem.getTitle());
+				}
+				
 				li.appendText(" (").appendElement("ac:link").append(
 						"<ri:page ri:content-title=\"" + activity.getTitle() + "\" ri:version-at-save=\"1\" />");
 				li.appendText(")");

@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.TreeMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,7 +42,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * The Class Repository is a sigleton-representation of all loaded and handled data while runtime. This is the real core of the circlead-application.
+ * The Class Repository is a sigleton-representation of all loaded and handled
+ * data while runtime. This is the real core of the circlead-application.
  */
 public class Repository {
 
@@ -112,7 +114,19 @@ public class Repository {
 		}
 		return false;
 	}
-	
+
+	public TreeMap<Activity, List<ActivityDataitem>> getSubactivitiesWithResponsible(String roleTitle) {
+		TreeMap<Activity, List<ActivityDataitem>> map = new TreeMap<Activity, List<ActivityDataitem>>();
+		List<Activity> allA = Repository.getInstance().getActivities();
+		for (Activity activity : allA) {
+			List<ActivityDataitem> ac = activity.getSubactivitiesWithResponsible(roleTitle);
+			if (ObjectUtil.isListNotNullAndEmpty(ac)) {
+				map.put(activity, ac);
+			}
+		}
+		return map;
+	}
+
 	public List<String> getRoleNames() {
 		List<Role> roles = this.getRoles();
 		List<String> roleNames = new ArrayList<String>();
@@ -121,12 +135,11 @@ public class Repository {
 		}
 		return roleNames;
 	}
-	
+
 	/**
 	 * Adds the synchronizer.
 	 *
-	 * @param synchronizer
-	 *            the synchronizer
+	 * @param synchronizer the synchronizer
 	 */
 	public void addSynchronizer(ISynchronizer synchronizer) {
 		connector.addSynchronizer(synchronizer);
@@ -154,8 +167,7 @@ public class Repository {
 	/**
 	 * Adds the items.
 	 *
-	 * @param workitems
-	 *            the workitems
+	 * @param workitems the workitems
 	 */
 	private void addItems(List<IWorkitem> workitems) {
 		for (IWorkitem workitem : workitems) {
@@ -291,8 +303,7 @@ public class Repository {
 	/**
 	 * Gets the.
 	 *
-	 * @param id
-	 *            the id
+	 * @param id the id
 	 * @return the i workitem
 	 */
 	public IWorkitem get(String id) {
@@ -323,7 +334,7 @@ public class Repository {
 	/**
 	 * Checks if is person data value entity.
 	 *
-	 * @param key the key
+	 * @param key   the key
 	 * @param value the value
 	 * @return true, if is person data value entity
 	 */
@@ -376,12 +387,12 @@ public class Repository {
 				activities.add((Activity) workitem);
 			}
 		}
-		
+
 		Collections.sort(activities);
-		
+
 		return activities;
 	}
-	
+
 	/**
 	 * Gets the roles.
 	 *
@@ -394,17 +405,16 @@ public class Repository {
 				roles.add((Role) workitem);
 			}
 		}
-		
+
 		Collections.sort(roles);
-		
+
 		return roles;
 	}
 
 	/**
 	 * Gets the person.
 	 *
-	 * @param identifier
-	 *            the identifier
+	 * @param identifier the identifier
 	 * @return the person
 	 */
 	public Person getPerson(String identifier) {
@@ -438,8 +448,7 @@ public class Repository {
 	/**
 	 * Gets the roles.
 	 *
-	 * @param rolegroupIdentifier
-	 *            the rolegroup identifier
+	 * @param rolegroupIdentifier the rolegroup identifier
 	 * @return the roles
 	 */
 	public List<Role> getRoles(String rolegroupIdentifier) {
@@ -462,8 +471,7 @@ public class Repository {
 	/**
 	 * Gets the activities.
 	 *
-	 * @param roleIdentifier
-	 *            the responsible role identifier
+	 * @param roleIdentifier the responsible role identifier
 	 * @return the activities
 	 */
 	public List<Activity> getActivities(String roleIdentifier) {
@@ -486,8 +494,7 @@ public class Repository {
 	/**
 	 * Gets the role identifiers.
 	 *
-	 * @param rolegroupIdentifier
-	 *            the rolegroup identifier
+	 * @param rolegroupIdentifier the rolegroup identifier
 	 * @return the role identifiers
 	 */
 	public List<String> getRoleIdentifiers(String rolegroupIdentifier) {
@@ -510,8 +517,7 @@ public class Repository {
 	/**
 	 * Gets the rolegroup.
 	 *
-	 * @param identifier
-	 *            the identifier
+	 * @param identifier the identifier
 	 * @return the rolegroup
 	 */
 	public Rolegroup getRolegroup(String identifier) {
@@ -534,8 +540,7 @@ public class Repository {
 	/**
 	 * Checks for unique role identity.
 	 *
-	 * @param r
-	 *            the r
+	 * @param r the r
 	 * @return true, if successful
 	 */
 	public boolean hasUniqueRoleIdentity(Role r) {
@@ -588,8 +593,7 @@ public class Repository {
 	/**
 	 * Gets the role.
 	 *
-	 * @param identifier
-	 *            the identifier
+	 * @param identifier the identifier
 	 * @return the role
 	 */
 	public Role getRole(String identifier) {
@@ -687,8 +691,7 @@ public class Repository {
 	/**
 	 * Gets the report.
 	 *
-	 * @param identifier
-	 *            the identifier
+	 * @param identifier the identifier
 	 * @return the report
 	 */
 	public Report getReport(String identifier) {
@@ -709,8 +712,7 @@ public class Repository {
 	/**
 	 * Gets the how to.
 	 *
-	 * @param identifier
-	 *            the identifier
+	 * @param identifier the identifier
 	 * @return the how to
 	 */
 	public HowTo getHowTo(String identifier) {
@@ -731,8 +733,7 @@ public class Repository {
 	/**
 	 * Gets the role children.
 	 *
-	 * @param roleIdentifier
-	 *            the role identifier
+	 * @param roleIdentifier the role identifier
 	 * @return the role children
 	 */
 	public List<Role> getRoleChildren(String roleIdentifier) {
@@ -781,8 +782,7 @@ public class Repository {
 	/**
 	 * Adds the report.
 	 *
-	 * @param report
-	 *            the report
+	 * @param report the report
 	 */
 	public void addReport(IReport report) {
 		reports.add(report);
@@ -800,8 +800,7 @@ public class Repository {
 	/**
 	 * Gets the rolegroup children.
 	 *
-	 * @param rolegroupIdentifier
-	 *            the rolegroup identifier
+	 * @param rolegroupIdentifier the rolegroup identifier
 	 * @return the rolegroup children
 	 */
 	public List<Rolegroup> getRolegroupChildren(String rolegroupIdentifier) {
@@ -879,8 +878,7 @@ public class Repository {
 	/**
 	 * Gets the roles with person.
 	 *
-	 * @param person
-	 *            the person
+	 * @param person the person
 	 * @return the roles with person
 	 */
 	public ArrayList<Role> getRolesWithPerson(String person) {

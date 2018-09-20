@@ -83,7 +83,7 @@ public interface ISynchronizerRendererEngine {
 	 */
 	public void addHowToItem(Element element, String description, String content);
 	
-	public void addSubActivityList(Element element, List<ActivityDataitem> list, Activity activity);
+	public void addSubActivityList(Element element, List<ActivityDataitem> list, Activity activity, Role role);
 	
 	/**
 	 * Adds the table.
