@@ -27,11 +27,7 @@ import org.rogatio.circlead.view.report.ValidationReport;
  */
 public class Sync {
 	// TODO Velocity als Render-Changer nutzen
-	// TODO WorkitemParameter vervollständigen mit properties-file, damit HardCoded
-	// Begriffe aus Code entfernt werden
 	// TODO Activity-Process-Builder erzeugen
-
-//	System.setProperty("log4j.configurationFile","./src/resources/log4j2.properties");
 
 	/** The Constant logger. */
 	final static Logger logger = LogManager.getLogger(Sync.class);

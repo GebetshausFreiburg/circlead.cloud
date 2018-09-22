@@ -57,6 +57,22 @@ public class ConfluenceClient extends HttpClient {
 		}
 	}
 
+	public SynchronizerResult deleteVersion(int pageId, int version) {
+		try {
+			return this.delete(restPrefix + "content/" + pageId + "/version/"+version);
+		} catch (IOException e) {
+			return null;
+		}
+	}
+	
+	public SynchronizerResult getContentVersions(int id) {
+		try {
+			return this.get(restPrefix + "content/" + id + "/version");
+		} catch (IOException e) {
+			return null;
+		}
+	}
+	
 	/**
 	 * Gets the page space.
 	 *

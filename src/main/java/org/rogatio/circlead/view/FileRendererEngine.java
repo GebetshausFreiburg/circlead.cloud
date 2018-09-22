@@ -37,8 +37,7 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 	/**
 	 * Instantiates a new file renderer.
 	 *
-	 * @param synchronizer
-	 *            the synchronizer
+	 * @param synchronizer the synchronizer
 	 */
 	public FileRendererEngine(ISynchronizer synchronizer) {
 		this.synchronizer = synchronizer;
@@ -56,7 +55,9 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#addActivityList(org.jsoup.nodes.Element, java.util.List)
+	 * @see
+	 * org.rogatio.circlead.view.ISynchronizerRenderer#addActivityList(org.jsoup.
+	 * nodes.Element, java.util.List)
 	 */
 	public void addActivityList(Element element, List<Activity> list) {
 		if (list != null) {
@@ -64,7 +65,8 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 				Element ul = element.appendElement("div").appendElement("ul");
 				for (Activity activity : list) {
 					Element li = ul.appendElement("li");
-					li.appendElement("a").attr("href", "../web/"+activity.getId(synchronizer) + ".html").appendText(activity.getTitle());
+					li.appendElement("a").attr("href", "../web/" + activity.getId(synchronizer) + ".html")
+							.appendText(activity.getTitle());
 				}
 			}
 		}
@@ -81,7 +83,8 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 
 			for (IWorkitem w : workitem) {
 				tr = table.appendElement("tr");
-				tr.appendElement("td").appendElement("a").attr("href", "../web/"+w.getId(synchronizer) + ".html").appendText(w.getTitle());
+				tr.appendElement("td").appendElement("a").attr("href", "../web/" + w.getId(synchronizer) + ".html")
+						.appendText(w.getTitle());
 				;
 				tr.appendElement("td").appendText(w.getType());
 				Element td = tr.appendElement("td");
@@ -93,7 +96,9 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#addRolegroupList(org.jsoup.nodes.Element, java.util.List)
+	 * @see
+	 * org.rogatio.circlead.view.ISynchronizerRenderer#addRolegroupList(org.jsoup.
+	 * nodes.Element, java.util.List)
 	 */
 	public void addRolegroupList(Element element, List<Rolegroup> list) {
 		if (list != null) {
@@ -101,34 +106,58 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 				Element ul = element.appendElement("div").appendElement("ul");
 				for (Rolegroup rolegroup : list) {
 					Element li = ul.appendElement("li");
-					li.appendElement("a").attr("href", "../web/"+rolegroup.getId(synchronizer) + ".html").appendText(rolegroup.getTitle());
+					li.appendElement("a").attr("href", "../web/" + rolegroup.getId(synchronizer) + ".html")
+							.appendText(rolegroup.getTitle());
 				}
 			}
 		}
 	}
 
 	public void addSubActivityList(Element element, List<ActivityDataitem> list, Activity activity, Role role) {
+		List<Activity> a = Repository.getInstance().getActivities(role.getTitle());
+
 		if (ObjectUtil.isListNotNullAndEmpty(list)) {
 			// Open html-list
 			Element ul = element.appendElement("div").appendElement("ul");
 			for (ActivityDataitem activitydataitem : list) {
 				// Create html-List-item
 				Element li = ul.appendElement("li");
-				// Add activity-title to list with valid link
-				li.appendText(activitydataitem.getTitle());
-				li.appendText(" (").appendElement("a").attr("href", "../web/"+activity.getId(synchronizer) + ".html").appendText(activity.getTitle());
+
+				// Add subactivity-title to list with valid link
+
+				boolean found = false;
+				for (Activity act : a) {
+					if (act.getTitle().equals(activitydataitem.getTitle())) {
+						found = true;
+					}
+				}
+
+				if (found) {
+					for (Activity act : a) {
+						if (act.getTitle().equals(activitydataitem.getTitle())) {
+							li.appendText("").appendElement("a")
+									.attr("href", "../web/" + activitydataitem.getId(synchronizer) + ".html")
+									.appendText(activitydataitem.getTitle());
+							li.appendText("");
+						}
+					}
+				} else {
+					li.appendText(activitydataitem.getTitle());
+				}
+
+				li.appendText(" (").appendElement("a").attr("href", "../web/" + activity.getId(synchronizer) + ".html")
+						.appendText(activity.getTitle());
 				li.appendText(")");
+
 			}
 		}
 	}
-	
+
 	/**
 	 * Adds the role list.
 	 *
-	 * @param element
-	 *            the element
-	 * @param list
-	 *            the list
+	 * @param element the element
+	 * @param list    the list
 	 */
 	public void addRoleList(Element element, List<Role> list) {
 		if (list != null) {
@@ -138,7 +167,8 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 					Element li = ul.appendElement("li");
 					@SuppressWarnings("unused")
 					Role r = Repository.getInstance().getRole(role.getTitle());
-					li.appendElement("a").attr("href", "../web/"+role.getId(synchronizer) + ".html").appendText(role.getTitle());
+					li.appendElement("a").attr("href", "../web/" + role.getId(synchronizer) + ".html")
+							.appendText(role.getTitle());
 				}
 			}
 		}
@@ -147,12 +177,9 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 	/**
 	 * Adds the role list.
 	 *
-	 * @param element
-	 *            the element
-	 * @param list
-	 *            the list
-	 * @param person
-	 *            the person
+	 * @param element the element
+	 * @param list    the list
+	 * @param person  the person
 	 */
 	public void addRoleList(Element element, List<Role> list, Person person) {
 		if (list != null) {
@@ -162,7 +189,8 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 					Element li = ul.appendElement("li");
 					Role r = Repository.getInstance().getRole(role.getTitle());
 					if (r != null) {
-						li.appendElement("a").attr("href", "../web/"+role.getId(synchronizer) + ".html").appendText(role.getTitle());
+						li.appendElement("a").attr("href", "../web/" + role.getId(synchronizer) + ".html")
+								.appendText(role.getTitle());
 					} else {
 						li.appendText(role.getTitle());
 					}
@@ -171,7 +199,8 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 						String representation = role.getDataitem().getRepresentation(person.getFullname());
 						WorkitemStatusParameter status = WorkitemStatusParameter.get(representation);
 						if (status != null) {
-							li.append("&nbsp;").appendElement("div").attr("id", "status" + status.getColor()).appendText(status.getName());
+							li.append("&nbsp;").appendElement("div").attr("id", "status" + status.getColor())
+									.appendText(status.getName());
 						}
 					}
 					if (role.getDataitem().hasSkill(person.getFullname())) {
@@ -187,12 +216,9 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 	/**
 	 * Adds the data pair.
 	 *
-	 * @param key
-	 *            the key
-	 * @param value
-	 *            the value
-	 * @param table
-	 *            the table
+	 * @param key   the key
+	 * @param value the value
+	 * @param table the table
 	 */
 	private void addDataPair(String key, String value, Element table) {
 		if (value != null) {
@@ -205,10 +231,8 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 	/**
 	 * Adds the table.
 	 *
-	 * @param element
-	 *            the element
-	 * @param map
-	 *            the map
+	 * @param element the element
+	 * @param map     the map
 	 */
 	public void addTable(Element element, Map<String, String> map) {
 		if (map != null) {
@@ -225,12 +249,9 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 	/**
 	 * Adds the person list.
 	 *
-	 * @param element
-	 *            the element
-	 * @param list
-	 *            the list
-	 * @param role
-	 *            the role
+	 * @param element the element
+	 * @param list    the list
+	 * @param role    the role
 	 */
 	public void addPersonList(Element element, List<String> list, Role role) {
 		Element ul = element.appendElement("div").appendElement("ul");
@@ -238,7 +259,8 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 			Person person = Repository.getInstance().getPerson(identifier);
 			Element li = ul.appendElement("li");
 			if (person != null) {
-				li.appendElement("a").attr("href", "../web/"+person.getId(synchronizer) + ".html").appendText(person.getTitle());
+				li.appendElement("a").attr("href", "../web/" + person.getId(synchronizer) + ".html")
+						.appendText(person.getTitle());
 			} else {
 				li.appendText(identifier);
 			}
@@ -246,7 +268,8 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 				String representation = role.getDataitem().getRepresentation(identifier);
 				WorkitemStatusParameter status = WorkitemStatusParameter.get(representation);
 				if (status != null) {
-					li.append("&nbsp;").appendElement("div").attr("id", "status" + status.getColor()).appendText(status.getName());
+					li.append("&nbsp;").appendElement("div").attr("id", "status" + status.getColor())
+							.appendText(status.getName());
 				}
 			}
 			if (role.getDataitem().hasSkill(identifier)) {
@@ -261,26 +284,25 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#addStatus(org.jsoup.nodes.Element, java.lang.String)
+	 * @see
+	 * org.rogatio.circlead.view.ISynchronizerRenderer#addStatus(org.jsoup.nodes.
+	 * Element, java.lang.String)
 	 */
 	public void addStatus(Element element, String statusValue) {
 		WorkitemStatusParameter status = WorkitemStatusParameter.get(statusValue);
 		if (status != null) {
-			element.append("&nbsp;").appendElement("div").attr("id", "status" + status.getColor()).appendText(status.getName());
+			element.append("&nbsp;").appendElement("div").attr("id", "status" + status.getColor())
+					.appendText(status.getName());
 		}
 	}
 
 	/**
 	 * Adds the person list.
 	 *
-	 * @param element
-	 *            the element
-	 * @param list
-	 *            the list
-	 * @param role
-	 *            the role
-	 * @param leadPerson
-	 *            the lead person
+	 * @param element    the element
+	 * @param list       the list
+	 * @param role       the role
+	 * @param leadPerson the lead person
 	 */
 	public void addPersonList(Element element, List<String> list, Role role, String leadPerson) {
 		Element ul = element.appendElement("div").appendElement("ul");
@@ -290,9 +312,12 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 
 			if (person != null) {
 				if (identifier.equals(leadPerson)) {
-					li.appendElement("u").appendElement("a").attr("href", "../web/"+person.getId(synchronizer) + ".html").appendText(person.getTitle());
+					li.appendElement("u").appendElement("a")
+							.attr("href", "../web/" + person.getId(synchronizer) + ".html")
+							.appendText(person.getTitle());
 				} else {
-					li.appendElement("a").attr("href", "../web/"+person.getId(synchronizer) + ".html").appendText(person.getTitle());
+					li.appendElement("a").attr("href", "../web/" + person.getId(synchronizer) + ".html")
+							.appendText(person.getTitle());
 				}
 			} else {
 				if (identifier.equals(leadPerson)) {
@@ -305,7 +330,8 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 				String representation = role.getDataitem().getRepresentation(identifier);
 				WorkitemStatusParameter status = WorkitemStatusParameter.get(representation);
 				if (status != null) {
-					li.append("&nbsp;").appendElement("div").attr("id", "status" + status.getColor()).appendText(status.getName());
+					li.append("&nbsp;").appendElement("div").attr("id", "status" + status.getColor())
+							.appendText(status.getName());
 				}
 			}
 			if (role.getDataitem().hasSkill(identifier)) {
@@ -320,12 +346,9 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 	/**
 	 * Adds the list.
 	 *
-	 * @param element
-	 *            the element
-	 * @param list
-	 *            the list
-	 * @param underlinedElement
-	 *            the underlined element
+	 * @param element           the element
+	 * @param list              the list
+	 * @param underlinedElement the underlined element
 	 */
 	public void addList(Element element, List<String> list, String underlinedElement) {
 		if (list != null) {
@@ -346,10 +369,8 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 	/**
 	 * Adds the list.
 	 *
-	 * @param element
-	 *            the element
-	 * @param list
-	 *            the list
+	 * @param element the element
+	 * @param list    the list
 	 */
 	public void addList(Element element, List<String> list) {
 		if (list != null) {
@@ -365,10 +386,8 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 	/**
 	 * Adds the item.
 	 *
-	 * @param element
-	 *            the element
-	 * @param description
-	 *            the description
+	 * @param element     the element
+	 * @param description the description
 	 */
 	public void addItem(Element element, String description) {
 		if (description != null) {
@@ -380,12 +399,9 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 	/**
 	 * Adds the item.
 	 *
-	 * @param element
-	 *            the element
-	 * @param description
-	 *            the description
-	 * @param list
-	 *            the list
+	 * @param element     the element
+	 * @param description the description
+	 * @param list        the list
 	 */
 	public void addItem(Element element, String description, List<String> list) {
 		Element div = element.appendElement("div");
@@ -401,7 +417,9 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#addHowToItem(org.jsoup.nodes.Element, java.lang.String, java.lang.String)
+	 * @see
+	 * org.rogatio.circlead.view.ISynchronizerRenderer#addHowToItem(org.jsoup.nodes.
+	 * Element, java.lang.String, java.lang.String)
 	 */
 	public void addHowToItem(Element element, String description, String content) {
 		HowTo r = Repository.getInstance().getHowTo(content);
@@ -411,7 +429,7 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		div.appendText(":").append("&nbsp;");
 		if (content != null) {
 			if (r != null) {
-				div.appendElement("a").attr("href", "../data/howtos/"+r.getUrl()).appendText(r.getTitle());
+				div.appendElement("a").attr("href", "../data/howtos/" + r.getUrl()).appendText(r.getTitle());
 			} else {
 				div.appendText(content);
 			}
@@ -430,7 +448,8 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		}
 		if (content != null) {
 			if (r != null) {
-				div.appendElement("a").attr("href", "../web/"+r.getId(synchronizer) + ".html").appendText(r.getTitle());
+				div.appendElement("a").attr("href", "../web/" + r.getId(synchronizer) + ".html")
+						.appendText(r.getTitle());
 			} else {
 				div.appendText(content);
 			}
@@ -442,12 +461,9 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 	/**
 	 * Adds the role item.
 	 *
-	 * @param element
-	 *            the element
-	 * @param description
-	 *            the description
-	 * @param content
-	 *            the content
+	 * @param element     the element
+	 * @param description the description
+	 * @param content     the content
 	 */
 	public void addRoleItem(Element element, String description, String content) {
 		Role r = Repository.getInstance().getRole(content);
@@ -459,7 +475,8 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		}
 		if (content != null) {
 			if (r != null) {
-				div.appendElement("a").attr("href", "../web/"+r.getId(synchronizer) + ".html").appendText(r.getTitle());
+				div.appendElement("a").attr("href", "../web/" + r.getId(synchronizer) + ".html")
+						.appendText(r.getTitle());
 			} else {
 				div.appendText(content);
 			}
@@ -471,12 +488,9 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 	/**
 	 * Adds the rolegroup item.
 	 *
-	 * @param element
-	 *            the element
-	 * @param description
-	 *            the description
-	 * @param content
-	 *            the content
+	 * @param element     the element
+	 * @param description the description
+	 * @param content     the content
 	 */
 	public void addRolegroupItem(Element element, String description, String content) {
 		Rolegroup rg = Repository.getInstance().getRolegroup(content);
@@ -486,7 +500,8 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		div.appendText(": ");
 		if (content != null) {
 			if (rg != null) {
-				div.appendElement("a").attr("href", "../web/"+rg.getId(synchronizer) + ".html").appendText(rg.getTitle());
+				div.appendElement("a").attr("href", "../web/" + rg.getId(synchronizer) + ".html")
+						.appendText(rg.getTitle());
 			} else {
 				div.appendText(content);
 			}
@@ -498,12 +513,9 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 	/**
 	 * Adds the item.
 	 *
-	 * @param element
-	 *            the element
-	 * @param description
-	 *            the description
-	 * @param content
-	 *            the content
+	 * @param element     the element
+	 * @param description the description
+	 * @param content     the content
 	 */
 	public void addItem(Element element, String description, String content) {
 		Element div = element.appendElement("div");
@@ -519,10 +531,8 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 	/**
 	 * Adds the H 1.
 	 *
-	 * @param element
-	 *            the element
-	 * @param header
-	 *            the header
+	 * @param element the element
+	 * @param header  the header
 	 */
 	public void addH1(Element element, String header) {
 		element.appendElement("h1").appendText(header);
@@ -531,10 +541,8 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 	/**
 	 * Adds the H 2.
 	 *
-	 * @param element
-	 *            the element
-	 * @param header
-	 *            the header
+	 * @param element the element
+	 * @param header  the header
 	 */
 	public void addH2(Element element, String header) {
 		element.appendElement("h2").appendText(header);
@@ -543,10 +551,8 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 	/**
 	 * Adds the H 3.
 	 *
-	 * @param element
-	 *            the element
-	 * @param header
-	 *            the header
+	 * @param element the element
+	 * @param header  the header
 	 */
 	public void addH3(Element element, String header) {
 		element.appendElement("h3").appendText(header);
@@ -555,7 +561,9 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.rogatio.circlead.view.ISynchronizerRenderer#addValidationList(org.jsoup.nodes.Element, java.util.List)
+	 * @see
+	 * org.rogatio.circlead.view.ISynchronizerRenderer#addValidationList(org.jsoup.
+	 * nodes.Element, java.util.List)
 	 */
 	@Override
 	public void addValidationList(Element element, List<ValidationMessage> list) {
