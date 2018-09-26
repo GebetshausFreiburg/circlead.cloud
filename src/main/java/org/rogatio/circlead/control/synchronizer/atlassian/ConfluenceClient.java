@@ -49,11 +49,11 @@ public class ConfluenceClient extends HttpClient {
 		if (server) {
 			// Set rest-prefix if atlassian-dedicated-server
 			restPrefix = "rest/api/";
-			logger.info("ConfluenceSynchronizer ist set to dedicated server");
+			logger.info("ConfluenceClient ist set to dedicated server");
 		} else {
 			// Set rest-prefix if atlassian-cloud-server
 			restPrefix = "wiki/rest/api/";
-			logger.info("ConfluenceSynchronizer ist set to cloud server");
+			logger.info("ConfluenceClient ist set to cloud server");
 		}
 	}
 

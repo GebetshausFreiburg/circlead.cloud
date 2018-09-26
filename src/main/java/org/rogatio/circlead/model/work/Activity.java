@@ -58,6 +58,8 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	public Activity(Map<String, String> data) {
 		this.dataitem = new ActivityDataitem();
 		this.setAid(data.get("Aid"));
+		this.setBPMN(data.get("BPMN"));
+		this.setChild(data.get("Nachfolger"));
 		this.setDescription(data.get("Beschreibung"));
 		this.setTitle(data.get("Aktivität"));
 		this.setResults(data.get("Erwartetes Ergebnis"));
@@ -139,6 +141,14 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 		return this.getDataitem().getDescription();
 	}
 
+	public String getChild() {
+		return this.getDataitem().getChild();
+	}
+	
+	public String getBpmn() {
+		return this.getDataitem().getBpmn();
+	}
+	
 	/**
 	 * Gets the aid.
 	 *
@@ -157,6 +167,14 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 		this.getDataitem().setResults(results);
 	}
 
+	public void setBPMN(String bpmn) {
+		this.getDataitem().setBpmn(bpmn);
+	}
+	
+	public void setChild(String child) {
+		this.getDataitem().setChild(child);
+	}
+	
 	/**
 	 * Sets the aid.
 	 *

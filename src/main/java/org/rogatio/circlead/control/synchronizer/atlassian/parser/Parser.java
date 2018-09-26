@@ -54,8 +54,7 @@ public class Parser {
 	/**
 	 * Gets the page properties macro.
 	 *
-	 * @param content
-	 *            the content
+	 * @param content the content
 	 * @return the page properties macro
 	 */
 	public static Element getPagePropertiesMacro(Element content) {
@@ -71,14 +70,10 @@ public class Parser {
 	/**
 	 * Gets the jira macro.
 	 *
-	 * @param columns
-	 *            the columns
-	 * @param maximumIssues
-	 *            the maximum issues
-	 * @param jqlQuery
-	 *            the jql query
-	 * @param serverId
-	 *            the server id
+	 * @param columns       the columns
+	 * @param maximumIssues the maximum issues
+	 * @param jqlQuery      the jql query
+	 * @param serverId      the server id
 	 * @return the jira macro
 	 */
 	public static Element getJiraMacro(String columns, int maximumIssues, String jqlQuery, String serverId) {
@@ -110,19 +105,26 @@ public class Parser {
 		return macro;
 	}
 
+	public static String addImageFromOtherPage(String page, String imageFile, int size, int version) {
+		String html = "<div class=\"content-wrapper\">" + "<p><ac:image ac:thumbnail=\"true\" ac:width=\"" + size
+				+ "\"><ri:attachment ri:filename=\"" + imageFile
+				+ "\" ri:version-at-save=\"1\"><ri:page ri:content-title=\"" + page + "\" ri:version-at-save=\""
+				+ version + "\" /></ri:attachment></ac:image></p></div>";
+		return html;
+	}
+
 	/**
-	 * Creates the header table for activity-subactivties. Is a critical method, because it renders master-data-table in atlassian confluence and render-result.
-	 * If this is changed or not correct it deletes master-data.
+	 * Creates the header table for activity-subactivties. Is a critical method,
+	 * because it renders master-data-table in atlassian confluence and
+	 * render-result. If this is changed or not correct it deletes master-data.
 	 *
-	 * @param activities
-	 *            the activities
-	 * @param synchronizer
-	 *            the synchronizer
-	 * @param activatedLinks
-	 *            the activated links
+	 * @param activities     the activities
+	 * @param synchronizer   the synchronizer
+	 * @param activatedLinks the activated links
 	 * @return the element
 	 */
-	public static Element createHeaderTable(List<ActivityDataitem> activities, ISynchronizer synchronizer, boolean activatedLinks) {
+	public static Element createHeaderTable(List<ActivityDataitem> activities, ISynchronizer synchronizer,
+			boolean activatedLinks) {
 
 		if (!ObjectUtil.isListNotNullAndEmpty(activities)) {
 			Element e = new Element("p");
@@ -135,6 +137,8 @@ public class Parser {
 
 		Element tr = tbody.appendElement("tr");
 		tr.appendElement("th").attr("colspan", "1").appendText("Aid");
+		tr.appendElement("th").attr("colspan", "1").appendText("BPMN");
+		tr.appendElement("th").attr("colspan", "1").appendText("Nachfolger");
 		tr.appendElement("th").attr("colspan", "1").appendText("Aktivität");
 		tr.appendElement("th").attr("colspan", "1").appendText("Beschreibung");
 		tr.appendElement("th").attr("colspan", "1").appendText("Erwartetes Ergebnis");
@@ -147,6 +151,25 @@ public class Parser {
 			tr = tbody.appendElement("tr");
 			if (StringUtil.isNotNullAndNotEmpty(activity.getAid())) {
 				tr.appendElement("td").attr("colspan", "1").appendText(activity.getAid());
+			} else {
+				tr.appendElement("td").attr("colspan", "1").appendText("");
+			}
+			if (StringUtil.isNotNullAndNotEmpty(activity.getBpmn())) {
+				if (activatedLinks) {
+					if (synchronizer.getClass().getSimpleName().equals("AtlassianSynchronizer")) {
+					tr.appendElement("td").attr("colspan", "1")
+							.append(addImageFromOtherPage("BPMN", activity.getBpmn() + ".png", 32, 1));
+					} else {
+						tr.appendElement("td").attr("colspan", "1").appendText(activity.getBpmn());
+					}
+				} else {
+					tr.appendElement("td").attr("colspan", "1").appendText(activity.getBpmn());
+				}
+			} else {
+				tr.appendElement("td").attr("colspan", "1").appendText("");
+			}
+			if (StringUtil.isNotNullAndNotEmpty(activity.getChild())) {
+				tr.appendElement("td").attr("colspan", "1").appendText(activity.getChild());
 			} else {
 				tr.appendElement("td").attr("colspan", "1").appendText("");
 			}
@@ -186,7 +209,7 @@ public class Parser {
 				if (!activatedLinks) {
 					tr.appendElement("td").attr("colspan", "1").appendText(StringUtil.join(activity.getSupplier()));
 				} else {
-					addRoleListToTableCell(tr, activity.getSupplier(), synchronizer);		
+					addRoleListToTableCell(tr, activity.getSupplier(), synchronizer);
 				}
 			} else {
 				tr.appendElement("td").attr("colspan", "1").appendText("");
@@ -195,7 +218,7 @@ public class Parser {
 				if (!activatedLinks) {
 					tr.appendElement("td").attr("colspan", "1").appendText(StringUtil.join(activity.getConsultant()));
 				} else {
-					addRoleListToTableCell(tr, activity.getConsultant(), synchronizer);		
+					addRoleListToTableCell(tr, activity.getConsultant(), synchronizer);
 				}
 			} else {
 				tr.appendElement("td").attr("colspan", "1").appendText("");
@@ -204,7 +227,7 @@ public class Parser {
 				if (!activatedLinks) {
 					tr.appendElement("td").attr("colspan", "1").appendText(StringUtil.join(activity.getInformed()));
 				} else {
-					addRoleListToTableCell(tr, activity.getInformed(), synchronizer);		
+					addRoleListToTableCell(tr, activity.getInformed(), synchronizer);
 				}
 			} else {
 				tr.appendElement("td").attr("colspan", "1").appendText("");
@@ -216,12 +239,9 @@ public class Parser {
 
 	/**
 	 * 
-	 * @param tr
-	 *            the tr
-	 * @param roleIdentifiers
-	 *            the role identifiers
-	 * @param synchronizer
-	 *            the synchronizer
+	 * @param tr              the tr
+	 * @param roleIdentifiers the role identifiers
+	 * @param synchronizer    the synchronizer
 	 */
 	private static void addRoleListToTableCell(Element tr, List<String> roleIdentifiers, ISynchronizer synchronizer) {
 		Element td = tr.appendElement("td").attr("colspan", "1");
@@ -235,10 +255,8 @@ public class Parser {
 	/**
 	 * Creates the data table.
 	 *
-	 * @param workitem
-	 *            the workitem
-	 * @param synchronizer
-	 *            the synchronizer
+	 * @param workitem     the workitem
+	 * @param synchronizer the synchronizer
 	 * @return the element
 	 */
 	private static Element createDataTable(IWorkitem workitem, ISynchronizer synchronizer) {
@@ -310,8 +328,7 @@ public class Parser {
 	/**
 	 * Gets the data table.
 	 *
-	 * @param map
-	 *            the map
+	 * @param map the map
 	 * @return the data table
 	 */
 	public static Element getDataTable(Map<String, String> map) {
@@ -349,12 +366,9 @@ public class Parser {
 	/**
 	 * Adds the data pair.
 	 *
-	 * @param key
-	 *            the key
-	 * @param value
-	 *            the value
-	 * @param table
-	 *            the table
+	 * @param key   the key
+	 * @param value the value
+	 * @param table the table
 	 */
 	private static void addDataPair(String key, Element value, Element table) {
 		Element tr = table.appendElement("tr");
@@ -365,12 +379,9 @@ public class Parser {
 	/**
 	 * Adds the comma list.
 	 *
-	 * @param key
-	 *            the key
-	 * @param dataList
-	 *            the data list
-	 * @param table
-	 *            the table
+	 * @param key      the key
+	 * @param dataList the data list
+	 * @param table    the table
 	 */
 	private static void addCommaList(String key, List<String> dataList, Element table) {
 		if (dataList == null) {
@@ -391,12 +402,9 @@ public class Parser {
 	/**
 	 * Adds the bullet list.
 	 *
-	 * @param key
-	 *            the key
-	 * @param dataList
-	 *            the data list
-	 * @param table
-	 *            the table
+	 * @param key      the key
+	 * @param dataList the data list
+	 * @param table    the table
 	 */
 	private static void addBulletList(String key, List<String> dataList, Element table) {
 		Element tr = table.appendElement("tr");
@@ -413,12 +421,9 @@ public class Parser {
 	/**
 	 * Adds the data pair.
 	 *
-	 * @param key
-	 *            the key
-	 * @param value
-	 *            the value
-	 * @param table
-	 *            the table
+	 * @param key   the key
+	 * @param value the value
+	 * @param table the table
 	 */
 	private static void addDataPair(String key, String value, Element table) {
 		if (value != null) {
@@ -431,12 +436,9 @@ public class Parser {
 	/**
 	 * Creates the page.
 	 *
-	 * @param workitem
-	 *            the workitem
-	 * @param spaceKey
-	 *            the space key
-	 * @param synchronizer
-	 *            the synchronizer
+	 * @param workitem     the workitem
+	 * @param spaceKey     the space key
+	 * @param synchronizer the synchronizer
 	 * @return the page
 	 */
 	public static Page createPage(IWorkitem workitem, String spaceKey, ISynchronizer synchronizer) {
@@ -478,12 +480,9 @@ public class Parser {
 	/**
 	 * Creates the page.
 	 *
-	 * @param report
-	 *            the report
-	 * @param spaceKey
-	 *            the space key
-	 * @param synchronizer
-	 *            the synchronizer
+	 * @param report       the report
+	 * @param spaceKey     the space key
+	 * @param synchronizer the synchronizer
 	 * @return the page
 	 */
 	public static Page createPage(IReport report, String spaceKey, ISynchronizer synchronizer) {
@@ -516,8 +515,7 @@ public class Parser {
 	/**
 	 * Gets the id from result.
 	 *
-	 * @param result
-	 *            the result
+	 * @param result the result
 	 * @return the id from result
 	 */
 	public static int getIdFromResult(String result) {
@@ -539,8 +537,7 @@ public class Parser {
 	/**
 	 * Gets the id from page.
 	 *
-	 * @param page
-	 *            the page
+	 * @param page the page
 	 * @return the id from page
 	 */
 	public static int getIdFromPage(String page) {
@@ -562,8 +559,7 @@ public class Parser {
 	/**
 	 * Gets the label metadata.
 	 *
-	 * @param re
-	 *            the re
+	 * @param re the re
 	 * @return the label metadata
 	 */
 	public static Metadata getLabelMetadata(IReport re) {
@@ -582,8 +578,7 @@ public class Parser {
 	/**
 	 * Gets the label metadata.
 	 *
-	 * @param wi
-	 *            the wi
+	 * @param wi the wi
 	 * @return the label metadata
 	 */
 	public static Metadata getLabelMetadata(IWorkitem wi) {
@@ -602,8 +597,7 @@ public class Parser {
 	/**
 	 * Gets the label metadata.
 	 *
-	 * @param label
-	 *            the label
+	 * @param label the label
 	 * @return the label metadata
 	 */
 	public static Metadata getLabelMetadata(String label) {
@@ -622,8 +616,7 @@ public class Parser {
 	/**
 	 * Gets the expand macro.
 	 *
-	 * @param content
-	 *            the content
+	 * @param content the content
 	 * @return the expand macro
 	 */
 	public static Element getExpandMacro(Element content) {
@@ -641,13 +634,13 @@ public class Parser {
 	/**
 	 * Clean.
 	 *
-	 * @param element
-	 *            the element
+	 * @param element the element
 	 * @return the string
 	 */
 	public static String clean(Element element) {
 		String c = "";
-		// To avoid linebreak in atlassian html-content the html needs to be "reduced". If not it disable correct status-macro-rendering.
+		// To avoid linebreak in atlassian html-content the html needs to be "reduced".
+		// If not it disable correct status-macro-rendering.
 		String[] lines = element.toString().split("[\\r\\n]+");
 		for (String string : lines) {
 			c += string.trim();
@@ -658,8 +651,7 @@ public class Parser {
 	/**
 	 * Gets the status parameter.
 	 *
-	 * @param statusId
-	 *            the status id
+	 * @param statusId the status id
 	 * @return the status parameter
 	 */
 	private static WorkitemStatusParameter getStatusParameter(String statusId) {
@@ -675,8 +667,7 @@ public class Parser {
 	/**
 	 * Gets the contacts.
 	 *
-	 * @param contacts
-	 *            the contacts
+	 * @param contacts the contacts
 	 * @return the contacts
 	 */
 	public static Element getContacts(List<ContactDataitem> contacts) {
@@ -699,8 +690,7 @@ public class Parser {
 	/**
 	 * Gets the status.
 	 *
-	 * @param title
-	 *            the title
+	 * @param title the title
 	 * @return the status
 	 */
 	public static Element getStatus(String title) {
