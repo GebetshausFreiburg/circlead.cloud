@@ -13,7 +13,7 @@ public class DeleteOldVersions {
 
 	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException, SynchronizerException {
 		AtlassianSynchronizer asynchronizer = new AtlassianSynchronizer("CIRCLEAD");
-
+ 
 		asynchronizer.deleteVersions(WorkitemType.ACTIVITY);
 		asynchronizer.deleteVersions(WorkitemType.ROLE);
 		asynchronizer.deleteVersions(WorkitemType.ROLEGROUP);
