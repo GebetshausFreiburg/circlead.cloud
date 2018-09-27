@@ -2,7 +2,7 @@ package org.rogatio.circlead;
 
 import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.DEDICATEDSERVER;
 import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.PASSWORD;
-import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.URL;
+import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.URLJIRA;
 import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.USER;
 
 import java.io.IOException;
@@ -30,7 +30,7 @@ public class JiraIssueLoader {
 	final static Logger logger = LogManager.getLogger(JiraIssueLoader.class);
 
 	public static void main(String[] args) {
-		JiraClient c = new JiraClient(URL, USER, PASSWORD, DEDICATEDSERVER);
+		JiraClient c = new JiraClient(URLJIRA, USER, PASSWORD, DEDICATEDSERVER);
 
 		String q = "project in (ASSET, GEB)";
 

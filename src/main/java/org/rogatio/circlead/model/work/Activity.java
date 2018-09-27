@@ -8,6 +8,8 @@
  */
 package org.rogatio.circlead.model.work;
 
+import static org.rogatio.circlead.model.Parameter.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -57,16 +59,16 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	 */
 	public Activity(Map<String, String> data) {
 		this.dataitem = new ActivityDataitem();
-		this.setAid(data.get("Aid"));
-		this.setBPMN(data.get("BPMN"));
-		this.setChild(data.get("Nachfolger"));
-		this.setDescription(data.get("Beschreibung"));
-		this.setTitle(data.get("Aktivität"));
-		this.setResults(data.get("Erwartetes Ergebnis"));
-		this.setResponsibleIdentifier(data.get("Durchführender"));
-		this.setSupplierIdentifier(data.get("Unterstützer"));
-		this.setConsultantIdentifier(data.get("Berater"));
-		this.setInformedIdentifier(data.get("Informierter"));
+		this.setAid(data.get(ACTIVITYID.toString()));
+		this.setBPMN(data.get(BPMN.toString()));
+		this.setChild(data.get(SUCCESSOR.toString()));
+		this.setDescription(data.get(DESCRIPTION.toString()));
+		this.setTitle(data.get(ACTIVITY.toString()));
+		this.setResults(data.get(RESULT.toString()));
+		this.setResponsibleIdentifier(data.get(RESPONSIBLE.toString()));
+		this.setSupplierIdentifier(data.get(SUPPORTER.toString()));
+		this.setConsultantIdentifier(data.get(CONSULTANT.toString()));
+		this.setInformedIdentifier(data.get(INFORMED.toString()));
 	}
 
 	/**
@@ -368,52 +370,52 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 
 		Element element = new Element("p");
 		if (StringUtil.isNotNullAndNotEmpty(getAid())) {
-			renderer.addItem(element, "AID", this.getAid());
+			renderer.addItem(element, ACTIVITYID.toString(), this.getAid());
 		}
 
 		Activity a = Repository.getInstance().getActivityWithSubactivity(this.getTitle());
 		if (a != null) {
-			renderer.addActivityItem(element, "Übergeordnete Aktivität", a.getTitle());
+			renderer.addActivityItem(element, PARENTACTIVITY.toString(), a.getTitle());
 		}
 
-		renderer.addH2(element, "Beteiligte Rollen");
+		renderer.addH2(element, USEDROLES.toString());
 		if (StringUtil.isNotNullAndNotEmpty(getResponsibleIdentifier())) {
-			renderer.addRoleItem(element, "Durchführender", this.getResponsibleIdentifier());
+			renderer.addRoleItem(element, RESPONSIBLE.toString(), this.getResponsibleIdentifier());
 		} else {
-			renderer.addRoleItem(element, "Durchführender", "-");
+			renderer.addRoleItem(element, RESPONSIBLE.toString(), "-");
 		}
 
 		if (StringUtil.isNotNullAndNotEmpty(getAccountableIdentifier())) {
-			renderer.addRoleItem(element, "Rechenschaftsgebender", this.getAccountableIdentifier());
+			renderer.addRoleItem(element, ACCOUNTABLE.toString(), this.getAccountableIdentifier());
 		} else {
-			renderer.addRoleItem(element, "Rechenschaftsgebender", "-");
+			renderer.addRoleItem(element, ACCOUNTABLE.toString(), "-");
 		}
 
 		List<Role> roles = Repository.getInstance().getRoles(this.getSupplierIdentifiers());
 		if (ObjectUtil.isListNotNullAndEmpty(roles)) {
-			renderer.addItem(element, "Unterstützer:", "");
+			renderer.addItem(element, SUPPORTER.toString()+":", "");
 			renderer.addRoleList(element, roles);
 		}
 
 		roles = Repository.getInstance().getRoles(this.getConsultantIdentifiers());
 		if (ObjectUtil.isListNotNullAndEmpty(roles)) {
-			renderer.addItem(element, "Berater:", "");
+			renderer.addItem(element, CONSULTANT.toString()+":", "");
 			renderer.addRoleList(element, roles);
 		}
 
 		roles = Repository.getInstance().getRoles(this.getInformedIdentifiers());
 		if (ObjectUtil.isListNotNullAndEmpty(roles)) {
-			renderer.addItem(element, "Informierte:", "");
+			renderer.addItem(element, INFORMED.toString()+":", "");
 			renderer.addRoleList(element, roles);
 		}
 
 		if (StringUtil.isNotNullAndNotEmpty(this.getDescription())) {
-			renderer.addH2(element, "Beschreibung");
+			renderer.addH2(element, DESCRIPTION.toString());
 			renderer.addItem(element, this.getDescription());
 		}
 
 		if (StringUtil.isNotNullAndNotEmpty(this.getResults())) {
-			renderer.addH2(element, "Erwartetes Ergebnis");
+			renderer.addH2(element, RESULT.toString());
 			renderer.addItem(element, this.getResults());
 		}
 

@@ -1,7 +1,7 @@
 package org.rogatio.circlead.control;
 
 import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.PASSWORD;
-import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.URL;
+import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.URLCONFLUENCE;
 import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.USER;
 
 import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
@@ -18,7 +18,7 @@ public class ConfluenceClientTest extends TestCase {
 	
 	protected void setUp() throws Exception {
 		super.setUp();
-		client = new ConfluenceClient(URL, USER, PASSWORD, false);
+		client = new ConfluenceClient(URLCONFLUENCE, USER, PASSWORD, false);
 		SynchronizerResult page = client.newPage("JUNIT Add Label Test", "CIRCLEADTEST", "tbd");
 		pageId = Parser.getIdFromPage(page.getContent());
 	}

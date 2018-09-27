@@ -12,122 +12,124 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/** 
- * The Enum WorkitemParameter allows rendering of different workitem-fields which map al values to a defined set of parameters.
+import org.rogatio.circlead.util.ObjectUtil;
+
+/**
+ * The Enum WorkitemParameter allows rendering of different workitem-fields
+ * which map al values to a defined set of parameters.
  */
 public enum WorkitemParameter {
 
 	/** The activity. */
-	ACTIVITY("Aktivität", "Aktivitäten", "Activity", "Activities", "Aufgaben"),
+	ACTIVITY(Parameter.ACTIVITY, "Aktivitäten", "Activity", "Activities", "Aufgaben"),
 
 	/** The howtos. */
-	HOWTOS("HowTos", "Arbeitsanweisungen", "Anleitungen", "Erläuterungen", "Knowledgebase"),
+	HOWTOS(Parameter.HOWTOS, "Arbeitsanweisungen", "Anleitungen", "Erläuterungen", "Knowledgebase"),
 
 	/** The subactivity. */
-	SUBACTIVITY("Teilaktivitäten", "Subactivities"),
+	SUBACTIVITY(Parameter.SUBACTIVITIES, "Subactivities"),
 
 	/** The activityid. */
-	ACTIVITYID("AID", "Activity-ID", "Aid", "Alternative Id"),
+	ACTIVITYID(Parameter.ACTIVITYID, "Activity-ID", "Aid", "Alternative Id"),
 
 	/** The description. */
-	DESCRIPTION("Beschreibung", "Description"),
+	DESCRIPTION(Parameter.DESCRIPTION, "Description"),
 
 	/** The created. */
-	CREATED("Created"),
+	CREATED(Parameter.CREATED, "Created"),
 
 	/** The result. */
-	RESULT("Ergebnis", "Result"),
+	RESULT(Parameter.RESULT, "Ergebnis", "Result"),
 
 	/** The modified. */
-	MODIFIED("Modified"),
+	MODIFIED(Parameter.MODIFIED, "Modified"),
 
 	/** The version. */
-	VERSION("Version"),
-	
-	NAME("Name"),
-	
+	VERSION(Parameter.VERSION),
+
+	NAME(Parameter.NAME),
+
 	/** The id. */
-	ID("Id"),
+	ID(Parameter.ID),
 
 	/** The synonym. */
-	SYNONYM("Synonyme", "Synonym"),
+	SYNONYM(Parameter.SYNONYMS, "Synonym"),
 
 	/** The status. */
-	STATUS("status", "Status"),
+	STATUS(Parameter.STATUS, "Status"),
 
 	/** The firstname. */
-	FIRSTNAME("Vorname", "First name", "firstname"),
+	FIRSTNAME(Parameter.FIRSTNAME, "Vorname", "First name", "firstname"),
 
 	/** The familyname. */
-	FAMILYNAME("Nachname", "Family name", "familyname", "Familienname", "Family Name"),
+	FAMILYNAME(Parameter.FAMILYNAME, "Nachname", "Family name", "familyname", "Familienname", "Family Name"),
 
 	/** The summary. */
-	SUMMARY("Summary", "summary", "Zusammenfassung", "Kurzfassung"),
+	SUMMARY(Parameter.SUMMARY, "Summary", "summary", "Zusammenfassung", "Kurzfassung"),
 
 	/** The fullname. */
-	FULLNAME("Name", "name"),
+	FULLNAME(Parameter.NAME, "name"),
 
 	/** The lead. */
-	LEAD("Lead", "lead", "Ansprechpartner"),
+	LEAD(Parameter.CONTACTPERSON, "Lead", "lead", "Ansprechpartner"),
 
 	/** The organisation. */
-	ORGANISATION("Organisation"),
+	ORGANISATION(Parameter.ORGANISATION),
 
 	/** The data. */
-	DATA("Daten", "Data"),
+	DATA(Parameter.DATA, "Data"),
 
 	/** The parent. */
-	PARENT("Parent", "Vorgänger"),
+	PARENT(Parameter.PREDECESSOR, "Parent"),
 
 	/** The purpose. */
-	PURPOSE("Zweck", "Kurzbeschreibung", "Purpose", "Bedeutung"),
+	PURPOSE(Parameter.PURPOSESHORT, "Kurzbeschreibung", "Purpose", "Bedeutung"),
 
 	/** The contacts. */
-	CONTACTS("Kontakte", "Contacts"),
+	CONTACTS(Parameter.CONTACTS2, "Contacts"),
 
 	/** The responsible. */
-	RESPONSIBLE("Verantwortlicher", "Rolle", "Durchführender", "Responsible"),
+	RESPONSIBLE(Parameter.RESPONSIBLE2, "Verantwortlicher", "Rolle", "Durchführender", "Responsible"),
 
 	/** The accountable. */
-	ACCOUNTABLE("Rechenschaftsverantwortlicher", "Accountable"),
+	ACCOUNTABLE(Parameter.ACCOUNTABLE, "Rechenschaftsverantwortlicher", "Accountable"),
 	/** The supporter. */
-	SUPPORTER("Unterstützer", "Supporter"),
+	SUPPORTER(Parameter.SUPPORTER, "Supporter"),
 	/** The consultant. */
-	CONSULTANT("Berater", "Consultant"),
+	CONSULTANT(Parameter.CONSULTANT, "Consultant"),
 	/** The informed. */
-	INFORMED("Informierte", "Informed", "Informierte"),
+	INFORMED(Parameter.INFORMED, "Informierter", "Informed", "Informierte"),
 
-	IGNORE("Adresse", "Typ", "Subtype", "Mobil", "Mail", "Festnetz"),
-	
+	IGNORE(Parameter.ADRESS, "Typ", "Subtype", "Mobil", "Mail", "Festnetz"),
+
 	/** The roles. */
-	ROLES("Rollen", "Roles", "roles"),
+	ROLES(Parameter.ROLES, "Roles", "roles"),
 
 	/** The abbreviation. */
-	ABBREVIATION("Abbreviation", "Kürzel", "Abkürzung", "Kurzzeichen"),
+	ABBREVIATION(Parameter.ABBREVIATION, "Kürzel", "Abkürzung", "Kurzzeichen"),
 
 	/** The rolegroup. */
-	ROLEGROUP("Rollengruppe", "Funktionsbereich", "Rolegroup"),
+	ROLEGROUP(Parameter.ROLEGROUP, "Rollengruppe", "Funktionsbereich", "Rolegroup"),
 
 	/** The competences. */
-	COMPETENCES("Kompetenzen", "Fähigkeiten", "Kompetenz"),
+	COMPETENCES(Parameter.COMPETENCIES, "Kompetenzen", "Fähigkeiten", "Kompetenz"),
 
 	/** The persons. */
-	PERSONS("Personen", "Rollenträger", "Person"),
+	PERSONS(Parameter.PERSONS, "Personen", "Rollenträger", "Person"),
 
 	/** The guidelines. */
-	GUIDELINES("Regeln", "Regel", "Richtlinien", "Spielregel"),
+	GUIDELINES(Parameter.RULES, "Regeln", "Regel", "Richtlinien", "Spielregel"),
 
 	/** The opportunities. */
-	OPPORTUNITIES("Befugnis", "Befugnisse", "Opportunity", "Opportunities"),
+	OPPORTUNITIES(Parameter.OPPORTUNITIES, "Befugnis", "Befugnisse", "Opportunity", "Opportunities"),
 
 	/** The responsibility. */
-	RESPONSIBILITY("Verantwortung", "Responsibility", "Pflicht", "Responsibilities");
+	RESPONSIBILITY(Parameter.RESPONSIBILITY, "Verantwortung", "Responsibility", "Pflicht", "Responsibilities");
 
 	/**
 	 * Checks for.
 	 *
-	 * @param value
-	 *            the value
+	 * @param value the value
 	 * @return true, if successful
 	 */
 	public boolean has(String value) {
@@ -140,13 +142,26 @@ public enum WorkitemParameter {
 	/**
 	 * Instantiates a new workitem parameter.
 	 *
-	 * @param aliases
-	 *            the aliases
+	 * @param aliases the aliases
 	 */
-	private WorkitemParameter(String... aliases) {
-		List<String> aliasesList = Arrays.asList(aliases);
-		for (String string : aliasesList) {
-			this.aliases.add(string.toUpperCase());
+	private WorkitemParameter(Parameter p, String... aliases) {
+
+		if (aliases.length > 0) {
+			List<String> aliasesList = Arrays.asList(aliases);
+			for (String string : aliasesList) {
+				this.aliases.add(string.toUpperCase());
+			}
 		}
+
+		if (!this.aliases.contains(p.toString())) {
+			this.aliases.add(p.toString().toUpperCase());
+		}
+		
 	}
+
+	/*
+	 * private WorkitemParameter(String... aliases) { List<String> aliasesList =
+	 * Arrays.asList(aliases); for (String string : aliasesList) {
+	 * this.aliases.add(string.toUpperCase()); } }
+	 */
 }

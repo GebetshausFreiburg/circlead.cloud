@@ -8,6 +8,8 @@
  */
 package org.rogatio.circlead.model.work;
 
+import static org.rogatio.circlead.model.Parameter.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,6 +21,7 @@ import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.ListParserElement;
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
+import org.rogatio.circlead.model.Parameter;
 import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.data.ActivityDataitem;
 import org.rogatio.circlead.model.data.IDataitem;
@@ -412,34 +415,34 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 
 		Element element = new Element("p");
 
-		renderer.addItem(element, "Abkürzung", this.getAbbreviation());
-		renderer.addRolegroupItem(element, "Merkmalstragende Rollengruppe", this.getRolegroupIdentifier());
-		renderer.addItem(element, "Organisation", this.getOrganisationIdentifier());
-		renderer.addRoleItem(element, "Vererber", this.getParentIdentifier());
-		renderer.addItem(element, "Synonyme", this.getSynonyms());
+		renderer.addItem(element, ABBREVIATION.toString(), this.getAbbreviation());
+		renderer.addRolegroupItem(element, CARRYROLEGROUP.toString(), this.getRolegroupIdentifier());
+		renderer.addItem(element, ORGANISATION.toString(), this.getOrganisationIdentifier());
+		renderer.addRoleItem(element, PARENT.toString(), this.getParentIdentifier());
+		renderer.addItem(element, SYNONYMS.toString(), this.getSynonyms());
 
 		List<Role> childRoles = Repository.getInstance().getRoleChildren(this.getTitle());
 		if (childRoles != null) {
 			if (childRoles.size() > 0) {
-				renderer.addH2(element, "Erben");
+				renderer.addH2(element, CHILDS.toString());
 				renderer.addRoleList(element, childRoles);
 			}
 		}
 
 		if (ObjectUtil.isListNotNullAndEmpty(this.getPersonIdentifiers())) {
-			renderer.addH2(element, "Rollenträger");
+			renderer.addH2(element, ROLEPERSONS.toString());
 			renderer.addPersonList(element, this.getPersonIdentifiers(), this);
 		} else {
-			renderer.addH2(element, "Rollenträger");
-			renderer.addStatus(element, "Unbesetzt");
+			renderer.addH2(element, ROLEPERSONS.toString());
+			renderer.addStatus(element, UNRELATED.toString());
 		}
 
 		if (StringUtil.isNotNullAndNotEmpty(this.getPurpose())) {
-			renderer.addH2(element, "Zweck / Kurzbeschreibung");
+			renderer.addH2(element, PURPOSE.toString());
 			element.appendText(this.getPurpose());
 		}
 
-		renderer.addH2(element, "Aufgaben");
+		renderer.addH2(element, TASKS.toString());
 
 		List<String> divActivities = getActivitiesNotGlobal();
 		if (ObjectUtil.isListNotNullAndEmpty(divActivities)) {
@@ -491,24 +494,24 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		 */
 
 		if (ObjectUtil.isListNotNullAndEmpty(this.getResponsibilities())) {
-			renderer.addH2(element, "Verantwortungen");
+			renderer.addH2(element, RESPONSIBILITIES.toString());
 			renderer.addList(element, this.getResponsibilities());
 		}
 
 		if (ObjectUtil.isListNotNullAndEmpty(this.getCompetences())) {
-			renderer.addH2(element, "Kompetenzen");
+			renderer.addH2(element, COMPETENCIES.toString());
 			renderer.addList(element, this.getCompetences());
 
 			renderImplicitCompetence(this.getParentIdentifier(), element, renderer);
 		}
 
 		if (ObjectUtil.isListNotNullAndEmpty(this.getOpportunities())) {
-			renderer.addH2(element, "Befugnisse");
+			renderer.addH2(element, OPPORTUNITIES.toString());
 			renderer.addList(element, this.getOpportunities());
 		}
 
 		if (ObjectUtil.isListNotNullAndEmpty(this.getGuidelines())) {
-			renderer.addH2(element, "Regeln");
+			renderer.addH2(element, RULES.toString());
 			renderer.addList(element, this.getGuidelines());
 		}
 

@@ -8,6 +8,8 @@
  */
 package org.rogatio.circlead.model.work;
 
+import static org.rogatio.circlead.model.Parameter.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,6 +19,7 @@ import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
+import org.rogatio.circlead.model.Parameter;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.RolegroupDataitem;
 import org.rogatio.circlead.util.StringUtil;
@@ -174,7 +177,7 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 		if (StringUtil.isNotNullAndNotEmpty(this.getResponsibleIdentifier())) {
 			Role role = Repository.getInstance().getRole(this.getResponsibleIdentifier());
 			if (role != null) { 
-				renderer.addRoleItem(element, "Verantwortliche Rolle", this.getResponsibleIdentifier());
+				renderer.addRoleItem(element, RESPONSIBLEROLE.toString(), this.getResponsibleIdentifier());
 
 				List<String> personIdentifiers = role.getPersonIdentifiers();
 				renderer.addPersonList(element, personIdentifiers, role, this.getLeadIdentifier());
@@ -182,26 +185,26 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 		}
 
 		if (StringUtil.isNotNullAndNotEmpty(this.getParentIdentifier())) {
-			renderer.addRolegroupItem(element, "Vererber: ", this.getParentIdentifier());
+			renderer.addRolegroupItem(element, PARENT.toString()+": ", this.getParentIdentifier());
 		}
 		if (StringUtil.isNotNullAndNotEmpty(this.getAbbreviation())) {
-			renderer.addItem(element, "Abkürzung", this.getAbbreviation());
+			renderer.addItem(element, ABBREVIATION.toString(), this.getAbbreviation());
 		}
-		renderer.addItem(element, "Synonyme", this.getSynonyms());
+		renderer.addItem(element, SYNONYMS.toString(), this.getSynonyms());
 
-		renderer.addH2(element, "Zusammenfassung");
+		renderer.addH2(element, SUMMARY.toString());
 		renderer.addItem(element, this.getSummary());
 
 		List<Role> roles = Repository.getInstance().getRoles(this.getTitle());
 		if (roles.size() > 0) {
-			renderer.addH2(element, "Merkmalgebende Rollen");
+			renderer.addH2(element, BRANDROLE.toString());
 			renderer.addRoleList(element, roles);
 		}
 
 		List<Rolegroup> childRolegroups = Repository.getInstance().getRolegroupChildren(this.getTitle());
 		if (childRolegroups != null) {
 			if (childRolegroups.size() > 0) {
-				renderer.addH2(element, "Erben");
+				renderer.addH2(element, CHILDS.toString());
 				renderer.addRolegroupList(element, childRolegroups);
 			}
 		}

@@ -144,7 +144,7 @@ public interface ISynchronizerRendererEngine {
 	 * @param description the description
 	 */
 	public void addItem(Element element, String description);
-
+	
 	/**
 	 * Adds the item.
 	 *

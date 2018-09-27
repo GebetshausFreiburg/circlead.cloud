@@ -8,6 +8,8 @@
  */
 package org.rogatio.circlead.model.work;
 
+import static org.rogatio.circlead.model.Parameter.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +20,7 @@ import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.PairTableParserElement;
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
+import org.rogatio.circlead.model.Parameter;
 import org.rogatio.circlead.model.data.ContactDataitem;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.PersonDataitem;
@@ -164,7 +167,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 
 		Element element = new Element("p");
 
-		renderer.addH2(element, "Kontaktdaten");
+		renderer.addH2(element, CONTACTS.toString());
 
 		for (ContactDataitem contact : this.getContacts()) {
 			renderer.addH3(element, contact.getName());
@@ -174,12 +177,12 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		Map<String, String> d = this.getData();
 		if (d != null) {
 			if (d.size() > 0) {
-				renderer.addH2(element, "Stammdaten");
+				renderer.addH2(element, PERSONDATA.toString());
 				renderer.addTable(element, d);
 			}
 		}
 
-		renderer.addH2(element, "Rollen");
+		renderer.addH2(element, ROLES.toString());
 		renderer.addRoleList(element, Repository.getInstance().getRolesWithPerson(this.getFullname()), this);
 
 		return element;

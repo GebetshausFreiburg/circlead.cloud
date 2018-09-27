@@ -10,7 +10,7 @@ package org.rogatio.circlead.control.synchronizer.atlassian;
 
 import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.DEDICATEDSERVER;
 import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.PASSWORD;
-import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.URL;
+import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.URLCONFLUENCE;
 import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.USER;
 
 import java.io.IOException;
@@ -119,7 +119,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	public void init() {
 		// Initliaize the confluence client interface. Uses static parameters to secure
 		// credetials with gitignore
-		confluenceClient = new ConfluenceClient(URL, USER, PASSWORD, DEDICATEDSERVER);
+		confluenceClient = new ConfluenceClient(URLCONFLUENCE, USER, PASSWORD, DEDICATEDSERVER);
 	}
 
 	/**
@@ -270,7 +270,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		// Create Confluence-POJO-Object from workitem
 		Page page = Parser.createPage(workitem, circleadSpace, this);
 
-		logger.info("Update '" + URL + confluenceClient.getRestPrefix() + "content/" + workitem.getId(this) + "'");
+		logger.info("Update '" + URLCONFLUENCE + confluenceClient.getRestPrefix() + "content/" + workitem.getId(this) + "'");
 
 		// Increment version-number if version and page already exists
 		if (workitem.getVersion() != null) {
@@ -323,7 +323,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		Report repo = Repository.getInstance().getReport(report.getName());
 		if (repo != null) {
 
-			logger.info("Update '" + URL + confluenceClient.getRestPrefix() + "content/" + repo.getId() + "' ("
+			logger.info("Update '" + URLCONFLUENCE + confluenceClient.getRestPrefix() + "content/" + repo.getId() + "' ("
 					+ report.getName() + ")");
 
 			Integer version = 0;
@@ -920,7 +920,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 			logger.info("Loading Index '" + workitemType.getName() + "' from system '"
 					+ confluenceClient.getSysteminfo().getContent() + "'");
 		} catch (Exception e) {
-			logger.info("Loading Index '" + workitemType.getName() + "' from system '" + URL + "'");
+			logger.info("Loading Index '" + workitemType.getName() + "' from system '" + URLCONFLUENCE + "'");
 		}
 
 		// To Avoid loading of wrong labeld pages (and simplify writing) the loading of
@@ -960,7 +960,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 					fileIndex.add(ht.toString());
 					logger.debug("Found Report '" + ht.getTitle() + "' with '" + this.toString() + "'");
 				} else {
-					fileIndex.add(URL + confluenceClient.getRestPrefix() + "content/" + type + "/"
+					fileIndex.add(URLCONFLUENCE + confluenceClient.getRestPrefix() + "content/" + type + "/"
 							+ result.getContent().getId());
 				}
 //				}

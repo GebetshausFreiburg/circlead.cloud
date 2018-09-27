@@ -8,6 +8,47 @@
  */
 package org.rogatio.circlead.control.synchronizer.atlassian.parser;
 
+import static org.rogatio.circlead.model.Parameter.ABBREVIATION;
+import static org.rogatio.circlead.model.Parameter.ABBREVIATION2;
+import static org.rogatio.circlead.model.Parameter.ACTIVITIES;
+import static org.rogatio.circlead.model.Parameter.ACTIVITY;
+import static org.rogatio.circlead.model.Parameter.ACTIVITYID;
+import static org.rogatio.circlead.model.Parameter.ADRESS;
+import static org.rogatio.circlead.model.Parameter.BPMN;
+import static org.rogatio.circlead.model.Parameter.COMPETENCIES;
+import static org.rogatio.circlead.model.Parameter.CONSULTANT;
+import static org.rogatio.circlead.model.Parameter.CONTACTPERSON;
+import static org.rogatio.circlead.model.Parameter.CONTACTS2;
+import static org.rogatio.circlead.model.Parameter.DATA;
+import static org.rogatio.circlead.model.Parameter.DESCRIPTION;
+import static org.rogatio.circlead.model.Parameter.HOWTOS;
+import static org.rogatio.circlead.model.Parameter.ID;
+import static org.rogatio.circlead.model.Parameter.INFORMED;
+import static org.rogatio.circlead.model.Parameter.MAIL;
+import static org.rogatio.circlead.model.Parameter.MOBILE;
+import static org.rogatio.circlead.model.Parameter.NAME;
+import static org.rogatio.circlead.model.Parameter.OPPORTUNITIES;
+import static org.rogatio.circlead.model.Parameter.ORGANISATION;
+import static org.rogatio.circlead.model.Parameter.PERSONS;
+import static org.rogatio.circlead.model.Parameter.PHONE;
+import static org.rogatio.circlead.model.Parameter.PREDECESSOR;
+import static org.rogatio.circlead.model.Parameter.PURPOSESHORT;
+import static org.rogatio.circlead.model.Parameter.RESPONSIBILITY;
+import static org.rogatio.circlead.model.Parameter.RESPONSIBLE;
+import static org.rogatio.circlead.model.Parameter.RESPONSIBLE2;
+import static org.rogatio.circlead.model.Parameter.RESULT;
+import static org.rogatio.circlead.model.Parameter.ROLEGROUP;
+import static org.rogatio.circlead.model.Parameter.RULES;
+import static org.rogatio.circlead.model.Parameter.STATUS;
+import static org.rogatio.circlead.model.Parameter.SUBACTIVITIES;
+import static org.rogatio.circlead.model.Parameter.SUBTYPE;
+import static org.rogatio.circlead.model.Parameter.SUCCESSOR;
+import static org.rogatio.circlead.model.Parameter.SUMMARY;
+import static org.rogatio.circlead.model.Parameter.SUPPORTER;
+import static org.rogatio.circlead.model.Parameter.SYNONYMS;
+import static org.rogatio.circlead.model.Parameter.TYPE;
+import static org.rogatio.circlead.model.Parameter.UNKNOWN;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +59,7 @@ import java.util.UUID;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
+import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.content.Body;
 import org.rogatio.circlead.control.synchronizer.atlassian.content.Labels;
 import org.rogatio.circlead.control.synchronizer.atlassian.content.Metadata;
@@ -147,16 +189,16 @@ public class Parser {
 		Element tbody = table.appendElement("tbody");
 
 		Element tr = tbody.appendElement("tr");
-		tr.appendElement("th").attr("colspan", "1").appendText("Aid");
-		tr.appendElement("th").attr("colspan", "1").appendText("BPMN");
-		tr.appendElement("th").attr("colspan", "1").appendText("Nachfolger");
-		tr.appendElement("th").attr("colspan", "1").appendText("Aktivität");
-		tr.appendElement("th").attr("colspan", "1").appendText("Beschreibung");
-		tr.appendElement("th").attr("colspan", "1").appendText("Erwartetes Ergebnis");
-		tr.appendElement("th").attr("colspan", "1").appendText("Durchführender");
-		tr.appendElement("th").attr("colspan", "1").appendText("Unterstützer");
-		tr.appendElement("th").attr("colspan", "1").appendText("Berater");
-		tr.appendElement("th").attr("colspan", "1").appendText("Informierter");
+		tr.appendElement("th").attr("colspan", "1").appendText(ACTIVITYID.toString());
+		tr.appendElement("th").attr("colspan", "1").appendText(BPMN.toString());
+		tr.appendElement("th").attr("colspan", "1").appendText(SUCCESSOR.toString());
+		tr.appendElement("th").attr("colspan", "1").appendText(ACTIVITY.toString());
+		tr.appendElement("th").attr("colspan", "1").appendText(DESCRIPTION.toString());
+		tr.appendElement("th").attr("colspan", "1").appendText(RESULT.toString());
+		tr.appendElement("th").attr("colspan", "1").appendText(RESPONSIBLE.toString());
+		tr.appendElement("th").attr("colspan", "1").appendText(SUPPORTER.toString());
+		tr.appendElement("th").attr("colspan", "1").appendText(CONSULTANT.toString());
+		tr.appendElement("th").attr("colspan", "1").appendText(INFORMED.toString());
 
 		for (ActivityDataitem activity : activities) {
 			tr = tbody.appendElement("tr");
@@ -167,7 +209,7 @@ public class Parser {
 			}
 			if (StringUtil.isNotNullAndNotEmpty(activity.getBpmn())) {
 				if (activatedLinks) {
-					if (synchronizer.getClass().getSimpleName().equals("AtlassianSynchronizer")) {
+					if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
 					tr.appendElement("td").attr("colspan", "1")
 							.append(addImageFromOtherPage("BPMN", activity.getBpmn() + ".png", 32, 1));
 					} else {
@@ -276,61 +318,61 @@ public class Parser {
 		if (workitem instanceof Role) {
 			Role w = (Role) workitem;
 			RoleDataitem d = w.getDataitem();
-			addDataPair("Id", d.getIds(), table);
-			addDataPair("Abkürzung", d.getAbbreviation(), table);
-			addDataPair("Rollengruppe", d.getRolegroup(), table);
-			addDataPair("Vorgänger", d.getParent(), table);
-			addDataPair("Zweck", d.getPurpose(), table);
-			addDataPair("Status", Parser.getStatus(d.getStatus()), table);
-			addDataPair("Organisation", w.getOrganisationIdentifier(), table);
-			addCommaList("Synonyme", d.getSynonyms(), table);
-			addBulletList("Personen", d.getPersons(), table);
-			addBulletList("Aktivitäten", d.getActivities(), table);
-			addBulletList("Verantwortung", d.getResponsibilities(), table);
-			addBulletList("Befugnisse", d.getOpportunities(), table);
-			addBulletList("Regeln", d.getGuidelines(), table);
-			addBulletList("Kompetenzen", d.getCompetences(), table);
+			addDataPair(ID.toString(), d.getIds(), table);
+			addDataPair(ABBREVIATION.toString(), d.getAbbreviation(), table);
+			addDataPair(ROLEGROUP.toString(), d.getRolegroup(), table);
+			addDataPair(PREDECESSOR.toString(), d.getParent(), table);
+			addDataPair(PURPOSESHORT.toString(), d.getPurpose(), table);
+			addDataPair(STATUS.toString(), Parser.getStatus(d.getStatus()), table);
+			addDataPair(ORGANISATION.toString(), w.getOrganisationIdentifier(), table);
+			addCommaList(SYNONYMS.toString(), d.getSynonyms(), table);
+			addBulletList(PERSONS.toString(), d.getPersons(), table);
+			addBulletList(ACTIVITIES.toString(), d.getActivities(), table);
+			addBulletList(RESPONSIBILITY.toString(), d.getResponsibilities(), table);
+			addBulletList(OPPORTUNITIES.toString(), d.getOpportunities(), table);
+			addBulletList(RULES.toString(), d.getGuidelines(), table);
+			addBulletList(COMPETENCIES.toString(), d.getCompetences(), table);
 		}
 
 		if (workitem instanceof Activity) {
 			Activity w = (Activity) workitem;
 			ActivityDataitem d = w.getDataitem();
-			addDataPair("Id", d.getIds(), table);
-			addDataPair("Aid", d.getAid(), table);
+			addDataPair(ID.toString(), d.getIds(), table);
+			addDataPair(ACTIVITYID.toString(), d.getAid(), table);
 			// addDataPair("Vorgänger", d.getParent(), table);
-			addDataPair("Beschreibung", d.getDescription(), table);
-			addDataPair("Erwartetes Ergebnis", d.getResults(), table);
-			addDataPair("Durchführender", d.getResponsible(), table);
-			addCommaList("Unterstützer", d.getSupplier(), table);
-			addCommaList("Berater", d.getConsultant(), table);
-			addCommaList("Informierte", d.getInformed(), table);
-			addCommaList("HowTos", d.getHowtos(), table);
-			addDataPair("Teilaktivitäten", Parser.createHeaderTable(d.getSubactivities(), synchronizer, false), table);
-			addDataPair("Status", Parser.getStatus(d.getStatus()), table);
+			addDataPair(DESCRIPTION.toString(), d.getDescription(), table);
+			addDataPair(RESULT.toString(), d.getResults(), table);
+			addDataPair(RESPONSIBLE.toString(), d.getResponsible(), table);
+			addCommaList(SUPPORTER.toString(), d.getSupplier(), table);
+			addCommaList(CONSULTANT.toString(), d.getConsultant(), table);
+			addCommaList(INFORMED.toString(), d.getInformed(), table);
+			addCommaList(HOWTOS.toString(), d.getHowtos(), table);
+			addDataPair(SUBACTIVITIES.toString(), Parser.createHeaderTable(d.getSubactivities(), synchronizer, false), table);
+			addDataPair(STATUS.toString(), Parser.getStatus(d.getStatus()), table);
 		}
 
 		if (workitem instanceof Rolegroup) {
 			Rolegroup w = (Rolegroup) workitem;
 			RolegroupDataitem d = w.getDataitem();
-			addDataPair("Id", d.getIds(), table);
-			addDataPair("Abkürzung", d.getAbbreviation(), table);
-			addDataPair("Ansprechpartner", d.getLead(), table);
-			addCommaList("Synonyme", d.getSynonyms(), table);
-			addDataPair("Vorgänger", d.getParent(), table);
-			addDataPair("Verantwortlicher", d.getResponsible(), table);
-			addDataPair("Zusammenfassung", d.getSummary(), table);
+			addDataPair(ID.toString(), d.getIds(), table);
+			addDataPair(ABBREVIATION.toString(), d.getAbbreviation(), table);
+			addDataPair(CONTACTPERSON.toString(), d.getLead(), table);
+			addCommaList(SYNONYMS.toString(), d.getSynonyms(), table);
+			addDataPair(PREDECESSOR.toString(), d.getParent(), table);
+			addDataPair(RESPONSIBLE2.toString(), d.getResponsible(), table);
+			addDataPair(SUMMARY.toString(), d.getSummary(), table);
 			// addBulletList("Rollen", d.getRoles(), table);
-			addDataPair("Status", Parser.getStatus(d.getStatus()), table);
+			addDataPair(STATUS.toString(), Parser.getStatus(d.getStatus()), table);
 		}
 
 		if (workitem instanceof Person) {
 			Person w = (Person) workitem;
 			PersonDataitem d = w.getDataitem();
-			addDataPair("Id", d.getIds(), table);
-			addDataPair("Name", d.getFullname(), table);
-			addDataPair("Kontakte", Parser.getContacts(d.getContacts()), table);
-			addDataPair("Status", Parser.getStatus(d.getStatus()), table);
-			addDataPair("Daten", Parser.getDataTable(d.getData()), table);
+			addDataPair(ID.toString(), d.getIds(), table);
+			addDataPair(NAME.toString(), d.getFullname(), table);
+			addDataPair(CONTACTS2.toString(), Parser.getContacts(d.getContacts()), table);
+			addDataPair(STATUS.toString(), Parser.getStatus(d.getStatus()), table);
+			addDataPair(DATA.toString(), Parser.getDataTable(d.getData()), table);
 		}
 
 		return table;
@@ -346,7 +388,7 @@ public class Parser {
 
 		Map<String, String> emptyMap = new HashMap<String, String>();
 
-		emptyMap.put("Kürzel", "-");
+		emptyMap.put(ABBREVIATION2.toString(), "-");
 
 		if (map != null) {
 			if (map.size() > 0) {
@@ -686,13 +728,13 @@ public class Parser {
 
 		for (ContactDataitem contact : contacts) {
 			Element table = div.appendElement("table");
-			addDataPair("Typ", contact.getType(), table);
-			addDataPair("Subtyp", contact.getSubtype(), table);
-			addDataPair("Organisation", contact.getOrganisation(), table);
-			addDataPair("Adresse", contact.getAddress(), table);
-			addDataPair("Mail", contact.getMail(), table);
-			addDataPair("Mobil", contact.getMobile(), table);
-			addDataPair("Festnetz", contact.getPhone(), table);
+			addDataPair(TYPE.toString(), contact.getType(), table);
+			addDataPair(SUBTYPE.toString(), contact.getSubtype(), table);
+			addDataPair(ORGANISATION.toString(), contact.getOrganisation(), table);
+			addDataPair(ADRESS.toString(), contact.getAddress(), table);
+			addDataPair(MAIL.toString(), contact.getMail(), table);
+			addDataPair(MOBILE.toString(), contact.getMobile(), table);
+			addDataPair(PHONE.toString(), contact.getPhone(), table);
 		}
 
 		return div;
@@ -707,7 +749,7 @@ public class Parser {
 	public static Element getStatus(String title) {
 
 		String color = "Red";
-		String name = "Unknown";
+		String name = UNKNOWN.toString();
 
 		WorkitemStatusParameter s = getStatusParameter(title);
 		if (s != null) {
