@@ -1,0 +1,12 @@
+* text=auto
+
+*.java text
+*.css text
+*.html text
+*.properties text
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.pptx binary
+*.svg binary

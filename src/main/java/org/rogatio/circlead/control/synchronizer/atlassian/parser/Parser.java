@@ -105,6 +105,17 @@ public class Parser {
 		return macro;
 	}
 
+	/**
+	 * Load attached images from page "BPMN". Images are converted from svg to png.
+	 * 
+	 * @see https://github.com/bpmn-io
+	 *  
+	 * @param page
+	 * @param imageFile
+	 * @param size
+	 * @param version
+	 * @return
+	 */
 	public static String addImageFromOtherPage(String page, String imageFile, int size, int version) {
 		String html = "<div class=\"content-wrapper\">" + "<p><ac:image ac:thumbnail=\"true\" ac:width=\"" + size
 				+ "\"><ri:attachment ri:filename=\"" + imageFile

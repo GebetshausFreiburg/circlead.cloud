@@ -28,27 +28,26 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class JiraIssueLoader {
 
 	final static Logger logger = LogManager.getLogger(JiraIssueLoader.class);
-	
-	
+
 	public static void main(String[] args) {
 		JiraClient c = new JiraClient(URL, USER, PASSWORD, DEDICATEDSERVER);
 
 		String q = "project in (ASSET, GEB)";
-		
+
 //		String q = "project = GEB AND labels = Rolle:Verwaltungsleiter order by created DESC";
 
 		int foundMax = c.getTotalFoundIssues(q);
 
-		logger.debug("Found '"+foundMax+"' results on query '"+q+"'");
-		
+		logger.debug("Found '" + foundMax + "' results on query '" + q + "'");
+
 		List<Issue> issues = c.getIssues(q);
 
-		logger.debug("Load '"+issues.size()+"' issues on query '"+q+"'");
-		
+		logger.debug("Load '" + issues.size() + "' issues on query '" + q + "'");
+
 		List<Issue> issuesWithoutLabels = new ArrayList<Issue>();
-		
-		HashMap<String, List<Issue>> issueMap = new HashMap<String, List<Issue>>(); 
-		
+
+		HashMap<String, List<Issue>> issueMap = new HashMap<String, List<Issue>>();
+
 		for (Issue issue : issues) {
 			List<String> labels = issue.getFields().getLabels();
 			if (ObjectUtil.isListNotNullAndEmpty(labels)) {
@@ -67,21 +66,42 @@ public class JiraIssueLoader {
 				issuesWithoutLabels.add(issue);
 			}
 		}
-		
+
 		Vector<String> keys = new Vector<String>(issueMap.keySet());
-		for (String key : keys) {
-			logger.info("Label: "+key);
-			List<Issue> list = issueMap.get(key);
-			for (Issue issue : list) {
-				logger.info("   Issue '"+issue.getKey()+"' (type="+issue.getFields().getIssuetype().getName()+", id="+issue.getId()+") "+issue.getFields().getSummary());
-			}
-		}
-		
-		logger.info("Label: None");
+		/*
+		 * for (String key : keys) { logger.info("Label: " + key); List<Issue> list =
+		 * issueMap.get(key); for (Issue issue : list) { logger.info("   Issue '" +
+		 * issue.getKey() + "' (type=" + issue.getFields().getIssuetype().getName() +
+		 * ", id=" + issue.getId() + ") " + issue.getFields().getSummary()); } }
+		 */
+
+
+		/*logger.info("Label: None");
 		for (Issue issue : issuesWithoutLabels) {
-			logger.info("   Issue '"+issue.getKey()+"' (type="+issue.getFields().getIssuetype().getName()+", id="+issue.getId()+") "+issue.getFields().getSummary());	
-		}
+			logger.info("   Issue '" + issue.getKey() + "' (type=" + issue.getFields().getIssuetype().getName()
+					+ ", id=" + issue.getId() + ") " + issue.getFields().getSummary());
+		}*/
 		
+		logger.info("Vorgänge ohne Rollen-Label");
+		for (Issue issue : issues) {
+			boolean foundRole = false;
+			
+			List<String> labels = issue.getFields().getLabels();
+			if (ObjectUtil.isListNotNullAndEmpty(labels)) {
+				for (String label : labels) {
+					if (label.startsWith("Role:") || label.startsWith("Rolle:")) {
+						foundRole = true;
+					}
+				}				
+			}
+			
+			if (!foundRole) {
+				logger.info("   Issue '" + issue.getKey() + "' (type=" + issue.getFields().getIssuetype().getName()
+						+ ", id=" + issue.getId() + ") " + issue.getFields().getSummary());
+			}
+
+		}
+
 	}
 
 }

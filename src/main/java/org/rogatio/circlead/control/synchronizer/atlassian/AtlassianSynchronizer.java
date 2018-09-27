@@ -429,6 +429,12 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	private int deleteVersionCounterMax = 0;
 
 	public boolean deleteVersions(Integer pageId) {
+		
+		if (DEDICATEDSERVER) {
+			logger.warn("REST-API for deleting versions on dedicated server NOT available");
+			return false;
+		}
+		
 		List<Integer> x = getVersions(pageId);
 		x = x.subList(0, x.size() - 1);
 		if (x.size() > deleteVersionCounter) {
@@ -448,10 +454,22 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	}
 
 	public SynchronizerResult deleteVersion(Integer pageId, Integer version) {
+		
+		if (DEDICATEDSERVER) {
+			logger.warn("REST-API for deleting versions on dedicated server NOT available");
+			return null;
+		}
+		
 		return confluenceClient.deleteVersion(pageId, version);
 	}
 
 	public List<Integer> getVersions(Integer pageId) {
+		
+		if (DEDICATEDSERVER) {
+			logger.warn("REST-API for deleting versions on dedicated server NOT available");
+			return null;
+		}
+		
 		SynchronizerResult results = confluenceClient.getContentVersions(pageId);
 
 		ObjectMapper mapper = new ObjectMapper();

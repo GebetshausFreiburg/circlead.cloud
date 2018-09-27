@@ -12,8 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-// TODO: Auto-generated Javadoc
-/**
+/** 
  * The Enum WorkitemParameter allows rendering of different workitem-fields which map al values to a defined set of parameters.
  */
 public enum WorkitemParameter {
@@ -28,7 +27,7 @@ public enum WorkitemParameter {
 	SUBACTIVITY("Teilaktivitäten", "Subactivities"),
 
 	/** The activityid. */
-	ACTIVITYID("AID"),
+	ACTIVITYID("AID", "Activity-ID", "Aid", "Alternative Id"),
 
 	/** The description. */
 	DESCRIPTION("Beschreibung", "Description"),
