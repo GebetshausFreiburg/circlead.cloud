@@ -125,7 +125,7 @@ public enum WorkitemParameter {
 
 	/** The responsibility. */
 	RESPONSIBILITY(Parameter.RESPONSIBILITY, "Verantwortung", "Responsibility", "Pflicht", "Responsibilities");
-
+ 
 	/**
 	 * Checks for.
 	 *
