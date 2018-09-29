@@ -8,7 +8,20 @@
  */
 package org.rogatio.circlead.model.work;
 
-import static org.rogatio.circlead.model.Parameter.*;
+import static org.rogatio.circlead.model.Parameter.ABBREVIATION;
+import static org.rogatio.circlead.model.Parameter.CARRYROLEGROUP;
+import static org.rogatio.circlead.model.Parameter.CHILDS;
+import static org.rogatio.circlead.model.Parameter.COMPETENCIES;
+import static org.rogatio.circlead.model.Parameter.OPPORTUNITIES;
+import static org.rogatio.circlead.model.Parameter.ORGANISATION;
+import static org.rogatio.circlead.model.Parameter.PARENT;
+import static org.rogatio.circlead.model.Parameter.PURPOSE;
+import static org.rogatio.circlead.model.Parameter.RESPONSIBILITIES;
+import static org.rogatio.circlead.model.Parameter.ROLEPERSONS;
+import static org.rogatio.circlead.model.Parameter.RULES;
+import static org.rogatio.circlead.model.Parameter.SYNONYMS;
+import static org.rogatio.circlead.model.Parameter.TASKS;
+import static org.rogatio.circlead.model.Parameter.UNRELATED;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +34,6 @@ import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.ListParserElement;
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
-import org.rogatio.circlead.model.Parameter;
 import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.data.ActivityDataitem;
 import org.rogatio.circlead.model.data.IDataitem;
@@ -518,6 +530,12 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		return element;
 	}
 
+	/**
+	 * Contains activity in subactivities.
+	 *
+	 * @param a the a
+	 * @return true, if successful
+	 */
 	private boolean containsActivityInSubactivities(Activity a) {
 		TreeMap<Activity, List<ActivityDataitem>> map = Repository.getInstance()
 				.getSubactivitiesWithResponsible(this.getTitle());
@@ -535,6 +553,11 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		return false;
 	}
 
+	/**
+	 * Gets the activities not global.
+	 *
+	 * @return the activities not global
+	 */
 	private List<String> getActivitiesNotGlobal() {
 		List<Activity> a = Repository.getInstance().getActivities(this.getTitle());
 		TreeMap<Activity, List<ActivityDataitem>> map = Repository.getInstance()
@@ -598,10 +621,20 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		}
 	}
 
+	/**
+	 * Sets the purpose.
+	 *
+	 * @param purpose the new purpose
+	 */
 	public void setPurpose(String purpose) {
 		this.getDataitem().setPurpose(purpose);
 	}
 
+	/**
+	 * Gets the purpose.
+	 *
+	 * @return the purpose
+	 */
 	public String getPurpose() {
 		return this.getDataitem().getPurpose();
 	}
@@ -733,7 +766,6 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		}
 
 		for (String identifier : this.getPersonIdentifiers()) {
-			Person person = Repository.getInstance().getPerson(identifier);
 			if (getDataitem().hasRepresentation(identifier)) {
 				String representation = getDataitem().getRepresentation(identifier);
 				WorkitemStatusParameter status = WorkitemStatusParameter.get(representation);

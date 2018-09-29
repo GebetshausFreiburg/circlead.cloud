@@ -20,6 +20,7 @@ import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class RolegroupReport shows for every rolegroup the included data with all coresponding roles. Pagebreak is included after every item.
  */
@@ -92,6 +93,12 @@ public class RolegroupReport extends DefaultReport {
 		return element;
 	}
 
+	/**
+	 * Adds the jira macro.
+	 *
+	 * @param element the element
+	 * @param rolegroup the rolegroup
+	 */
 	private void addJiraMacro(Element element, Rolegroup rolegroup) {
 		String columns = "key,summary,type,created,updated,due,assignee,reporter,priority,status,resolution";
 		String serverId = "aa483c16-161d-3599-b439-850eba0fbf58";
@@ -120,6 +127,12 @@ public class RolegroupReport extends DefaultReport {
 		jiraMacro.appendTo(element);
 	}
 
+	/**
+	 * Adds the jira macro.
+	 *
+	 * @param element the element
+	 * @param role the role
+	 */
 	private void addJiraMacro(Element element, Role role) {
 		String columns = "key,summary,type,created,updated,due,assignee,reporter,priority,status,resolution";
 		String serverId = "aa483c16-161d-3599-b439-850eba0fbf58";

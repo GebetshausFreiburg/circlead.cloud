@@ -30,7 +30,7 @@ import org.rogatio.circlead.view.report.IReport;
 public class Connector {
 
 	/** The Constant logger. */
-	final static Logger logger = LogManager.getLogger(Connector.class);
+	final static Logger LOGGER = LogManager.getLogger(Connector.class);
 	
 	/**
 	 * Gets the synchronizer.
@@ -203,7 +203,7 @@ public class Connector {
 							if (StringUtil.isNotNullAndNotEmpty(data.getVersion())) {
 								base.setVersion(data.getVersion());
 							}
-							logger.info("Merged: " + base.toString().replace("\n", ""));
+							LOGGER.info("Merged: " + base.toString().replace("\n", ""));
 							return base;
 						}
 						if (WorkitemType.ROLEGROUP.isTypeOf(item, otherItem)) {
@@ -234,7 +234,7 @@ public class Connector {
 							if (StringUtil.isNotNullAndNotEmpty(data.getVersion())) {
 								base.setVersion(data.getVersion());
 							}
-							logger.info("Merged: " + base.toString().replace("\n", ""));
+							LOGGER.info("Merged: " + base.toString().replace("\n", ""));
 							return base;
 						}
 						if (WorkitemType.PERSON.isTypeOf(item, otherItem)) {
@@ -265,7 +265,7 @@ public class Connector {
 							if (StringUtil.isNotNullAndNotEmpty(data.getVersion())) {
 								base.setVersion(data.getVersion());
 							}
-							logger.info("Merged: " + base.toString().replace("\n", ""));
+							LOGGER.info("Merged: " + base.toString().replace("\n", ""));
 							return base;
 						}
 					}
@@ -288,7 +288,7 @@ public class Connector {
 			try {
 				results.add(synchronizer.add(workitem));
 			} catch (SynchronizerException e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}
 		return results;
@@ -307,7 +307,7 @@ public class Connector {
 			try {
 				results.add(synchronizer.add(report));
 			} catch (SynchronizerException e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}
 		return results;
@@ -338,7 +338,7 @@ public class Connector {
 			try {
 				results.add(synchronizer.update(workitem));
 			} catch (SynchronizerException e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}
 		return results;
@@ -358,7 +358,7 @@ public class Connector {
 			try { 
 				results.add(synchronizer.update(report));
 			} catch (SynchronizerException e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}
 		return results;
@@ -378,7 +378,7 @@ public class Connector {
 			try {
 				results.add(synchronizer.delete(workitem));
 			} catch (SynchronizerException e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}
 		return results;
@@ -398,7 +398,7 @@ public class Connector {
 				wi = synchronizer.get(indexId);
 				return wi;
 			} catch (SynchronizerException e) {
-				logger.trace(e);
+				LOGGER.trace(e);
 			}
 		}
 		return null;

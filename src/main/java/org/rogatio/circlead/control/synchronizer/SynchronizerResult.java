@@ -97,6 +97,9 @@ public class SynchronizerResult {
 		this.source = source;
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return "Result [code = "+this.getCode()+", msg="+this.getMessage()+"]: "+this.getContent();

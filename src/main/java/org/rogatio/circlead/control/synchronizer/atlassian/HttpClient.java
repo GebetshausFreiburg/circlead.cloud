@@ -30,7 +30,7 @@ import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
 public class HttpClient {
 
 	/** The Constant logger. */
-	final static Logger logger = LogManager.getLogger(HttpClient.class);
+	final static Logger LOGGER = LogManager.getLogger(HttpClient.class);
 	
 	/** The base url. */
 	protected String baseUrl;

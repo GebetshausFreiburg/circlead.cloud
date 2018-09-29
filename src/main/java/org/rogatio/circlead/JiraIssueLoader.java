@@ -5,7 +5,6 @@ import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.PASSW
 import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.URLJIRA;
 import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.USER;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -14,22 +13,23 @@ import java.util.Vector;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.rogatio.circlead.control.synchronizer.SynchronizerException;
-import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
-import org.rogatio.circlead.control.synchronizer.atlassian.HttpClient;
 import org.rogatio.circlead.control.synchronizer.atlassian.JiraClient;
-import org.rogatio.circlead.control.synchronizer.atlassian.content.Page;
 import org.rogatio.circlead.control.synchronizer.atlassian.jira.Issue;
-import org.rogatio.circlead.control.synchronizer.atlassian.jira.Results;
 import org.rogatio.circlead.util.ObjectUtil;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+/**
+ * The Class JiraIssueLoader.
+ */
 public class JiraIssueLoader {
 
-	final static Logger logger = LogManager.getLogger(JiraIssueLoader.class);
+	/** The Constant LOGGER. */
+	final static Logger LOGGER = LogManager.getLogger(JiraIssueLoader.class);
 
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args) {
 		JiraClient c = new JiraClient(URLJIRA, USER, PASSWORD, DEDICATEDSERVER);
 
@@ -39,11 +39,11 @@ public class JiraIssueLoader {
 
 		int foundMax = c.getTotalFoundIssues(q);
 
-		logger.debug("Found '" + foundMax + "' results on query '" + q + "'");
+		LOGGER.debug("Found '" + foundMax + "' results on query '" + q + "'");
 
 		List<Issue> issues = c.getIssues(q);
 
-		logger.debug("Load '" + issues.size() + "' issues on query '" + q + "'");
+		LOGGER.debug("Load '" + issues.size() + "' issues on query '" + q + "'");
 
 		List<Issue> issuesWithoutLabels = new ArrayList<Issue>();
 
@@ -79,18 +79,18 @@ public class JiraIssueLoader {
 			}
 
 			if (foundRole) {
-				logger.info("Label: " + key + " (" + issueMap.get(key).size() + ")");
+				LOGGER.info("Label: " + key + " (" + issueMap.get(key).size() + ")");
 				List<Issue> list = issueMap.get(key);
 				for (Issue issue : list) {
-					logger.info("   Issue '" + issue.getKey() + "' (type=" + issue.getFields().getIssuetype().getName()
+					LOGGER.info("   Issue '" + issue.getKey() + "' (type=" + issue.getFields().getIssuetype().getName()
 							+ ", id=" + issue.getId() + ") " + issue.getFields().getSummary());
 				}
 			}
 		}
 
-		logger.info("Label: None");
+		LOGGER.info("Label: None");
 		for (Issue issue : issuesWithoutLabels) {
-			logger.info("   Issue '" + issue.getKey() + "' (type=" + issue.getFields().getIssuetype().getName()
+			LOGGER.info("   Issue '" + issue.getKey() + "' (type=" + issue.getFields().getIssuetype().getName()
 					+ ", id=" + issue.getId() + ") " + issue.getFields().getSummary());
 		}
 

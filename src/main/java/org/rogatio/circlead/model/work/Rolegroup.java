@@ -8,7 +8,13 @@
  */
 package org.rogatio.circlead.model.work;
 
-import static org.rogatio.circlead.model.Parameter.*;
+import static org.rogatio.circlead.model.Parameter.ABBREVIATION;
+import static org.rogatio.circlead.model.Parameter.BRANDROLE;
+import static org.rogatio.circlead.model.Parameter.CHILDS;
+import static org.rogatio.circlead.model.Parameter.PARENT;
+import static org.rogatio.circlead.model.Parameter.RESPONSIBLEROLE;
+import static org.rogatio.circlead.model.Parameter.SUMMARY;
+import static org.rogatio.circlead.model.Parameter.SYNONYMS;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,7 +25,6 @@ import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
-import org.rogatio.circlead.model.Parameter;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.RolegroupDataitem;
 import org.rogatio.circlead.util.StringUtil;

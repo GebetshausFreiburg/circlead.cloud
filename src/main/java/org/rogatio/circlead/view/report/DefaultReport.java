@@ -11,6 +11,7 @@ package org.rogatio.circlead.view.report;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class DefaultReport.
  */

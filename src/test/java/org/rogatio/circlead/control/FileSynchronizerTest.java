@@ -13,10 +13,18 @@ import org.rogatio.circlead.model.work.IWorkitem;
 
 import junit.framework.TestCase;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class FileSynchronizerTest.
+ */
 public class FileSynchronizerTest extends TestCase {
 
+	/** The synchronizer. */
 	private ISynchronizer synchronizer;
 
+	/* (non-Javadoc)
+	 * @see junit.framework.TestCase#setUp()
+	 */
 	protected void setUp() throws Exception {
 		super.setUp();
 		FileSynchronizer fsynchronizer = new FileSynchronizer("data-test");
@@ -25,6 +33,9 @@ public class FileSynchronizerTest extends TestCase {
 		SynchronizerFactory.getInstance().addSynchronizer(synchronizer);
 	}
 
+	/**
+	 * Test data dir set.
+	 */
 	public void testDataDirSet() {
 		assertEquals("data-test", ((FileSynchronizer)synchronizer).getDataDirectory());
 	}
@@ -34,11 +45,19 @@ public class FileSynchronizerTest extends TestCase {
 	 * result!=null); }
 	 */
 	
+	/**
+	 * Test load role index.
+	 */
 	public void testLoadRoleIndex() {
 		List<String> list = synchronizer.loadIndex(WorkitemType.ROLE);
 		assertTrue(list.size()>0);
 	}
 
+	/**
+	 * Test load workitem with inconsistend id.
+	 *
+	 * @throws SynchronizerException the synchronizer exception
+	 */
 	public void testLoadWorkitemWithInconsistendId() throws SynchronizerException {
 		try {
 			@SuppressWarnings("unused")
@@ -49,8 +68,14 @@ public class FileSynchronizerTest extends TestCase {
 		}
 	}
 	
+	/** The added item. */
 	public IWorkitem addedItem;
 
+	/**
+	 * Test copy and save workitem.
+	 *
+	 * @throws SynchronizerException the synchronizer exception
+	 */
 	public void testCopyAndSaveWorkitem() throws SynchronizerException {
 		IWorkitem wi = synchronizer.get("data-test/roles/c3f62836-575d-4a6c-a2fb-a757cab75fff.role.json");
 
@@ -62,11 +87,19 @@ public class FileSynchronizerTest extends TestCase {
 		addedItem = wi;
 	} 
 	
+	/**
+	 * Test load workitem.
+	 *
+	 * @throws SynchronizerException the synchronizer exception
+	 */
 	public void testLoadWorkitem() throws SynchronizerException {
 		IWorkitem wi = synchronizer.get("data-test/roles/c3f62836-575d-4a6c-a2fb-a757cab75fff.role.json");
 		assertEquals(wi.getId(synchronizer), "c3f62836-575d-4a6c-a2fb-a757cab75fff");
 	}
 
+	/**
+	 * Test load workitem with wrong param.
+	 */
 	public void testLoadWorkitemWithWrongParam() {
 		try {
 			@SuppressWarnings("unused")
@@ -76,6 +109,9 @@ public class FileSynchronizerTest extends TestCase {
 		}
 	}
 
+	/**
+	 * Test load non existing workitem.
+	 */
 	public void testLoadNonExistingWorkitem() {
 		try {
 			@SuppressWarnings("unused")
@@ -85,6 +121,9 @@ public class FileSynchronizerTest extends TestCase {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see junit.framework.TestCase#tearDown()
+	 */
 	public void tearDown() throws Exception {
 		super.tearDown();
 		((FileSynchronizer) synchronizer).delete(addedItem);

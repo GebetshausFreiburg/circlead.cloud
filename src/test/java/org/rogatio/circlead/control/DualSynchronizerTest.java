@@ -10,11 +10,21 @@ import org.rogatio.circlead.model.work.IWorkitem;
 
 import junit.framework.TestCase;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DualSynchronizerTest.
+ */
 public class DualSynchronizerTest extends TestCase {
 
+	/** The fsynchronizer. */
 	private FileSynchronizer fsynchronizer;
+	
+	/** The asynchronizer. */
 	private AtlassianSynchronizer asynchronizer;
 
+	/* (non-Javadoc)
+	 * @see junit.framework.TestCase#setUp()
+	 */
 	protected void setUp() throws Exception {
 		super.setUp();
 		fsynchronizer = new FileSynchronizer(("data-test"));
@@ -23,8 +33,14 @@ public class DualSynchronizerTest extends TestCase {
 		SynchronizerFactory.getInstance().addSynchronizer(asynchronizer);
 	}
 
+	/** The item which was transfered. */
 	private int itemWhichWasTransfered;
 
+	/**
+	 * Test load file and write cloud.
+	 *
+	 * @throws SynchronizerException the synchronizer exception
+	 */
 	public void testLoadFileAndWriteCloud() throws SynchronizerException {
 		IWorkitem wi = fsynchronizer.get("data-test/roles/292573e4-7885-4d2c-be3e-800ff4233abc.role.json");
 
@@ -45,6 +61,9 @@ public class DualSynchronizerTest extends TestCase {
 		assertEquals(wi.toString(), wi2.toString());
 	}
 
+	/* (non-Javadoc)
+	 * @see junit.framework.TestCase#tearDown()
+	 */
 	public void tearDown() throws Exception {
 		super.tearDown();
 		asynchronizer.delete(itemWhichWasTransfered);

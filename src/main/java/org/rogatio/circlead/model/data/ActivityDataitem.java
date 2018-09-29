@@ -40,8 +40,10 @@ public class ActivityDataitem extends DefaultDataitem {
 	/** The aid. */
 	private String aid;
 	
+	/** The child. */
 	private String child;
 	
+	/** The bpmn. */
 	private String bpmn;
 	
 	/** The results. */
@@ -102,18 +104,38 @@ public class ActivityDataitem extends DefaultDataitem {
 		this.accountable = accountable;
 	}
 	
+	/**
+	 * Gets the child.
+	 *
+	 * @return the child
+	 */
 	public String getChild() {
 		return child;
 	}
 
+	/**
+	 * Sets the child.
+	 *
+	 * @param child the new child
+	 */
 	public void setChild(String child) {
 		this.child = child;
 	}
 
+	/**
+	 * Gets the bpmn.
+	 *
+	 * @return the bpmn
+	 */
 	public String getBpmn() {
 		return bpmn;
 	}
 
+	/**
+	 * Sets the bpmn.
+	 *
+	 * @param bpmn the new bpmn
+	 */
 	public void setBpmn(String bpmn) {
 		this.bpmn = bpmn;
 	}

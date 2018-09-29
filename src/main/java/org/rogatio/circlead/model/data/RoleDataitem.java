@@ -494,12 +494,12 @@ public class RoleDataitem extends DefaultDataitem {
 			
 			int idx = person.indexOf("[");
 			if (idx != -1) {
-				String skill_status = person.substring(idx, person.length()).replace("[", "").replace("]", "").trim();
+				String skillStatus = person.substring(idx, person.length()).replace("[", "").replace("]", "").trim();
 
 				String fullname = person.substring(0, idx).trim();
 
-				if (skill_status.contains(",")) {
-					String[] values = skill_status.split(",");
+				if (skillStatus.contains(",")) {
+					String[] values = skillStatus.split(",");
 					for (String value : values) {
 						value = value.trim();
 
@@ -518,7 +518,7 @@ public class RoleDataitem extends DefaultDataitem {
 
 					}
 				} else {
-					String value = skill_status.trim();
+					String value = skillStatus.trim();
 
 					if (value.contains("%")) {
 						value = value.replace("%", "");

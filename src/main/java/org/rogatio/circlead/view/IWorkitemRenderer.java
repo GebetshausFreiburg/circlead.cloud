@@ -12,12 +12,12 @@ import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 
 /**
- * The Interface IRenderer allows rendering for all workitems
+ * The Interface IRenderer allows rendering for all workitems.
  */
 public interface IWorkitemRenderer {
 
 	/**
-	 * Render method
+	 * Render method.
 	 *
 	 * @param synchronizer the synchronizer
 	 * @return the element

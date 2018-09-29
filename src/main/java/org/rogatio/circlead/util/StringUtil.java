@@ -26,10 +26,10 @@ import org.apache.logging.log4j.Logger;
 public class StringUtil {
 
 	/** The Constant logger. */
-	final static Logger logger = LogManager.getLogger(StringUtil.class);
+	final static Logger LOGGER = LogManager.getLogger(StringUtil.class);
 
 	/**
-	 * Default java-method to join comma-separated string to list od strings
+	 * Default java-method to join comma-separated string to list od strings.
 	 *
 	 * @param list the list
 	 * @return the string
@@ -152,7 +152,7 @@ public class StringUtil {
 			DateFormat format = new SimpleDateFormat(f, Locale.GERMANY);
 			return format.parse(date);
 		} catch (ParseException e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 		return null;
 	}

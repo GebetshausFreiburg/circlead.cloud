@@ -14,7 +14,6 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Element;
-import org.rogatio.circlead.Sync;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
@@ -35,7 +34,7 @@ import org.rogatio.circlead.util.ObjectUtil;
  */
 public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 
-	/** The correlated synchronizer */
+	/**  The correlated synchronizer. */
 	private ISynchronizer synchronizer;
 
 	/**
@@ -56,8 +55,12 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 		return synchronizer;
 	}
 
-	final static Logger logger = LogManager.getLogger(AtlassianRendererEngine.class);
+	/** The Constant LOGGER. */
+	final static Logger LOGGER = LogManager.getLogger(AtlassianRendererEngine.class);
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addSubActivityList(org.jsoup.nodes.Element, java.util.List, org.rogatio.circlead.model.work.Activity, org.rogatio.circlead.model.work.Role)
+	 */
 	public void addSubActivityList(Element element, List<ActivityDataitem> list, Activity activity, Role role) {
 		
 		List<Activity> a = Repository.getInstance().getActivities(role.getTitle());
@@ -210,7 +213,7 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 	}
 
 	/**
-	 * Adds the html-table
+	 * Adds the html-table.
 	 *
 	 * @param element the element
 	 * @param map     the map
@@ -363,6 +366,12 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 		}
 	}
 
+	/**
+	 * Replace rolename with link.
+	 *
+	 * @param item the item
+	 * @return the string
+	 */
 	private String replaceRolenameWithLink(String item) {
 		List<String> rn = Repository.getInstance().getRoleNames();
 		for (String name : rn) {
@@ -431,6 +440,9 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addActivityItem(org.jsoup.nodes.Element, java.lang.String, java.lang.String)
+	 */
 	public void addActivityItem(Element element, String description, String content) {
 		Activity r = Repository.getInstance().getActivity(content);
 
@@ -478,6 +490,9 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addWorkitemTable(org.jsoup.nodes.Element, java.util.List)
+	 */
 	public void addWorkitemTable(Element element, List<IWorkitem> workitem) {
 		if (ObjectUtil.isListNotNullAndEmpty(workitem)) {
 			Element table = element.appendElement("div").appendElement("table");

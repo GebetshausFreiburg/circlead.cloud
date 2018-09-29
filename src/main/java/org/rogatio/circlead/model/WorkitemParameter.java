@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.rogatio.circlead.util.ObjectUtil;
-
 /**
  * The Enum WorkitemParameter allows rendering of different workitem-fields
  * which map al values to a defined set of parameters.
@@ -47,6 +45,7 @@ public enum WorkitemParameter {
 	/** The version. */
 	VERSION(Parameter.VERSION),
 
+	/** The name. */
 	NAME(Parameter.NAME),
 
 	/** The id. */
@@ -100,8 +99,10 @@ public enum WorkitemParameter {
 	/** The informed. */
 	INFORMED(Parameter.INFORMED, "Informierter", "Informed", "Informierte"),
 
+	/** The image. */
 	IMAGE(Parameter.IMAGE, "Image", "User", "Avatar"),
 	
+	/** The ignore. */
 	IGNORE(Parameter.ADRESS, "Typ", "Subtype", "Mobil", "Mail", "Festnetz"),
 
 	/** The roles. */
@@ -144,6 +145,7 @@ public enum WorkitemParameter {
 	/**
 	 * Instantiates a new workitem parameter.
 	 *
+	 * @param p the p
 	 * @param aliases the aliases
 	 */
 	private WorkitemParameter(Parameter p, String... aliases) {

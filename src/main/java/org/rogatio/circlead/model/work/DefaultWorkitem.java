@@ -255,10 +255,9 @@ public class DefaultWorkitem implements IWorkitem, Comparable<DefaultWorkitem> {
 	}
 
 	/**
-	 * Checks if id is existent for any synchronizer
+	 * Checks if id is existent for any synchronizer.
 	 *
-	 * @param id
-	 *            the id
+	 * @param id            the id
 	 * @return true, if successful
 	 */
 	public boolean containsId(String id) {

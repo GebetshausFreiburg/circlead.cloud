@@ -17,7 +17,7 @@ import java.util.Map;
  * A factory for holding Synchronizer objects. Is solved as singleton-class, so it can be used from the whole application.
  * Must be initialized before reading or saving data from repository.
  */
-public class SynchronizerFactory {
+public final class SynchronizerFactory {
 
 	/** The instance. */
 	private static SynchronizerFactory instance;

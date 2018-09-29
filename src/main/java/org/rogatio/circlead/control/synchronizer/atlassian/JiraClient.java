@@ -13,7 +13,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
 import org.rogatio.circlead.control.synchronizer.atlassian.jira.Issue;
@@ -23,6 +22,9 @@ import org.rogatio.circlead.util.StringUtil;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * The Class JiraClient.
+ */
 public class JiraClient extends HttpClient {
 
 	/** The rest prefix. Is different for cloud to dedicated server */
@@ -46,14 +48,20 @@ public class JiraClient extends HttpClient {
 		if (server) {
 			// Set rest-prefix if atlassian-dedicated-server
 			restPrefix = "rest/api/2/";
-			logger.info("JiraClient ist set to dedicated server");
+			LOGGER.info("JiraClient ist set to dedicated server");
 		} else {
 			// Set rest-prefix if atlassian-cloud-server
 			restPrefix = "rest/api/3/";
-			logger.info("JiraClient ist set to cloud server");
+			LOGGER.info("JiraClient ist set to cloud server");
 		}
 	}
 
+	/**
+	 * Gets the total found issues.
+	 *
+	 * @param jql the jql
+	 * @return the total found issues
+	 */
 	public int getTotalFoundIssues(String jql) {
 		SynchronizerResult results = search(jql, null, 0);
 		try {
@@ -63,19 +71,25 @@ public class JiraClient extends HttpClient {
 
 			return p.getTotal();
 		} catch (IOException e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 		return 0;
 	}
-	
+
+	/**
+	 * Gets the issues.
+	 *
+	 * @param jql the jql
+	 * @return the issues
+	 */
 	public List<Issue> getIssues(String jql) {
 		int max = this.getTotalFoundIssues(jql);
 		int step = 10;
-		
-		if (max>100) {
+
+		if (max > 100) {
 			step = 100;
 		}
-		
+
 		List<Issue> issuesList = new ArrayList<Issue>();
 		for (int i = 0; i < max; i += step) {
 			List<Issue> issues = getIssues(jql, null, step, i);
@@ -83,7 +97,15 @@ public class JiraClient extends HttpClient {
 		}
 		return issuesList;
 	}
-	
+
+	/**
+	 * Gets the issues.
+	 *
+	 * @param jql the jql
+	 * @param max the max
+	 * @param step the step
+	 * @return the issues
+	 */
 	public List<Issue> getIssues(String jql, int max, int step) {
 		List<Issue> issuesList = new ArrayList<Issue>();
 		for (int i = 0; i < max; i += step) {
@@ -92,50 +114,85 @@ public class JiraClient extends HttpClient {
 		}
 		return issuesList;
 	}
-	
+
+	/**
+	 * Gets the issues.
+	 *
+	 * @param jql the jql
+	 * @param fields the fields
+	 * @param max the max
+	 * @param start the start
+	 * @return the issues
+	 */
 	public List<Issue> getIssues(String jql, String fields, int max, int start) {
 		SynchronizerResult results = search(jql, fields, max, start);
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.setSerializationInclusion(Include.NON_NULL);
 			Results p = mapper.readValue(results.getContent(), Results.class);
-			logger.debug("Load Issues from "+(start+1) + " to "+ (start+p.getIssues().size()));
+			LOGGER.debug("Load Issues from " + (start + 1) + " to " + (start + p.getIssues().size()));
 			return p.getIssues();
 		} catch (IOException e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 		return null;
 	}
-	
-	public List<Issue> getIssues(String jql, String fields) {
+
+	/**
+	 * Gets the issues.
+	 *
+	 * @param jql the jql
+	 * @param fields the fields
+	 * @return the issues
+	 */
+	public List<Issue> getIssues(final String jql, final String fields) {
 		return getIssues(jql, fields, Constant.LIMIT, -1);
 	}
 
-//	public List<Issue> getIssues(String jql) {
-//		return getIssues(jql, null);
-//	}
-
-	public SynchronizerResult search(String jql) {
+	/**
+	 * Search.
+	 *
+	 * @param jql the jql
+	 * @return the synchronizer result
+	 */
+	public SynchronizerResult search(final String jql) {
 		return search(jql, null, Constant.LIMIT, 0);
 	}
 
+	/**
+	 * Search.
+	 *
+	 * @param jql the jql
+	 * @param fields the fields
+	 * @param maxResults the max results
+	 * @return the synchronizer result
+	 */
 	public SynchronizerResult search(String jql, String fields, int maxResults) {
 		return search(jql, fields, maxResults, -1);
 	}
-	
+
+	/**
+	 * Search.
+	 *
+	 * @param jql the jql
+	 * @param fields the fields
+	 * @param maxResults the max results
+	 * @param startAt the start at
+	 * @return the synchronizer result
+	 */
 	public SynchronizerResult search(String jql, String fields, int maxResults, int startAt) {
 		String prefix = "";
-		if (startAt<=0) {
-			prefix = "maxResults="+maxResults+"&";
+		if (startAt <= 0) {
+			prefix = "maxResults=" + maxResults + "&";
 		} else {
-			prefix = "maxResults="+maxResults+"&startAt="+startAt+"&";
+			prefix = "maxResults=" + maxResults + "&startAt=" + startAt + "&";
 		}
 		try {
 			String encoded = URLEncoder.encode(jql, "UTF-8");
 			if (StringUtil.isNotNullAndNotEmpty(fields)) {
-				return this.get(restPrefix + "search?"+prefix+"jql=" + encoded + "&fields=" + fields);
+				return this.get(restPrefix + "search?" + prefix + "jql=" + encoded + "&fields=" + fields);
 			} else {
-				return this.get(restPrefix + "search?"+prefix+"jql=" + encoded);		
+				return this.get(restPrefix + "search?" + prefix + "jql=" + encoded);
 			}
 		} catch (UnsupportedEncodingException e1) {
 			return null;

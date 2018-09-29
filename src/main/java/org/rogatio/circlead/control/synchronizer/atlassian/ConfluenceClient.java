@@ -49,14 +49,21 @@ public class ConfluenceClient extends HttpClient {
 		if (server) {
 			// Set rest-prefix if atlassian-dedicated-server
 			restPrefix = "rest/api/";
-			logger.info("ConfluenceClient ist set to dedicated server");
+			LOGGER.info("ConfluenceClient ist set to dedicated server");
 		} else {
 			// Set rest-prefix if atlassian-cloud-server
 			restPrefix = "wiki/rest/api/";
-			logger.info("ConfluenceClient ist set to cloud server");
+			LOGGER.info("ConfluenceClient ist set to cloud server");
 		}
 	}
 
+	/**
+	 * Delete version.
+	 *
+	 * @param pageId the page id
+	 * @param version the version
+	 * @return the synchronizer result
+	 */
 	public SynchronizerResult deleteVersion(int pageId, int version) {
 		try {
 			return this.delete(restPrefix + "content/" + pageId + "/version/"+version);
@@ -65,6 +72,12 @@ public class ConfluenceClient extends HttpClient {
 		}
 	}
 	
+	/**
+	 * Gets the content versions.
+	 *
+	 * @param id the id
+	 * @return the content versions
+	 */
 	public SynchronizerResult getContentVersions(int id) {
 		try {
 			return this.get(restPrefix + "content/" + id + "/version");
@@ -334,7 +347,7 @@ public class ConfluenceClient extends HttpClient {
 	}
 
 	/**
-	 * Search for content in confluence
+	 * Search for content in confluence.
 	 *
 	 * @param cql the cql
 	 * @return the synchronizer result

@@ -83,10 +83,21 @@ public enum WorkitemType {
 		return text;
 	}
 	
+	/**
+	 * Checks if is equals.
+	 *
+	 * @param type the type
+	 * @return true, if is equals
+	 */
 	public boolean isEquals(String type) {
 		return text.equalsIgnoreCase(type);
 	}
 	
+	/**
+	 * Gets the lower name.
+	 *
+	 * @return the lower name
+	 */
 	public String getLowerName() {
 		return text.toLowerCase();
 	}

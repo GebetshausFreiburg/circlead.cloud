@@ -11,7 +11,7 @@ package org.rogatio.circlead.control.validator;
 import java.util.List;
 
 /**
- * The Interface IValidator allows data-validation
+ * The Interface IValidator allows data-validation.
  */
 public interface IValidator {
 	

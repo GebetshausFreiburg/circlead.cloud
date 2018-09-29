@@ -22,20 +22,18 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.kjetland.jackson.jsonSchema.JsonSchemaGenerator;
 
 /**
- * The Class FileUtil is a simple helper for File-IO-Handling
+ * The Class FileUtil is a simple helper for File-IO-Handling.
  */
 public class FileUtil {
 
 	/** The Constant logger. */
-	final static Logger logger = LogManager.getLogger(FileUtil.class);
+	final static Logger LOGGER = LogManager.getLogger(FileUtil.class);
 
 	/**
-	 * Delete recursively a directory
+	 * Delete recursively a directory.
 	 *
-	 * @param f
-	 *            the f
-	 * @throws Exception
-	 *             the exception
+	 * @param f            the f
+	 * @throws Exception             the exception
 	 */
 	public static void deleteRecursive(File f) throws Exception {
 		try {
@@ -81,18 +79,18 @@ public class FileUtil {
 			// create new empty file
 			fs.createNewFile();
 		} catch (IOException e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 		try {
 			// write schema-data to new created file
 			schemaMapper.writeValue(fs, jsonSchema);
-			logger.info("Schema '" + name + "' written.");
+			LOGGER.info("Schema '" + name + "' written.");
 		} catch (JsonGenerationException e) {
-			logger.error(e);
+			LOGGER.error(e);
 		} catch (JsonMappingException e) {
-			logger.error(e);
+			LOGGER.error(e);
 		} catch (IOException e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 	}
 }
