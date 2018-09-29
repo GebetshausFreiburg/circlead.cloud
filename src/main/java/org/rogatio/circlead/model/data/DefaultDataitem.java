@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaDescription;
 import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaTitle;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class DefaultDataitem.
  */
@@ -36,7 +37,7 @@ public class DefaultDataitem implements IDataitem {
 
 	/** The Constant logger. */
 	@JsonIgnore
-	final static Logger logger = LogManager.getLogger(DefaultDataitem.class);
+	final static Logger LOGGER = LogManager.getLogger(DefaultDataitem.class);
 
 	/** The temp id is not really used. Only needed for initial datamigration to new version of circlead. */
 	@JsonIgnore
@@ -122,7 +123,7 @@ public class DefaultDataitem implements IDataitem {
 					s = sync.toString();
 				} else {
 					if (StringUtil.isNotNullAndNotEmpty(i)) {
-						logger.warn("Synchronizer of ID '" + i + "' not found for workitem '" + uid + "'");
+						LOGGER.warn("Synchronizer of ID '" + i + "' not found for workitem '" + uid + "'");
 					}
 				}
 			}

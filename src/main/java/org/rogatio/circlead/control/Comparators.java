@@ -12,13 +12,14 @@ import java.util.Comparator;
 
 import org.rogatio.circlead.model.work.DefaultWorkitem;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class Comparators.
  */
 public class Comparators {
 
 	 /** The title. */
- 	public static Comparator<DefaultWorkitem> TITLE = new Comparator<DefaultWorkitem>() {
+ 	public final static Comparator<DefaultWorkitem> TITLE = new Comparator<DefaultWorkitem>() {
          @Override
          public int compare(DefaultWorkitem o1, DefaultWorkitem o2) {
              return o1.getTitle().compareTo(o2.getTitle());

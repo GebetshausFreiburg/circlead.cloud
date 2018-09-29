@@ -15,6 +15,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class PersonDataitem.
  */
@@ -26,6 +27,7 @@ public class PersonDataitem extends DefaultDataitem {
 	/** The secondname. */
 	private String secondname;
 	
+	/** The avatar. */
 	private String avatar;
 
 	/** The familyname. */
@@ -101,10 +103,20 @@ public class PersonDataitem extends DefaultDataitem {
 		return secondname;
 	}
 	
+	/**
+	 * Gets the avatar.
+	 *
+	 * @return the avatar
+	 */
 	public String getAvatar() {
 		return avatar;
 	}
 
+	/**
+	 * Sets the avatar.
+	 *
+	 * @param avatar the new avatar
+	 */
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
 	}

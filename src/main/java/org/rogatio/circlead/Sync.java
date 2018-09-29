@@ -9,6 +9,7 @@
 package org.rogatio.circlead;
 
 import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.rogatio.circlead.control.Repository;
@@ -19,29 +20,39 @@ import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.view.report.OverviewReport;
 import org.rogatio.circlead.view.report.PersonListReport;
 import org.rogatio.circlead.view.report.ReworkReport;
-import org.rogatio.circlead.view.report.RoleIssueReport;
 import org.rogatio.circlead.view.report.RolegroupReport;
 import org.rogatio.circlead.view.report.ValidationReport;
 
 /**
- * Synchronize-Starter
+ * Synchronize-Starter.
  */
 public class Sync {
 	// TODO Velocity als Render-Changer nutzen
 	// TODO Activity-Process-Builder erzeugen
 
+	/** The Constant REPORTS. */
 	public static final boolean REPORTS = true;
+	
+	/** The Constant HOWTOS. */
 	public static final boolean HOWTOS = true;
+	
+	/** The Constant ROLES. */
 	public static final boolean ROLES = true;
+	
+	/** The Constant ROLEGROUPS. */
 	public static final boolean ROLEGROUPS = true;
+	
+	/** The Constant PERSONS. */
 	public static final boolean PERSONS = true;
+	
+	/** The Constant ACTIVITIES. */
 	public static final boolean ACTIVITIES = true;
 
 	/** The Constant logger. */
-	final static Logger logger = LogManager.getLogger(Sync.class);
+	final static Logger LOGGER = LogManager.getLogger(Sync.class);
 
 	/**
-	 * The main method of the application
+	 * The main method of the application.
 	 *
 	 * @param args the arguments
 	 */

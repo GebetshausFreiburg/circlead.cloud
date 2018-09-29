@@ -10,6 +10,7 @@ package org.rogatio.circlead.model;
 
 import org.rogatio.circlead.model.work.IWorkitem;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Enum WorkitemType is a little helper for building io.logic in the synchronizer. Could also be used by instanceof, but for a easier handling the enum is used
  */
@@ -83,10 +84,21 @@ public enum WorkitemType {
 		return text;
 	}
 	
+	/**
+	 * Checks if is equals.
+	 *
+	 * @param type the type
+	 * @return true, if is equals
+	 */
 	public boolean isEquals(String type) {
 		return text.equalsIgnoreCase(type);
 	}
 	
+	/**
+	 * Gets the lower name.
+	 *
+	 * @return the lower name
+	 */
 	public String getLowerName() {
 		return text.toLowerCase();
 	}

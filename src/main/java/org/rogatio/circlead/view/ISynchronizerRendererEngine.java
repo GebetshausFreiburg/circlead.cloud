@@ -21,6 +21,7 @@ import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Interface ISynchronizerRenderer.
  */
@@ -83,6 +84,14 @@ public interface ISynchronizerRendererEngine {
 	 */
 	public void addHowToItem(Element element, String description, String content);
 	
+	/**
+	 * Adds the sub activity list.
+	 *
+	 * @param element the element
+	 * @param list the list
+	 * @param activity the activity
+	 * @param role the role
+	 */
 	public void addSubActivityList(Element element, List<ActivityDataitem> list, Activity activity, Role role);
 	
 	/**
@@ -154,6 +163,13 @@ public interface ISynchronizerRendererEngine {
 	 */
 	public void addItem(Element element, String description, List<String> list);
 
+	/**
+	 * Adds the activity item.
+	 *
+	 * @param element the element
+	 * @param description the description
+	 * @param content the content
+	 */
 	public void addActivityItem(Element element, String description, String content);
 	
 	/**
@@ -207,5 +223,11 @@ public interface ISynchronizerRendererEngine {
 	 */
 	public void addH3(Element element, String header);
 	
+	/**
+	 * Adds the workitem table.
+	 *
+	 * @param element the element
+	 * @param workitem the workitem
+	 */
 	public void addWorkitemTable(Element element, List<IWorkitem> workitem);
 }

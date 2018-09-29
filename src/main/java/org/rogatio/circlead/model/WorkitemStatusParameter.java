@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Enum WorkitemStatusParameter allows different status values which are normalized to a given state and color.
  */
@@ -35,6 +36,7 @@ public enum WorkitemStatusParameter {
 	/** The critical. */
 	CRITICAL("Red", "Unklar", "Undefined", "Kritisch", "Critical", "Widersprüchlich"),
 	
+	/** The unassigned. */
 	UNASSIGNED("Red", "Unbesetzt", "Unassigned"),
 	
 	/** The draft. */

@@ -26,6 +26,7 @@ import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.ObjectUtil;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class RenderUtil.
  */
@@ -72,6 +73,9 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addWorkitemTable(org.jsoup.nodes.Element, java.util.List)
+	 */
 	public void addWorkitemTable(Element element, List<IWorkitem> workitem) {
 		if (ObjectUtil.isListNotNullAndEmpty(workitem)) {
 			Element table = element.appendElement("div").appendElement("table");
@@ -113,6 +117,9 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addSubActivityList(org.jsoup.nodes.Element, java.util.List, org.rogatio.circlead.model.work.Activity, org.rogatio.circlead.model.work.Role)
+	 */
 	public void addSubActivityList(Element element, List<ActivityDataitem> list, Activity activity, Role role) {
 		List<Activity> a = Repository.getInstance().getActivities(role.getTitle());
 
@@ -438,6 +445,9 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addActivityItem(org.jsoup.nodes.Element, java.lang.String, java.lang.String)
+	 */
 	public void addActivityItem(Element element, String description, String content) {
 		Activity r = Repository.getInstance().getActivity(content);
 

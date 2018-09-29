@@ -19,11 +19,6 @@ import org.rogatio.circlead.view.report.IReport;
  * The Interface ISynchronizer.
  */
 public interface ISynchronizer {
-
-	/**
-	 * Inits the.
-	 */
-	public void init();
 	
 	/**
 	 * Load index.

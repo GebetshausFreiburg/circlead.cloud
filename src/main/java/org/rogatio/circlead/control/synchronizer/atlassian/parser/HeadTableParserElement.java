@@ -16,21 +16,39 @@ import java.util.Map;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.rogatio.circlead.model.data.ActivityDataitem;
-import org.rogatio.circlead.model.data.ContactDataitem;
 import org.rogatio.circlead.model.work.Activity;
 
+/**
+ * The Class HeadTableParserElement.
+ */
 public class HeadTableParserElement implements IParserElement {
 
+	/**
+	 * Instantiates a new head table parser element.
+	 *
+	 * @param text the text
+	 */
 	public HeadTableParserElement(Object text) {
 		parse(text);
 	}
 
+	/** The activities. */
 	private List<ActivityDataitem> activities = new ArrayList<ActivityDataitem>();
 
+	/**
+	 * Gets the activities.
+	 *
+	 * @return the activities
+	 */
 	public List<ActivityDataitem> getActivities() {
 		return activities;
 	}
 
+	/**
+	 * Parses the.
+	 *
+	 * @param text the text
+	 */
 	private void parse(Object text) {
 
 		if (text instanceof Element) {

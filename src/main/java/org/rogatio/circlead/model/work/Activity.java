@@ -8,7 +8,19 @@
  */
 package org.rogatio.circlead.model.work;
 
-import static org.rogatio.circlead.model.Parameter.*;
+import static org.rogatio.circlead.model.Parameter.ACCOUNTABLE;
+import static org.rogatio.circlead.model.Parameter.ACTIVITY;
+import static org.rogatio.circlead.model.Parameter.ACTIVITYID;
+import static org.rogatio.circlead.model.Parameter.BPMN;
+import static org.rogatio.circlead.model.Parameter.CONSULTANT;
+import static org.rogatio.circlead.model.Parameter.DESCRIPTION;
+import static org.rogatio.circlead.model.Parameter.INFORMED;
+import static org.rogatio.circlead.model.Parameter.PARENTACTIVITY;
+import static org.rogatio.circlead.model.Parameter.RESPONSIBLE;
+import static org.rogatio.circlead.model.Parameter.RESULT;
+import static org.rogatio.circlead.model.Parameter.SUCCESSOR;
+import static org.rogatio.circlead.model.Parameter.SUPPORTER;
+import static org.rogatio.circlead.model.Parameter.USEDROLES;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.HeadTableParserElement;
@@ -143,10 +154,20 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 		return this.getDataitem().getDescription();
 	}
 
+	/**
+	 * Gets the child.
+	 *
+	 * @return the child
+	 */
 	public String getChild() {
 		return this.getDataitem().getChild();
 	}
 	
+	/**
+	 * Gets the bpmn.
+	 *
+	 * @return the bpmn
+	 */
 	public String getBpmn() {
 		return this.getDataitem().getBpmn();
 	}
@@ -169,10 +190,20 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 		this.getDataitem().setResults(results);
 	}
 
+	/**
+	 * Sets the bpmn.
+	 *
+	 * @param bpmn the new bpmn
+	 */
 	public void setBPMN(String bpmn) {
 		this.getDataitem().setBpmn(bpmn);
 	}
 	
+	/**
+	 * Sets the child.
+	 *
+	 * @param child the new child
+	 */
 	public void setChild(String child) {
 		this.getDataitem().setChild(child);
 	}
@@ -276,6 +307,12 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 		this.getDataitem().setSubactivities(subactivities);
 	}
 
+	/**
+	 * Gets the subactivities with responsible.
+	 *
+	 * @param responsible the responsible
+	 * @return the subactivities with responsible
+	 */
 	public List<ActivityDataitem> getSubactivitiesWithResponsible(String responsible) {
 		List<ActivityDataitem> list = new ArrayList<ActivityDataitem>();
 		if (ObjectUtil.isListNotNullAndEmpty(this.getSubactivities())) {
@@ -290,6 +327,11 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 		return list;
 	}
 
+	/**
+	 * Gets the subactivities with responsible.
+	 *
+	 * @return the subactivities with responsible
+	 */
 	public List<ActivityDataitem> getSubactivitiesWithResponsible() {
 		List<ActivityDataitem> list = new ArrayList<ActivityDataitem>();
 		if (ObjectUtil.isListNotNullAndEmpty(this.getSubactivities())) {

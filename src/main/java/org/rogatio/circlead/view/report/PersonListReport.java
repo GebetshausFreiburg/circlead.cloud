@@ -8,20 +8,15 @@
  */
 package org.rogatio.circlead.view.report;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
-import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.data.ContactDataitem;
-import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
-import org.rogatio.circlead.model.work.Role;
-import org.rogatio.circlead.model.work.Rolegroup;
-import org.rogatio.circlead.util.ObjectUtil;
 
+/**
+ * The Class PersonListReport.
+ */
 public class PersonListReport extends DefaultReport {
 
 	/**

@@ -11,8 +11,17 @@ package org.rogatio.circlead.control.synchronizer.atlassian.parser;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ImageParserElement.
+ */
 public class ImageParserElement implements IParserElement {
 
+	/**
+	 * Instantiates a new image parser element.
+	 *
+	 * @param text the text
+	 */
 	public ImageParserElement(Object text) {
 		parse(text);
 	}
@@ -29,8 +38,14 @@ public class ImageParserElement implements IParserElement {
 		return element;
 	}
 
+	/** The data. */
 	private String data = null;
 
+	/**
+	 * Parses the.
+	 *
+	 * @param imgElement the img element
+	 */
 	private void parse(Object imgElement) {
 		try {
 			if (imgElement instanceof Element) {

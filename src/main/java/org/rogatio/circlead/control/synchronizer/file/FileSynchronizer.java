@@ -56,8 +56,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  */
 public class FileSynchronizer extends DefaultSynchronizer {
 
-	/** The Constant logger. */
-	private final static Logger logger = LogManager.getLogger(FileSynchronizer.class);
+	/** The Constant LOGGER. */
+	private final static Logger LOGGER = LogManager.getLogger(FileSynchronizer.class);
 
 	/** The data directory. */
 	private String dataDirectory;
@@ -89,16 +89,6 @@ public class FileSynchronizer extends DefaultSynchronizer {
 	 */
 	public FileSynchronizer(String dataDirectory) {
 		setDataDirectory(dataDirectory);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#init()
-	 */
-	@Override
-	public void init() {
-		dataDirectory = "data";
 	}
 
 	/**
@@ -191,22 +181,22 @@ public class FileSynchronizer extends DefaultSynchronizer {
 		try {
 			FileUtil.deleteRecursive(new File(dataDirectory + File.separatorChar + "persons"));
 		} catch (Exception e) {
-			logger.warn("No directory '" + dataDirectory + File.separatorChar + "persons" + "' found to delete.");
+			LOGGER.warn("No directory '" + dataDirectory + File.separatorChar + "persons" + "' found to delete.");
 		}
 		try {
 			FileUtil.deleteRecursive(new File(dataDirectory + File.separatorChar + "rolegroups"));
 		} catch (Exception e) {
-			logger.warn("No directory '" + dataDirectory + File.separatorChar + "rolegroups" + "' found to delete.");
+			LOGGER.warn("No directory '" + dataDirectory + File.separatorChar + "rolegroups" + "' found to delete.");
 		}
 		try {
 			FileUtil.deleteRecursive(new File(dataDirectory + File.separatorChar + "activities"));
 		} catch (Exception e) { 
-			logger.warn("No directory '" + dataDirectory + File.separatorChar + "activities" + "' found to delete.");
+			LOGGER.warn("No directory '" + dataDirectory + File.separatorChar + "activities" + "' found to delete.");
 		}
 		try {
 			FileUtil.deleteRecursive(new File(dataDirectory + File.separatorChar + "roles"));
 		} catch (Exception e) {
-			logger.warn("No directory '" + dataDirectory + File.separatorChar + "roles" + "' found to delete.");
+			LOGGER.warn("No directory '" + dataDirectory + File.separatorChar + "roles" + "' found to delete.");
 		}
 
 	}
@@ -252,10 +242,10 @@ public class FileSynchronizer extends DefaultSynchronizer {
 
 			result = "" + f + "";
 
-			logger.info("Write/Update file '" + f + "'");
+			LOGGER.info("Write/Update file '" + f + "'");
 
 		} catch (IOException e) {
-			logger.error(e);
+			LOGGER.error(e);
 			result = "Error on writing workitem '" + workitem.getId() + "'";
 		}
 
@@ -288,7 +278,7 @@ public class FileSynchronizer extends DefaultSynchronizer {
 			try {
 				String f = "reports/" + filename + ".html";
 				
-				logger.info("Write/Update file '" + f + "'");
+				LOGGER.info("Write/Update file '" + f + "'");
 				
 				File ff = new File("reports");
 				ff.mkdirs();
@@ -299,7 +289,7 @@ public class FileSynchronizer extends DefaultSynchronizer {
 					out.close();
 				}
 			} catch (IOException e) {
-				logger.error("Error writing Html-File", e);
+				LOGGER.error("Error writing Html-File", e);
 			}
 		}
 	}
@@ -338,7 +328,7 @@ public class FileSynchronizer extends DefaultSynchronizer {
 					out.close();
 				}
 			} catch (IOException e) {
-				logger.error("Error writing Html-File", e);
+				LOGGER.error("Error writing Html-File", e);
 			}
 		}
 	}
@@ -439,7 +429,7 @@ public class FileSynchronizer extends DefaultSynchronizer {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setSerializationInclusion(Include.NON_NULL);
 		try {
-			logger.info("Read file '" + filename + "'");
+			LOGGER.info("Read file '" + filename + "'");
 
 			IWorkitem item = null;
 
@@ -533,7 +523,7 @@ public class FileSynchronizer extends DefaultSynchronizer {
 		}
 		if (f != null) {
 			if (f.exists()) {
-				logger.debug("DELETE " + f);
+				LOGGER.debug("DELETE " + f);
 				f.delete();
 				return "OK";
 			}

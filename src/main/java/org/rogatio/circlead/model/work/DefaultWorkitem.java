@@ -17,6 +17,7 @@ import org.rogatio.circlead.control.Comparators;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.model.data.IDataitem;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class DefaultWorkitem.
  */
@@ -255,10 +256,9 @@ public class DefaultWorkitem implements IWorkitem, Comparable<DefaultWorkitem> {
 	}
 
 	/**
-	 * Checks if id is existent for any synchronizer
+	 * Checks if id is existent for any synchronizer.
 	 *
-	 * @param id
-	 *            the id
+	 * @param id            the id
 	 * @return true, if successful
 	 */
 	public boolean containsId(String id) {

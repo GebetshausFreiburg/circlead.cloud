@@ -11,12 +11,24 @@ import org.rogatio.circlead.model.work.Role;
 
 import junit.framework.TestCase;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class AtlassianSynchronizerTest.
+ */
 public class AtlassianSynchronizerTest extends TestCase {
 
+	/** The synchronizer. */
 	private ISynchronizer synchronizer;
+	
+	/** The page id added page. */
 	private int pageIdAddedPage;
+	
+	/** The page id copied page. */
 	private int pageIdCopiedPage;
 
+	/* (non-Javadoc)
+	 * @see junit.framework.TestCase#setUp()
+	 */
 	protected void setUp() throws Exception {
 		super.setUp();
 		synchronizer = new AtlassianSynchronizer("CIRCLEADTEST");
@@ -24,10 +36,18 @@ public class AtlassianSynchronizerTest extends TestCase {
 		SynchronizerFactory.getInstance().addSynchronizer(synchronizer);
 	}
 	
+	/**
+	 * Test space key.
+	 */
 	public void testSpaceKey() {
 		assertEquals("CIRCLEADTEST", ((AtlassianSynchronizer)synchronizer).getSpaceKey());
 	}
 	
+	/**
+	 * Test add workitem.
+	 *
+	 * @throws SynchronizerException the synchronizer exception
+	 */
 	public void testAddWorkitem() throws SynchronizerException {
 		Role role = new Role();
 		role.setOrganisationIdentifier("org");
@@ -38,6 +58,11 @@ public class AtlassianSynchronizerTest extends TestCase {
 		assertTrue(page.getContent().contains("\"title\":\"" + role.getTitle() + "\""));
 	}
 
+	/**
+	 * Test copy workitem.
+	 *
+	 * @throws SynchronizerException the synchronizer exception
+	 */
 	public void testCopyWorkitem() throws SynchronizerException {
 		IWorkitem wi = synchronizer.get("234258486");
 		wi.setTitle("Role (Copy-Test)");
@@ -47,6 +72,11 @@ public class AtlassianSynchronizerTest extends TestCase {
 		assertTrue(page.getContent().contains("\"title\":\"" + wi.getTitle() + "\""));
 	}
 	
+	/**
+	 * Test load workitem.
+	 *
+	 * @throws SynchronizerException the synchronizer exception
+	 */
 	public void testLoadWorkitem() throws SynchronizerException {
 		IWorkitem wi = synchronizer.get("234258486");
 		
@@ -55,6 +85,9 @@ public class AtlassianSynchronizerTest extends TestCase {
 		assertEquals(wi.getTitle(), "Simple Page (Data)"); 
 	}
 
+	/**
+	 * Test load page no data check.
+	 */
 	public void testLoadPageNoDataCheck() {
 		try {
 			synchronizer.get("231243902");
@@ -63,6 +96,9 @@ public class AtlassianSynchronizerTest extends TestCase {
 		}
 	}
 
+	/**
+	 * Test load wrong label.
+	 */
 	public void testLoadWrongLabel() {
 		try {
 			synchronizer.get("234422339");
@@ -72,6 +108,9 @@ public class AtlassianSynchronizerTest extends TestCase {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see junit.framework.TestCase#tearDown()
+	 */
 	public void tearDown() throws Exception {
 		super.tearDown();
 		((AtlassianSynchronizer) synchronizer).delete(pageIdAddedPage);

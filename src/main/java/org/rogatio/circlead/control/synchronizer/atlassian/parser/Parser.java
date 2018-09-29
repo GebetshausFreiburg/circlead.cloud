@@ -90,6 +90,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class Parser.
  */
@@ -151,14 +152,13 @@ public class Parser {
 
 	/**
 	 * Load attached images from page "BPMN". Images are converted from svg to png.
-	 * 
+	 *
+	 * @param page the page
+	 * @param imageFile the image file
+	 * @param size the size
+	 * @param version the version
+	 * @return the string
 	 * @see https://github.com/bpmn-io
-	 * 
-	 * @param page
-	 * @param imageFile
-	 * @param size
-	 * @param version
-	 * @return
 	 */
 	public static String addImageFromOtherPage(String page, String imageFile, int size, int version) {
 		String html = "<div class=\"content-wrapper\">" + "<p><ac:image ac:thumbnail=\"true\" ac:width=\"" + size
@@ -168,6 +168,14 @@ public class Parser {
 		return html;
 	}
 
+	/**
+	 * Adds the image.
+	 *
+	 * @param filename the filename
+	 * @param size the size
+	 * @param version the version
+	 * @return the string
+	 */
 	public static String addImage(String filename, int size, int version) {
 		return "<ac:image ac:height=\"" + size + "\"><ri:attachment ri:filename=\"" + filename
 				+ "\" ri:version-at-save=\"" + version + "\" /></ac:image>";
@@ -301,7 +309,8 @@ public class Parser {
 	}
 
 	/**
-	 * 
+	 * Adds the role list to table cell.
+	 *
 	 * @param tr              the tr
 	 * @param roleIdentifiers the role identifiers
 	 * @param synchronizer    the synchronizer

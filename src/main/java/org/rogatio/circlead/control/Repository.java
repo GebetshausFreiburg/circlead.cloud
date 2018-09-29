@@ -45,10 +45,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * The Class Repository is a sigleton-representation of all loaded and handled
  * data while runtime. This is the real core of the circlead-application.
  */
-public class Repository {
+public final class Repository {
 
 	/** The Constant logger. */
-	final static Logger logger = LogManager.getLogger(Repository.class);
+	final static Logger LOGGER = LogManager.getLogger(Repository.class);
 
 	/**
 	 * Gets the single instance of Repository.
@@ -106,6 +106,12 @@ public class Repository {
 		return rolegroups;
 	}
 
+	/**
+	 * Checks if is role name.
+	 *
+	 * @param roleName the role name
+	 * @return true, if is role name
+	 */
 	public boolean isRoleName(String roleName) {
 		for (String name : this.getRoleNames()) {
 			if (name.equalsIgnoreCase(roleName)) {
@@ -115,6 +121,12 @@ public class Repository {
 		return false;
 	}
 
+	/**
+	 * Gets the subactivities with responsible.
+	 *
+	 * @param roleTitle the role title
+	 * @return the subactivities with responsible
+	 */
 	public TreeMap<Activity, List<ActivityDataitem>> getSubactivitiesWithResponsible(String roleTitle) {
 		TreeMap<Activity, List<ActivityDataitem>> map = new TreeMap<Activity, List<ActivityDataitem>>();
 		List<Activity> allA = Repository.getInstance().getActivities();
@@ -127,6 +139,11 @@ public class Repository {
 		return map;
 	}
 
+	/**
+	 * Gets the role names.
+	 *
+	 * @return the role names
+	 */
 	public List<String> getRoleNames() {
 		List<Role> roles = this.getRoles();
 		List<String> roleNames = new ArrayList<String>();
@@ -380,6 +397,11 @@ public class Repository {
 		return persons;
 	}
 
+	/**
+	 * Gets the activities.
+	 *
+	 * @return the activities
+	 */
 	public List<Activity> getActivities() {
 		List<Activity> activities = new ArrayList<Activity>();
 		for (IWorkitem workitem : workitems) {
@@ -842,31 +864,31 @@ public class Repository {
 				if (m.getType() == Type.INFO) {
 
 					if (m.getSolution() != null) {
-						logger.info("" + m.getMessage() + " -> " + m.getSolution());
+						LOGGER.info("" + m.getMessage() + " -> " + m.getSolution());
 					} else {
-						logger.info("" + m.getMessage());
+						LOGGER.info("" + m.getMessage());
 					}
 
 				}
 				if (m.getType() == Type.WARNING) {
 					if (m.getSolution() != null) {
-						logger.warn("" + m.getMessage() + " -> " + m.getSolution());
+						LOGGER.warn("" + m.getMessage() + " -> " + m.getSolution());
 					} else {
-						logger.warn(m.getCause() + ": " + m.getMessage());
+						LOGGER.warn(m.getCause() + ": " + m.getMessage());
 					}
 				}
 				if (m.getType() == Type.ERROR) {
 					if (m.getSolution() != null) {
-						logger.error("" + m.getMessage() + " -> " + m.getSolution());
+						LOGGER.error("" + m.getMessage() + " -> " + m.getSolution());
 					} else {
-						logger.error(m.getCause() + ": " + m.getMessage());
+						LOGGER.error(m.getCause() + ": " + m.getMessage());
 					}
 				}
 				if (m.getType() == Type.DEBUG) {
 					if (m.getSolution() != null) {
-						logger.debug("" + m.getMessage() + " -> " + m.getSolution());
+						LOGGER.debug("" + m.getMessage() + " -> " + m.getSolution());
 					} else {
-						logger.debug(m.getMessage());
+						LOGGER.debug(m.getMessage());
 					}
 				}
 			}

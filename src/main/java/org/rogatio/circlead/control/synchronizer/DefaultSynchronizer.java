@@ -17,6 +17,7 @@ import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.report.IReport;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class DefaultSynchronizer.
  */
@@ -24,22 +25,7 @@ public class DefaultSynchronizer implements ISynchronizer {
 
 	/** The Constant logger. */
 	@SuppressWarnings("unused")
-	private final static Logger logger = LogManager.getLogger(DefaultSynchronizer.class);
-	
-	/**
-	 * Instantiates a new default synchronizer.
-	 */
-	public DefaultSynchronizer() {
-		init();
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.control.synchronizer.ISynchronizer#init()
-	 */
-	@Override
-	public void init() {
-		
-	}
+	private final static Logger LOGGER = LogManager.getLogger(DefaultSynchronizer.class);
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
@@ -64,7 +50,7 @@ public class DefaultSynchronizer implements ISynchronizer {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		String DESCRIPTOR = this.getClass().getSimpleName();
+		String descriptor = this.getClass().getSimpleName();
 		if (this == obj)
 			return true;
 		if (obj == null)
@@ -72,10 +58,10 @@ public class DefaultSynchronizer implements ISynchronizer {
 		if (getClass() != obj.getClass())
 			return false;
 		DefaultSynchronizer other = (DefaultSynchronizer) obj;
-		if (DESCRIPTOR == null) {
+		if (descriptor == null) {
 			if (other.getClass().getSimpleName() != null)
 				return false;
-		} else if (!DESCRIPTOR.equals(other.getClass().getSimpleName()))
+		} else if (!descriptor.equals(other.getClass().getSimpleName()))
 			return false;
 		return true;
 	}

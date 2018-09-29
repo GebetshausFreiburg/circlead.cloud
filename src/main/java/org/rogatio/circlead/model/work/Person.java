@@ -8,7 +8,9 @@
  */
 package org.rogatio.circlead.model.work;
 
-import static org.rogatio.circlead.model.Parameter.*;
+import static org.rogatio.circlead.model.Parameter.CONTACTS;
+import static org.rogatio.circlead.model.Parameter.PERSONDATA;
+import static org.rogatio.circlead.model.Parameter.ROLES;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +25,6 @@ import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
 import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
-import org.rogatio.circlead.model.Parameter;
 import org.rogatio.circlead.model.data.ContactDataitem;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.PersonDataitem;
@@ -77,10 +78,20 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		return sb.toString().trim();
 	}
 
+	/**
+	 * Gets the avatar.
+	 *
+	 * @return the avatar
+	 */
 	public String getAvatar() {
 		return this.getDataitem().getAvatar();
 	}
 
+	/**
+	 * Sets the avatar.
+	 *
+	 * @param avatar the new avatar
+	 */
 	public void setAvatar(String avatar) {
 		this.getDataitem().setAvatar(avatar);
 	}

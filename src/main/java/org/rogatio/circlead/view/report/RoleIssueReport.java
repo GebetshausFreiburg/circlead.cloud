@@ -14,32 +14,37 @@ import java.util.Vector;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Element;
-import org.rogatio.circlead.JiraIssueLoader;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.JiraClient;
 import org.rogatio.circlead.control.synchronizer.atlassian.jira.Issue;
-import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.ObjectUtil;
-import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
+/**
+ * The Class RoleIssueReport.
+ */
 public class RoleIssueReport extends DefaultReport {
 
-	final static Logger logger = LogManager.getLogger(RoleIssueReport.class);
+	/** The Constant LOGGER. */
+	final static Logger LOGGER = LogManager.getLogger(RoleIssueReport.class);
 
+	/**
+	 * Instantiates a new role issue report.
+	 */
 	public RoleIssueReport() {
 		this.setName("Issue by Role-Label Report");
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.report.DefaultReport#render(org.rogatio.circlead.control.synchronizer.ISynchronizer)
+	 */
 	@Override
 	public Element render(ISynchronizer synchronizer) {
-		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
-
 		Element element = new Element("p");
 
 		if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
 
-			if (org.rogatio.circlead.control.synchronizer.atlassian.Constant.DEDICATEDSERVER==true) {
+			if (org.rogatio.circlead.control.synchronizer.atlassian.Constant.DEDICATEDSERVER) {
 				element.appendText("Not implemented for Dedicated Server");
 				return element;
 			}
@@ -50,11 +55,11 @@ public class RoleIssueReport extends DefaultReport {
 
 			int foundMax = c.getTotalFoundIssues(q);
 
-			logger.debug("Found '" + foundMax + "' results on query '" + q + "'");
+			LOGGER.debug("Found '" + foundMax + "' results on query '" + q + "'");
 
 			List<Issue> issues = c.getIssues(q);
 
-			logger.debug("Load '" + issues.size() + "' issues on query '" + q + "'");
+			LOGGER.debug("Load '" + issues.size() + "' issues on query '" + q + "'");
 
 			List<Issue> issuesWithoutLabels = new ArrayList<Issue>();
 
@@ -115,6 +120,13 @@ public class RoleIssueReport extends DefaultReport {
 		return element;
 	}
 
+	/**
+	 * Adds the issue list.
+	 *
+	 * @param query the query
+	 * @param roleLabel the role label
+	 * @return the string
+	 */
 	private String addIssueList(String query, String roleLabel) {
 		return  "<li>" + roleLabel + " (<ac:structured-macro ac:name=\"jira\" ac:schema-version=\"1\" "
 				+ "ac:macro-id=\"0eded1d6-9414-4884-b299-b48ac912a317\">"

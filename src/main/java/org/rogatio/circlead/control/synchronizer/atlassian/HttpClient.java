@@ -24,13 +24,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class HttpClient.
  */
 public class HttpClient {
 
 	/** The Constant logger. */
-	final static Logger logger = LogManager.getLogger(HttpClient.class);
+	final static Logger LOGGER = LogManager.getLogger(HttpClient.class);
 	
 	/** The base url. */
 	protected String baseUrl;

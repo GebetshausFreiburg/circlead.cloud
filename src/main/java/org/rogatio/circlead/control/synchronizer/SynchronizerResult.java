@@ -8,6 +8,7 @@
  */
 package org.rogatio.circlead.control.synchronizer;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class SynchronizerResult.
  */
@@ -97,6 +98,9 @@ public class SynchronizerResult {
 		this.source = source;
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return "Result [code = "+this.getCode()+", msg="+this.getMessage()+"]: "+this.getContent();

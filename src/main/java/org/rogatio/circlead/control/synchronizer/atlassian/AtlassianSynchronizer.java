@@ -12,6 +12,12 @@ import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.DEDIC
 import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.PASSWORD;
 import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.URLCONFLUENCE;
 import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.USER;
+import static org.rogatio.circlead.model.WorkitemType.ACTIVITY;
+import static org.rogatio.circlead.model.WorkitemType.HOWTO;
+import static org.rogatio.circlead.model.WorkitemType.PERSON;
+import static org.rogatio.circlead.model.WorkitemType.REPORT;
+import static org.rogatio.circlead.model.WorkitemType.ROLE;
+import static org.rogatio.circlead.model.WorkitemType.ROLEGROUP;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,7 +54,6 @@ import org.rogatio.circlead.control.synchronizer.atlassian.search.Result;
 import org.rogatio.circlead.control.synchronizer.atlassian.search.Results;
 import org.rogatio.circlead.model.WorkitemParameter;
 import org.rogatio.circlead.model.WorkitemType;
-import static org.rogatio.circlead.model.WorkitemType.*;
 import org.rogatio.circlead.model.data.HowTo;
 import org.rogatio.circlead.model.data.Report;
 import org.rogatio.circlead.model.work.Activity;
@@ -59,7 +64,6 @@ import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.AtlassianRendererEngine;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
-import org.rogatio.circlead.view.IWorkitemRenderer;
 import org.rogatio.circlead.view.report.IReport;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -73,23 +77,32 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class AtlassianSynchronizer extends DefaultSynchronizer {
 
+	/** The rolespage. */
 	private final String ROLESPAGE = "Roles";
+
+	/** The activitiespage. */
 	private final String ACTIVITIESPAGE = "Activities";
+
+	/** The rolegroupspage. */
 	private final String ROLEGROUPSPAGE = "Rolegroups";
+
+	/** The personspage. */
 	private final String PERSONSPAGE = "Persons";
 
-	/** The Constant logger. */
-	private final static Logger logger = LogManager.getLogger(AtlassianSynchronizer.class);
+	/** The Constant LOGGER. */
+	private final static Logger LOGGER = LogManager.getLogger(AtlassianSynchronizer.class);
 
 	/** The circlead space. */
 	private String circleadSpace = null;
 
 	/**
 	 * Instantiates a new atlassian synchronizer.
+	 *
+	 * @return the space key
 	 */
-	public AtlassianSynchronizer() {
+//	public AtlassianSynchronizer() {
 
-	}
+//	}
 
 	/**
 	 * Gets the set key of circlead-space .
@@ -107,22 +120,11 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	 */
 	public AtlassianSynchronizer(String spaceKey) {
 		circleadSpace = spaceKey;
+		confluenceClient = new ConfluenceClient(URLCONFLUENCE, USER, PASSWORD, DEDICATEDSERVER);
 	}
 
 	/** The confluence client. */
 	private ConfluenceClient confluenceClient;
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#init()
-	 */
-	@Override
-	public void init() {
-		// Initliaize the confluence client interface. Uses static parameters to secure
-		// credetials with gitignore
-		confluenceClient = new ConfluenceClient(URLCONFLUENCE, USER, PASSWORD, DEDICATEDSERVER);
-	}
 
 	/**
 	 * Gets the single acestor list. Is the parent page in confluence. Page in
@@ -204,9 +206,9 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 			// return result
 			return res;
 		} catch (JsonProcessingException e) {
-			logger.error(e);
+			LOGGER.error(e);
 		} catch (IOException e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 
 		// return null if something went wrong
@@ -249,9 +251,9 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 			SynchronizerResult res = confluenceClient.post(confluenceClient.getRestPrefix() + "content/", data);
 			return res;
 		} catch (JsonProcessingException e) {
-			logger.error(e);
+			LOGGER.error(e);
 		} catch (IOException e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 		return null;
 	}
@@ -268,11 +270,12 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		// Set actual used synchronizer to singleton. Is needed for correct finding and
 		// setting of id
 		SynchronizerFactory.getInstance().setActual(this);
-		
+
 		// Create Confluence-POJO-Object from workitem
 		Page page = Parser.createPage(workitem, circleadSpace, this);
-		
-		logger.info("Update '" + URLCONFLUENCE + confluenceClient.getRestPrefix() + "content/" + workitem.getId(this) + "'");
+
+		LOGGER.info("Update '" + URLCONFLUENCE + confluenceClient.getRestPrefix() + "content/" + workitem.getId(this)
+				+ "'");
 
 		// Increment version-number if version and page already exists
 		if (workitem.getVersion() != null) {
@@ -295,13 +298,13 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 			// Catch result from rest-interface writing confluence-page
 			SynchronizerResult res = confluenceClient.put(uri, data);
 
-			logger.debug(workitem.getTitle() + ": " + res.toString());
+			LOGGER.debug(workitem.getTitle() + ": " + res.toString());
 
 			return res;
 		} catch (JsonProcessingException e) {
-			logger.error(e);
+			LOGGER.error(e);
 		} catch (IOException e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 		return null;
 	}
@@ -325,8 +328,8 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		Report repo = Repository.getInstance().getReport(report.getName());
 		if (repo != null) {
 
-			logger.info("Update '" + URLCONFLUENCE + confluenceClient.getRestPrefix() + "content/" + repo.getId() + "' ("
-					+ report.getName() + ")");
+			LOGGER.info("Update '" + URLCONFLUENCE + confluenceClient.getRestPrefix() + "content/" + repo.getId()
+					+ "' (" + report.getName() + ")");
 
 			Integer version = 0;
 			try {
@@ -357,9 +360,9 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 
 				return res;
 			} catch (JsonProcessingException e) {
-				logger.error(e);
+				LOGGER.error(e);
 			} catch (IOException e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}
 		return null;
@@ -395,21 +398,31 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	/** The acestor pages. */
 	private Map<String, String> acestorPages = new HashMap<String, String>();
 
-	public void deleteVersions(WorkitemType type) {
+	/**
+	 * Delete versions.
+	 *
+	 * @param type the type
+	 */
+	public boolean deleteVersions(WorkitemType type) {
 		try {
 			List<IWorkitem> items = load(type);
 			for (IWorkitem iWorkitem : items) {
 				boolean ok = deleteVersions(Integer.parseInt(iWorkitem.getId(this)));
-//				if (!ok) {
-//					deleteVersions(type);
-//				}
+				return ok;
 			}
 		} catch (SynchronizerException e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
-
+		return false;
 	}
 
+	/**
+	 * Load.
+	 *
+	 * @param type the type
+	 * @return the list
+	 * @throws SynchronizerException the synchronizer exception
+	 */
 	private List<IWorkitem> load(WorkitemType type) throws SynchronizerException {
 		List<String> list = loadIndex(type);
 		List<IWorkitem> workitems = new ArrayList<IWorkitem>();
@@ -427,16 +440,25 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		return workitems;
 	}
 
+	/** The delete version counter. */
 	private int deleteVersionCounter = 0;
+
+	/** The delete version counter max. */
 	private int deleteVersionCounterMax = 0;
 
+	/**
+	 * Delete versions.
+	 *
+	 * @param pageId the page id
+	 * @return true, if successful
+	 */
 	public boolean deleteVersions(Integer pageId) {
-		
+
 		if (DEDICATEDSERVER) {
-			logger.warn("REST-API for deleting versions on dedicated server NOT available");
+			LOGGER.warn("REST-API for deleting versions on dedicated server NOT available");
 			return false;
 		}
-		
+
 		List<Integer> x = getVersions(pageId);
 		x = x.subList(0, x.size() - 1);
 		if (x.size() > deleteVersionCounter) {
@@ -446,32 +468,46 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		for (Integer i : x) {
 			SynchronizerResult r = deleteVersion(pageId, i);
 			if (r.getCode() == 400) {
-				logger.debug("Restart recursive deleting versions of page '" + pageId + "' because of code 400");
+				LOGGER.debug("Restart recursive deleting versions of page '" + pageId + "' because of code 400");
 				deleteVersions(pageId);
 				break;
 			}
-			logger.debug("Delete version='"+i + "' ("+(deleteVersionCounter--)+"/"+deleteVersionCounterMax + ") of page '" + pageId + "'. Code " + r.getCode());
+			LOGGER.debug("Delete version='" + i + "' (" + (deleteVersionCounter--) + "/" + deleteVersionCounterMax
+					+ ") of page '" + pageId + "'. Code " + r.getCode());
 		}
 		return true;
 	}
 
+	/**
+	 * Delete version.
+	 *
+	 * @param pageId  the page id
+	 * @param version the version
+	 * @return the synchronizer result
+	 */
 	public SynchronizerResult deleteVersion(Integer pageId, Integer version) {
-		
+
 		if (DEDICATEDSERVER) {
-			logger.warn("REST-API for deleting versions on dedicated server NOT available");
+			LOGGER.warn("REST-API for deleting versions on dedicated server NOT available");
 			return null;
 		}
-		
+
 		return confluenceClient.deleteVersion(pageId, version);
 	}
 
+	/**
+	 * Gets the versions.
+	 *
+	 * @param pageId the page id
+	 * @return the versions
+	 */
 	public List<Integer> getVersions(Integer pageId) {
-		
+
 		if (DEDICATEDSERVER) {
-			logger.warn("REST-API for deleting versions on dedicated server NOT available");
+			LOGGER.warn("REST-API for deleting versions on dedicated server NOT available");
 			return null;
 		}
-		
+
 		SynchronizerResult results = confluenceClient.getContentVersions(pageId);
 
 		ObjectMapper mapper = new ObjectMapper();
@@ -488,7 +524,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 			}
 
 		} catch (IOException e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 
 		Collections.sort(numbers);
@@ -676,7 +712,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 			wi = setData(pairs, type, indexId);
 			wi.setTitle(p.getTitle());
 
-			logger.debug("Load: code=" + page.getCode() + ", message=" + page.getMessage() + ", source="
+			LOGGER.debug("Load: code=" + page.getCode() + ", message=" + page.getMessage() + ", source="
 					+ page.getSource() + ", title=" + p.getTitle());
 
 		} catch (JsonParseException e) {
@@ -738,7 +774,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 				} else if (WorkitemParameter.STATUS.has(key)) {
 					activity.setStatus(value.toString());
 				} else {
-					logger.debug("Value from parser not set: key=" + key + ", value=" + pairs.get(key));
+					LOGGER.debug("Value from parser not set: key=" + key + ", value=" + pairs.get(key));
 				}
 			}
 
@@ -759,7 +795,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 				} else if (WorkitemParameter.MODIFIED.has(key)) {
 					person.setModified(value.toString());
 				} else if (WorkitemParameter.IMAGE.has(key)) {
-					person.setAvatar(((ImageParserElement)value).toString());
+					person.setAvatar(((ImageParserElement) value).toString());
 				} else if (WorkitemParameter.IGNORE.has(key)) {
 					// Ignore, because its inner table
 					// Do explicit nothing
@@ -782,7 +818,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 						Element elem = tpe.getElement();
 						if (elem != null) {
 							if (!elem.parent().parent().parent().tagName().equalsIgnoreCase("table")) {
-								logger.debug("Value from parser not set: key=" + key + ", value=" + pairs.get(key));
+								LOGGER.debug("Value from parser not set: key=" + key + ", value=" + pairs.get(key));
 							}
 						}
 					}
@@ -823,7 +859,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 				} else if (WorkitemParameter.STATUS.has(key)) {
 					rolegroup.setStatus(value.toString());
 				} else {
-					logger.debug("Value from parser not set: key=" + key + ", value=" + pairs.get(key));
+					LOGGER.debug("Value from parser not set: key=" + key + ", value=" + pairs.get(key));
 				}
 			}
 
@@ -872,7 +908,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 				} else if (WorkitemParameter.PERSONS.has(key)) {
 					role.setPersonIdentifiers((ListParserElement) value);
 				} else {
-					logger.debug("Value from parser not set: key=" + key + ", value=" + pairs.get(key));
+					LOGGER.debug("Value from parser not set: key=" + key + ", value=" + pairs.get(key));
 				}
 			}
 
@@ -923,10 +959,10 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		ArrayList<String> fileIndex = new ArrayList<String>();
 
 		try {
-			logger.info("Loading Index '" + workitemType.getName() + "' from system '"
+			LOGGER.info("Loading Index '" + workitemType.getName() + "' from system '"
 					+ confluenceClient.getSysteminfo().getContent() + "'");
 		} catch (Exception e) {
-			logger.info("Loading Index '" + workitemType.getName() + "' from system '" + URLCONFLUENCE + "'");
+			LOGGER.info("Loading Index '" + workitemType.getName() + "' from system '" + URLCONFLUENCE + "'");
 		}
 
 		// To Avoid loading of wrong labeld pages (and simplify writing) the loading of
@@ -938,7 +974,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 				.search("space = \"" + circleadSpace + "\" AND label = \"" + type + "\"");
 
 		if (results.getContent() == null) {
-			logger.error("Error occured: Loading Index returns no content in result-set.");
+			LOGGER.error("Error occured: Loading Index returns no content in result-set.");
 		}
 
 		ObjectMapper mapper = new ObjectMapper();
@@ -955,7 +991,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 					ht.setTitle(new String(result.getContent().getTitle().trim().getBytes(), "UTF-8"));
 					ht.setUrl(confluenceClient.getRestPrefix() + "content/" + type + "/" + result.getContent().getId());
 					fileIndex.add(ht.toString());
-					logger.debug("Found HowTo '" + ht.getTitle() + "' with '" + this.toString() + "'");
+					LOGGER.debug("Found HowTo '" + ht.getTitle() + "' with '" + this.toString() + "'");
 				} else if (REPORT.isEquals(type)) {
 					Report ht = new Report();
 					ht.setSynchronizer(this.toString());
@@ -964,7 +1000,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 					ht.setTitle(new String(result.getContent().getTitle().trim().getBytes(), "UTF-8"));
 					ht.setUrl(confluenceClient.getRestPrefix() + "content/" + type + "/" + result.getContent().getId());
 					fileIndex.add(ht.toString());
-					logger.debug("Found Report '" + ht.getTitle() + "' with '" + this.toString() + "'");
+					LOGGER.debug("Found Report '" + ht.getTitle() + "' with '" + this.toString() + "'");
 				} else {
 					fileIndex.add(URLCONFLUENCE + confluenceClient.getRestPrefix() + "content/" + type + "/"
 							+ result.getContent().getId());
@@ -972,11 +1008,11 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 //				}
 			}
 		} catch (JsonParseException e) {
-			logger.error("Error loading " + type + " from confluence", e);
+			LOGGER.error("Error loading " + type + " from confluence", e);
 		} catch (JsonMappingException e) {
-			logger.error("Error loading " + type + " from confluence", e);
+			LOGGER.error("Error loading " + type + " from confluence", e);
 		} catch (IOException e) {
-			logger.error("Error loading " + type + " from confluence", e);
+			LOGGER.error("Error loading " + type + " from confluence", e);
 		}
 
 		return fileIndex;
