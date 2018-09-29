@@ -38,6 +38,7 @@ import org.rogatio.circlead.control.synchronizer.atlassian.content.Page;
 import org.rogatio.circlead.control.synchronizer.atlassian.content.Version;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.HeadTableParserElement;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.IParserElement;
+import org.rogatio.circlead.control.synchronizer.atlassian.parser.ImageParserElement;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.ListParserElement;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.PairTableParserElement;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
@@ -58,6 +59,7 @@ import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.AtlassianRendererEngine;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
+import org.rogatio.circlead.view.IWorkitemRenderer;
 import org.rogatio.circlead.view.report.IReport;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -266,10 +268,10 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		// Set actual used synchronizer to singleton. Is needed for correct finding and
 		// setting of id
 		SynchronizerFactory.getInstance().setActual(this);
-
+		
 		// Create Confluence-POJO-Object from workitem
 		Page page = Parser.createPage(workitem, circleadSpace, this);
-
+		
 		logger.info("Update '" + URLCONFLUENCE + confluenceClient.getRestPrefix() + "content/" + workitem.getId(this) + "'");
 
 		// Increment version-number if version and page already exists
@@ -648,6 +650,8 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 								parserElement = new ListParserElement(unparsedValue);
 							} else if (WorkitemParameter.SUBACTIVITY.has(key)) {
 								parserElement = new HeadTableParserElement(unparsedValue);
+							} else if (WorkitemParameter.IMAGE.has(key)) {
+								parserElement = new ImageParserElement(unparsedValue);
 							} else if (WorkitemParameter.CONTACTS.has(key)) {
 								parserElement = new PairTableParserElement(unparsedValue);
 							} else if (WorkitemParameter.OPPORTUNITIES.has(key)) {
@@ -754,6 +758,8 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 					person.setCreated(value.toString());
 				} else if (WorkitemParameter.MODIFIED.has(key)) {
 					person.setModified(value.toString());
+				} else if (WorkitemParameter.IMAGE.has(key)) {
+					person.setAvatar(((ImageParserElement)value).toString());
 				} else if (WorkitemParameter.IGNORE.has(key)) {
 					// Ignore, because its inner table
 					// Do explicit nothing

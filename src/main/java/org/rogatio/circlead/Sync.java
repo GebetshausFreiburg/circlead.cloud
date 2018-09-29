@@ -19,6 +19,7 @@ import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.view.report.OverviewReport;
 import org.rogatio.circlead.view.report.PersonListReport;
 import org.rogatio.circlead.view.report.ReworkReport;
+import org.rogatio.circlead.view.report.RoleIssueReport;
 import org.rogatio.circlead.view.report.RolegroupReport;
 import org.rogatio.circlead.view.report.ValidationReport;
 
@@ -28,6 +29,13 @@ import org.rogatio.circlead.view.report.ValidationReport;
 public class Sync {
 	// TODO Velocity als Render-Changer nutzen
 	// TODO Activity-Process-Builder erzeugen
+
+	public static final boolean REPORTS = true;
+	public static final boolean HOWTOS = true;
+	public static final boolean ROLES = true;
+	public static final boolean ROLEGROUPS = true;
+	public static final boolean PERSONS = true;
+	public static final boolean ACTIVITIES = true;
 
 	/** The Constant logger. */
 	final static Logger logger = LogManager.getLogger(Sync.class);
@@ -58,14 +66,27 @@ public class Sync {
 		fsynchronizer.deleteAll();
 
 		/* Loads all data (from confluence, because the folders are emtpy) */
-		repository.loadRoles();
-		repository.loadRolegroups();
-		repository.loadPersons();
-		repository.loadActivities();
+		if (ROLES) {
+			repository.loadRoles();
+		}
+		if (ROLEGROUPS) {
+			repository.loadRolegroups();
+		}
+		if (PERSONS) {
+			repository.loadPersons();
+		}
+		if (ACTIVITIES) {
+			repository.loadActivities();
+		}
 
 		/* Loads the index of howtos and reports from both interfaces */
-		repository.loadIndexHowTos();
-		repository.loadIndexReports();
+		if (HOWTOS) {
+			repository.loadIndexHowTos();
+		}
+
+		if (REPORTS) {
+			repository.loadIndexReports();
+		}
 
 		/*
 		 * Re-Render loaded data back to set interfaces. Update pages in confluence and
@@ -73,21 +94,24 @@ public class Sync {
 		 */
 		results = repository.updateWorkitems();
 
-		/* Add report-handler */
-		if (repository.getRolegroups().size() > 0) {
-			List<Rolegroup> rolegroups = repository.getRolegroups();
-			for (Rolegroup rolegroup : rolegroups) {
-				repository.addReport(new RolegroupReport(rolegroup));
+		if (REPORTS) {
+			/* Add report-handler */
+			if (repository.getRolegroups().size() > 0) {
+				List<Rolegroup> rolegroups = repository.getRolegroups();
+				for (Rolegroup rolegroup : rolegroups) {
+					repository.addReport(new RolegroupReport(rolegroup));
+				}
 			}
-		}
-		repository.addReport(new OverviewReport());
-		repository.addReport(new ValidationReport());
-		repository.addReport(new ReworkReport());
-		repository.addReport(new PersonListReport());
+			repository.addReport(new OverviewReport());
+			repository.addReport(new ValidationReport());
+			repository.addReport(new ReworkReport());
+			repository.addReport(new PersonListReport());
+			// repository.addReport(new RoleIssueReport());
 
-		/* Rewrite Reports */
-		// repository.addReports();
-		results = repository.updateReports();
+			/* Rewrite Reports */
+			// repository.addReports();
+			results = repository.updateReports();
+		}
 	}
 
 }

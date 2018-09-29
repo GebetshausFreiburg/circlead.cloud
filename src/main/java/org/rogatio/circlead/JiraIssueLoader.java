@@ -7,6 +7,7 @@ import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.USER;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
@@ -68,39 +69,46 @@ public class JiraIssueLoader {
 		}
 
 		Vector<String> keys = new Vector<String>(issueMap.keySet());
-		/*
-		 * for (String key : keys) { logger.info("Label: " + key); List<Issue> list =
-		 * issueMap.get(key); for (Issue issue : list) { logger.info("   Issue '" +
-		 * issue.getKey() + "' (type=" + issue.getFields().getIssuetype().getName() +
-		 * ", id=" + issue.getId() + ") " + issue.getFields().getSummary()); } }
-		 */
 
+		Collections.sort(keys);
+		
+		for (String key : keys) {
+			boolean foundRole = false;
+			if (key.startsWith("Role:") || key.startsWith("Rolle:")) {
+				foundRole = true;
+			}
 
-		/*logger.info("Label: None");
+			if (foundRole) {
+				logger.info("Label: " + key + " (" + issueMap.get(key).size() + ")");
+				List<Issue> list = issueMap.get(key);
+				for (Issue issue : list) {
+					logger.info("   Issue '" + issue.getKey() + "' (type=" + issue.getFields().getIssuetype().getName()
+							+ ", id=" + issue.getId() + ") " + issue.getFields().getSummary());
+				}
+			}
+		}
+
+		logger.info("Label: None");
 		for (Issue issue : issuesWithoutLabels) {
 			logger.info("   Issue '" + issue.getKey() + "' (type=" + issue.getFields().getIssuetype().getName()
 					+ ", id=" + issue.getId() + ") " + issue.getFields().getSummary());
-		}*/
-		
-		logger.info("Vorgänge ohne Rollen-Label");
-		for (Issue issue : issues) {
-			boolean foundRole = false;
-			
-			List<String> labels = issue.getFields().getLabels();
-			if (ObjectUtil.isListNotNullAndEmpty(labels)) {
-				for (String label : labels) {
-					if (label.startsWith("Role:") || label.startsWith("Rolle:")) {
-						foundRole = true;
-					}
-				}				
-			}
-			
-			if (!foundRole) {
-				logger.info("   Issue '" + issue.getKey() + "' (type=" + issue.getFields().getIssuetype().getName()
-						+ ", id=" + issue.getId() + ") " + issue.getFields().getSummary());
-			}
-
 		}
+
+		/*
+		 * logger.info("Vorgänge ohne Rollen-Label"); for (Issue issue : issues) {
+		 * boolean foundRole = false;
+		 * 
+		 * List<String> labels = issue.getFields().getLabels(); if
+		 * (ObjectUtil.isListNotNullAndEmpty(labels)) { for (String label : labels) { if
+		 * (label.startsWith("Role:") || label.startsWith("Rolle:")) { foundRole = true;
+		 * } } }
+		 * 
+		 * if (!foundRole) { logger.info("   Issue '" + issue.getKey() + "' (type=" +
+		 * issue.getFields().getIssuetype().getName() + ", id=" + issue.getId() + ") " +
+		 * issue.getFields().getSummary()); }
+		 * 
+		 * }
+		 */
 
 	}
 

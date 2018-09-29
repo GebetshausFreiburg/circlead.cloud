@@ -3,6 +3,7 @@ package org.rogatio.circlead.model;
 public enum Parameter {
 
 	ABBREVIATION("Abkürzung"),
+	IMAGE("Bild"),
 	ABBREVIATION2("Kürzel"),
 	ROLEPERSONS("Rollenträger"),
 	TASKS("Aufgaben"),

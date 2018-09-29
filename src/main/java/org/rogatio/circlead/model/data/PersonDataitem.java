@@ -25,6 +25,8 @@ public class PersonDataitem extends DefaultDataitem {
 
 	/** The secondname. */
 	private String secondname;
+	
+	private String avatar;
 
 	/** The familyname. */
 	private String familyname;
@@ -97,6 +99,14 @@ public class PersonDataitem extends DefaultDataitem {
 	 */
 	public String getSecondname() {
 		return secondname;
+	}
+	
+	public String getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
 	}
 
 	/**

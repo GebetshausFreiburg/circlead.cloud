@@ -10,6 +10,7 @@ package org.rogatio.circlead.control.synchronizer.atlassian.parser;
 
 import static org.rogatio.circlead.model.Parameter.ABBREVIATION;
 import static org.rogatio.circlead.model.Parameter.ABBREVIATION2;
+import static org.rogatio.circlead.model.Parameter.IMAGE;
 import static org.rogatio.circlead.model.Parameter.ACTIVITIES;
 import static org.rogatio.circlead.model.Parameter.ACTIVITY;
 import static org.rogatio.circlead.model.Parameter.ACTIVITYID;
@@ -67,6 +68,7 @@ import org.rogatio.circlead.control.synchronizer.atlassian.content.Page;
 import org.rogatio.circlead.control.synchronizer.atlassian.content.Space;
 import org.rogatio.circlead.control.synchronizer.atlassian.content.Storage;
 import org.rogatio.circlead.control.synchronizer.atlassian.search.Results;
+import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.data.ActivityDataitem;
 import org.rogatio.circlead.model.data.ContactDataitem;
@@ -151,7 +153,7 @@ public class Parser {
 	 * Load attached images from page "BPMN". Images are converted from svg to png.
 	 * 
 	 * @see https://github.com/bpmn-io
-	 *  
+	 * 
 	 * @param page
 	 * @param imageFile
 	 * @param size
@@ -164,6 +166,11 @@ public class Parser {
 				+ "\" ri:version-at-save=\"1\"><ri:page ri:content-title=\"" + page + "\" ri:version-at-save=\""
 				+ version + "\" /></ri:attachment></ac:image></p></div>";
 		return html;
+	}
+
+	public static String addImage(String filename, int size, int version) {
+		return "<ac:image ac:height=\"" + size + "\"><ri:attachment ri:filename=\"" + filename
+				+ "\" ri:version-at-save=\"" + version + "\" /></ac:image>";
 	}
 
 	/**
@@ -210,8 +217,11 @@ public class Parser {
 			if (StringUtil.isNotNullAndNotEmpty(activity.getBpmn())) {
 				if (activatedLinks) {
 					if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
-					tr.appendElement("td").attr("colspan", "1")
-							.append(addImageFromOtherPage("BPMN", activity.getBpmn() + ".png", 32, 1));
+						tr.appendElement("td").attr("colspan", "1")
+								.append(addImageFromOtherPage("BPMN", activity.getBpmn() + ".png", 32, 1));
+					} else if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
+						tr.appendElement("td").attr("colspan", "1").append("<img src=\"..\\data\\images\\bpmn\\"+activity.getBpmn()+".png\" alt=\""+activity.getBpmn()+"\" width=\"32px\">");
+						
 					} else {
 						tr.appendElement("td").attr("colspan", "1").appendText(activity.getBpmn());
 					}
@@ -347,7 +357,8 @@ public class Parser {
 			addCommaList(CONSULTANT.toString(), d.getConsultant(), table);
 			addCommaList(INFORMED.toString(), d.getInformed(), table);
 			addCommaList(HOWTOS.toString(), d.getHowtos(), table);
-			addDataPair(SUBACTIVITIES.toString(), Parser.createHeaderTable(d.getSubactivities(), synchronizer, false), table);
+			addDataPair(SUBACTIVITIES.toString(), Parser.createHeaderTable(d.getSubactivities(), synchronizer, false),
+					table);
 			addDataPair(STATUS.toString(), Parser.getStatus(d.getStatus()), table);
 		}
 
@@ -370,6 +381,14 @@ public class Parser {
 			PersonDataitem d = w.getDataitem();
 			addDataPair(ID.toString(), d.getIds(), table);
 			addDataPair(NAME.toString(), d.getFullname(), table);
+			// addDataPair(IMAGE.toString(), Parser.addImage(d.getAvatar(), 150, 1), table);
+
+			if (StringUtil.isNotNullAndNotEmpty(d.getAvatar())) {
+				Element tr = table.appendElement("tr");
+				tr.appendElement("th").appendText(IMAGE.toString());
+				tr.appendElement("td").append(Parser.addImage(d.getAvatar(), 100, 1));
+			}
+
 			addDataPair(CONTACTS2.toString(), Parser.getContacts(d.getContacts()), table);
 			addDataPair(STATUS.toString(), Parser.getStatus(d.getStatus()), table);
 			addDataPair(DATA.toString(), Parser.getDataTable(d.getData()), table);

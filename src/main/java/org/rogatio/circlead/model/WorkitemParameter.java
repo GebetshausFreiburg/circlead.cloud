@@ -100,6 +100,8 @@ public enum WorkitemParameter {
 	/** The informed. */
 	INFORMED(Parameter.INFORMED, "Informierter", "Informed", "Informierte"),
 
+	IMAGE(Parameter.IMAGE, "Image", "User", "Avatar"),
+	
 	IGNORE(Parameter.ADRESS, "Typ", "Subtype", "Mobil", "Mail", "Festnetz"),
 
 	/** The roles. */

@@ -17,13 +17,17 @@ import java.util.Map;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
+import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.PairTableParserElement;
+import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
+import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
 import org.rogatio.circlead.model.Parameter;
 import org.rogatio.circlead.model.data.ContactDataitem;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.PersonDataitem;
+import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.IWorkitemRenderer;
 
@@ -42,8 +46,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	/**
 	 * Instantiates a new person.
 	 *
-	 * @param dataitem
-	 *            the dataitem
+	 * @param dataitem the dataitem
 	 */
 	public Person(IDataitem dataitem) {
 		super(dataitem);
@@ -74,6 +77,14 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		return sb.toString().trim();
 	}
 
+	public String getAvatar() {
+		return this.getDataitem().getAvatar();
+	}
+
+	public void setAvatar(String avatar) {
+		this.getDataitem().setAvatar(avatar);
+	}
+
 	/**
 	 * Gets the fullname.
 	 *
@@ -86,8 +97,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	/**
 	 * Sets the fullname.
 	 *
-	 * @param name
-	 *            the new fullname
+	 * @param name the new fullname
 	 */
 	public void setFullname(String name) {
 		this.getDataitem().setFullname(name);
@@ -96,8 +106,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	/**
 	 * Sets the contacts.
 	 *
-	 * @param contacts
-	 *            the new contacts
+	 * @param contacts the new contacts
 	 */
 	public void setContacts(List<ContactDataitem> contacts) {
 		this.getDataitem().setContacts(contacts);
@@ -130,8 +139,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	/**
 	 * Sets the data.
 	 *
-	 * @param contactTables
-	 *            the new data
+	 * @param contactTables the new data
 	 */
 	public void setData(PairTableParserElement contactTables) {
 		this.getDataitem().setData(contactTables.getData());
@@ -149,8 +157,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	/**
 	 * Sets the contacts.
 	 *
-	 * @param contactTables
-	 *            the new contacts
+	 * @param contactTables the new contacts
 	 */
 	public void setContacts(PairTableParserElement contactTables) {
 		this.getDataitem().setContacts(contactTables.getContacts());
@@ -166,6 +173,14 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 
 		Element element = new Element("p");
+
+		if (StringUtil.isNotNullAndNotEmpty(this.getAvatar())) {
+			if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
+				element.append(Parser.addImage(getAvatar(), 250, 1));
+			} else if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
+				element.append("<img src=\"..\\data\\images\\profile\\"+getAvatar()+"\" alt=\""+this.getFullname()+"\" width=\"250px\">");
+			}
+		}
 
 		renderer.addH2(element, CONTACTS.toString());
 
@@ -201,8 +216,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	/**
 	 * Gets the data value.
 	 *
-	 * @param dataKey
-	 *            the data key
+	 * @param dataKey the data key
 	 * @return the data value
 	 */
 	public String getDataValue(String dataKey) {
@@ -241,8 +255,9 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		}
 
 		/*
-		 * if (!this.hasAbbreviation()) { ValidationMessage m = new ValidationMessage(this); m.warning("No abbreviation added", "Role '" + this.getTitle() +
-		 * "' has no abbreviation"); messages.add(m); }
+		 * if (!this.hasAbbreviation()) { ValidationMessage m = new
+		 * ValidationMessage(this); m.warning("No abbreviation added", "Role '" +
+		 * this.getTitle() + "' has no abbreviation"); messages.add(m); }
 		 */
 		return messages;
 	}
