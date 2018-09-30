@@ -531,7 +531,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 					
 					if (StringUtil.isNotNullAndNotEmpty(subR)) {
 						if (StringUtil.isNotNullAndNotEmpty(actR)) {
-							if (subR.equals(actR)) {
+							if (!subR.equals(actR)) {
 								ValidationMessage m = new ValidationMessage(this);
 								m.error("Responsible unequal", "Activity '" + a.getTitle()
 										+ "' has unequal responsible '" + subR + "'!='" + actR + "'");

@@ -21,7 +21,6 @@ import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ReworkReport.
  */
@@ -59,8 +58,6 @@ public class ReworkReport extends DefaultReport {
 		roles.addAll(Repository.getInstance().getRoles(WorkitemStatusParameter.INPROGRESS));
 		roles.addAll(Repository.getInstance().getRoles(WorkitemStatusParameter.TEMPORARY));
 		renderer.addWorkitemTable(element, ObjectUtil.castList(IWorkitem.class, roles));
-
-		//System.out.println(element);
 		
 		return element;
 	}

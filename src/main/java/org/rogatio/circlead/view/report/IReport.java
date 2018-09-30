@@ -10,7 +10,6 @@ package org.rogatio.circlead.view.report;
 
 import org.rogatio.circlead.view.IWorkitemRenderer;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface IReport.
  */

@@ -18,7 +18,6 @@ import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class OverviewReport.
  */

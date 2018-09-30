@@ -20,7 +20,6 @@ import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class RolegroupReport shows for every rolegroup the included data with all coresponding roles. Pagebreak is included after every item.
  */

@@ -161,6 +161,18 @@ public class Parser {
 	 * @see https://github.com/bpmn-io
 	 */
 	public static String addImageFromOtherPage(String page, String imageFile, int size, int version) {
+//		if (imageFile==null) {
+//			return "";
+//		}
+//		if (page==null) {
+//			return "";
+//		}
+//		if (version==0) {
+//			return "";
+//		}
+//		if (size<0) {
+//			return "";
+//		}
 		String html = "<div class=\"content-wrapper\">" + "<p><ac:image ac:thumbnail=\"true\" ac:width=\"" + size
 				+ "\"><ri:attachment ri:filename=\"" + imageFile
 				+ "\" ri:version-at-save=\"1\"><ri:page ri:content-title=\"" + page + "\" ri:version-at-save=\""
