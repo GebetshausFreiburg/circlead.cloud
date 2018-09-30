@@ -10,6 +10,7 @@ package org.rogatio.circlead.model;
 
 import org.rogatio.circlead.model.work.IWorkitem;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Enum WorkitemType is a little helper for building io.logic in the synchronizer. Could also be used by instanceof, but for a easier handling the enum is used
  */

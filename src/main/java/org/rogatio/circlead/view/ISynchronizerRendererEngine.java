@@ -21,6 +21,7 @@ import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Interface ISynchronizerRenderer.
  */

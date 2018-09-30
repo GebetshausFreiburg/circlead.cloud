@@ -11,6 +11,7 @@ package org.rogatio.circlead.view;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Interface IRenderer allows rendering for all workitems.
  */

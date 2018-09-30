@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Enum WorkitemStatusParameter allows different status values which are normalized to a given state and color.
  */
