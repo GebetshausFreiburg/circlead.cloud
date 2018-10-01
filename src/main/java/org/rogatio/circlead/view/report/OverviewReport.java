@@ -50,7 +50,6 @@ public class OverviewReport extends DefaultReport {
 		}
 
 		if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
-			
 			element.append("<p style=\"page-break-before: always\">");
 
 			if (Repository.getInstance().getRolegroups().size() > 0) {

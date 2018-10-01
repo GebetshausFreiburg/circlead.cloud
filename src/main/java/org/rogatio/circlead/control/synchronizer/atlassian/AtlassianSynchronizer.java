@@ -88,7 +88,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 
 	/** The personspage. */
 	private final String PERSONSPAGE = "Persons";
-
+	
 	/** The Constant LOGGER. */
 	private final static Logger LOGGER = LogManager.getLogger(AtlassianSynchronizer.class);
 

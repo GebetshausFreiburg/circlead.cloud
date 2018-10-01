@@ -20,6 +20,7 @@ import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.view.report.OverviewReport;
 import org.rogatio.circlead.view.report.PersonListReport;
 import org.rogatio.circlead.view.report.ReworkReport;
+import org.rogatio.circlead.view.report.RoleHolderReport;
 import org.rogatio.circlead.view.report.RolegroupReport;
 import org.rogatio.circlead.view.report.RolegroupSummaryReport;
 import org.rogatio.circlead.view.report.ValidationReport;
@@ -114,6 +115,7 @@ public class Sync {
 					repository.addReport(new RolegroupReport(rolegroup));
 				}
 			}
+			repository.addReport(new RoleHolderReport());
 			repository.addReport(new OverviewReport());
 			repository.addReport(new ValidationReport());
 			repository.addReport(new ReworkReport());
