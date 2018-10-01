@@ -279,7 +279,7 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 				String skill = role.getDataitem().getSkill(identifier);
 				Element s = Parser.getStatus(skill+"%");
 				li.append("&nbsp;");
-				s.appendTo(li);				
+				s.appendTo(li);
 			}
 		}
 
