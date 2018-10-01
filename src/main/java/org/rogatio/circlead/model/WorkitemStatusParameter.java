@@ -17,7 +17,17 @@ import java.util.List;
  * The Enum WorkitemStatusParameter allows different status values which are normalized to a given state and color.
  */
 public enum WorkitemStatusParameter {
-
+	/** Kennt das Thema nicht*/
+	UNSKILLED("Grey", "Unwissender", "Untrainiert", "Untrainierter", "Unskilled", "0%"),
+	/** Kann die Aufgabenstellung nachvollziehen, aber noch nicht in allen Teilen umsetzen*/
+	STARTER("Red", "Anfänger", "Starter", "25%"),
+	/** Kann die Aufgabe in Teile und mit Hilfe umsetzen*/
+	BEGINNER("Yellow", "Beginner", "Beginner", "50%"),
+	/** Kann die Aufgabe vollständig und selbständig umsetzen*/
+	EXPERT("Green", "Experte", "Expert", "75%"),
+	/** Kann Andere anleiten*/
+	SKILLED("Blue", "Unterstützer", "Skilled", "100%"),
+	
 	/** The active. */
 	ACTIVE("Green", "Aktiv", "Active"),
 	

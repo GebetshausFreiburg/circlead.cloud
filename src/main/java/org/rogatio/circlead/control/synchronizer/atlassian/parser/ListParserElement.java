@@ -17,7 +17,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.rogatio.circlead.util.StringUtil;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ListParserElement.
  */

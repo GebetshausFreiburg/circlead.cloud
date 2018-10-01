@@ -187,8 +187,11 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 				}
 				if (role.getDataitem().hasSkill(person.getFullname())) {
 					String skill = role.getDataitem().getSkill(person.getFullname());
+//					li.append("&nbsp;");
+//					li.appendText("" + skill + "%");
+					Element s = Parser.getStatus(skill+"%");
 					li.append("&nbsp;");
-					li.appendText("" + skill + "%");
+					s.appendTo(li);
 				}
 			}
 		}
@@ -274,8 +277,9 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 			}
 			if (role.getDataitem().hasSkill(identifier)) {
 				String skill = role.getDataitem().getSkill(identifier);
+				Element s = Parser.getStatus(skill+"%");
 				li.append("&nbsp;");
-				li.appendText("" + skill + "%");
+				s.appendTo(li);				
 			}
 		}
 
@@ -321,8 +325,12 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 			}
 			if (role.getDataitem().hasSkill(identifier)) {
 				String skill = role.getDataitem().getSkill(identifier);
+//				li.append("&nbsp;");
+//				li.appendText("" + skill + "%");
+				
+				Element s = Parser.getStatus(skill+"%");
 				li.append("&nbsp;");
-				li.appendText("" + skill + "%");
+				s.appendTo(li);
 			}
 		}
 	}

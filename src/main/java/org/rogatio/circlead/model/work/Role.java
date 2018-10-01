@@ -485,7 +485,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 				ga.add(activity);
 			}
 		}
-		
+
 		if (ObjectUtil.isListNotNullAndEmpty(ga)) {
 			renderer.addActivityList(element, ga);
 		}
@@ -565,11 +565,11 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 
 		List<String> alist = new ArrayList<String>();
 
-		if (ObjectUtil.isListNotNullAndEmpty(this.getActivities())) {
-			if (ObjectUtil.isListNotNullAndEmpty(a)) {
-				for (String actRole : getActivities()) {
-					boolean found = false;
+		if (ObjectUtil.isListNotNullAndEmpty(this.getActivities()) || ObjectUtil.isListNotNullAndEmpty(a)) {
+			for (String actRole : getActivities()) {
+				boolean found = false;
 
+				if (map != null) {
 					for (Activity activity : map.keySet()) {
 						List<ActivityDataitem> subactivities = map.get(activity);
 						if (ObjectUtil.isListNotNullAndEmpty(subactivities)) {
@@ -580,20 +580,26 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 							}
 						}
 					}
+				}
 
+				if (ObjectUtil.isListNotNullAndEmpty(a)) {
 					for (Activity activity : a) {
 						if (activity.getTitle().equals(actRole)) {
 							found = true;
 						}
 					}
-					if (!found) {
-						if (!alist.contains(actRole)) {
-							alist.add(actRole);
-						}
+				}
+
+				if (!found) {
+					if (!alist.contains(actRole)) {
+						alist.add(actRole);
 					}
 				}
 			}
+		} else {
+			return this.getActivities();
 		}
+
 		return alist;
 	}
 
