@@ -212,8 +212,13 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 					}
 					if (role.getDataitem().hasSkill(person.getFullname())) {
 						String skill = role.getDataitem().getSkill(person.getFullname());
-						li.append("&nbsp;");
-						li.appendText("" + skill + "%");
+//						li.append("&nbsp;");
+//						li.appendText("" + skill + "%");
+						WorkitemStatusParameter status = WorkitemStatusParameter.get(skill+"%");
+						if (status != null) {
+							li.append("&nbsp;").appendElement("div").attr("id", "status" + status.getColor())
+									.appendText(status.getName());
+						}
 					}
 				}
 			}
@@ -281,8 +286,13 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 			}
 			if (role.getDataitem().hasSkill(identifier)) {
 				String skill = role.getDataitem().getSkill(identifier);
-				li.append("&nbsp;");
-				li.appendText("" + skill + "%");
+//				li.append("&nbsp;");
+//				li.appendText("" + skill + "%");
+				WorkitemStatusParameter status = WorkitemStatusParameter.get(skill+"%");
+				if (status != null) {
+					li.append("&nbsp;").appendElement("div").attr("id", "status" + status.getColor())
+							.appendText(status.getName());
+				}
 			}
 		}
 
@@ -343,8 +353,13 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 			}
 			if (role.getDataitem().hasSkill(identifier)) {
 				String skill = role.getDataitem().getSkill(identifier);
-				li.append("&nbsp;");
-				li.appendText("" + skill + "%");
+//				li.append("&nbsp;");
+//				li.appendText("" + skill + "%");
+				WorkitemStatusParameter status = WorkitemStatusParameter.get(skill+"%");
+				if (status != null) {
+					li.append("&nbsp;").appendElement("div").attr("id", "status" + status.getColor())
+							.appendText(status.getName());
+				}
 			}
 		}
 

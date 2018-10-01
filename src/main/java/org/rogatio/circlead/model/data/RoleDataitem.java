@@ -533,7 +533,6 @@ public class RoleDataitem extends DefaultDataitem {
 					if (status != null) {
 						value = status.getName();
 						representations.put(fullname, value.toLowerCase());
-
 					}
 				}
 
@@ -542,7 +541,7 @@ public class RoleDataitem extends DefaultDataitem {
 				list.add(person);
 			}
 		}
-
+		
 		this.persons = list;
 
 	}

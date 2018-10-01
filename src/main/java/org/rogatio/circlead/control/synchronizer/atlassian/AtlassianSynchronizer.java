@@ -403,17 +403,15 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	 *
 	 * @param type the type
 	 */
-	public boolean deleteVersions(WorkitemType type) {
+	public void deleteVersions(WorkitemType type) {
 		try {
 			List<IWorkitem> items = load(type);
 			for (IWorkitem iWorkitem : items) {
-				boolean ok = deleteVersions(Integer.parseInt(iWorkitem.getId(this)));
-				return ok;
+				deleteVersions(Integer.parseInt(iWorkitem.getId(this)));
 			}
 		} catch (SynchronizerException e) {
 			LOGGER.error(e);
 		}
-		return false;
 	}
 
 	/**
@@ -518,11 +516,15 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		try {
 			org.rogatio.circlead.control.synchronizer.atlassian.version.Results resultsObject = mapper.readValue(
 					results.getContent(), org.rogatio.circlead.control.synchronizer.atlassian.version.Results.class);
-			List<org.rogatio.circlead.control.synchronizer.atlassian.version.Result> res = resultsObject.getResults();
-			for (org.rogatio.circlead.control.synchronizer.atlassian.version.Result result : res) {
-				numbers.add(result.getNumber());
+			if (resultsObject != null) {
+				List<org.rogatio.circlead.control.synchronizer.atlassian.version.Result> res = resultsObject
+						.getResults();
+				for (org.rogatio.circlead.control.synchronizer.atlassian.version.Result result : res) {
+					if (result != null) {
+						numbers.add(result.getNumber());
+					}
+				}
 			}
-
 		} catch (IOException e) {
 			LOGGER.error(e);
 		}

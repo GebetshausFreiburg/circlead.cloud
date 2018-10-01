@@ -10,7 +10,6 @@ package org.rogatio.circlead.control.synchronizer.atlassian.parser;
 
 import org.jsoup.nodes.Element;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class TextParserElement.
  */

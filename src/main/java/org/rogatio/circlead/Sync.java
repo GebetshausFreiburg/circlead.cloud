@@ -122,7 +122,7 @@ public class Sync {
 			// repository.addReport(new RoleIssueReport());
 
 			/* Rewrite Reports */
-			//repository.addReports();
+			repository.addReports();
 			results = repository.updateReports();
 		}
 	}
