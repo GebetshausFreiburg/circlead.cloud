@@ -9,6 +9,7 @@
 package org.rogatio.circlead.view.report;
 
 import java.util.ArrayList;
+
 import java.util.List;
 
 import org.jsoup.nodes.Element;
