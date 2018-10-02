@@ -27,11 +27,13 @@ import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.data.ActivityDataitem;
 import org.rogatio.circlead.model.data.HowTo;
 import org.rogatio.circlead.model.data.Report;
+import org.rogatio.circlead.model.data.TeamEntry;
 import org.rogatio.circlead.model.work.Activity;
 import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
+import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.report.IReport;
@@ -225,6 +227,12 @@ public final class Repository {
 		return ObjectUtil.castList(Role.class, roles);
 	}
 
+	public List<Team> loadTeams() {
+		List<IWorkitem> teams = connector.load(WorkitemType.TEAM);
+		this.addItems(teams);
+		return ObjectUtil.castList(Team.class, teams);
+	}
+
 	/**
 	 * Load activities.
 	 *
@@ -379,6 +387,17 @@ public final class Repository {
 			}
 		}
 		return abbr;
+	}
+
+	public List<Team> getTeams() {
+		List<Team> teams = new ArrayList<Team>();
+		for (IWorkitem workitem : workitems) {
+			if (WorkitemType.TEAM.isTypeOf(workitem)) {
+				teams.add((Team) workitem);
+			}
+		}
+		Collections.sort(teams);
+		return teams;
 	}
 
 	/**
@@ -641,6 +660,48 @@ public final class Repository {
 						if (synonym.equals(identifier)) {
 							return role;
 						}
+					}
+				}
+
+			}
+		}
+
+		return null;
+	}
+
+	public List<Team> getTeamsWithMember(Person person) {
+		List<Team> list = new ArrayList<Team>();
+
+		for (Team team : this.getTeams()) {
+			List<TeamEntry> entries = team.getTeamEntries();
+			if (ObjectUtil.isListNotNullAndEmpty(entries)) {
+				for (TeamEntry entry : entries) {
+					if (entry.getPersonIdentifiers()!=null) {
+						if (entry.getPersonIdentifiers().contains(person.getFullname())) {
+							if (!list.contains(team)) {
+								list.add(team);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return list;
+	}
+
+	public Team getTeam(String identifier) {
+		for (IWorkitem workitem : workitems) {
+			if (WorkitemType.TEAM.isTypeOf(workitem)) {
+				Team team = (Team) workitem;
+
+				if (team.containsId(identifier)) {
+					return team;
+				}
+
+				if (identifier != null) {
+					if (team.getTitle().equals(identifier.trim())) {
+						return team;
 					}
 				}
 

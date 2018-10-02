@@ -24,6 +24,8 @@ public enum WorkitemParameter {
 	/** The howtos. */
 	HOWTOS(Parameter.HOWTOS, "Arbeitsanweisungen", "Anleitungen", "Erläuterungen", "Knowledgebase"),
 
+	TEAMROLES(Parameter.TEAMROLES, "Teamroles", "Team"),
+	
 	/** The subactivity. */
 	SUBACTIVITY(Parameter.SUBACTIVITIES, "Subactivities"),
 

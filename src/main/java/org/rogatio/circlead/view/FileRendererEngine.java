@@ -24,6 +24,7 @@ import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
+import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.ObjectUtil;
 
 // TODO: Auto-generated Javadoc
@@ -510,6 +511,47 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		}
 	}
 
+	public void addTeamItem(Element element, String description, String content) {
+		Team r = Repository.getInstance().getTeam(content);
+
+		Element div = element.appendElement("div");
+		if (description != null) {
+			div.appendElement("b").appendText(description);
+			div.appendText(":").append("&nbsp;");
+		}
+		if (content != null) {
+			if (r != null) {
+				div.appendElement("a").attr("href", "../web/" + r.getId(synchronizer) + ".html")
+						.appendText(r.getTitle());
+			} else {
+				div.appendText(content);
+			}
+		} else {
+			div.appendText("-");
+		}
+	}
+	
+	public void addPersonItem(Element element, String description, String content) {
+		Person r = Repository.getInstance().getPerson(content);
+
+		Element div = element.appendElement("div");
+		if (description != null) {
+			div.appendElement("b").appendText(description);
+			div.appendText(":").append("&nbsp;");
+		}
+		if (content != null) {
+			if (r != null) {
+				div.appendElement("a").attr("href", "../web/" + r.getId(synchronizer) + ".html")
+						.appendText(r.getTitle());
+			} else {
+				div.appendText(content);
+			}
+		} else {
+			div.appendText("-");
+		}
+	}
+
+	
 	/**
 	 * Adds the rolegroup item.
 	 *

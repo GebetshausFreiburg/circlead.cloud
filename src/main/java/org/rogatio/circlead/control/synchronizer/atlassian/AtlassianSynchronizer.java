@@ -16,6 +16,7 @@ import static org.rogatio.circlead.model.WorkitemType.ACTIVITY;
 import static org.rogatio.circlead.model.WorkitemType.HOWTO;
 import static org.rogatio.circlead.model.WorkitemType.PERSON;
 import static org.rogatio.circlead.model.WorkitemType.REPORT;
+import static org.rogatio.circlead.model.WorkitemType.TEAM;
 import static org.rogatio.circlead.model.WorkitemType.ROLE;
 import static org.rogatio.circlead.model.WorkitemType.ROLEGROUP;
 
@@ -42,13 +43,14 @@ import org.rogatio.circlead.control.synchronizer.atlassian.content.Ancestor;
 import org.rogatio.circlead.control.synchronizer.atlassian.content.Metadata;
 import org.rogatio.circlead.control.synchronizer.atlassian.content.Page;
 import org.rogatio.circlead.control.synchronizer.atlassian.content.Version;
-import org.rogatio.circlead.control.synchronizer.atlassian.parser.HeadTableParserElement;
+import org.rogatio.circlead.control.synchronizer.atlassian.parser.ActivityTableParserElement;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.IParserElement;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.ImageParserElement;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.ListParserElement;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.PairTableParserElement;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.StatusParserElement;
+import org.rogatio.circlead.control.synchronizer.atlassian.parser.TeamTableParserElement;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.TextParserElement;
 import org.rogatio.circlead.control.synchronizer.atlassian.search.Result;
 import org.rogatio.circlead.control.synchronizer.atlassian.search.Results;
@@ -61,6 +63,7 @@ import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
+import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.AtlassianRendererEngine;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
@@ -88,6 +91,8 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 
 	/** The personspage. */
 	private final String PERSONSPAGE = "Persons";
+	
+	private final String TEAMSPAGE = "Teams";
 	
 	/** The Constant LOGGER. */
 	private final static Logger LOGGER = LogManager.getLogger(AtlassianSynchronizer.class);
@@ -155,6 +160,9 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 				}
 				if (wi instanceof Person) {
 					a.setTitle(PERSONSPAGE);
+				}
+				if (wi instanceof Team) {
+					a.setTitle(TEAMSPAGE);
 				}
 
 				a.setType("page");
@@ -453,7 +461,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	public boolean deleteVersions(Integer pageId) {
 
 		if (DEDICATEDSERVER) {
-			LOGGER.warn("REST-API for deleting versions on dedicated server NOT available");
+			LOGGER.warn("REST-API for deleting page-versions on dedicated server NOT available");
 			return false;
 		}
 
@@ -565,6 +573,10 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 				SynchronizerResult page = confluenceClient.search("type=\"page\" and title=\"Persons\"");
 				id = "" + Parser.getIdFromResult(page.getContent());
 			}
+			if (TEAM.isEquals(type)) {
+				SynchronizerResult page = confluenceClient.search("type=\"page\" and title=\"Teams\"");
+				id = "" + Parser.getIdFromResult(page.getContent());
+			}
 		}
 
 		return id;
@@ -649,6 +661,10 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 					type = PERSON.getLowerName();
 					acestorId = getAcestorId(PERSONSPAGE, p);
 				}
+				if (TEAM.isEquals(label)) {
+					type = TEAM.getLowerName();
+					acestorId = getAcestorId(TEAMSPAGE, p);
+				}
 				acestorPages.put(type, acestorId);
 			}
 
@@ -686,8 +702,10 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 								parserElement = new PairTableParserElement(unparsedValue);
 							} else if (WorkitemParameter.ACTIVITY.has(key)) {
 								parserElement = new ListParserElement(unparsedValue);
+							} else if (WorkitemParameter.TEAMROLES.has(key)) {
+								parserElement = new TeamTableParserElement(unparsedValue);
 							} else if (WorkitemParameter.SUBACTIVITY.has(key)) {
-								parserElement = new HeadTableParserElement(unparsedValue);
+								parserElement = new ActivityTableParserElement(unparsedValue);
 							} else if (WorkitemParameter.IMAGE.has(key)) {
 								parserElement = new ImageParserElement(unparsedValue);
 							} else if (WorkitemParameter.CONTACTS.has(key)) {
@@ -742,6 +760,35 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	private IWorkitem setData(Map<String, IParserElement> pairs, String type, String indexId) {
 		Vector<String> keys = new Vector<String>(pairs.keySet());
 
+		if (TEAM.isEquals(type)) {
+			Team team = new Team();
+
+			for (String key : keys) {
+				IParserElement value = pairs.get(key);
+				if (WorkitemParameter.ID.has(key)) {
+					team.getDataitem().setUid(value.toString());
+				} else if (WorkitemParameter.CREATED.has(key)) {
+					team.setCreated(value.toString());
+				} else if (WorkitemParameter.MODIFIED.has(key)) {
+					team.setModified(value.toString());
+				} else if (WorkitemParameter.DESCRIPTION.has(key)) {
+					team.setDescription(value.toString());
+				} else if (WorkitemParameter.TEAMROLES.has(key)) {
+					team.setTeamTable((TeamTableParserElement) value);
+				} else if (WorkitemParameter.VERSION.has(key)) {
+					team.setVersion(value.toString());
+				} else if (WorkitemParameter.STATUS.has(key)) {
+					team.setStatus(value.toString());
+				} else {
+					LOGGER.debug("Value from parser not set: key=" + key + ", value=" + pairs.get(key));
+				}
+			}
+
+			team.setId(indexId, this);
+
+			return team;
+		}
+		
 		if (ACTIVITY.isEquals(type)) {
 			Activity activity = new Activity();
 
@@ -756,7 +803,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 				} else if (WorkitemParameter.HOWTOS.has(key)) {
 					activity.setHowTos(value.toString());
 				} else if (WorkitemParameter.SUBACTIVITY.has(key)) {
-					activity.setSubactivities((HeadTableParserElement) value);
+					activity.setSubactivities((ActivityTableParserElement) value);
 				} else if (WorkitemParameter.ACTIVITYID.has(key)) {
 					activity.setAid(value.toString());
 				} else if (WorkitemParameter.DESCRIPTION.has(key)) {
@@ -984,7 +1031,6 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		try {
 			Results queryResults = mapper.readValue(results.getContent(), Results.class);
 			for (Result result : queryResults.getResults()) {
-//				if (result.getUrl().contains("/" + circleadSpace + "/")) {
 				if (HOWTO.isEquals(type)) {
 					HowTo ht = new HowTo();
 					ht.setSynchronizer(this.toString());
@@ -1007,7 +1053,6 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 					fileIndex.add(URLCONFLUENCE + confluenceClient.getRestPrefix() + "content/" + type + "/"
 							+ result.getContent().getId());
 				}
-//				}
 			}
 		} catch (JsonParseException e) {
 			LOGGER.error("Error loading " + type + " from confluence", e);

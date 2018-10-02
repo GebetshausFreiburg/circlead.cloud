@@ -34,11 +34,13 @@ import org.rogatio.circlead.model.data.HowTo;
 import org.rogatio.circlead.model.data.PersonDataitem;
 import org.rogatio.circlead.model.data.RoleDataitem;
 import org.rogatio.circlead.model.data.RolegroupDataitem;
+import org.rogatio.circlead.model.data.TeamDataitem;
 import org.rogatio.circlead.model.work.Activity;
 import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
+import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.FileUtil;
 import org.rogatio.circlead.view.FileRendererEngine;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
@@ -142,6 +144,8 @@ public class FileSynchronizer extends DefaultSynchronizer {
 			writeWorkitemData(workitem, "rolegroups");
 		} else if (WorkitemType.PERSON.isTypeOf(workitem)) {
 			writeWorkitemData(workitem, "persons");
+		}  else if (WorkitemType.TEAM.isTypeOf(workitem)) {
+			writeWorkitemData(workitem, "teams");
 		}
 
 		writeWorkitemRendered(workitem);
@@ -238,6 +242,9 @@ public class FileSynchronizer extends DefaultSynchronizer {
 			} else if (workitem instanceof Person) {
 				Person person = (Person) workitem;
 				mapper.writeValue(f, person.getDataitem());
+			} else if (workitem instanceof Team) {
+				Team team = (Team) workitem;
+				mapper.writeValue(f, team.getDataitem());
 			}
 
 			result = "" + f + "";
@@ -383,6 +390,8 @@ public class FileSynchronizer extends DefaultSynchronizer {
 			fileIndex = readFolder("rolegroups");
 		} else if (WorkitemType.PERSON == workitemType) {
 			fileIndex = readFolder("persons");
+		} else if (WorkitemType.TEAM == workitemType) {
+			fileIndex = readFolder("teams");
 		}
 
 		return fileIndex;
@@ -446,6 +455,9 @@ public class FileSynchronizer extends DefaultSynchronizer {
 				} else if (filename.endsWith(".person.json")) {
 					PersonDataitem data = mapper.readValue(file, PersonDataitem.class);
 					item = new Person(data);
+				} else if (filename.endsWith(".team.json")) {
+					TeamDataitem data = mapper.readValue(file, TeamDataitem.class);
+					item = new Team(data);
 				}
 			}
 
@@ -520,6 +532,8 @@ public class FileSynchronizer extends DefaultSynchronizer {
 			f = createFile(workitem, "rolegroups");
 		} else if (WorkitemType.PERSON.isTypeOf(workitem)) {
 			f = createFile(workitem, "persons");
+		} else if (WorkitemType.TEAM.isTypeOf(workitem)) {
+			f = createFile(workitem, "teams");
 		}
 		if (f != null) {
 			if (f.exists()) {

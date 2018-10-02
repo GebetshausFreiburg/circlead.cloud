@@ -14,7 +14,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class HowTo is mainly used to give back detailed index-information of found HowTos for the AtlassianSynchronizer as JSON-String-Representation.
  */

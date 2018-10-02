@@ -49,6 +49,8 @@ public class Sync {
 	
 	/** The Constant ACTIVITIES. */
 	public static final boolean ACTIVITIES = true;
+	
+	public static final boolean TEAMS = true;
 
 	/** The Constant logger. */
 	final static Logger LOGGER = LogManager.getLogger(Sync.class);
@@ -90,6 +92,9 @@ public class Sync {
 		}
 		if (ACTIVITIES) {
 			repository.loadActivities();
+		}
+		if (TEAMS) {
+			repository.loadTeams();
 		}
 
 		/* Loads the index of howtos and reports from both interfaces */

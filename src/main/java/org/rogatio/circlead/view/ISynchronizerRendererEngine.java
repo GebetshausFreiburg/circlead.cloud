@@ -181,6 +181,10 @@ public interface ISynchronizerRendererEngine {
 	 */
 	public void addRoleItem(Element element, String description, String content);
 
+	public void addPersonItem(Element element, String description, String content);
+
+	public void addTeamItem(Element element, String description, String content);
+	
 	/**
 	 * Adds the rolegroup item.
 	 *

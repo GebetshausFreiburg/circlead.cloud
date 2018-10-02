@@ -40,7 +40,8 @@ public class StringUtil {
 	}
 
 	/**
-	 * Convert comma-separated string to list of strings. Only add item if found string between commas is not empty or null
+	 * Convert comma-separated string to list of strings. Only add item if found
+	 * string between commas is not empty or null
 	 *
 	 * @param string the string
 	 * @return the list
@@ -54,10 +55,10 @@ public class StringUtil {
 				String[] i = string.split(",");
 				for (int j = 0; j < i.length; j++) {
 					String id = i[j];
-					identifiers.add(id);
+					identifiers.add(id.trim());
 				}
 			} else {
-				identifiers.add(string);
+				identifiers.add(string.trim());
 			}
 
 			return identifiers;
@@ -68,8 +69,8 @@ public class StringUtil {
 	/**
 	 * Count matches in string of given symbol.
 	 *
-	 * @param string            the string
-	 * @param symbol            the symbol
+	 * @param string the string
+	 * @param symbol the symbol
 	 * @return the int
 	 */
 	public static int countMatches(String string, String symbol) {
@@ -81,7 +82,7 @@ public class StringUtil {
 	/**
 	 * Beautify a string by setting first letter to upper case.
 	 *
-	 * @param s            the s
+	 * @param s the s
 	 * @return the string
 	 */
 	public static String beautify(String s) {
@@ -91,8 +92,7 @@ public class StringUtil {
 	/**
 	 * Checks if string is not null and not empty.
 	 *
-	 * @param s
-	 *            the s
+	 * @param s the s
 	 * @return true, if is not null and not empty
 	 */
 	public static boolean isNotNullAndNotEmpty(String s) {
@@ -105,10 +105,10 @@ public class StringUtil {
 	}
 
 	/**
-	 * Clean a list, so no null and empty value is inside. If null a empty list is returned.
+	 * Clean a list, so no null and empty value is inside. If null a empty list is
+	 * returned.
 	 *
-	 * @param rawList
-	 *            the raw list
+	 * @param rawList the raw list
 	 * @return the list
 	 */
 	public static List<String> clean(List<String> rawList) {
@@ -124,10 +124,10 @@ public class StringUtil {
 	}
 
 	/**
-	 * Converts a string to a int value if possible. If exception occurs int is set to 0.
+	 * Converts a string to a int value if possible. If exception occurs int is set
+	 * to 0.
 	 *
-	 * @param value
-	 *            the value
+	 * @param value the value
 	 * @return the int
 	 */
 	public static int toInt(String value) {
@@ -144,8 +144,8 @@ public class StringUtil {
 	/**
 	 * Converts a xml-date to an java.util.Date, i.e. "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
 	 *
-	 * @param date            the date
-	 * @param f the f
+	 * @param date the date
+	 * @param f    the f
 	 * @return the date
 	 */
 	public static Date toDate(String date, String f) {
@@ -161,8 +161,8 @@ public class StringUtil {
 	/**
 	 * Converts a java.util.Date to a xml-representation of a date
 	 *
-	 * @param date            the date
-	 * @param f the f
+	 * @param date the date
+	 * @param f    the f
 	 * @return the string
 	 */
 	public static String fromDate(Date date, String f) {

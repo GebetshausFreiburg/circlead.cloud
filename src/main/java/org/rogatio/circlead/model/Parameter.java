@@ -65,6 +65,9 @@ public enum Parameter {
 	/** The roles. */
 	ROLES("Rollen"),
 	
+	ROLESINTEAM("Rollen im Team"),
+	ROLESINORGANISATION("Rollen in der Organisation"),
+	
 	/** The responsible. */
 	RESPONSIBLE("Durchführender"),
 	
@@ -95,6 +98,8 @@ public enum Parameter {
 	/** The rolegroup. */
 	ROLEGROUP("Rollengruppe"),
 	
+	ROLE("Rolle"),
+	
 	/** The predecessor. */
 	PREDECESSOR("Vorgänger"),
 	
@@ -115,6 +120,8 @@ public enum Parameter {
 	
 	/** The persons. */
 	PERSONS("Personen"),
+	
+	TEAMROLES("Teamrollen"),
 	
 	/** The howtos. */
 	HOWTOS("HowTos"),
@@ -187,6 +194,10 @@ public enum Parameter {
 	
 	/** The status. */
 	STATUS("Status"),
+	
+	NEEDED("Mindestanzahl"),
+	LEVEL("Mindestlevel"),
+	PERSON("Person"),
 	
 	/** The organisation. */
 	ORGANISATION("Organisation");

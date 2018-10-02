@@ -9,6 +9,7 @@
 package org.rogatio.circlead.control.synchronizer.atlassian.parser;
 
 import static org.rogatio.circlead.model.Parameter.ABBREVIATION;
+import static org.rogatio.circlead.model.Parameter.TEAMROLES;
 import static org.rogatio.circlead.model.Parameter.ABBREVIATION2;
 import static org.rogatio.circlead.model.Parameter.IMAGE;
 import static org.rogatio.circlead.model.Parameter.ACTIVITIES;
@@ -28,6 +29,10 @@ import static org.rogatio.circlead.model.Parameter.INFORMED;
 import static org.rogatio.circlead.model.Parameter.MAIL;
 import static org.rogatio.circlead.model.Parameter.MOBILE;
 import static org.rogatio.circlead.model.Parameter.NAME;
+import static org.rogatio.circlead.model.Parameter.ROLE;
+import static org.rogatio.circlead.model.Parameter.NEEDED;
+import static org.rogatio.circlead.model.Parameter.LEVEL;
+import static org.rogatio.circlead.model.Parameter.PERSON;
 import static org.rogatio.circlead.model.Parameter.OPPORTUNITIES;
 import static org.rogatio.circlead.model.Parameter.ORGANISATION;
 import static org.rogatio.circlead.model.Parameter.PERSONS;
@@ -75,11 +80,14 @@ import org.rogatio.circlead.model.data.ContactDataitem;
 import org.rogatio.circlead.model.data.PersonDataitem;
 import org.rogatio.circlead.model.data.RoleDataitem;
 import org.rogatio.circlead.model.data.RolegroupDataitem;
+import org.rogatio.circlead.model.data.TeamDataitem;
+import org.rogatio.circlead.model.data.TeamEntry;
 import org.rogatio.circlead.model.work.Activity;
 import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
+import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.IWorkitemRenderer;
@@ -152,10 +160,10 @@ public class Parser {
 	/**
 	 * Load attached images from page "BPMN". Images are converted from svg to png.
 	 *
-	 * @param page the page
+	 * @param page      the page
 	 * @param imageFile the image file
-	 * @param size the size
-	 * @param version the version
+	 * @param size      the size
+	 * @param version   the version
 	 * @return the string
 	 * @see https://github.com/bpmn-io
 	 */
@@ -183,13 +191,85 @@ public class Parser {
 	 * Adds the image.
 	 *
 	 * @param filename the filename
-	 * @param size the size
-	 * @param version the version
+	 * @param size     the size
+	 * @param version  the version
 	 * @return the string
 	 */
 	public static String addImage(String filename, int size, int version) {
 		return "<ac:image ac:height=\"" + size + "\"><ri:attachment ri:filename=\"" + filename
 				+ "\" ri:version-at-save=\"" + version + "\" /></ac:image>";
+	}
+
+	public static Element createTeamEntryTable(List<TeamEntry> teamentries, ISynchronizer synchronizer,
+			boolean activatedLinks) {
+
+		if (!ObjectUtil.isListNotNullAndEmpty(teamentries)) {
+			Element e = new Element("p");
+			return e.appendText("-");
+		}
+
+		Element table = new Element("table");
+		table.attr("class", "wrapped");
+		Element tbody = table.appendElement("tbody");
+
+		boolean containsLevel = false;
+		for (TeamEntry entry : teamentries) {
+			if (StringUtil.isNotNullAndNotEmpty(entry.getLevel())) {
+				containsLevel = true;
+			}
+		}
+
+		Element tr = tbody.appendElement("tr");
+		tr.appendElement("th").attr("colspan", "1").appendText(ROLE.toString());
+		tr.appendElement("th").attr("colspan", "1").appendText(NEEDED.toString());
+		if (containsLevel) {
+			tr.appendElement("th").attr("colspan", "1").appendText(LEVEL.toString());
+		}
+		tr.appendElement("th").attr("colspan", "1").appendText(PERSON.toString());
+
+		for (TeamEntry entry : teamentries) {
+			tr = tbody.appendElement("tr");
+			if (StringUtil.isNotNullAndNotEmpty(entry.getRoleIdentifier())) {
+				Element td = tr.appendElement("td").attr("colspan", "1");
+				Role r = Repository.getInstance().getRole(entry.getRoleIdentifier());
+				if ((r != null) && activatedLinks) {
+					synchronizer.getRenderer().addRoleItem(td, null, entry.getRoleIdentifier());
+				} else {
+					td.attr("colspan", "1").appendText(entry.getRoleIdentifier());
+				}
+			} else {
+				tr.appendElement("td").attr("colspan", "1").appendText("");
+			}
+
+			tr.appendElement("td").attr("colspan", "1").appendText(entry.getNeeded() + "");
+
+			if (containsLevel) {
+				if (StringUtil.isNotNullAndNotEmpty(entry.getLevel())) {
+					if (activatedLinks) {
+						Element s = Parser.getStatus(entry.getLevel() + "%", "Grey");
+						Element td = tr.appendElement("td");
+						s.appendTo(td);
+					} else {
+						tr.appendElement("td").attr("colspan", "1").appendText(entry.getLevel()+"%");
+					}
+				} else {
+					tr.appendElement("td").attr("colspan", "1").appendText("");
+				}
+			}
+
+			if (ObjectUtil.isListNotNullAndEmpty(entry.getPersonIdentifiers())) {
+				if (!activatedLinks) {
+					tr.appendElement("td").attr("colspan", "1")
+							.appendText(StringUtil.join(entry.getPersonIdentifiers()));
+				} else {
+					addPersonListToTableCell(tr, entry.getPersonIdentifiers(), synchronizer);
+				}
+			} else {
+				tr.appendElement("td").attr("colspan", "1").appendText("");
+			}
+		}
+
+		return table;
 	}
 
 	/**
@@ -202,7 +282,7 @@ public class Parser {
 	 * @param activatedLinks the activated links
 	 * @return the element
 	 */
-	public static Element createHeaderTable(List<ActivityDataitem> activities, ISynchronizer synchronizer,
+	public static Element createActivityTable(List<ActivityDataitem> activities, ISynchronizer synchronizer,
 			boolean activatedLinks) {
 
 		if (!ObjectUtil.isListNotNullAndEmpty(activities)) {
@@ -239,8 +319,9 @@ public class Parser {
 						tr.appendElement("td").attr("colspan", "1")
 								.append(addImageFromOtherPage("BPMN", activity.getBpmn() + ".png", 32, 1));
 					} else if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
-						tr.appendElement("td").attr("colspan", "1").append("<img src=\"..\\data\\images\\bpmn\\"+activity.getBpmn()+".png\" alt=\""+activity.getBpmn()+"\" width=\"32px\">");
-						
+						tr.appendElement("td").attr("colspan", "1").append("<img src=\"..\\data\\images\\bpmn\\"
+								+ activity.getBpmn() + ".png\" alt=\"" + activity.getBpmn() + "\" width=\"32px\">");
+
 					} else {
 						tr.appendElement("td").attr("colspan", "1").appendText(activity.getBpmn());
 					}
@@ -319,6 +400,16 @@ public class Parser {
 		return table;
 	}
 
+	private static void addPersonListToTableCell(Element tr, List<String> personIdentifiers,
+			ISynchronizer synchronizer) {
+		Element td = tr.appendElement("td").attr("colspan", "1");
+		Element ul = td.appendElement("ul");
+		for (String personIdentifier : personIdentifiers) {
+			Element li = ul.appendElement("li");
+			synchronizer.getRenderer().addPersonItem(li, null, personIdentifier);
+		}
+	}
+
 	/**
 	 * Adds the role list to table cell.
 	 *
@@ -344,6 +435,15 @@ public class Parser {
 	 */
 	private static Element createDataTable(IWorkitem workitem, ISynchronizer synchronizer) {
 		Element table = new Element("table");
+
+		if (workitem instanceof Team) {
+			Team w = (Team) workitem;
+			TeamDataitem d = w.getDataitem();
+			addDataPair(ID.toString(), d.getIds(), table);
+			addDataPair(DESCRIPTION.toString(), d.getDescription(), table);
+			addDataPair(TEAMROLES.toString(), Parser.createTeamEntryTable(d.getTeamEntries(), synchronizer, false), table);
+			addDataPair(STATUS.toString(), Parser.getStatus(d.getStatus()), table);
+		}
 
 		if (workitem instanceof Role) {
 			Role w = (Role) workitem;
@@ -377,7 +477,7 @@ public class Parser {
 			addCommaList(CONSULTANT.toString(), d.getConsultant(), table);
 			addCommaList(INFORMED.toString(), d.getInformed(), table);
 			addCommaList(HOWTOS.toString(), d.getHowtos(), table);
-			addDataPair(SUBACTIVITIES.toString(), Parser.createHeaderTable(d.getSubactivities(), synchronizer, false),
+			addDataPair(SUBACTIVITIES.toString(), Parser.createActivityTable(d.getSubactivities(), synchronizer, false),
 					table);
 			addDataPair(STATUS.toString(), Parser.getStatus(d.getStatus()), table);
 		}
@@ -795,6 +895,30 @@ public class Parser {
 			color = s.getColor();
 			name = s.getName();
 		}
+
+		Element macro = new Element("ac:structured-macro");
+		macro.attr("ac:name", "status");
+		macro.attr("ac:schema-version", "1");
+		macro.attr("ac:macro-id", UUID.randomUUID().toString());
+		Element param = macro.appendElement("ac:parameter");
+		param.attr("ac:name", "colour").appendText(color);
+		param = macro.appendElement("ac:parameter");
+		param.attr("ac:name", "title").appendText(name);
+		return macro;
+	}
+	
+	public static Element getStatus(String title, String forcedColor) {
+
+		String color = "Red";
+		String name = UNKNOWN.toString();
+
+		WorkitemStatusParameter s = getStatusParameter(title);
+		if (s != null) {
+			color = s.getColor();
+			name = s.getName();
+		}
+		
+		color = forcedColor;
 
 		Element macro = new Element("ac:structured-macro");
 		macro.attr("ac:name", "status");

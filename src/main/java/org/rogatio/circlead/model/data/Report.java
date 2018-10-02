@@ -14,7 +14,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Report is mainly used to give back detailed index-information of found Reports for the AtlassianSynchronizer as JSON-String-Representation.
  * Is needed to get back Atlassian-Page-Ids to get the actual page-version, so it could be updated.

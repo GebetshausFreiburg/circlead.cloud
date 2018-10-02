@@ -21,14 +21,14 @@ import org.rogatio.circlead.model.work.Activity;
 /**
  * The Class HeadTableParserElement.
  */
-public class HeadTableParserElement implements IParserElement {
+public class ActivityTableParserElement implements IParserElement {
 
 	/**
 	 * Instantiates a new head table parser element.
 	 *
 	 * @param text the text
 	 */
-	public HeadTableParserElement(Object text) {
+	public ActivityTableParserElement(Object text) {
 		parse(text);
 	}
 

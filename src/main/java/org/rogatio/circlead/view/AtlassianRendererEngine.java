@@ -26,6 +26,7 @@ import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
+import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.ObjectUtil;
 
 /**
@@ -497,7 +498,47 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 			div.appendText("-");
 		}
 	}
+	
+	public void addPersonItem(Element element, String description, String content) {
+		Person r = Repository.getInstance().getPerson(content);
 
+		Element div = element.appendElement("div");
+		if (description != null) {
+			div.appendElement("b").appendText(description);
+			div.appendText(":").append("&nbsp;");
+		}
+		if (content != null) {
+			if (r != null) {
+				div.appendElement("ac:link")
+						.append("<ri:page ri:content-title=\"" + r.getTitle() + "\" ri:version-at-save=\"1\" />");
+			} else {
+				div.appendText(content);
+			}
+		} else {
+			div.appendText("-");
+		}
+	}
+
+	public void addTeamItem(Element element, String description, String content) {
+		Team r = Repository.getInstance().getTeam(content);
+
+		Element div = element.appendElement("div");
+		if (description != null) {
+			div.appendElement("b").appendText(description);
+			div.appendText(":").append("&nbsp;");
+		}
+		if (content != null) {
+			if (r != null) {
+				div.appendElement("ac:link")
+						.append("<ri:page ri:content-title=\"" + r.getTitle() + "\" ri:version-at-save=\"1\" />");
+			} else {
+				div.appendText(content);
+			}
+		} else {
+			div.appendText("-");
+		}
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addWorkitemTable(org.jsoup.nodes.Element, java.util.List)
 	 */

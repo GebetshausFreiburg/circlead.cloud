@@ -26,6 +26,7 @@ public enum WorkitemType {
 	ROLE("Role"),
 	/** The rolegroup. */
 	ROLEGROUP("Rolegroup"),
+	TEAM("Team"),
 	/** The person. */
 	PERSON("Person");
 

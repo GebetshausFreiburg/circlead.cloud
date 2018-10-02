@@ -30,7 +30,7 @@ import java.util.Map;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
-import org.rogatio.circlead.control.synchronizer.atlassian.parser.HeadTableParserElement;
+import org.rogatio.circlead.control.synchronizer.atlassian.parser.ActivityTableParserElement;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
@@ -294,7 +294,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	 *
 	 * @param table the new subactivities
 	 */
-	public void setSubactivities(HeadTableParserElement table) {
+	public void setSubactivities(ActivityTableParserElement table) {
 		this.setSubactivities(table.getActivities());
 	}
 
@@ -462,7 +462,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 		}
 
 		if (ObjectUtil.isListNotNullAndEmpty(this.getSubactivities())) {
-			Element table = Parser.createHeaderTable(this.getSubactivities(), synchronizer, true);
+			Element table = Parser.createActivityTable(this.getSubactivities(), synchronizer, true);
 
 			/*
 			 * for (ActivityDataitem subactivity : getSubactivities()) { Activity a =

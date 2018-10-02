@@ -8,6 +8,8 @@
  */
 package org.rogatio.circlead.model.work;
 
+import static org.rogatio.circlead.model.Parameter.ROLESINORGANISATION;
+import static org.rogatio.circlead.model.Parameter.ROLESINTEAM;
 import static org.rogatio.circlead.model.Parameter.CONTACTS;
 import static org.rogatio.circlead.model.Parameter.PERSONDATA;
 import static org.rogatio.circlead.model.Parameter.ROLES;
@@ -28,6 +30,7 @@ import org.rogatio.circlead.control.validator.ValidationMessage;
 import org.rogatio.circlead.model.data.ContactDataitem;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.PersonDataitem;
+import org.rogatio.circlead.model.data.TeamEntry;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.IWorkitemRenderer;
@@ -208,9 +211,27 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 			}
 		}
 
-		renderer.addH2(element, ROLES.toString());
+		renderer.addH2(element, ROLESINORGANISATION.toString());
 		renderer.addRoleList(element, Repository.getInstance().getRolesWithPerson(this.getFullname()), this);
 
+		renderer.addH2(element, ROLESINTEAM.toString());
+		List<Team> foundTeams = Repository.getInstance().getTeamsWithMember(this);
+		Element ul = element.appendElement("ul");
+		for (Team team : foundTeams) {
+			Element li = ul.appendElement("li");
+			renderer.addTeamItem(li, null, team.getTitle());
+//			li.appendText(team.getTitle()+"");
+			List<TeamEntry> x = team.getTeamEntries();
+			Element ul2 = li.appendElement("ul");
+			for (TeamEntry e : x) {
+				if (e.getPersonIdentifiers().contains(this.getFullname())) {
+					Element li2 = ul2.appendElement("li");
+					renderer.addRoleItem(li2, null, e.getRoleIdentifier());
+					//.appendText(e.getRoleIdentifier());
+				}
+			}
+		}
+		
 		return element;
 	}
 
