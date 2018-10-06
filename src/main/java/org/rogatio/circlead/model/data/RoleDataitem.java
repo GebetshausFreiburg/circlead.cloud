@@ -47,7 +47,7 @@ public class RoleDataitem extends DefaultDataitem {
 	@JsonSchemaTitle("Purpose")
 	@JsonSchemaDescription("Purpose of the role. Optional.")
 	private String purpose;
-	
+
 	/** The rolegroup. */
 	@JsonSchemaTitle("Rolegroup")
 	@JsonSchemaDescription("Rolegroup of the role. Set as identifier.")
@@ -121,8 +121,7 @@ public class RoleDataitem extends DefaultDataitem {
 	/**
 	 * Checks for activity id.
 	 *
-	 * @param activityIdentifier
-	 *            the activity identifier
+	 * @param activityIdentifier the activity identifier
 	 * @return true, if successful
 	 */
 	public boolean hasActivityId(String activityIdentifier) {
@@ -135,8 +134,7 @@ public class RoleDataitem extends DefaultDataitem {
 	/**
 	 * Gets the activity id.
 	 *
-	 * @param activityIdentifier
-	 *            the activity identifier
+	 * @param activityIdentifier the activity identifier
 	 * @return the activity id
 	 */
 	public String getActivityId(String activityIdentifier) {
@@ -149,8 +147,7 @@ public class RoleDataitem extends DefaultDataitem {
 	/**
 	 * Sets the activities.
 	 *
-	 * @param activities
-	 *            the new activities
+	 * @param activities the new activities
 	 */
 	public void setActivities(List<String> activities) {
 
@@ -186,8 +183,7 @@ public class RoleDataitem extends DefaultDataitem {
 	/**
 	 * Sets the abbreviation.
 	 *
-	 * @param abbreviation
-	 *            the new abbreviation
+	 * @param abbreviation the new abbreviation
 	 */
 	public void setAbbreviation(String abbreviation) {
 		this.abbreviation = abbreviation.trim();
@@ -201,7 +197,7 @@ public class RoleDataitem extends DefaultDataitem {
 	public List<String> getResponsibilities() {
 		return responsibilities;
 	}
-	
+
 	/**
 	 * Gets the purpose.
 	 *
@@ -223,8 +219,7 @@ public class RoleDataitem extends DefaultDataitem {
 	/**
 	 * Sets the responsibilities.
 	 *
-	 * @param responsibilities
-	 *            the new responsibilities
+	 * @param responsibilities the new responsibilities
 	 */
 	public void setResponsibilities(List<String> responsibilities) {
 		this.responsibilities = responsibilities;
@@ -245,8 +240,7 @@ public class RoleDataitem extends DefaultDataitem {
 	/**
 	 * Sets the organisation.
 	 *
-	 * @param organisation
-	 *            the new organisation
+	 * @param organisation the new organisation
 	 */
 	public void setOrganisation(String organisation) {
 		this.organisation = organisation;
@@ -264,8 +258,7 @@ public class RoleDataitem extends DefaultDataitem {
 	/**
 	 * Sets the opportunities.
 	 *
-	 * @param opportunities
-	 *            the new opportunities
+	 * @param opportunities the new opportunities
 	 */
 	public void setOpportunities(List<String> opportunities) {
 		this.opportunities = opportunities;
@@ -283,8 +276,7 @@ public class RoleDataitem extends DefaultDataitem {
 	/**
 	 * Sets the guidelines.
 	 *
-	 * @param guidelines
-	 *            the new guidelines
+	 * @param guidelines the new guidelines
 	 */
 	public void setGuidelines(List<String> guidelines) {
 		this.guidelines = StringUtil.clean(guidelines);
@@ -302,8 +294,7 @@ public class RoleDataitem extends DefaultDataitem {
 	/**
 	 * Sets the competences.
 	 *
-	 * @param competences
-	 *            the new competences
+	 * @param competences the new competences
 	 */
 	public void setCompetences(List<String> competences) {
 		this.competences = competences;
@@ -331,8 +322,7 @@ public class RoleDataitem extends DefaultDataitem {
 	/**
 	 * Sets the parent.
 	 *
-	 * @param parentRole
-	 *            the new parent
+	 * @param parentRole the new parent
 	 */
 	public void setParent(String parentRole) {
 		this.parent = parentRole.trim();
@@ -355,8 +345,7 @@ public class RoleDataitem extends DefaultDataitem {
 	/**
 	 * Sets the rolegroup.
 	 *
-	 * @param rolegroup
-	 *            the new rolegroup
+	 * @param rolegroup the new rolegroup
 	 */
 	public void setRolegroup(String rolegroup) {
 		this.rolegroup = rolegroup;
@@ -386,7 +375,7 @@ public class RoleDataitem extends DefaultDataitem {
 
 			sb.append(person);
 
-			if (this.hasSkill(person) || this.hasRepresentation(person)) {
+			if (this.hasSkill(person) || this.hasRepresentation(person)|| this.hasRecurrenceRule(person)) {
 				sb.append(" [");
 			}
 
@@ -402,8 +391,17 @@ public class RoleDataitem extends DefaultDataitem {
 
 				sb.append(this.getRepresentation(person));
 			}
+			
+			if (this.hasRecurrenceRule(person)) {
 
-			if (this.hasSkill(person) || this.hasRepresentation(person)) {
+				if (this.hasSkill(person) || this.hasRepresentation(person)) {
+					sb.append(", ");
+				}
+
+				sb.append(this.getRecurrenceRule(person));
+			}
+
+			if (this.hasSkill(person) || this.hasRepresentation(person)|| this.hasRecurrenceRule(person)) {
 				sb.append("]");
 			}
 
@@ -417,6 +415,9 @@ public class RoleDataitem extends DefaultDataitem {
 	@JsonIgnore
 	private Map<String, String> skills = new HashMap<String, String>();
 
+	@JsonIgnore
+	private Map<String, String> recurrenceRules = new HashMap<String, String>();
+	
 	/** The representations. */
 	@JsonIgnore
 	private Map<String, String> representations = new HashMap<String, String>();
@@ -424,8 +425,7 @@ public class RoleDataitem extends DefaultDataitem {
 	/**
 	 * Checks for representation.
 	 *
-	 * @param personIdentifier
-	 *            the person identifier
+	 * @param personIdentifier the person identifier
 	 * @return true, if successful
 	 */
 	@JsonIgnore
@@ -436,11 +436,18 @@ public class RoleDataitem extends DefaultDataitem {
 		return false;
 	}
 
+	@JsonIgnore
+	public String getRecurrenceRule(String personIdentifier) {
+		if (recurrenceRules.containsKey(personIdentifier)) {
+			return recurrenceRules.get(personIdentifier);
+		}
+		return "";
+	}
+	
 	/**
 	 * Gets the representation.
 	 *
-	 * @param personIdentifier
-	 *            the person identifier
+	 * @param personIdentifier the person identifier
 	 * @return the representation
 	 */
 	@JsonIgnore
@@ -451,11 +458,18 @@ public class RoleDataitem extends DefaultDataitem {
 		return "";
 	}
 
+	@JsonIgnore
+	public boolean hasRecurrenceRule(String personIdentifier) {
+		if (recurrenceRules.containsKey(personIdentifier)) {
+			return true;
+		}
+		return false;
+	}
+	
 	/**
 	 * Checks for skill.
 	 *
-	 * @param personIdentifier
-	 *            the person identifier
+	 * @param personIdentifier the person identifier
 	 * @return true, if successful
 	 */
 	@JsonIgnore
@@ -469,8 +483,7 @@ public class RoleDataitem extends DefaultDataitem {
 	/**
 	 * Gets the skill.
 	 *
-	 * @param personIdentifier
-	 *            the person identifier
+	 * @param personIdentifier the person identifier
 	 * @return the skill
 	 */
 	@JsonIgnore
@@ -481,18 +494,47 @@ public class RoleDataitem extends DefaultDataitem {
 		return null;
 	}
 
+	@JsonIgnore
+	private void setRecurrenceRuleMatch(String personFullname, String value) {
+		value = value.trim();
+		if (value.startsWith("R=")) {
+			recurrenceRules.put(personFullname, value);
+		}
+	}
+	
+	@JsonIgnore
+	private void setStatusMatch(String personFullname, String value) {
+		WorkitemStatusParameter status = WorkitemStatusParameter.get(value);
+		if (status != null) {
+			value = status.getName();
+			representations.put(personFullname, value.toLowerCase());
+		}
+	}
+
+	@JsonIgnore
+	private void setSkillMatch(String personFullname, String value) {
+		if (value.contains("%")) {
+			value = value.replace("%", "");
+		}
+
+		value = value.trim();
+
+		if (value.equals("100") || value.equals("75") || value.equals("50") || value.equals("25")
+				|| value.equals("0")) {
+			skills.put(personFullname, value);
+		}
+	}
+
 	/**
 	 * Sets the persons.
 	 *
-	 * @param persons
-	 *            the new persons
+	 * @param persons the new persons
 	 */
 	public void setPersons(List<String> persons) {
-		// this.persons = persons;
 		List<String> list = new ArrayList<String>();
-		
+
 		for (String person : persons) {
-			
+
 			int idx = person.indexOf("[");
 			if (idx != -1) {
 				String skillStatus = person.substring(idx, person.length()).replace("[", "").replace("]", "").trim();
@@ -503,37 +545,15 @@ public class RoleDataitem extends DefaultDataitem {
 					String[] values = skillStatus.split(",");
 					for (String value : values) {
 						value = value.trim();
-
-						if (value.contains("%")) {
-							value = value.replace("%", "");
-						}
-
-						if (value.equals("100") || value.equals("75") || value.equals("50") || value.equals("25") || value.equals("0")) {
-							skills.put(fullname, value);
-						}
-						WorkitemStatusParameter status = WorkitemStatusParameter.get(value);
-						if (status != null) {
-							value = status.getName();
-							representations.put(fullname, value.toLowerCase());
-						}
-
+						setSkillMatch(fullname, value);
+						setStatusMatch(fullname, value);
+						setRecurrenceRuleMatch(fullname, value);
 					}
 				} else {
 					String value = skillStatus.trim();
-
-					if (value.contains("%")) {
-						value = value.replace("%", "");
-					}
-
-					if (value.equals("100") || value.equals("75") || value.equals("50") || value.equals("25") || value.equals("0")) {
-						skills.put(fullname, value);
-					}
-
-					WorkitemStatusParameter status = WorkitemStatusParameter.get(value);
-					if (status != null) {
-						value = status.getName();
-						representations.put(fullname, value.toLowerCase());
-					}
+					setSkillMatch(fullname, value);
+					setStatusMatch(fullname, value);
+					setRecurrenceRuleMatch(fullname, value);
 				}
 
 				list.add(fullname);
@@ -541,7 +561,7 @@ public class RoleDataitem extends DefaultDataitem {
 				list.add(person);
 			}
 		}
-		
+
 		this.persons = list;
 
 	}
@@ -570,8 +590,7 @@ public class RoleDataitem extends DefaultDataitem {
 	/**
 	 * Sets the synonyms.
 	 *
-	 * @param synonyms
-	 *            the new synonyms
+	 * @param synonyms the new synonyms
 	 */
 	public void setSynonyms(List<String> synonyms) {
 		this.synonyms = StringUtil.clean(synonyms);

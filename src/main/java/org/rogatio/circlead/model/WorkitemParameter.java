@@ -34,6 +34,10 @@ public enum WorkitemParameter {
 
 	/** The description. */
 	DESCRIPTION(Parameter.DESCRIPTION, "Description"),
+	
+	RECURRENCERULE(Parameter.RECURRENCERULE, "RecurrenceRule", "RecurrencePattern"),
+	
+	CATEGORY(Parameter.CATEGORY, "Category"),
 
 	/** The created. */
 	CREATED(Parameter.CREATED, "Created"),
@@ -55,6 +59,9 @@ public enum WorkitemParameter {
 
 	/** The synonym. */
 	SYNONYM(Parameter.SYNONYMS, "Synonym"),
+	
+	TYPE(Parameter.TYPE, "Type"),
+	SUBTYPE(Parameter.SUBTYPE, "Subtype"),
 
 	/** The status. */
 	STATUS(Parameter.STATUS, "Status"),

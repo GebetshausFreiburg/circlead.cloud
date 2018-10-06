@@ -8,16 +8,11 @@
  */
 package org.rogatio.circlead.view.report;
 
-import static org.rogatio.circlead.model.Parameter.BRANDROLE;
-
 import java.util.List;
 
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
-import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer;
-import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
-import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.model.data.ContactDataitem;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;

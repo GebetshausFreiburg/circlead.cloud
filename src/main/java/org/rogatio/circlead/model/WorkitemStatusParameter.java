@@ -31,6 +31,9 @@ public enum WorkitemStatusParameter {
 	/** The active. */
 	ACTIVE("Green", "Aktiv", "Active"),
 	
+	EXTERNAL("Green", "Öffentlich", "Extern", "External"),
+	INTERNAL("Yellow", "Intern", "Internal"),
+	
 	/** The deprecated. */
 	DEPRECATED("Grey", "Veraltet", "Deprecated"),
 	

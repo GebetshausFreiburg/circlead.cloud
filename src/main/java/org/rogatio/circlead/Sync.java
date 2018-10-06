@@ -33,10 +33,10 @@ public class Sync {
 	// TODO Activity-Process-Builder erzeugen
 
 	/** The Constant REPORTS. */
-	public static final boolean REPORTS = true;
+	public static final boolean REPORTS = false;
 	
 	/** The Constant HOWTOS. */
-	public static final boolean HOWTOS = true;
+	public static final boolean HOWTOS = false;
 	
 	/** The Constant ROLES. */
 	public static final boolean ROLES = true;
@@ -61,6 +61,7 @@ public class Sync {
 	 * @param args the arguments
 	 */
 	public static void main(String[] args) {
+		@SuppressWarnings("unused")
 		List<SynchronizerResult> results = null;
 
 		Repository repository = Repository.getInstance();
@@ -105,7 +106,7 @@ public class Sync {
 		if (REPORTS) {
 			repository.loadIndexReports();
 		}
-
+		
 		/*
 		 * Re-Render loaded data back to set interfaces. Update pages in confluence and
 		 * writes html-pages to local folder 'web'

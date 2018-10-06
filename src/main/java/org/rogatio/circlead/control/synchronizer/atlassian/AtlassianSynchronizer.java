@@ -773,6 +773,14 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 					team.setModified(value.toString());
 				} else if (WorkitemParameter.DESCRIPTION.has(key)) {
 					team.setDescription(value.toString());
+				} else if (WorkitemParameter.RECURRENCERULE.has(key)) {
+					team.setRecurrenceRule(value.toString());
+				} else if (WorkitemParameter.CATEGORY.has(key)) {
+					team.setCategory(value.toString());
+				} else if (WorkitemParameter.TYPE.has(key)) {
+					team.setType(value.toString());
+				} else if (WorkitemParameter.SUBTYPE.has(key)) {
+					team.setSubtype(value.toString());
 				} else if (WorkitemParameter.TEAMROLES.has(key)) {
 					team.setTeamTable((TeamTableParserElement) value);
 				} else if (WorkitemParameter.VERSION.has(key)) {

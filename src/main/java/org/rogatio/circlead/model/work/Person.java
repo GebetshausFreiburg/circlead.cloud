@@ -8,11 +8,10 @@
  */
 package org.rogatio.circlead.model.work;
 
-import static org.rogatio.circlead.model.Parameter.ROLESINORGANISATION;
-import static org.rogatio.circlead.model.Parameter.ROLESINTEAM;
 import static org.rogatio.circlead.model.Parameter.CONTACTS;
 import static org.rogatio.circlead.model.Parameter.PERSONDATA;
-import static org.rogatio.circlead.model.Parameter.ROLES;
+import static org.rogatio.circlead.model.Parameter.ROLESINORGANISATION;
+import static org.rogatio.circlead.model.Parameter.ROLESINTEAM;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -219,7 +218,11 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		Element ul = element.appendElement("ul");
 		for (Team team : foundTeams) {
 			Element li = ul.appendElement("li");
-			renderer.addTeamItem(li, null, team.getTitle());
+			String c = "";
+			if (StringUtil.isNotNullAndNotEmpty(team.getCategory())) {
+				c = " ("+team.getCategory()+")";
+			}
+			renderer.addTeamItem(li, null, team.getTitle()+ c);
 //			li.appendText(team.getTitle()+"");
 			List<TeamEntry> x = team.getTeamEntries();
 			Element ul2 = li.appendElement("ul");

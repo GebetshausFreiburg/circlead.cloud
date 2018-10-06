@@ -1,7 +1,5 @@
 package org.rogatio.circlead.model.data;
 
-import static org.rogatio.circlead.model.Parameter.ROLE;
-
 import java.util.List;
 import java.util.Map;
 
