@@ -83,6 +83,9 @@ public enum Parameter {
 	/** The description. */
 	DESCRIPTION("Beschreibung"),
 	
+	RECURRENCERULE("Wiederholungsmuster"),
+	CATEGORY("Kategorie"),
+	
 	/** The bpmn. */
 	BPMN("BPMN"),
 	

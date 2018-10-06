@@ -282,6 +282,11 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 				li.append("&nbsp;");
 				s.appendTo(li);
 			}
+			if (role.getDataitem().hasRecurrenceRule(identifier)) {
+				String rule = role.getDataitem().getRecurrenceRule(identifier);
+				li.append("&nbsp;");
+                li.appendText(rule);
+			}
 		}
 
 	}

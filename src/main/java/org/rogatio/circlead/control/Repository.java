@@ -473,6 +473,11 @@ public final class Repository {
 		return null;
 	}
 
+	public List<SynchronizerResult> addWorkitem(IWorkitem workitem) {
+		List<SynchronizerResult> results = getConnector().add(workitem);
+		return results;
+	}
+
 	/**
 	 * Update workitems.
 	 *
@@ -676,7 +681,7 @@ public final class Repository {
 			List<TeamEntry> entries = team.getTeamEntries();
 			if (ObjectUtil.isListNotNullAndEmpty(entries)) {
 				for (TeamEntry entry : entries) {
-					if (entry.getPersonIdentifiers()!=null) {
+					if (entry.getPersonIdentifiers() != null) {
 						if (entry.getPersonIdentifiers().contains(person.getFullname())) {
 							if (!list.contains(team)) {
 								list.add(team);

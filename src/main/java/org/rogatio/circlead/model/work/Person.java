@@ -219,7 +219,11 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		Element ul = element.appendElement("ul");
 		for (Team team : foundTeams) {
 			Element li = ul.appendElement("li");
-			renderer.addTeamItem(li, null, team.getTitle());
+			String c = "";
+			if (StringUtil.isNotNullAndNotEmpty(team.getCategory())) {
+				c = " ("+team.getCategory()+")";
+			}
+			renderer.addTeamItem(li, null, team.getTitle()+ c);
 //			li.appendText(team.getTitle()+"");
 			List<TeamEntry> x = team.getTeamEntries();
 			Element ul2 = li.appendElement("ul");

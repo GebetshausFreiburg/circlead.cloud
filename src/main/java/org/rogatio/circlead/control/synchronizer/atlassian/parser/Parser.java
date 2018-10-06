@@ -8,6 +8,8 @@
  */
 package org.rogatio.circlead.control.synchronizer.atlassian.parser;
 
+import static org.rogatio.circlead.model.Parameter.CATEGORY;
+import static org.rogatio.circlead.model.Parameter.RECURRENCERULE;
 import static org.rogatio.circlead.model.Parameter.ABBREVIATION;
 import static org.rogatio.circlead.model.Parameter.TEAMROLES;
 import static org.rogatio.circlead.model.Parameter.ABBREVIATION2;
@@ -442,6 +444,10 @@ public class Parser {
 			addDataPair(ID.toString(), d.getIds(), table);
 			addDataPair(DESCRIPTION.toString(), d.getDescription(), table);
 			addDataPair(TEAMROLES.toString(), Parser.createTeamEntryTable(d.getTeamEntries(), synchronizer, false), table);
+			addDataPair(RECURRENCERULE.toString(), d.getRecurrenceRule(), table);
+			addDataPair(CATEGORY.toString(), d.getCategory(), table);
+			addDataPair(TYPE.toString(), d.getType(), table);
+			addDataPair(SUBTYPE.toString(), d.getSubtype(), table);
 			addDataPair(STATUS.toString(), Parser.getStatus(d.getStatus()), table);
 		}
 

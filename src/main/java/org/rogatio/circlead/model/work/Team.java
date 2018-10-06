@@ -8,7 +8,12 @@
  */
 package org.rogatio.circlead.model.work;
 
+import static org.rogatio.circlead.model.Parameter.ABBREVIATION;
+import static org.rogatio.circlead.model.Parameter.RECURRENCERULE;
+import static org.rogatio.circlead.model.Parameter.CATEGORY;
 import static org.rogatio.circlead.model.Parameter.DESCRIPTION;
+import static org.rogatio.circlead.model.Parameter.TYPE;
+import static org.rogatio.circlead.model.Parameter.SUBTYPE;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +30,7 @@ import org.rogatio.circlead.model.data.ActivityDataitem;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.TeamDataitem;
 import org.rogatio.circlead.model.data.TeamEntry;
+import org.rogatio.circlead.util.CircleadRecurrenceRule;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
@@ -46,6 +52,38 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	 */
 	public Team(IDataitem dataitem) {
 		super(dataitem);
+	}
+
+	public void setRecurrenceRule(String recurrenceRule) {
+		this.getDataitem().setRecurrenceRule(recurrenceRule);
+	}
+
+	public void setType(String type) {
+		this.getDataitem().setType(type);
+	}
+
+	public String getType() {
+		return this.getDataitem().getType();
+	}
+	
+	public void setSubtype(String subtype) {
+		this.getDataitem().setSubtype(subtype);
+	}
+
+	public String getSubtype() {
+		return this.getDataitem().getSubtype();
+	}
+	
+	public void setCategory(String category) {
+		this.getDataitem().setCategory(category);
+	}
+
+	public String getCategory() {
+		return this.getDataitem().getCategory();
+	}
+
+	public String getRecurrenceRule() {
+		return this.getDataitem().getRecurrenceRule();
 	}
 
 	/**
@@ -105,6 +143,24 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		return this.getDataitem().toString() + ", type=" + getType();
 	}
 
+	public int getTeamSize() {
+		return getTeamMembers().size();
+	}
+
+	public List<String> getTeamMembers() {
+		List<String> personIdentifiers = new ArrayList<String>();
+		List<TeamEntry> list = this.getTeamEntries();
+		for (TeamEntry teamEntry : list) {
+			List<String> p = teamEntry.getPersonIdentifiers();
+			for (String pi : p) {
+				if (!personIdentifiers.contains(pi)) {
+					personIdentifiers.add(pi);
+				}
+			}
+		}
+		return personIdentifiers;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -116,6 +172,31 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 
 		Element element = new Element("p");
 
+		/*if (StringUtil.isNotNullAndNotEmpty(this.getCategory())) {
+			if (this.getTeamSize() < 2) {
+				renderer.addStatus(element, "Internal");
+			} else {
+				renderer.addStatus(element, "External");
+			}
+		}*/
+
+		if (StringUtil.isNotNullAndNotEmpty(this.getCategory())) {
+			renderer.addItem(element, CATEGORY.toString(), this.getCategory());
+		}
+		if (StringUtil.isNotNullAndNotEmpty(this.getType())) {
+			renderer.addItem(element, TYPE.toString(), this.getType());
+		}
+		if (StringUtil.isNotNullAndNotEmpty(this.getSubtype())) {
+			renderer.addItem(element, SUBTYPE.toString(), this.getSubtype());
+		}
+		if (StringUtil.isNotNullAndNotEmpty(this.getRecurrenceRule())) {
+//			CircleadRecurrenceRule crr = new CircleadRecurrenceRule(this.getRecurrenceRule());
+			renderer.addItem(element, RECURRENCERULE.toString(),
+					this.getRecurrenceRule());// + " (" + crr.toString() + ")");
+		}
+		
+		renderer.addItem(element, "Anzahl Teammitglieder", this.getTeamSize()+"");
+		
 		if (StringUtil.isNotNullAndNotEmpty(this.getDescription())) {
 			renderer.addH2(element, DESCRIPTION.toString());
 			renderer.addItem(element, this.getDescription());
@@ -135,7 +216,7 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		for (TeamEntry teamEntry : entries) {
 			if (ObjectUtil.isListNotNullAndEmpty(teamEntry.getPersonIdentifiers())) {
 				if (teamEntry.getPersonIdentifiers().size() < teamEntry.getNeeded()) {
-					int diff = - teamEntry.getNeeded() + teamEntry.getPersonIdentifiers().size();
+					int diff = -teamEntry.getNeeded() + teamEntry.getPersonIdentifiers().size();
 					map.put(teamEntry.getRoleIdentifier(), diff);
 				}
 			} else {
@@ -144,7 +225,7 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		}
 		return map;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -159,12 +240,16 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			if (ObjectUtil.isListNotNullAndEmpty(teamEntry.getPersonIdentifiers())) {
 				if (teamEntry.getPersonIdentifiers().size() < teamEntry.getNeeded()) {
 					ValidationMessage m = new ValidationMessage(this);
-					m.error("Teamrole not completly set", "Teamrole '" + teamEntry.getRoleIdentifier() + "' in Team '"+this.getTitle()+"' needs "+teamEntry.getNeeded() +"persons and has only "+teamEntry.getPersonIdentifiers().size());
+					m.error("Teamrole not completly set",
+							"Teamrole '" + teamEntry.getRoleIdentifier() + "' in Team '" + this.getTitle() + "' needs "
+									+ teamEntry.getNeeded() + "persons and has only "
+									+ teamEntry.getPersonIdentifiers().size());
 					messages.add(m);
 				}
 			} else {
 				ValidationMessage m = new ValidationMessage(this);
-				m.error("Teamrole empty", "Teamrole '" + teamEntry.getRoleIdentifier() + "' in Team '"+this.getTitle()+"' needs "+teamEntry.getNeeded() +" persons");
+				m.error("Teamrole empty", "Teamrole '" + teamEntry.getRoleIdentifier() + "' in Team '" + this.getTitle()
+						+ "' needs " + teamEntry.getNeeded() + " persons");
 				messages.add(m);
 			}
 		}

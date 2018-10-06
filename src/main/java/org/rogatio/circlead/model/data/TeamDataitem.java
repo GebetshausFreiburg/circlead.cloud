@@ -26,8 +26,14 @@ public class TeamDataitem extends DefaultDataitem {
 	@JsonSchemaDescription("Description of the team")
 	private String description;
 
+	private String recurrenceRule;
+
+	private String category;
+	private String type;
+	private String subtype;
+
 	private List<TeamEntry> teams = new ArrayList<TeamEntry>();
-	
+
 	/**
 	 * Gets the description.
 	 *
@@ -53,5 +59,47 @@ public class TeamDataitem extends DefaultDataitem {
 	public void setTeamEntries(List<TeamEntry> teams) {
 		this.teams = teams;
 	}
+
+	public String getRecurrenceRule() {
+		return recurrenceRule;
+	}
+
+	public void setRecurrenceRule(String recurrenceRule) {
+		if (recurrenceRule != null) {
+			this.recurrenceRule = recurrenceRule.toUpperCase().trim();
+		}
+	}
 	
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getSubtype() {
+		return subtype;
+	}
+
+	public void setSubtype(String subtype) {
+		this.subtype = subtype;
+	}
+
+	public List<TeamEntry> getTeams() {
+		return teams;
+	}
+
+	public void setTeams(List<TeamEntry> teams) {
+		this.teams = teams;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
 }
