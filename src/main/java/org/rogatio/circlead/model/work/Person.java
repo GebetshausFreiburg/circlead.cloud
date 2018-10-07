@@ -26,10 +26,12 @@ import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
 import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
+import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.data.ContactDataitem;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.PersonDataitem;
 import org.rogatio.circlead.model.data.TeamEntry;
+import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.IWorkitemRenderer;
@@ -191,7 +193,8 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 			if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
 				element.append(Parser.addImage(getAvatar(), 250, 1));
 			} else if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
-				element.append("<img src=\"..\\data\\images\\profile\\"+getAvatar()+"\" alt=\""+this.getFullname()+"\" width=\"250px\">");
+				element.append("<img src=\"..\\data\\images\\profile\\" + getAvatar() + "\" alt=\"" + this.getFullname()
+						+ "\" width=\"250px\">");
 			}
 		}
 
@@ -213,28 +216,35 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		renderer.addH2(element, ROLESINORGANISATION.toString());
 		renderer.addRoleList(element, Repository.getInstance().getRolesWithPerson(this.getFullname()), this);
 
-		renderer.addH2(element, ROLESINTEAM.toString());
 		List<Team> foundTeams = Repository.getInstance().getTeamsWithMember(this);
-		Element ul = element.appendElement("ul");
-		for (Team team : foundTeams) {
-			Element li = ul.appendElement("li");
-			String c = "";
-			if (StringUtil.isNotNullAndNotEmpty(team.getCategory())) {
-				c = " ("+team.getCategory()+")";
-			}
-			renderer.addTeamItem(li, null, team.getTitle()+ c);
-//			li.appendText(team.getTitle()+"");
-			List<TeamEntry> x = team.getTeamEntries();
-			Element ul2 = li.appendElement("ul");
-			for (TeamEntry e : x) {
-				if (e.getPersonIdentifiers().contains(this.getFullname())) {
-					Element li2 = ul2.appendElement("li");
-					renderer.addRoleItem(li2, null, e.getRoleIdentifier());
-					//.appendText(e.getRoleIdentifier());
+		if (ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
+			renderer.addH2(element, ROLESINTEAM.toString());
+			Element ul = element.appendElement("ul");
+			for (Team team : foundTeams) {
+				Element li = ul.appendElement("li");
+				String c = "";
+				if (StringUtil.isNotNullAndNotEmpty(team.getCategory())) {
+					c = " (" + team.getCategory() + ")";
+				}
+
+				if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
+					li.append("<ac:link><ri:page ri:content-title=\""+team.getTitle()+"\" ri:version-at-save=\"1\"/><ac:plain-text-link-body><![CDATA["+team.getTitle()+""+c+"]]></ac:plain-text-link-body></ac:link>");
+				} else if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
+					li.appendElement("a").attr("href", "../web/" + team.getId(synchronizer) + ".html").appendText(team.getTitle()+c);
+				}
+				
+				//renderer.addTeamItem(li, null, team.getTitle() + c);
+				List<TeamEntry> x = team.getTeamEntries();
+				Element ul2 = li.appendElement("ul");
+				for (TeamEntry e : x) {
+					if (e.getPersonIdentifiers().contains(this.getFullname())) {
+						Element li2 = ul2.appendElement("li");
+						renderer.addRoleItem(li2, null, e.getRoleIdentifier());
+					}
 				}
 			}
 		}
-		
+
 		return element;
 	}
 
@@ -289,6 +299,13 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 			messages.add(m);
 		}
 
+		List<Team> foundTeams = Repository.getInstance().getTeamsWithMember(this);
+		if (!ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
+			ValidationMessage m = new ValidationMessage(this);
+			m.error("Person has no team-role", "Person '" + this.getFullname() + "' has no related team-role");
+			messages.add(m);
+		}
+		
 		/*
 		 * if (!this.hasAbbreviation()) { ValidationMessage m = new
 		 * ValidationMessage(this); m.warning("No abbreviation added", "Role '" +

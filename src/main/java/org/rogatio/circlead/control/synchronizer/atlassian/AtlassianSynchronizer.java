@@ -91,9 +91,9 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 
 	/** The personspage. */
 	private final String PERSONSPAGE = "Persons";
-	
+
 	private final String TEAMSPAGE = "Teams";
-	
+
 	/** The Constant LOGGER. */
 	private final static Logger LOGGER = LogManager.getLogger(AtlassianSynchronizer.class);
 
@@ -302,7 +302,19 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 			mapper.setSerializationInclusion(Include.NON_NULL);
 			// Create valid json from POJO-Object
 			String data = mapper.writeValueAsString(page);
-			String uri = confluenceClient.getRestPrefix() + "content/" + workitem.getId(this);
+
+			String id = workitem.getId(this);
+
+//			if (id == null) {
+//				LOGGER.error("Workitem '" + workitem.getType() + "' with title '" + workitem.getTitle()
+//						+ "' has no valid id for synchonizer '" + this.getClass().getSimpleName() + "'");
+//				SynchronizerResult res = new SynchronizerResult();
+//				res.setMessage("Id could not be found for workitem '" + workitem.getTitle() + "' and synchonizer '"
+//						+ this.getClass().getSimpleName() + "'");
+//				return res;
+//			}
+
+			String uri = confluenceClient.getRestPrefix() + "content/" + id;
 			// Catch result from rest-interface writing confluence-page
 			SynchronizerResult res = confluenceClient.put(uri, data);
 
@@ -778,9 +790,9 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 				} else if (WorkitemParameter.CATEGORY.has(key)) {
 					team.setCategory(value.toString());
 				} else if (WorkitemParameter.TYPE.has(key)) {
-					team.setType(value.toString());
+					team.setTeamType(value.toString());
 				} else if (WorkitemParameter.SUBTYPE.has(key)) {
-					team.setSubtype(value.toString());
+					team.setTeamSubtype(value.toString());
 				} else if (WorkitemParameter.TEAMROLES.has(key)) {
 					team.setTeamTable((TeamTableParserElement) value);
 				} else if (WorkitemParameter.VERSION.has(key)) {
@@ -796,7 +808,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 
 			return team;
 		}
-		
+
 		if (ACTIVITY.isEquals(type)) {
 			Activity activity = new Activity();
 

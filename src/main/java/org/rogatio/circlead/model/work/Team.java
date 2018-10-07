@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jsoup.nodes.Element;
+import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.TeamTableParserElement;
@@ -55,22 +56,22 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		this.getDataitem().setRecurrenceRule(recurrenceRule);
 	}
 
-	public void setType(String type) {
+	public void setTeamType(String type) {
 		this.getDataitem().setType(type);
 	}
 
-	public String getType() {
+	public String getTeamType() {
 		return this.getDataitem().getType();
 	}
-	
-	public void setSubtype(String subtype) {
+
+	public void setTeamSubtype(String subtype) {
 		this.getDataitem().setSubtype(subtype);
 	}
 
-	public String getSubtype() {
+	public String getTeamSubtype() {
 		return this.getDataitem().getSubtype();
 	}
-	
+
 	public void setCategory(String category) {
 		this.getDataitem().setCategory(category);
 	}
@@ -114,6 +115,10 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			this.getDataitem().setTeamEntries(teams);
 		}
 
+	}
+
+	public void addTeamEnty(TeamEntry teamEntry) {
+		this.getDataitem().addTeamEntry(teamEntry);
 	}
 
 	public List<TeamEntry> getTeamEntries() {
@@ -169,31 +174,29 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 
 		Element element = new Element("p");
 
-		/*if (StringUtil.isNotNullAndNotEmpty(this.getCategory())) {
-			if (this.getTeamSize() < 2) {
-				renderer.addStatus(element, "Internal");
-			} else {
-				renderer.addStatus(element, "External");
-			}
-		}*/
+		/*
+		 * if (StringUtil.isNotNullAndNotEmpty(this.getCategory())) { if
+		 * (this.getTeamSize() < 2) { renderer.addStatus(element, "Internal"); } else {
+		 * renderer.addStatus(element, "External"); } }
+		 */
 
 		if (StringUtil.isNotNullAndNotEmpty(this.getCategory())) {
 			renderer.addItem(element, CATEGORY.toString(), this.getCategory());
 		}
-		if (StringUtil.isNotNullAndNotEmpty(this.getType())) {
-			renderer.addItem(element, TYPE.toString(), this.getType());
+		if (StringUtil.isNotNullAndNotEmpty(this.getTeamType())) {
+			renderer.addItem(element, TYPE.toString(), this.getTeamType());
 		}
-		if (StringUtil.isNotNullAndNotEmpty(this.getSubtype())) {
-			renderer.addItem(element, SUBTYPE.toString(), this.getSubtype());
+		if (StringUtil.isNotNullAndNotEmpty(this.getTeamSubtype())) {
+			renderer.addItem(element, SUBTYPE.toString(), this.getTeamSubtype());
 		}
 		if (StringUtil.isNotNullAndNotEmpty(this.getRecurrenceRule())) {
 //			CircleadRecurrenceRule crr = new CircleadRecurrenceRule(this.getRecurrenceRule());
-			renderer.addItem(element, RECURRENCERULE.toString(),
-					this.getRecurrenceRule());// + " (" + crr.toString() + ")");
+			renderer.addItem(element, RECURRENCERULE.toString(), this.getRecurrenceRule());// + " (" + crr.toString() +
+																							// ")");
 		}
-		
-		renderer.addItem(element, "Anzahl Teammitglieder", this.getTeamSize()+"");
-		
+
+		renderer.addItem(element, "Anzahl Teammitglieder", this.getTeamSize() + "");
+
 		if (StringUtil.isNotNullAndNotEmpty(this.getDescription())) {
 			renderer.addH2(element, DESCRIPTION.toString());
 			renderer.addItem(element, this.getDescription());
@@ -235,6 +238,18 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		List<TeamEntry> entries = this.getTeamEntries();
 		for (TeamEntry teamEntry : entries) {
 			if (ObjectUtil.isListNotNullAndEmpty(teamEntry.getPersonIdentifiers())) {
+
+				for (String identifier : teamEntry.getPersonIdentifiers()) {
+					Person p = Repository.getInstance().getPerson(identifier);
+					if (p == null) {
+						ValidationMessage m = new ValidationMessage(this);
+						m.error("Person not idenfied",
+								"Person '" + identifier + "' for role '" + teamEntry.getRoleIdentifier()
+										+ "' in Team '" + this.getTitle() + "' could not be identified");
+						messages.add(m);
+					}
+				}
+
 				if (teamEntry.getPersonIdentifiers().size() < teamEntry.getNeeded()) {
 					ValidationMessage m = new ValidationMessage(this);
 					m.error("Teamrole not completly set",

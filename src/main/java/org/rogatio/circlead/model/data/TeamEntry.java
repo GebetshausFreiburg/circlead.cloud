@@ -13,6 +13,9 @@ public class TeamEntry {
 	private String level;
 	private List<String> personIdentifiers;
 
+	public TeamEntry() {
+	}
+	
 	public TeamEntry(Map<String, String> dataMap) {
 		this.setRoleIdentifier(dataMap.get(Parameter.ROLE.toString()));
 		this.setNeeded(dataMap.get(Parameter.NEEDED.toString()));

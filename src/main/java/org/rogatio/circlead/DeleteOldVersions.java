@@ -30,7 +30,7 @@ public class DeleteOldVersions {
 		asynchronizer.deleteVersions(WorkitemType.ROLE);
 		asynchronizer.deleteVersions(WorkitemType.ROLEGROUP);
 		asynchronizer.deleteVersions(WorkitemType.PERSON);
-		
+		asynchronizer.deleteVersions(WorkitemType.TEAM);		
 	}
 	
 }

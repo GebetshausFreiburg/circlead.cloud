@@ -202,6 +202,11 @@ public class FileSynchronizer extends DefaultSynchronizer {
 		} catch (Exception e) {
 			LOGGER.warn("No directory '" + dataDirectory + File.separatorChar + "roles" + "' found to delete.");
 		}
+		try {
+			FileUtil.deleteRecursive(new File(dataDirectory + File.separatorChar + "teams"));
+		} catch (Exception e) {
+			LOGGER.warn("No directory '" + dataDirectory + File.separatorChar + "teams" + "' found to delete.");
+		}
 
 	}
 

@@ -33,10 +33,10 @@ public class Sync {
 	// TODO Activity-Process-Builder erzeugen
 
 	/** The Constant REPORTS. */
-	public static final boolean REPORTS = false;
+	public static final boolean REPORTS = true;
 	
 	/** The Constant HOWTOS. */
-	public static final boolean HOWTOS = false;
+	public static final boolean HOWTOS = true;
 	
 	/** The Constant ROLES. */
 	public static final boolean ROLES = true;

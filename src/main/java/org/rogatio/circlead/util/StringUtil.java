@@ -89,6 +89,21 @@ public class StringUtil {
 		return s.substring(0, 1).toUpperCase() + s.substring(1, s.length());
 	}
 
+	public static String addSpace(String string, int space, char fill) {
+		 
+        int spacer = 0;
+        StringBuffer sb = new StringBuffer();
+ 
+        if (space > string.length())
+            spacer = space - string.length();
+ 
+        for (int i = 0; i < spacer; i++) {
+            sb.append(fill);
+        }
+ 
+        return sb.append(string).toString();
+    }
+	
 	/**
 	 * Checks if string is not null and not empty.
 	 *

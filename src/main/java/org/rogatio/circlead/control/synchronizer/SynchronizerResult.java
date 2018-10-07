@@ -103,7 +103,7 @@ public class SynchronizerResult {
 	 */
 	@Override
 	public String toString() {
-		return "Result [code = "+this.getCode()+", msg="+this.getMessage()+"]: "+this.getContent();
+		return "Result [code = "+this.getCode()+", msg="+this.getMessage()+"]";//: "+this.getContent();
 	}
 
 }

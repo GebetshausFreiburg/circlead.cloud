@@ -11,6 +11,7 @@ package org.rogatio.circlead.model.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaDescription;
 import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaTitle;
 
@@ -56,6 +57,11 @@ public class TeamDataitem extends DefaultDataitem {
 
 	public void setTeamEntries(List<TeamEntry> teams) {
 		this.teams = teams;
+	}
+	
+	@JsonIgnore
+	public void addTeamEntry(TeamEntry teamEntry) {
+		this.teams.add(teamEntry);
 	}
 
 	public String getRecurrenceRule() {
