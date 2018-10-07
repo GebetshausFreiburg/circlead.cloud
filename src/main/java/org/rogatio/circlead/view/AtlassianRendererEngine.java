@@ -35,7 +35,7 @@ import org.rogatio.circlead.util.ObjectUtil;
  */
 public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 
-	/**  The correlated synchronizer. */
+	/** The correlated synchronizer. */
 	private ISynchronizer synchronizer;
 
 	/**
@@ -59,13 +59,19 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 	/** The Constant LOGGER. */
 	final static Logger LOGGER = LogManager.getLogger(AtlassianRendererEngine.class);
 
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addSubActivityList(org.jsoup.nodes.Element, java.util.List, org.rogatio.circlead.model.work.Activity, org.rogatio.circlead.model.work.Role)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.rogatio.circlead.view.ISynchronizerRendererEngine#addSubActivityList(org.
+	 * jsoup.nodes.Element, java.util.List,
+	 * org.rogatio.circlead.model.work.Activity,
+	 * org.rogatio.circlead.model.work.Role)
 	 */
 	public void addSubActivityList(Element element, List<ActivityDataitem> list, Activity activity, Role role) {
-		
+
 		List<Activity> a = Repository.getInstance().getActivities(role.getTitle());
-		
+
 		if (ObjectUtil.isListNotNullAndEmpty(list)) {
 			// Open html-list
 			Element ul = element.appendElement("div").appendElement("ul");
@@ -74,25 +80,25 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 				Element li = ul.appendElement("li");
 
 				// Add subactivity-title to list with valid link
-				
+
 				boolean found = false;
 				for (Activity act : a) {
 					if (act.getTitle().equals(activitydataitem.getTitle())) {
 						found = true;
 					}
 				}
-				
+
 				if (found) {
 					for (Activity act : a) {
 						if (act.getTitle().equals(activitydataitem.getTitle())) {
-							li.appendElement("ac:link").append(
-									"<ri:page ri:content-title=\"" + activitydataitem.getTitle() + "\" ri:version-at-save=\"1\" />");
+							li.appendElement("ac:link").append("<ri:page ri:content-title=\""
+									+ activitydataitem.getTitle() + "\" ri:version-at-save=\"1\" />");
 						}
-					}	
+					}
 				} else {
-				    li.appendText(activitydataitem.getTitle());
+					li.appendText(activitydataitem.getTitle());
 				}
-				
+
 				li.appendText(" (").appendElement("ac:link").append(
 						"<ri:page ri:content-title=\"" + activity.getTitle() + "\" ri:version-at-save=\"1\" />");
 				li.appendText(")");
@@ -188,11 +194,18 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 				}
 				if (role.getDataitem().hasSkill(person.getFullname())) {
 					String skill = role.getDataitem().getSkill(person.getFullname());
-//					li.append("&nbsp;");
-//					li.appendText("" + skill + "%");
-					Element s = Parser.getStatus(skill+"%");
+					Element s = Parser.getStatus(skill + "%");
 					li.append("&nbsp;");
 					s.appendTo(li);
+				}
+				if (role.getDataitem().hasRecurrenceRule(person.getFullname())) {
+					String rule = role.getDataitem().getRecurrenceRule(person.getFullname());
+					li.append("&nbsp;");
+					li.appendText(rule);
+				} else {
+//					Element s = Parser.getStatus(UNRELATED.toString());
+//					li.append("&nbsp;");
+//					s.appendTo(li);
 				}
 			}
 		}
@@ -278,14 +291,18 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 			}
 			if (role.getDataitem().hasSkill(identifier)) {
 				String skill = role.getDataitem().getSkill(identifier);
-				Element s = Parser.getStatus(skill+"%");
+				Element s = Parser.getStatus(skill + "%");
 				li.append("&nbsp;");
 				s.appendTo(li);
 			}
 			if (role.getDataitem().hasRecurrenceRule(identifier)) {
 				String rule = role.getDataitem().getRecurrenceRule(identifier);
 				li.append("&nbsp;");
-                li.appendText(rule);
+				li.appendText(rule);
+			} else {
+//				Element s = Parser.getStatus(UNRELATED.toString());
+//				li.append("&nbsp;");
+//				s.appendTo(li);
 			}
 		}
 
@@ -331,12 +348,18 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 			}
 			if (role.getDataitem().hasSkill(identifier)) {
 				String skill = role.getDataitem().getSkill(identifier);
-//				li.append("&nbsp;");
-//				li.appendText("" + skill + "%");
-				
-				Element s = Parser.getStatus(skill+"%");
+				Element s = Parser.getStatus(skill + "%");
 				li.append("&nbsp;");
 				s.appendTo(li);
+			}
+			if (role.getDataitem().hasRecurrenceRule(identifier)) {
+				String rule = role.getDataitem().getRecurrenceRule(identifier);
+				li.append("&nbsp;");
+				li.appendText(rule);
+			} else {
+//				Element s = Parser.getStatus(UNRELATED.toString());
+//				li.append("&nbsp;");
+//				s.appendTo(li);
 			}
 		}
 	}
@@ -454,8 +477,12 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addActivityItem(org.jsoup.nodes.Element, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.rogatio.circlead.view.ISynchronizerRendererEngine#addActivityItem(org.
+	 * jsoup.nodes.Element, java.lang.String, java.lang.String)
 	 */
 	public void addActivityItem(Element element, String description, String content) {
 		Activity r = Repository.getInstance().getActivity(content);
@@ -503,7 +530,7 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 			div.appendText("-");
 		}
 	}
-	
+
 	public void addPersonItem(Element element, String description, String content) {
 		Person r = Repository.getInstance().getPerson(content);
 
@@ -543,9 +570,13 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 			div.appendText("-");
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addWorkitemTable(org.jsoup.nodes.Element, java.util.List)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.rogatio.circlead.view.ISynchronizerRendererEngine#addWorkitemTable(org.
+	 * jsoup.nodes.Element, java.util.List)
 	 */
 	public void addWorkitemTable(Element element, List<IWorkitem> workitem) {
 		if (ObjectUtil.isListNotNullAndEmpty(workitem)) {
