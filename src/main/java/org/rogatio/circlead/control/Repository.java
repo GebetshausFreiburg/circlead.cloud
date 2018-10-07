@@ -674,10 +674,48 @@ public final class Repository {
 		return null;
 	}
 
-	public List<Team> getTeamsWithMember(Person person) {
+	/*public List<Team> getTeamsWithRoleAndMember(Role role, Person person) {
+		List<Team> list = new ArrayList<Team>();
+
+		for (Team team : getTeamsWithMember(person)) {
+			List<TeamEntry> entries = team.getTeamEntries();
+			if (ObjectUtil.isListNotNullAndEmpty(entries)) {
+				for (TeamEntry entry : entries) {
+					if (StringUtil.isNotNullAndNotEmpty(entry.getRoleIdentifier())) {
+						if (entry.getRoleIdentifier().equals(role.getTitle())) {
+							list.add(team);
+						}
+					}
+				}
+			}
+		}
+
+		return list;
+	}*/
+	
+	public List<Team> getTeamsWithRole(Role role) {
 		List<Team> list = new ArrayList<Team>();
 
 		for (Team team : this.getTeams()) {
+			List<TeamEntry> entries = team.getTeamEntries();
+			if (ObjectUtil.isListNotNullAndEmpty(entries)) {
+				for (TeamEntry entry : entries) {
+					if (StringUtil.isNotNullAndNotEmpty(entry.getRoleIdentifier())) {
+						if (entry.getRoleIdentifier().equals(role.getTitle())) {
+							list.add(team);
+						}
+					}
+				}
+			}
+		}
+
+		return list;
+	}
+	
+	public List<Team> getTeamsWithMember(Person person, List<Team> teamList) {
+		List<Team> list = new ArrayList<Team>();
+
+		for (Team team : teamList) {
 			List<TeamEntry> entries = team.getTeamEntries();
 			if (ObjectUtil.isListNotNullAndEmpty(entries)) {
 				for (TeamEntry entry : entries) {
@@ -693,6 +731,10 @@ public final class Repository {
 		}
 
 		return list;
+	}
+	
+	public List<Team> getTeamsWithMember(Person person) {
+		return getTeamsWithMember(person, this.getTeams());
 	}
 
 	public Team getTeam(String identifier) {

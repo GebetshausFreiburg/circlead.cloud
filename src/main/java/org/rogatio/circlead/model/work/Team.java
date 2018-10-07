@@ -243,7 +243,7 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 					Person p = Repository.getInstance().getPerson(identifier);
 					if (p == null) {
 						ValidationMessage m = new ValidationMessage(this);
-						m.error("Person not idenfied",
+						m.warning("Person not idenfied",
 								"Person '" + identifier + "' for role '" + teamEntry.getRoleIdentifier()
 										+ "' in Team '" + this.getTitle() + "' could not be identified");
 						messages.add(m);
@@ -252,7 +252,7 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 
 				if (teamEntry.getPersonIdentifiers().size() < teamEntry.getNeeded()) {
 					ValidationMessage m = new ValidationMessage(this);
-					m.error("Teamrole not completly set",
+					m.warning("Teamrole not completly set",
 							"Teamrole '" + teamEntry.getRoleIdentifier() + "' in Team '" + this.getTitle() + "' needs "
 									+ teamEntry.getNeeded() + "persons and has only "
 									+ teamEntry.getPersonIdentifiers().size());

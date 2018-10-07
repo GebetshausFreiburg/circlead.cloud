@@ -8,21 +8,7 @@
  */
 package org.rogatio.circlead.model.work;
 
-import static org.rogatio.circlead.model.Parameter.ABBREVIATION;
-import static org.rogatio.circlead.model.Parameter.CARRYROLEGROUP;
-import static org.rogatio.circlead.model.Parameter.CHILDS;
-import static org.rogatio.circlead.model.Parameter.COMPETENCIES;
-import static org.rogatio.circlead.model.Parameter.OPPORTUNITIES;
-import static org.rogatio.circlead.model.Parameter.ORGANISATION;
-import static org.rogatio.circlead.model.Parameter.PARENT;
-import static org.rogatio.circlead.model.Parameter.PURPOSE;
-import static org.rogatio.circlead.model.Parameter.RESPONSIBILITIES;
-import static org.rogatio.circlead.model.Parameter.ROLEPERSONS;
-import static org.rogatio.circlead.model.Parameter.RULES;
-import static org.rogatio.circlead.model.Parameter.SYNONYMS;
-import static org.rogatio.circlead.model.Parameter.TASKS;
-import static org.rogatio.circlead.model.Parameter.UNRELATED;
-
+import static org.rogatio.circlead.model.Parameter.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,13 +17,16 @@ import java.util.TreeMap;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
+import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.ListParserElement;
+import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
 import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.data.ActivityDataitem;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.RoleDataitem;
+import org.rogatio.circlead.model.data.TeamEntry;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
@@ -416,6 +405,10 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		return this.getDataitem().toString() + ", type=" + getType();
 	}
 
+	public String getRecurrenceRule(String personIdentifier) {
+		return this.getDataitem().getRecurrenceRule(personIdentifier);
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -441,10 +434,48 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			}
 		}
 
+		boolean foundSomeRoleResponsible = false;
 		if (ObjectUtil.isListNotNullAndEmpty(this.getPersonIdentifiers())) {
-			renderer.addH2(element, ROLEPERSONS.toString());
+			renderer.addH2(element, ROLEPERSONSINORGANISATION.toString());
 			renderer.addPersonList(element, this.getPersonIdentifiers(), this);
-		} else {
+			foundSomeRoleResponsible = true;
+		}
+		
+		List<Team> foundTeams = Repository.getInstance().getTeamsWithRole(this);
+		if (ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
+			renderer.addH2(element, ROLEPERSONSINTEAM.toString());
+			Element ul = element.appendElement("ul");
+			for (Team team : foundTeams) {
+				Element li = ul.appendElement("li");
+				String c = "";
+				if (StringUtil.isNotNullAndNotEmpty(team.getCategory())) {
+					c = " (" + team.getCategory() + ")";
+				}
+
+				if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
+					li.append("<ac:link><ri:page ri:content-title=\""+team.getTitle()+"\" ri:version-at-save=\"1\"/><ac:plain-text-link-body><![CDATA["+team.getTitle()+""+c+"]]></ac:plain-text-link-body></ac:link>");
+				} else if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
+					li.appendElement("a").attr("href", "../web/" + team.getId(synchronizer) + ".html").appendText(team.getTitle()+c);
+				}
+				
+				List<TeamEntry> x = team.getTeamEntries();
+				Element ul2 = li.appendElement("ul");
+				for (TeamEntry e : x) {
+					if (e.getRoleIdentifier().equals(this.getTitle())) {
+						List<String> pi = e.getPersonIdentifiers();
+						if (ObjectUtil.isListNotNullAndEmpty(pi)) {
+							for (String p : pi) {
+								Element li2 = ul2.appendElement("li");
+								renderer.addPersonItem(li2, null, p);
+								foundSomeRoleResponsible = true;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		if (!foundSomeRoleResponsible) {
 			renderer.addH2(element, ROLEPERSONS.toString());
 			renderer.addStatus(element, UNRELATED.toString());
 		}

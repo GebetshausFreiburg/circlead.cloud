@@ -17,6 +17,9 @@ public enum Parameter {
 	/** The rolepersons. */
 	ROLEPERSONS("Rollenträger"),
 	
+	ROLEPERSONSINORGANISATION("Rollenträger in Organisation"),
+	ROLEPERSONSINTEAM("Rollenträger im Team"),
+	
 	/** The tasks. */
 	TASKS("Aufgaben"),
 	

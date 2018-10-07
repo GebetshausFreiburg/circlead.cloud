@@ -213,13 +213,16 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 					}
 					if (role.getDataitem().hasSkill(person.getFullname())) {
 						String skill = role.getDataitem().getSkill(person.getFullname());
-//						li.append("&nbsp;");
-//						li.appendText("" + skill + "%");
 						WorkitemStatusParameter status = WorkitemStatusParameter.get(skill+"%");
 						if (status != null) {
 							li.append("&nbsp;").appendElement("div").attr("id", "status" + status.getColor())
 									.appendText(status.getName());
 						}
+					}
+					if (role.getDataitem().hasRecurrenceRule(person.getFullname())) {
+						String rule = role.getDataitem().getRecurrenceRule(person.getFullname());
+						li.append("&nbsp;");
+						li.appendText(rule);
 					}
 				}
 			}
@@ -295,6 +298,11 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 							.appendText(status.getName());
 				}
 			}
+			if (role.getDataitem().hasRecurrenceRule(identifier)) {
+				String rule = role.getDataitem().getRecurrenceRule(identifier);
+				li.append("&nbsp;");
+				li.appendText(rule);
+			}
 		}
 
 	}
@@ -361,6 +369,11 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 					li.append("&nbsp;").appendElement("div").attr("id", "status" + status.getColor())
 							.appendText(status.getName());
 				}
+			}
+			if (role.getDataitem().hasRecurrenceRule(identifier)) {
+				String rule = role.getDataitem().getRecurrenceRule(identifier);
+				li.append("&nbsp;");
+				li.appendText(rule);
 			}
 		}
 

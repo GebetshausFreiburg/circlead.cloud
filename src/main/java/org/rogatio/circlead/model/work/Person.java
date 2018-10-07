@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.dmfs.rfc5545.recur.Freq;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
@@ -26,11 +27,11 @@ import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
 import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
-import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.data.ContactDataitem;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.PersonDataitem;
 import org.rogatio.circlead.model.data.TeamEntry;
+import org.rogatio.circlead.util.CircleadRecurrenceRule;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
@@ -213,12 +214,33 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 			}
 		}
 
-		renderer.addH2(element, ROLESINORGANISATION.toString());
-		renderer.addRoleList(element, Repository.getInstance().getRolesWithPerson(this.getFullname()), this);
+		List<Role> orgRoles = Repository.getInstance().getRolesWithPerson(this.getFullname());
+		double sumR = 0;
+		for (Role role : orgRoles) {
+			String rule = role.getRecurrenceRule(this.getFullname());
+			if (StringUtil.isNotNullAndNotEmpty(rule)) {
+				CircleadRecurrenceRule crr = new CircleadRecurrenceRule(rule); 
+				double allok = crr.getAverageAllokation(Freq.WEEKLY);
+				sumR += allok;
+			}
+		}
+		
+		renderer.addH2(element, ROLESINORGANISATION.toString() + " ("+Math.round(sumR)+"h/Woche)");
+		renderer.addRoleList(element, orgRoles, this);
 
 		List<Team> foundTeams = Repository.getInstance().getTeamsWithMember(this);
 		if (ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
-			renderer.addH2(element, ROLESINTEAM.toString());
+			double sum = 0;
+			for (Team team : foundTeams) {
+				String rule = team.getRecurrenceRule();
+				if (StringUtil.isNotNullAndNotEmpty(rule)) {
+					CircleadRecurrenceRule crr = new CircleadRecurrenceRule(rule); 
+					double allok = crr.getAverageAllokation(Freq.WEEKLY);
+					sum += allok;
+				}
+			}
+			
+			renderer.addH2(element, ROLESINTEAM.toString()+ " ("+Math.round(sum)+"h/Woche)");
 			Element ul = element.appendElement("ul");
 			for (Team team : foundTeams) {
 				Element li = ul.appendElement("li");
@@ -233,7 +255,6 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 					li.appendElement("a").attr("href", "../web/" + team.getId(synchronizer) + ".html").appendText(team.getTitle()+c);
 				}
 				
-				//renderer.addTeamItem(li, null, team.getTitle() + c);
 				List<TeamEntry> x = team.getTeamEntries();
 				Element ul2 = li.appendElement("ul");
 				for (TeamEntry e : x) {
@@ -302,7 +323,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		List<Team> foundTeams = Repository.getInstance().getTeamsWithMember(this);
 		if (!ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
 			ValidationMessage m = new ValidationMessage(this);
-			m.error("Person has no team-role", "Person '" + this.getFullname() + "' has no related team-role");
+			m.warning("Person has no team-role", "Person '" + this.getFullname() + "' has no related team-role");
 			messages.add(m);
 		}
 		
