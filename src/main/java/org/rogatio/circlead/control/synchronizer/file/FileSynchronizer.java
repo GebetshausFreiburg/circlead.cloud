@@ -42,6 +42,7 @@ import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.FileUtil;
+import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.view.FileRendererEngine;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.IWorkitemRenderer;
@@ -278,9 +279,14 @@ public class FileSynchronizer extends DefaultSynchronizer {
 			doc.charset(Charset.forName("UTF-8"));
 			Element html = doc.appendElement("html");
 			Element head = html.appendElement("head");
-			head.append("<link rel=\"stylesheet\" href=\"styles.css\">");
+			if (ObjectUtil.isListNotNullAndEmpty(report.getHeadExtension())) {
+				for (String h : report.getHeadExtension()) {
+					head.append(h);
+				}
+			} else {
+				head.append("<link rel=\"stylesheet\" href=\"styles.css\">");
+			}
 			head.append("<meta charset=\"utf-8\">");
-			html.appendElement("body");
 			Element body = html.appendElement("body");
 
 			body.appendElement("H1").appendText(report.getName());
@@ -322,7 +328,6 @@ public class FileSynchronizer extends DefaultSynchronizer {
 			Element head = html.appendElement("head");
 			head.append("<link rel=\"stylesheet\" href=\"styles.css\">");
 			head.append("<meta charset=\"utf-8\">");
-			html.appendElement("body");
 			Element body = html.appendElement("body");
 
 			body.appendElement("H1").appendText(workitem.getTitle());

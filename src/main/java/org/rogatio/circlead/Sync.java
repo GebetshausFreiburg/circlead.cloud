@@ -19,6 +19,7 @@ import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.view.report.OverviewReport;
 import org.rogatio.circlead.view.report.PersonListReport;
+import org.rogatio.circlead.view.report.PrayHourReport;
 import org.rogatio.circlead.view.report.ReworkReport;
 import org.rogatio.circlead.view.report.RoleHolderReport;
 import org.rogatio.circlead.view.report.RolegroupReport;
@@ -36,19 +37,19 @@ public class Sync {
 	public static final boolean REPORTS = true;
 	
 	/** The Constant HOWTOS. */
-	public static final boolean HOWTOS = true;
+	public static final boolean HOWTOS = false;
 	
 	/** The Constant ROLES. */
-	public static final boolean ROLES = true;
+	public static final boolean ROLES = false;
 	
 	/** The Constant ROLEGROUPS. */
-	public static final boolean ROLEGROUPS = true;
+	public static final boolean ROLEGROUPS = false;
 	
 	/** The Constant PERSONS. */
-	public static final boolean PERSONS = true;
+	public static final boolean PERSONS = false;
 	
 	/** The Constant ACTIVITIES. */
-	public static final boolean ACTIVITIES = true;
+	public static final boolean ACTIVITIES = false;
 	
 	public static final boolean TEAMS = true;
 
@@ -127,6 +128,7 @@ public class Sync {
 			repository.addReport(new ReworkReport());
 			repository.addReport(new PersonListReport());
 			repository.addReport(new RolegroupSummaryReport());
+			repository.addReport(new PrayHourReport());
 			// repository.addReport(new RoleIssueReport());
 
 			/* Rewrite Reports */

@@ -107,7 +107,7 @@ public class ImportPrayHours {
 								dayFull = "Mi";
 							}
 							if (cellValue.startsWith("Donner")) {
-								day = "TU";
+								day = "TH";
 								dayFull = "Do";
 							}
 							if (cellValue.equals("Freitag")) {

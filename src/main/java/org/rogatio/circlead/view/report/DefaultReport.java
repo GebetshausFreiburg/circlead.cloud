@@ -8,6 +8,8 @@
  */
 package org.rogatio.circlead.view.report;
 
+import java.util.List;
+
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 
@@ -41,6 +43,11 @@ public class DefaultReport implements IReport {
 	 */
 	@Override
 	public Element render(ISynchronizer synchronizer) {
+		return null;
+	}
+
+	@Override
+	public List<String> getHeadExtension() {
 		return null;
 	}
 

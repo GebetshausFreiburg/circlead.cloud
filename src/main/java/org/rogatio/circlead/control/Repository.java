@@ -389,6 +389,20 @@ public final class Repository {
 		return abbr;
 	}
 
+	public List<Team> getTeamsWithCategory(String category) {
+		List<Team> teams = new ArrayList<Team>();
+
+		for (Team team : getTeams()) {
+			if (StringUtil.isNotNullAndNotEmpty(team.getCategory())) {
+				if (team.getCategory().equals(category)) {
+					teams.add(team);
+				}
+			}
+		}
+
+		return teams;
+	}
+
 	public List<Team> getTeams() {
 		List<Team> teams = new ArrayList<Team>();
 		for (IWorkitem workitem : workitems) {
@@ -674,25 +688,20 @@ public final class Repository {
 		return null;
 	}
 
-	/*public List<Team> getTeamsWithRoleAndMember(Role role, Person person) {
-		List<Team> list = new ArrayList<Team>();
+	/*
+	 * public List<Team> getTeamsWithRoleAndMember(Role role, Person person) {
+	 * List<Team> list = new ArrayList<Team>();
+	 * 
+	 * for (Team team : getTeamsWithMember(person)) { List<TeamEntry> entries =
+	 * team.getTeamEntries(); if (ObjectUtil.isListNotNullAndEmpty(entries)) { for
+	 * (TeamEntry entry : entries) { if
+	 * (StringUtil.isNotNullAndNotEmpty(entry.getRoleIdentifier())) { if
+	 * (entry.getRoleIdentifier().equals(role.getTitle())) { list.add(team); } } } }
+	 * }
+	 * 
+	 * return list; }
+	 */
 
-		for (Team team : getTeamsWithMember(person)) {
-			List<TeamEntry> entries = team.getTeamEntries();
-			if (ObjectUtil.isListNotNullAndEmpty(entries)) {
-				for (TeamEntry entry : entries) {
-					if (StringUtil.isNotNullAndNotEmpty(entry.getRoleIdentifier())) {
-						if (entry.getRoleIdentifier().equals(role.getTitle())) {
-							list.add(team);
-						}
-					}
-				}
-			}
-		}
-
-		return list;
-	}*/
-	
 	public List<Team> getTeamsWithRole(Role role) {
 		List<Team> list = new ArrayList<Team>();
 
@@ -711,7 +720,7 @@ public final class Repository {
 
 		return list;
 	}
-	
+
 	public List<Team> getTeamsWithMember(Person person, List<Team> teamList) {
 		List<Team> list = new ArrayList<Team>();
 
@@ -732,7 +741,7 @@ public final class Repository {
 
 		return list;
 	}
-	
+
 	public List<Team> getTeamsWithMember(Person person) {
 		return getTeamsWithMember(person, this.getTeams());
 	}

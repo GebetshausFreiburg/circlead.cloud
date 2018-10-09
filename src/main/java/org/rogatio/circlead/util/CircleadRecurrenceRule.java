@@ -243,6 +243,26 @@ public class CircleadRecurrenceRule {
 	 * return amount * this.duration * allokationUnit * divider; }
 	 */
 
+	public String getDurationunit() {
+		return this.durationunit;
+	}
+	
+	public int getDuration() {
+		return this.duration;
+	}
+	
+	public Weekday getWeekday() {
+		return this.recurrenceRule.getWeekStart();
+	}
+	
+	public Integer getHour() {
+		List<Integer> hours = this.recurrenceRule.getByPart(Part.BYHOUR);
+		if (hours.size()>0) {
+			return hours.get(0);
+		}
+		return null;
+	}
+	
 	private RecurrenceRule convert(String s) {
 
 		s = clean(s);

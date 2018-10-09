@@ -8,6 +8,8 @@
  */
 package org.rogatio.circlead.view.report;
 
+import java.util.List;
+
 import org.rogatio.circlead.view.IWorkitemRenderer;
 
 /**
@@ -21,5 +23,7 @@ public interface IReport extends IWorkitemRenderer {
 	 * @return the name
 	 */
 	public String getName();
+	
+	public List<String> getHeadExtension();
 	
 }
