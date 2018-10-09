@@ -279,13 +279,11 @@ public class FileSynchronizer extends DefaultSynchronizer {
 			doc.charset(Charset.forName("UTF-8"));
 			Element html = doc.appendElement("html");
 			Element head = html.appendElement("head");
-			if (ObjectUtil.isListNotNullAndEmpty(report.getHeadExtension())) {
-				for (String h : report.getHeadExtension()) {
+			if (ObjectUtil.isListNotNullAndEmpty(report.getHead())) {
+				for (String h : report.getHead()) {
 					head.append(h);
 				}
-			} else {
-				head.append("<link rel=\"stylesheet\" href=\"styles.css\">");
-			}
+			} 
 			head.append("<meta charset=\"utf-8\">");
 			Element body = html.appendElement("body");
 

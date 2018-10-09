@@ -22,17 +22,20 @@ import org.rogatio.circlead.util.CircleadRecurrenceRule;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
-public class PrayHourReport extends DefaultReport {
+public class TeamCategoryReport extends DefaultReport {
 
-	public PrayHourReport() {
-		this.setName("PrayHour Report");
+	private String category;
+	
+	public TeamCategoryReport(String category) {
+		this.setName("Team Category Report");
+		this.category = category;
 	}
 
 	@Override
-	public List<String> getHeadExtension() {
+	public List<String> getHead() {
 		List<String> list = new ArrayList<String>();
 		list.add("<link href='http://fonts.googleapis.com/css?family=Open+Sans&subset=latin' rel='stylesheet' type='text/css'>");
-		list.add("<link rel=\"stylesheet\" href=\"stylesPrayHour.css\">");
+		list.add("<link rel=\"stylesheet\" href=\"stylesCategoryReport.css\">");
 		return list;
 	}
 
@@ -64,8 +67,8 @@ public class PrayHourReport extends DefaultReport {
 //			Element body = html.appendElement("body");
 
 			Element uiDiv = element.appendElement("div").attr("class", "ui");
-			uiDiv.appendElement("nav").attr("class", "navbar app").appendText("Gebetshaus Freiburg");
-			uiDiv.appendElement("nav").attr("class", "navbar board").appendText("Stundenplan");
+			uiDiv.appendElement("nav").attr("class", "navbar app").appendText(category);
+			uiDiv.appendElement("nav").attr("class", "navbar board").appendText("Wochenplan");
 			Element listsDiv = uiDiv.appendElement("div").attr("class", "lists");
 
 			List<Weekday> weekdays = getWeek();
@@ -104,7 +107,7 @@ public class PrayHourReport extends DefaultReport {
 	private final String TWOHOUR = "twohour";
 
 	private int setHour(Weekday weekday, int hour, Element ul) {
-		List<Team> teams = Repository.getInstance().getTeamsWithCategory("Gebetsstunde");
+		List<Team> teams = Repository.getInstance().getTeamsWithCategory(category);
 		boolean found = false;
 		int durrationTime = 0;
 		for (Team team : teams) {
@@ -164,13 +167,5 @@ public class PrayHourReport extends DefaultReport {
 		}
 		return durrationTime;
 	}
-
-//	private void setHour(String duration, int hour, String type, String subtype, Element ul) {
-//		Element li = ul.appendElement("li").attr("class", duration);
-//		String h = StringUtil.addSpace(hour + "", 2, '0');
-//		li.appendElement("span").appendText(h + ":00");
-//		li.appendText(type);
-//		li.appendElement("span").appendText(subtype);
-//	}
 
 }

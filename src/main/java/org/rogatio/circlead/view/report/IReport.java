@@ -24,6 +24,6 @@ public interface IReport extends IWorkitemRenderer {
 	 */
 	public String getName();
 	
-	public List<String> getHeadExtension();
+	public List<String> getHead();
 	
 }

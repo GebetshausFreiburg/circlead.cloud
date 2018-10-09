@@ -19,7 +19,7 @@ import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.view.report.OverviewReport;
 import org.rogatio.circlead.view.report.PersonListReport;
-import org.rogatio.circlead.view.report.PrayHourReport;
+import org.rogatio.circlead.view.report.TeamCategoryReport;
 import org.rogatio.circlead.view.report.ReworkReport;
 import org.rogatio.circlead.view.report.RoleHolderReport;
 import org.rogatio.circlead.view.report.RolegroupReport;
@@ -128,7 +128,7 @@ public class Sync {
 			repository.addReport(new ReworkReport());
 			repository.addReport(new PersonListReport());
 			repository.addReport(new RolegroupSummaryReport());
-			repository.addReport(new PrayHourReport());
+			repository.addReport(new TeamCategoryReport("Gebetsstunde"));
 			// repository.addReport(new RoleIssueReport());
 
 			/* Rewrite Reports */

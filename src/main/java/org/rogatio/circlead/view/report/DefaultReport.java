@@ -8,6 +8,7 @@
  */
 package org.rogatio.circlead.view.report;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jsoup.nodes.Element;
@@ -47,8 +48,10 @@ public class DefaultReport implements IReport {
 	}
 
 	@Override
-	public List<String> getHeadExtension() {
-		return null;
+	public List<String> getHead() {
+		List<String> head = new ArrayList<String>();
+		head.add("<link rel=\"stylesheet\" href=\"styles.css\">");
+		return head;
 	}
 
 }
