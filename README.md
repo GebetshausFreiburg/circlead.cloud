@@ -15,6 +15,6 @@ The main-layers for the application are
   * AtlassianSynchronizer: Read data from Confluence Pages in page-property-table (over rest with json) and writes back rendered confluence-content to same page appended after page-properties
 * Storage: Hold all data, content and reports. Default space in confluence is space 'circlead'. Default folder for Filesynchronizer is 'data'.
 
-![circlead-api](https://github.com/GebetshausFreiburg/circlead.cloud/blob/master/src/main/resources/circlead-api.jpg)
+![circlead-api](https://github.com/GebetshausFreiburg/circlead.cloud/blob/master/ressources/circlead-api.jpg)
 
 To understood the philosophy (and model) of circlead read the blog (only in german) at https://circleadonline.wordpress.com/.
