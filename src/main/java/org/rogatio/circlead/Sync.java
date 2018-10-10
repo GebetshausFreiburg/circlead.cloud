@@ -37,19 +37,19 @@ public class Sync {
 	public static final boolean REPORTS = true;
 	
 	/** The Constant HOWTOS. */
-	public static final boolean HOWTOS = false;
+	public static final boolean HOWTOS = true;
 	
 	/** The Constant ROLES. */
-	public static final boolean ROLES = false;
+	public static final boolean ROLES = true;
 	
 	/** The Constant ROLEGROUPS. */
-	public static final boolean ROLEGROUPS = false;
+	public static final boolean ROLEGROUPS = true;
 	
 	/** The Constant PERSONS. */
-	public static final boolean PERSONS = false;
+	public static final boolean PERSONS = true;
 	
 	/** The Constant ACTIVITIES. */
-	public static final boolean ACTIVITIES = false;
+	public static final boolean ACTIVITIES = true;
 	
 	public static final boolean TEAMS = true;
 
