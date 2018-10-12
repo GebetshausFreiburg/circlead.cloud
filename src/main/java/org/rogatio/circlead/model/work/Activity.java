@@ -27,6 +27,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
@@ -47,6 +49,8 @@ import org.rogatio.circlead.view.IWorkitemRenderer;
  */
 public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IValidator {
 
+	final static Logger LOGGER = LogManager.getLogger(Activity.class);
+	
 	/**
 	 * Instantiates a new activity.
 	 */
@@ -479,6 +483,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 		if (this.getHowTos() != null) {
 			for (String ht : this.getHowTos()) {
 				for (HowTo howTo : howtos) {
+					//LOGGER.debug("CHECK:::"+ht+"=="+howTo.getTitle() + "("+howTo.getSynchronizer()+"=="+synchronizer.toString()+")");
 					if (ht.equalsIgnoreCase(howTo.getTitle())) {
 						if (howTo.getSynchronizer().equals(synchronizer.toString())) {
 							renderer.addHowToItem(element, "HowTo", howTo.getTitle());

@@ -375,7 +375,7 @@ public class RoleDataitem extends DefaultDataitem {
 
 			sb.append(person);
 
-			if (this.hasSkill(person) || this.hasRepresentation(person)|| this.hasRecurrenceRule(person)) {
+			if (this.hasSkill(person) || this.hasRepresentation(person) || this.hasRecurrenceRule(person)) {
 				sb.append(" [");
 			}
 
@@ -391,7 +391,7 @@ public class RoleDataitem extends DefaultDataitem {
 
 				sb.append(this.getRepresentation(person));
 			}
-			
+
 			if (this.hasRecurrenceRule(person)) {
 
 				if (this.hasSkill(person) || this.hasRepresentation(person)) {
@@ -401,8 +401,12 @@ public class RoleDataitem extends DefaultDataitem {
 				sb.append(this.getRecurrenceRule(person));
 			}
 
-			if (this.hasSkill(person) || this.hasRepresentation(person)|| this.hasRecurrenceRule(person)) {
+			if (this.hasSkill(person) || this.hasRepresentation(person) || this.hasRecurrenceRule(person)) {
 				sb.append("]");
+			}
+
+			if (this.hasComment(person)) {
+				sb.append(" ## " + this.getComment(person));
 			}
 
 			list.add(sb.toString());
@@ -416,8 +420,11 @@ public class RoleDataitem extends DefaultDataitem {
 	private Map<String, String> skills = new HashMap<String, String>();
 
 	@JsonIgnore
+	private Map<String, String> comments = new HashMap<String, String>();
+
+	@JsonIgnore
 	private Map<String, String> recurrenceRules = new HashMap<String, String>();
-	
+
 	/** The representations. */
 	@JsonIgnore
 	private Map<String, String> representations = new HashMap<String, String>();
@@ -443,7 +450,7 @@ public class RoleDataitem extends DefaultDataitem {
 		}
 		return "";
 	}
-	
+
 	/**
 	 * Gets the representation.
 	 *
@@ -465,7 +472,15 @@ public class RoleDataitem extends DefaultDataitem {
 		}
 		return false;
 	}
-	
+
+	@JsonIgnore
+	public boolean hasComment(String personIdentifier) {
+		if (comments.containsKey(personIdentifier)) {
+			return true;
+		}
+		return false;
+	}
+
 	/**
 	 * Checks for skill.
 	 *
@@ -478,6 +493,14 @@ public class RoleDataitem extends DefaultDataitem {
 			return true;
 		}
 		return false;
+	}
+
+	@JsonIgnore
+	public String getComment(String personIdentifier) {
+		if (comments.containsKey(personIdentifier)) {
+			return comments.get(personIdentifier);
+		}
+		return null;
 	}
 
 	/**
@@ -501,13 +524,28 @@ public class RoleDataitem extends DefaultDataitem {
 			recurrenceRules.put(personFullname, value);
 		}
 	}
-	
+
 	@JsonIgnore
 	private void setStatusMatch(String personFullname, String value) {
 		WorkitemStatusParameter status = WorkitemStatusParameter.get(value);
 		if (status != null) {
 			value = status.getName();
 			representations.put(personFullname, value.toLowerCase());
+		}
+	}
+
+	@JsonIgnore
+	private void setCommentMatch(String personFullname, String value) {
+		value = value.trim();
+
+		if (value.startsWith("##")) {
+			value = value.substring(2, value.length());
+		}
+
+		value = value.trim();
+
+		if (StringUtil.isNotNullAndNotEmpty(value)) {
+			comments.put(personFullname, value);
 		}
 	}
 
@@ -535,6 +573,13 @@ public class RoleDataitem extends DefaultDataitem {
 
 		for (String person : persons) {
 
+			String comment = null;
+			if (person.contains("##")) {
+				int idx = person.indexOf("##");
+				comment = person.substring(idx+2, person.length()).trim();
+				person = person.substring(0, idx).trim();
+			}
+
 			int idx = person.indexOf("[");
 			if (idx != -1) {
 				String skillStatus = person.substring(idx, person.length()).replace("[", "").replace("]", "").trim();
@@ -556,8 +601,15 @@ public class RoleDataitem extends DefaultDataitem {
 					setRecurrenceRuleMatch(fullname, value);
 				}
 
+				if (StringUtil.isNotNullAndNotEmpty(comment)) {
+					setCommentMatch(fullname, comment);
+				}
+
 				list.add(fullname);
 			} else {
+				if (StringUtil.isNotNullAndNotEmpty(comment)) {
+					setCommentMatch(person, comment);
+				}
 				list.add(person);
 			}
 		}

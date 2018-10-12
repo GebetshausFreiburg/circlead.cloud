@@ -149,6 +149,21 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		return getTeamMembers().size();
 	}
 
+	public double getTeamRedundance() {
+		double sum = 0;
+		List<TeamEntry> list = this.getTeamEntries();
+		if (ObjectUtil.isListNotNullAndEmpty(list)) {
+			for (TeamEntry teamEntry : list) {
+				List<String> p = teamEntry.getPersonIdentifiers();
+				if (ObjectUtil.isListNotNullAndEmpty(p)) {
+					sum += ((double) p.size()) / ((double) teamEntry.getNeeded());
+				}
+			}
+			sum = sum / (double) list.size();
+		}
+		return sum;
+	}
+
 	public List<String> getTeamMembers() {
 		List<String> personIdentifiers = new ArrayList<String>();
 		List<TeamEntry> list = this.getTeamEntries();
@@ -174,11 +189,13 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 
 		Element element = new Element("p");
 
-		/*
-		 * if (StringUtil.isNotNullAndNotEmpty(this.getCategory())) { if
-		 * (this.getTeamSize() < 2) { renderer.addStatus(element, "Internal"); } else {
-		 * renderer.addStatus(element, "External"); } }
-		 */
+//		if (StringUtil.isNotNullAndNotEmpty(this.getCategory())) {
+//			if (this.getTeamSize() < 2) {
+//				renderer.addStatus(element, "Internal");
+//			} else {
+//				renderer.addStatus(element, "External");
+//			}
+//		}
 
 		if (StringUtil.isNotNullAndNotEmpty(this.getCategory())) {
 			renderer.addItem(element, CATEGORY.toString(), this.getCategory());
@@ -190,12 +207,11 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			renderer.addItem(element, SUBTYPE.toString(), this.getTeamSubtype());
 		}
 		if (StringUtil.isNotNullAndNotEmpty(this.getRecurrenceRule())) {
-//			CircleadRecurrenceRule crr = new CircleadRecurrenceRule(this.getRecurrenceRule());
-			renderer.addItem(element, RECURRENCERULE.toString(), this.getRecurrenceRule());// + " (" + crr.toString() +
-																							// ")");
+			renderer.addItem(element, RECURRENCERULE.toString(), this.getRecurrenceRule());
 		}
 
 		renderer.addItem(element, "Anzahl Teammitglieder", this.getTeamSize() + "");
+		renderer.addItem(element, "Abdeckung", ((int) (this.getTeamRedundance() * 100)) + "%");
 
 		if (StringUtil.isNotNullAndNotEmpty(this.getDescription())) {
 			renderer.addH2(element, DESCRIPTION.toString());
@@ -244,8 +260,8 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 					if (p == null) {
 						ValidationMessage m = new ValidationMessage(this);
 						m.warning("Person not idenfied",
-								"Person '" + identifier + "' for role '" + teamEntry.getRoleIdentifier()
-										+ "' in Team '" + this.getTitle() + "' could not be identified");
+								"Person '" + identifier + "' for role '" + teamEntry.getRoleIdentifier() + "' in Team '"
+										+ this.getTitle() + "' could not be identified");
 						messages.add(m);
 					}
 				}
