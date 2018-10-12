@@ -200,12 +200,18 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 				}
 				if (role.getDataitem().hasRecurrenceRule(person.getFullname())) {
 					String rule = role.getDataitem().getRecurrenceRule(person.getFullname());
-					li.append("&nbsp;");
-					li.appendText(rule);
+					li.append("&nbsp;<span style=\"color: rgb(192,192,192);\">"+rule.replace("R=", "").replace("RRULE=", "")+"</span>");
+					
+//					li.append("&nbsp;");
+//					li.appendText(rule);
 				} else {
 //					Element s = Parser.getStatus(UNRELATED.toString());
 //					li.append("&nbsp;");
 //					s.appendTo(li);
+				}
+				if (role.getDataitem().hasComment(person.getFullname())) {
+					String comment = role.getDataitem().getComment(person.getFullname());
+					li.append("&nbsp;|&nbsp;<span style=\"color: rgb(192,192,192);\">"+comment+"</span>");
 				}
 			}
 		}
@@ -297,12 +303,17 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 			}
 			if (role.getDataitem().hasRecurrenceRule(identifier)) {
 				String rule = role.getDataitem().getRecurrenceRule(identifier);
-				li.append("&nbsp;");
-				li.appendText(rule);
+				li.append("&nbsp;<span style=\"color: rgb(192,192,192);\">"+rule.replace("R=", "").replace("RRULE=", "")+"</span>");
+				//li.appendText(rule);
+				//
 			} else {
 //				Element s = Parser.getStatus(UNRELATED.toString());
 //				li.append("&nbsp;");
 //				s.appendTo(li);
+			}
+			if (role.getDataitem().hasComment(identifier)) {
+				String comment = role.getDataitem().getComment(identifier);
+				li.append("&nbsp;|&nbsp;<span style=\"color: rgb(192,192,192);\">"+comment+"</span>");
 			}
 		}
 
@@ -354,12 +365,17 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 			}
 			if (role.getDataitem().hasRecurrenceRule(identifier)) {
 				String rule = role.getDataitem().getRecurrenceRule(identifier);
-				li.append("&nbsp;");
-				li.appendText(rule);
+				li.append("&nbsp;<span style=\"color: rgb(192,192,192);\">"+rule.replace("R=", "").replace("RRULE=", "")+"</span>");
+//				li.append("&nbsp;");
+//				li.appendText(rule);
 			} else {
 //				Element s = Parser.getStatus(UNRELATED.toString());
 //				li.append("&nbsp;");
 //				s.appendTo(li);
+			}
+			if (role.getDataitem().hasComment(identifier)) {
+				String comment = role.getDataitem().getComment(identifier);
+				li.append("&nbsp;|&nbsp;<span style=\"color: rgb(192,192,192);\">"+comment+"</span>");
 			}
 		}
 	}

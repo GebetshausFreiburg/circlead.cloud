@@ -16,9 +16,12 @@ import java.util.TreeMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dmfs.rfc5545.recur.Freq;
+import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.synchronizer.Connector;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
+import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
 import org.rogatio.circlead.control.validator.ValidationMessage.Type;
@@ -34,6 +37,7 @@ import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.model.work.Team;
+import org.rogatio.circlead.util.CircleadRecurrenceRule;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.report.IReport;
@@ -528,6 +532,59 @@ public final class Repository {
 		return roleIdentifiers;
 	}
 
+	public double getAverageAllokationInTeams(Person person, Freq freq) {
+		List<Team> foundTeams = Repository.getInstance().getTeamsWithMember(person);
+		double sum = 0;
+		if (ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
+			for (Team team : foundTeams) {
+				WorkitemStatusParameter wsp = WorkitemStatusParameter.get(team.getStatus());
+				if ((wsp != WorkitemStatusParameter.CLOSED)
+						|| (wsp != WorkitemStatusParameter.INACTIVE)) {
+					String rule = team.getRecurrenceRule();
+					if (StringUtil.isNotNullAndNotEmpty(rule)) {
+						CircleadRecurrenceRule crr = new CircleadRecurrenceRule(rule);
+						double allok = crr.getAverageAllokation(freq);
+						sum += allok;
+					}
+				}
+			}
+		}
+		return sum;
+	}
+
+	public double getAverageAllokationInOrganisation(String personIdentifier, Freq freq) {
+		List<Role> orgRoles = Repository.getInstance().getRolesWithPerson(personIdentifier);
+		double sumR = 0;
+		for (Role role : orgRoles) {
+
+			WorkitemStatusParameter wsp = WorkitemStatusParameter.get(role.getStatus());
+			if ((wsp != WorkitemStatusParameter.CLOSED)) {
+
+				boolean skip = false;
+				if (role.getDataitem().hasRepresentation(personIdentifier)) {
+					String representation = role.getDataitem().getRepresentation(personIdentifier);
+					WorkitemStatusParameter status = WorkitemStatusParameter.get(representation);
+					if (status != null) {
+						if ((status != WorkitemStatusParameter.CLOSED)
+								|| (status != WorkitemStatusParameter.INACTIVE)) {
+							skip = true;
+						}
+					}
+				}
+
+				if (!skip) {
+					String rule = role.getRecurrenceRule(personIdentifier);
+					if (StringUtil.isNotNullAndNotEmpty(rule)) {
+						CircleadRecurrenceRule crr = new CircleadRecurrenceRule(rule);
+						double allok = crr.getAverageAllokation(freq);
+						sumR += allok;
+					}
+				}
+			}
+		}
+		return sumR;
+	}
+
 	/**
 	 * Gets the activities.
 	 *
@@ -727,7 +784,7 @@ public final class Repository {
 
 		return list;
 	}
-	
+
 	public List<Team> getTeamsWithMember(Person person) {
 		return getTeamsWithMember(person, this.getTeams());
 	}

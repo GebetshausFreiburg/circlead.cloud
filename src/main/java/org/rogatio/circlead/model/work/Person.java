@@ -214,31 +214,15 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 			}
 		}
 
-		List<Role> orgRoles = Repository.getInstance().getRolesWithPerson(this.getFullname());
-		double sumR = 0;
-		for (Role role : orgRoles) {
-			String rule = role.getRecurrenceRule(this.getFullname());
-			if (StringUtil.isNotNullAndNotEmpty(rule)) {
-				CircleadRecurrenceRule crr = new CircleadRecurrenceRule(rule); 
-				double allok = crr.getAverageAllokation(Freq.WEEKLY);
-				sumR += allok;
-			}
-		}
-		
+		double sumR = Repository.getInstance().getAverageAllokationInOrganisation(this.getFullname(), Freq.WEEKLY);
 		renderer.addH2(element, ROLESINORGANISATION.toString() + " ("+Math.round(sumR)+"h/Woche)");
+		
+		List<Role> orgRoles = Repository.getInstance().getRolesWithPerson(this.getFullname());
 		renderer.addRoleList(element, orgRoles, this);
 
 		List<Team> foundTeams = Repository.getInstance().getTeamsWithMember(this);
 		if (ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
-			double sum = 0;
-			for (Team team : foundTeams) {
-				String rule = team.getRecurrenceRule();
-				if (StringUtil.isNotNullAndNotEmpty(rule)) {
-					CircleadRecurrenceRule crr = new CircleadRecurrenceRule(rule); 
-					double allok = crr.getAverageAllokation(Freq.WEEKLY);
-					sum += allok;
-				}
-			}
+			double sum = Repository.getInstance().getAverageAllokationInTeams(this, Freq.WEEKLY);
 			
 			renderer.addH2(element, ROLESINTEAM.toString()+ " ("+Math.round(sum)+"h/Woche)");
 			Element ul = element.appendElement("ul");
