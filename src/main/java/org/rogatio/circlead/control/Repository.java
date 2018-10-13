@@ -538,8 +538,7 @@ public final class Repository {
 		if (ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
 			for (Team team : foundTeams) {
 				WorkitemStatusParameter wsp = WorkitemStatusParameter.get(team.getStatus());
-				if ((wsp != WorkitemStatusParameter.CLOSED)
-						|| (wsp != WorkitemStatusParameter.INACTIVE)) {
+				if ((wsp != WorkitemStatusParameter.CLOSED) || (wsp != WorkitemStatusParameter.INACTIVE)) {
 					String rule = team.getRecurrenceRule();
 					if (StringUtil.isNotNullAndNotEmpty(rule)) {
 						CircleadRecurrenceRule crr = new CircleadRecurrenceRule(rule);
@@ -556,31 +555,25 @@ public final class Repository {
 		List<Role> orgRoles = Repository.getInstance().getRolesWithPerson(personIdentifier);
 		double sumR = 0;
 		for (Role role : orgRoles) {
-
-//			WorkitemStatusParameter wsp = WorkitemStatusParameter.get(role.getStatus());
-//			if ((wsp != WorkitemStatusParameter.CLOSED)) {
-
-				boolean skip = false;
-				if (role.getDataitem().hasRepresentation(personIdentifier)) {
-					String representation = role.getDataitem().getRepresentation(personIdentifier);
-					WorkitemStatusParameter status = WorkitemStatusParameter.get(representation);
-					if (status != null) {
-						if ((status == WorkitemStatusParameter.CLOSED)
-								|| (status == WorkitemStatusParameter.INACTIVE)) {
-							skip = true;
-						}
+			boolean skip = false;
+			if (role.getDataitem().hasRepresentation(personIdentifier)) {
+				String representation = role.getDataitem().getRepresentation(personIdentifier);
+				WorkitemStatusParameter status = WorkitemStatusParameter.get(representation);
+				if (status != null) {
+					if ((status == WorkitemStatusParameter.CLOSED) || (status == WorkitemStatusParameter.INACTIVE)) {
+						skip = true;
 					}
 				}
+			}
 
-				if (!skip) {
-					String rule = role.getRecurrenceRule(personIdentifier);
-					if (StringUtil.isNotNullAndNotEmpty(rule)) {
-						CircleadRecurrenceRule crr = new CircleadRecurrenceRule(rule);
-						double allok = crr.getAverageAllokation(freq);
-						sumR += allok;
-					}
+			if (!skip) {
+				String rule = role.getRecurrenceRule(personIdentifier);
+				if (StringUtil.isNotNullAndNotEmpty(rule)) {
+					CircleadRecurrenceRule crr = new CircleadRecurrenceRule(rule);
+					double allok = crr.getAverageAllokation(freq);
+					sumR += allok;
 				}
-//			}
+			}
 		}
 		return sumR;
 	}
