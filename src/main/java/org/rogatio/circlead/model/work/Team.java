@@ -210,8 +210,8 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			renderer.addItem(element, RECURRENCERULE.toString(), this.getRecurrenceRule());
 		}
 
-		renderer.addItem(element, "Anzahl Teammitglieder", this.getTeamSize() + "");
-		renderer.addItem(element, "Abdeckung", ((int) (this.getTeamRedundance() * 100)) + "%");
+		renderer.addItem(element, "Mitglieder", this.getTeamSize() + "");
+		renderer.addItem(element, "Stabilität", ((int) (this.getTeamRedundance() * 100)) + "%");
 
 		if (StringUtil.isNotNullAndNotEmpty(this.getDescription())) {
 			renderer.addH2(element, DESCRIPTION.toString());

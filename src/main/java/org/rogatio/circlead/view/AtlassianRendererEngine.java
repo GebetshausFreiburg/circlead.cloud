@@ -96,6 +96,7 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 						}
 					}
 				} else {
+					// if no active item found, then only display name
 					li.appendText(activitydataitem.getTitle());
 				}
 

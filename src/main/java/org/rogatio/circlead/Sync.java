@@ -31,8 +31,7 @@ import org.rogatio.circlead.view.report.ValidationReport;
  */
 public class Sync {
 	// TODO Velocity als Render-Changer nutzen
-	// TODO Activity-Process-Builder erzeugen
-    //
+	// TODO Activity-Process-Builder (yWorks) erzeugen
 	
 	/** The Constant REPORTS. */
 	public static final boolean REPORTS = true;

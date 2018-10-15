@@ -538,7 +538,7 @@ public final class Repository {
 		if (ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
 			for (Team team : foundTeams) {
 				WorkitemStatusParameter wsp = WorkitemStatusParameter.get(team.getStatus());
-				if ((wsp != WorkitemStatusParameter.CLOSED) || (wsp != WorkitemStatusParameter.INACTIVE)) {
+				if ((wsp != WorkitemStatusParameter.PAUSED) ||(wsp != WorkitemStatusParameter.CLOSED) || (wsp != WorkitemStatusParameter.INACTIVE)) {
 					String rule = team.getRecurrenceRule();
 					if (StringUtil.isNotNullAndNotEmpty(rule)) {
 						CircleadRecurrenceRule crr = new CircleadRecurrenceRule(rule);
@@ -560,7 +560,7 @@ public final class Repository {
 				String representation = role.getDataitem().getRepresentation(personIdentifier);
 				WorkitemStatusParameter status = WorkitemStatusParameter.get(representation);
 				if (status != null) {
-					if ((status == WorkitemStatusParameter.CLOSED) || (status == WorkitemStatusParameter.INACTIVE)) {
+					if ((status == WorkitemStatusParameter.PAUSED) ||(status == WorkitemStatusParameter.CLOSED) || (status == WorkitemStatusParameter.INACTIVE)) {
 						skip = true;
 					}
 				}

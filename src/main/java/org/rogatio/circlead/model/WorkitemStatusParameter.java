@@ -54,6 +54,8 @@ public enum WorkitemStatusParameter {
 	/** The inactive. */
 	INACTIVE("Grey", "Inaktiv", "Inactive"),
 
+	PAUSED("Blue", "Pausiert", "Paused", "Pause", "Elternzeit", "Auslandsaufenthalt"),
+	
 	/** The temporary. */
 	TEMPORARY("Yellow", "Temporär", "Temporary"),
 

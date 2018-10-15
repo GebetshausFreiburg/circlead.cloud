@@ -25,7 +25,7 @@ import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 public class TeamCategoryReport extends DefaultReport {
 
 	private String category;
-	
+
 	public TeamCategoryReport(String category) {
 		this.setName("Team Category Report");
 		this.category = category;
@@ -34,7 +34,8 @@ public class TeamCategoryReport extends DefaultReport {
 	@Override
 	public List<String> getHead() {
 		List<String> list = new ArrayList<String>();
-		list.add("<link href='http://fonts.googleapis.com/css?family=Open+Sans&subset=latin' rel='stylesheet' type='text/css'>");
+		list.add(
+				"<link href='http://fonts.googleapis.com/css?family=Open+Sans&subset=latin' rel='stylesheet' type='text/css'>");
 		list.add("<link rel=\"stylesheet\" href=\"stylesCategoryReport.css\">");
 		return list;
 	}
@@ -158,10 +159,17 @@ public class TeamCategoryReport extends DefaultReport {
 
 		Element li = ul.appendElement("li").attr("class", duration + addition);
 		String h = StringUtil.addSpace(hour + "", 2, '0');
-		li.appendElement("span").appendText(h + ":00");
+
+		String spanTitle = "";
+		if (team != null) {
+		//	spanTitle = "" + StringUtil.join(team.getTeamMembers()) + "";
+		}
+
+		li.appendElement("span").attr("title", spanTitle).appendText(h + ":00");
 		if (StringUtil.isNotNullAndNotEmpty(s)) {
 			li.appendText(s);
 		}
+
 		if (StringUtil.isNotNullAndNotEmpty(st)) {
 			li.appendElement("span").appendText(st);
 		}
