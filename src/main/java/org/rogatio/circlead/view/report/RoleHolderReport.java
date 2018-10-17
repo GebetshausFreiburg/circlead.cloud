@@ -20,6 +20,7 @@ import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
+import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
@@ -47,8 +48,20 @@ public class RoleHolderReport extends DefaultReport {
 		List<Role> foundUnrelatedRoles = new ArrayList<Role>();
 		List<Role> roles = Repository.getInstance().getRoles();
 		for (Role role : roles) {
+			boolean found = false;
+			// Role-Holder in Organisation
 			if (!ObjectUtil.isListNotNullAndEmpty(role.getPersonIdentifiers())) {
-				foundUnrelatedRoles.add(role);
+				found = true;
+			}
+			
+			// Role-Holder in Teams
+			List<Team> foundTeams = Repository.getInstance().getTeamsWithRole(role);
+			if (!ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
+				found = true;
+			}
+			
+			if (!found) {
+				foundUnrelatedRoles.add(role);	
 			}
 		}
 		renderer.addRoleList(element, foundUnrelatedRoles);
@@ -57,6 +70,7 @@ public class RoleHolderReport extends DefaultReport {
 		addRoles("Entstehende Rollen", WorkitemStatusParameter.DRAFT, synchronizer, element);
 		addRoles("Zeitweise Rollen", WorkitemStatusParameter.TEMPORARY, synchronizer, element);
 		addRoles("Überarbeitete Rollen", WorkitemStatusParameter.INPROGRESS, synchronizer, element);
+		
 		addRoles("Aktive Rollen - Untrainiert", WorkitemStatusParameter.ACTIVE, WorkitemStatusParameter.UNSKILLED, "0", synchronizer, element);
 		addRoles("Aktive Rollen - Anfänger", WorkitemStatusParameter.ACTIVE, WorkitemStatusParameter.STARTER, "25", synchronizer, element);
 		addRoles("Aktive Rollen - Beginner", WorkitemStatusParameter.ACTIVE, WorkitemStatusParameter.BEGINNER, "50", synchronizer, element);

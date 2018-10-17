@@ -16,16 +16,16 @@ public class SynchronizerResult {
 
 	/** The code. */
 	private int code;
-	
+
 	/** The message. */
 	private String message;
-	
+
 	/** The source. */
 	private String source;
-	
+
 	/** The content. */
 	private String content;
-	
+
 	/**
 	 * Gets the content.
 	 *
@@ -97,13 +97,20 @@ public class SynchronizerResult {
 	public void setSource(String source) {
 		this.source = source;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "Result [code = "+this.getCode()+", msg="+this.getMessage()+"]";//: "+this.getContent();
+
+		if (this.getCode() == 200) {
+			return "Result [code = " + this.getCode() + ", msg=" + this.getMessage() + "]";
+		} else {
+			return "Result [code = " + this.getCode() + ", msg=" + this.getMessage() + "]: " + this.getContent();
+		}
 	}
 
 }

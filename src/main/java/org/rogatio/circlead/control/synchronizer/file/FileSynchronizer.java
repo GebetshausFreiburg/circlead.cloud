@@ -16,6 +16,9 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,6 +31,8 @@ import org.rogatio.circlead.control.synchronizer.DefaultSynchronizer;
 import org.rogatio.circlead.control.synchronizer.SynchronizerException;
 import org.rogatio.circlead.control.synchronizer.SynchronizerFactory;
 import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
+import org.rogatio.circlead.control.validator.IValidator;
+import org.rogatio.circlead.control.validator.ValidationMessage;
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.data.ActivityDataitem;
 import org.rogatio.circlead.model.data.HowTo;
@@ -57,7 +62,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 /**
  * The Class FileSynchronizer.
  */
-public class FileSynchronizer extends DefaultSynchronizer {
+public class FileSynchronizer extends DefaultSynchronizer implements IValidator {
 
 	/** The Constant LOGGER. */
 	private final static Logger LOGGER = LogManager.getLogger(FileSynchronizer.class);
@@ -559,5 +564,53 @@ public class FileSynchronizer extends DefaultSynchronizer {
 	@Override
 	public ISynchronizerRendererEngine getRenderer() {
 		return new FileRendererEngine(this);
+	}
+
+	@Override
+	public List<ValidationMessage> validate() {
+		List<ValidationMessage> messages = new ArrayList<ValidationMessage>();
+
+		String bpmnFiles[] = {"end-event-escalation.png", "start-event-none.png", "user-task.png", "start-event-non-interrupting-multiple.png", "intermediate-event-catch-escalation.png", "intermediate-event-throw-escalation.png", "lasso-tool.png", "lane-divide-two.png", "conditional-flow.png", "intermediate-event-catch-signal.png", "gateway-none.png", "start-event-signal.png", "lane-insert-above.png", "gateway-parallel.png", "intermediate-event-catch-link.png", "start-event-parallel-multiple.png", "end-event-signal.png", "end-event-compensation.png", "compensation-marker.png", "participant.png", "parallel-mi-marker.png", "start-event-non-interrupting-parallel-multiple.png", "intermediate-event-catch-non-interrupting-parallel-multiple.png", "lane-insert-below.png", "task-none.png", "intermediate-event-catch-multiple.png", "start-event-escalation.png", "gateway-or.png", "subprocess-expanded.png", "start-event-compensation.png", "data-store.png", "intermediate-event-catch-non-interrupting-message.png", "end-event-error.png", "start-event-non-interrupting-message.png", "task.png", "end-event-terminate.png", "intermediate-event-catch-cancel.png", "start-event-non-interrupting-condition.png", "end-event-message.png", "intermediate-event-catch-error.png", "transaction.png", "ad-hoc-marker.png", "gateway-complex.png", "default-flow.png", "start-event-non-interrupting-escalation.png", "screw-wrench.png", "intermediate-event-catch-non-interrupting-signal.png", "lane.png", "event-subprocess-expanded.png", "end-event-none.png", "subprocess.png", "call-activity.png", "intermediate-event-catch-non-interrupting-timer.png", "intermediate-event-throw-signal.png", "lane-divide-three.png", "sequential-mi-marker.png", "intermediate-event-catch-non-interrupting-multiple.png", "end-event-cancel.png", "receive-task.png", "send-task.png", "connection.png", "subprocess-collapsed.png", "start-event-error.png", "start-event-multiple.png", "service-task.png", "gateway-eventbased.png", "intermediate-event-throw-multiple.png", "trash.png", "intermediate-event-throw-compensation.png", "intermediate-event-catch-condition.png", "intermediate-event-catch-message.png", "gateway-xor.png", "script-task.png", "start-event-non-interrupting-timer.png", "intermediate-event-catch-non-interrupting-condition.png", "intermediate-event-catch-parallel-multiple.png", "start-event-condition.png", "intermediate-event-catch-non-interrupting-escalation.png", "data-object.png", "intermediate-event-catch-compensation.png", "start-event-non-interrupting-signal.png", "start-event-message.png", "manual-task.png", "data-input.png", "sub-process-marker.png", "connection-multi.png", "intermediate-event-throw-message.png", "hand-tool.png", "text-annotation.png", "data-output.png", "loop-marker.png", "start-event-timer.png", "business-rule-task.png", "intermediate-event-throw-link.png", "intermediate-event-catch-timer.png", "intermediate-event-none.png", "end-event-multiple.png", "space-tool.png", "end-event-link.png"};
+		for (String file : bpmnFiles) {
+			Path p = Paths.get("data"+File.separatorChar+"images"+File.separatorChar+"bpmn"+File.separatorChar+file);
+			if(!Files.exists(p)) {
+				ValidationMessage m = new ValidationMessage(this);
+				m.error("File missing", "File '"+p.toString()+"' is missing for usage in FileSynchronizer (BPMN-Display)");
+				messages.add(m);
+			}
+		}
+		
+		String reportImageFiles[] = {"child.png","group.png","groupchild.png","groupparent.png","groupwithrole.png","parent.png","role.png"};
+		for (String file : reportImageFiles) {
+			Path p = Paths.get("reports"+File.separatorChar+"images"+File.separatorChar+file);
+			if(!Files.exists(p)) {
+				ValidationMessage m = new ValidationMessage(this);
+				m.error("File missing", "File '"+p.toString()+"' is missing for usage in FileSynchronizer (Reports)");
+				messages.add(m);
+			}
+		}
+	
+		Path p = Paths.get("reports"+File.separatorChar+"styles.css");
+		if(!Files.exists(p)) {
+			ValidationMessage m = new ValidationMessage(this);
+			m.error("File missing", "File '"+p.toString()+"' is missing for usage in FileSynchronizer (Reports)");
+			messages.add(m);
+		}
+		
+		p = Paths.get("reports"+File.separatorChar+"stylesCategoryReport.css");
+		if(!Files.exists(p)) {
+			ValidationMessage m = new ValidationMessage(this);
+			m.error("File missing", "File '"+p.toString()+"' is missing for usage in FileSynchronizer (Reports)");
+			messages.add(m);
+		}
+		
+		p = Paths.get("web"+File.separatorChar+"styles.css");
+		if(!Files.exists(p)) {
+			ValidationMessage m = new ValidationMessage(this);
+			m.error("File missing", "File '"+p.toString()+"' is missing for usage in FileSynchronizer (Websites)");
+			messages.add(m);
+		}
+		
+		return messages;
 	}
 }

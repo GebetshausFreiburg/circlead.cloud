@@ -8,6 +8,14 @@ public enum Parameter {
 	/** The abbreviation. */
 	ABBREVIATION("Abkürzung"),
 	
+	TITLE("Titel"),
+	
+	BUSSINESS("Geschäftlich"),
+	
+	PRIVATE("Privat"),
+	
+	SECONDNAME("Zweitname"),
+	
 	/** The image. */
 	IMAGE("Bild"),
 	

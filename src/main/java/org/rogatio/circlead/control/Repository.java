@@ -10,25 +10,28 @@ package org.rogatio.circlead.control;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dmfs.rfc5545.recur.Freq;
-import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.synchronizer.Connector;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
-import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
 import org.rogatio.circlead.control.validator.ValidationMessage.Type;
+import org.rogatio.circlead.model.Parameter;
 import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.data.ActivityDataitem;
 import org.rogatio.circlead.model.data.HowTo;
+import org.rogatio.circlead.model.data.IDataRow;
 import org.rogatio.circlead.model.data.Report;
 import org.rogatio.circlead.model.data.TeamEntry;
 import org.rogatio.circlead.model.work.Activity;
@@ -38,6 +41,7 @@ import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.CircleadRecurrenceRule;
+import org.rogatio.circlead.util.ExcelUtil;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.report.IReport;
@@ -231,6 +235,11 @@ public final class Repository {
 		return ObjectUtil.castList(Role.class, roles);
 	}
 
+	/**
+	 * Load teams.
+	 *
+	 * @return the list
+	 */
 	public List<Team> loadTeams() {
 		List<IWorkitem> teams = connector.load(WorkitemType.TEAM);
 		this.addItems(teams);
@@ -290,6 +299,21 @@ public final class Repository {
 		return howtos;
 	}
 
+	public void writeExcel(String filename, WorkitemType type, List<Parameter> fields) {
+		List<IWorkitem> list = getWorkitems();
+		List<Map<Parameter, Object>> dataMap = new ArrayList<Map<Parameter, Object>>();
+		
+		for (IWorkitem wi : list) {
+			if (type.isTypeOf(wi) && wi instanceof IDataRow) {
+				dataMap.add(((IDataRow)wi).getDataRow());		
+			}
+		}
+		
+		LOGGER.debug("Write "+dataMap.size()+" Workitems ("+type.getName()+") to '"+filename+"'");
+		
+		ExcelUtil.writeExcel(filename, dataMap, fields);
+	}
+	
 	/**
 	 * Gets the index reports.
 	 *
@@ -393,6 +417,12 @@ public final class Repository {
 		return abbr;
 	}
 
+	/**
+	 * Gets the teams with category.
+	 *
+	 * @param category the category
+	 * @return the teams with category
+	 */
 	public List<Team> getTeamsWithCategory(String category) {
 		List<Team> teams = new ArrayList<Team>();
 
@@ -407,6 +437,11 @@ public final class Repository {
 		return teams;
 	}
 
+	/**
+	 * Gets the teams.
+	 *
+	 * @return the teams
+	 */
 	public List<Team> getTeams() {
 		List<Team> teams = new ArrayList<Team>();
 		for (IWorkitem workitem : workitems) {
@@ -491,6 +526,12 @@ public final class Repository {
 		return null;
 	}
 
+	/**
+	 * Adds the workitem.
+	 *
+	 * @param workitem the workitem
+	 * @return the list
+	 */
 	public List<SynchronizerResult> addWorkitem(IWorkitem workitem) {
 		List<SynchronizerResult> results = getConnector().add(workitem);
 		return results;
@@ -532,6 +573,13 @@ public final class Repository {
 		return roleIdentifiers;
 	}
 
+	/**
+	 * Gets the average allokation in teams.
+	 *
+	 * @param person the person
+	 * @param freq the freq
+	 * @return the average allokation in teams
+	 */
 	public double getAverageAllokationInTeams(Person person, Freq freq) {
 		List<Team> foundTeams = Repository.getInstance().getTeamsWithMember(person);
 		double sum = 0;
@@ -551,6 +599,13 @@ public final class Repository {
 		return sum;
 	}
 
+	/**
+	 * Gets the average allokation in organisation.
+	 *
+	 * @param personIdentifier the person identifier
+	 * @param freq the freq
+	 * @return the average allokation in organisation
+	 */
 	public double getAverageAllokationInOrganisation(String personIdentifier, Freq freq) {
 		List<Role> orgRoles = Repository.getInstance().getRolesWithPerson(personIdentifier);
 		double sumR = 0;
@@ -738,6 +793,12 @@ public final class Repository {
 		return null;
 	}
 
+	/**
+	 * Gets the teams with role.
+	 *
+	 * @param role the role
+	 * @return the teams with role
+	 */
 	public List<Team> getTeamsWithRole(Role role) {
 		List<Team> list = new ArrayList<Team>();
 
@@ -757,6 +818,13 @@ public final class Repository {
 		return list;
 	}
 
+	/**
+	 * Gets the teams with member.
+	 *
+	 * @param person the person
+	 * @param teamList the team list
+	 * @return the teams with member
+	 */
 	public List<Team> getTeamsWithMember(Person person, List<Team> teamList) {
 		List<Team> list = new ArrayList<Team>();
 
@@ -778,10 +846,22 @@ public final class Repository {
 		return list;
 	}
 
+	/**
+	 * Gets the teams with member.
+	 *
+	 * @param person the person
+	 * @return the teams with member
+	 */
 	public List<Team> getTeamsWithMember(Person person) {
 		return getTeamsWithMember(person, this.getTeams());
 	}
 
+	/**
+	 * Gets the team.
+	 *
+	 * @param identifier the identifier
+	 * @return the team
+	 */
 	public Team getTeam(String identifier) {
 		for (IWorkitem workitem : workitems) {
 			if (WorkitemType.TEAM.isTypeOf(workitem)) {
@@ -819,7 +899,7 @@ public final class Repository {
 						if (activityDataitem.containsId(identifier)) {
 							return activity;
 						}
-						if (StringUtil.isNotNullAndNotEmpty(activity.getAid())) {
+						if (StringUtil.isNotNullAndNotEmpty(activityDataitem.getAid())) {
 							if (activityDataitem.getAid().equals(identifier)) {
 								return activity;
 							}
@@ -1002,6 +1082,14 @@ public final class Repository {
 	public List<ValidationMessage> validate() {
 		List<IValidator> validators = new ArrayList<IValidator>();
 
+		Collection<ISynchronizer> s = this.getConnector().getSynchronizer();
+		for (Iterator<ISynchronizer> iterator = s.iterator(); iterator.hasNext();) {
+			ISynchronizer iSynchronizer = (ISynchronizer) iterator.next();
+			if (iSynchronizer instanceof IValidator) {
+				validators.add((IValidator) iSynchronizer);					
+			}
+		}
+		
 		for (IWorkitem workitem : workitems) {
 			if (workitem instanceof IValidator) {
 				validators.add((IValidator) workitem);

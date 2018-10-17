@@ -26,6 +26,8 @@ public enum WorkitemStatusParameter {
 	 * umsetzen.
 	 */
 	STARTER("Red", "Anfänger", "Starter", "25%"),
+	
+	SUBSTITUTE("Grey", "Vertretung", "Substitute", "Vertreter", "Vertreterin"),
 
 	/** Kann die Aufgabe in Teile und mit Hilfe umsetzen. */
 	BEGINNER("Yellow", "Beginner", "Beginner", "50%"),
@@ -60,7 +62,7 @@ public enum WorkitemStatusParameter {
 	TEMPORARY("Yellow", "Temporär", "Temporary"),
 
 	/** The inprogress. */
-	INPROGRESS("Yellow", "In Bearbeitung", "In Progress"),
+	INPROGRESS("Yellow", "InBearbeitung", "InProgress", "InBearbeitung"),
 
 	/** The critical. */
 	CRITICAL("Red", "Unklar", "Undefined", "Kritisch", "Critical", "Widersprüchlich"),

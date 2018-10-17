@@ -19,14 +19,19 @@ import static org.rogatio.circlead.model.Parameter.SYNONYMS;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
+import org.rogatio.circlead.model.Parameter;
+import org.rogatio.circlead.model.data.IDataRow;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.RolegroupDataitem;
+import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.IWorkitemRenderer;
@@ -34,7 +39,7 @@ import org.rogatio.circlead.view.IWorkitemRenderer;
 /**
  * The Class Rolegroup.
  */
-public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IValidator {
+public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IValidator, IDataRow {
 
 	/**
 	 * Instantiates a new rolegroup.
@@ -310,5 +315,37 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 	 */
 	public void setSynonyms(List<String> synonyms) {
 		this.getDataitem().setSynonyms(synonyms);
+	}
+	
+	@Override
+	public Map<Parameter, Object> getDataRow() {
+		Map<Parameter, Object> map = new TreeMap<Parameter, Object>();
+
+		addDataRowElement(this.getTitle(), Parameter.TITLE, map);
+		addDataRowElement(this.getAbbreviation(), Parameter.ABBREVIATION, map);
+		addDataRowElement(this.getLeadIdentifier(), Parameter.CONTACTPERSON, map);
+		addDataRowElement(this.getSynonyms(), Parameter.SYNONYMS, map);
+		addDataRowElement(this.getSummary(), Parameter.SUMMARY, map);
+		addDataRowElement(this.getParentIdentifier(), Parameter.PARENT, map);
+		addDataRowElement(this.getResponsibleIdentifier(), Parameter.RESPONSIBLEROLE, map);
+		
+		return map;
+	}
+
+	private void addDataRowElement(List<String> values, Parameter parameter, Map<Parameter, Object> map) {
+		if (ObjectUtil.isListNotNullAndEmpty(values)) {
+			StringBuilder sb = new StringBuilder();
+			for (String value : values) {
+				sb.append(" - ").append(value).append("\n");
+			}
+			
+			map.put(parameter, sb.toString());
+		}
+	}
+	
+	private void addDataRowElement(String value, Parameter parameter, Map<Parameter, Object> map) {
+		if (StringUtil.isNotNullAndNotEmpty(value)) {
+			map.put(parameter, value);
+		}
 	}
 }

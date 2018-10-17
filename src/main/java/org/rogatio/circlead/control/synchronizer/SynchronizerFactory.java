@@ -9,6 +9,7 @@
 package org.rogatio.circlead.control.synchronizer;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -102,6 +103,10 @@ public final class SynchronizerFactory {
 		}
 	}
 
+	public Collection<ISynchronizer> getSynchronizer() {
+		return synchronizerMap.values();
+	}
+	
 	/**
 	 * Gets the synchronizer.
 	 *

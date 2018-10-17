@@ -8,6 +8,7 @@
  */
 package org.rogatio.circlead;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -16,7 +17,10 @@ import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
 import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer;
 import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
+import org.rogatio.circlead.model.Parameter;
+import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.work.Rolegroup;
+import org.rogatio.circlead.util.ExcelUtil;
 import org.rogatio.circlead.view.report.OverviewReport;
 import org.rogatio.circlead.view.report.PersonListReport;
 import org.rogatio.circlead.view.report.TeamCategoryReport;
@@ -30,27 +34,34 @@ import org.rogatio.circlead.view.report.ValidationReport;
  * Synchronize-Starter.
  */
 public class Sync {
+	// TODO RecurrenceRule for person in team
+	// TODO Comment for person in team
+	// TODO Validation role status vs. person-holder status (i.e. paused, closed)
+	// TODO Validation "empty" (<10 chars) text in role
+	// TODO Excel-Exporter Persons, Category-Teams, ...
+	// TODO FileSynchronizer-Image-Missing-Validator, Wrong-Image-Size (User)
+	// TODO Atlassian User-Check (for Image-Usage or User-Link)
 	// TODO Velocity als Render-Changer nutzen
 	// TODO Activity-Process-Builder (yWorks) erzeugen
-	
+
 	/** The Constant REPORTS. */
 	public static final boolean REPORTS = true;
-	
+
 	/** The Constant HOWTOS. */
 	public static final boolean HOWTOS = true;
-	
+
 	/** The Constant ROLES. */
 	public static final boolean ROLES = true;
-	
+
 	/** The Constant ROLEGROUPS. */
 	public static final boolean ROLEGROUPS = true;
-	
+
 	/** The Constant PERSONS. */
 	public static final boolean PERSONS = true;
-	
+
 	/** The Constant ACTIVITIES. */
 	public static final boolean ACTIVITIES = true;
-	
+
 	public static final boolean TEAMS = true;
 
 	/** The Constant logger. */
@@ -107,7 +118,7 @@ public class Sync {
 		if (REPORTS) {
 			repository.loadIndexReports();
 		}
-		
+
 		/*
 		 * Re-Render loaded data back to set interfaces. Update pages in confluence and
 		 * writes html-pages to local folder 'web'
@@ -116,12 +127,11 @@ public class Sync {
 
 		if (REPORTS) {
 			/* Add report-handler */
-			if (repository.getRolegroups().size() > 0) {
-				List<Rolegroup> rolegroups = repository.getRolegroups();
-				for (Rolegroup rolegroup : rolegroups) {
-					repository.addReport(new RolegroupReport(rolegroup));
-				}
-			}
+			/*
+			 * if (repository.getRolegroups().size() > 0) { List<Rolegroup> rolegroups =
+			 * repository.getRolegroups(); for (Rolegroup rolegroup : rolegroups) {
+			 * repository.addReport(new RolegroupReport(rolegroup)); } }
+			 */
 			repository.addReport(new RoleHolderReport());
 			repository.addReport(new OverviewReport());
 			repository.addReport(new ValidationReport());
@@ -135,6 +145,12 @@ public class Sync {
 			repository.addReports();
 			results = repository.updateReports();
 		}
+
+		repository.writeExcel("Mitarbeiterliste", WorkitemType.PERSON, null);
+		repository.writeExcel("Rollen", WorkitemType.ROLE, null);
+		repository.writeExcel("Rollengruppen", WorkitemType.ROLEGROUP, null);
+	
+		ExcelUtil.writeExcelTeamCategory("TeamCategory", "Gebetsstunde");
 	}
 
 }

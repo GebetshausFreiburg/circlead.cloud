@@ -12,6 +12,7 @@ import static org.rogatio.circlead.model.Parameter.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 import org.jsoup.nodes.Element;
@@ -22,8 +23,11 @@ import org.rogatio.circlead.control.synchronizer.atlassian.parser.ListParserElem
 import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
+import org.rogatio.circlead.model.Parameter;
 import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.data.ActivityDataitem;
+import org.rogatio.circlead.model.data.ContactDataitem;
+import org.rogatio.circlead.model.data.IDataRow;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.RoleDataitem;
 import org.rogatio.circlead.model.data.TeamEntry;
@@ -35,7 +39,7 @@ import org.rogatio.circlead.view.IWorkitemRenderer;
 /**
  * The Class Role.
  */
-public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidator {
+public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidator, IDataRow {
 
 	/**
 	 * Instantiates a new role.
@@ -451,7 +455,9 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 				if (StringUtil.isNotNullAndNotEmpty(team.getCategory())) {
 					c = " (" + team.getCategory() + ")";
 				}
-
+				li.append("&nbsp;");
+				renderer.addStatus(li, team.getStatus());
+				
 				if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
 					li.append("<ac:link><ri:page ri:content-title=\""+team.getTitle()+"\" ri:version-at-save=\"1\"/><ac:plain-text-link-body><![CDATA["+team.getTitle()+""+c+"]]></ac:plain-text-link-body></ac:link>");
 				} else if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
@@ -820,4 +826,42 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		return messages;
 	}
 
+	@Override
+	public Map<Parameter, Object> getDataRow() {
+		Map<Parameter, Object> map = new TreeMap<Parameter, Object>();
+
+		addDataRowElement(this.getTitle(), Parameter.TITLE, map);
+		addDataRowElement(this.getAbbreviation(), Parameter.ABBREVIATION, map);
+		addDataRowElement(this.getPurpose(), Parameter.PURPOSE, map);
+		addDataRowElement(this.getRolegroupIdentifier(), Parameter.ROLEGROUP, map);
+		addDataRowElement(this.getOrganisationIdentifier(), Parameter.ORGANISATION, map);
+		addDataRowElement(this.getSynonyms(), Parameter.SYNONYMS, map);
+		addDataRowElement(this.getParentIdentifier(), Parameter.PARENT, map);
+		addDataRowElement(this.getPersonIdentifiers(), Parameter.PERSONS, map);
+		addDataRowElement(this.getActivities(), Parameter.ACTIVITIES, map);
+		addDataRowElement(this.getResponsibilities(), Parameter.RESPONSIBILITIES, map);
+		addDataRowElement(this.getOpportunities(), Parameter.OPPORTUNITIES, map);
+		addDataRowElement(this.getGuidelines(), Parameter.RULES, map);
+		addDataRowElement(this.getCompetences(), Parameter.COMPETENCIES, map);
+
+		return map;
+	}
+
+	private void addDataRowElement(List<String> values, Parameter parameter, Map<Parameter, Object> map) {
+		if (ObjectUtil.isListNotNullAndEmpty(values)) {
+			StringBuilder sb = new StringBuilder();
+			for (String value : values) {
+				sb.append(" - ").append(value).append("\n");
+			}
+			
+			map.put(parameter, sb.toString());
+		}
+	}
+	
+	private void addDataRowElement(String value, Parameter parameter, Map<Parameter, Object> map) {
+		if (StringUtil.isNotNullAndNotEmpty(value)) {
+			map.put(parameter, value);
+		}
+	}
+	
 }

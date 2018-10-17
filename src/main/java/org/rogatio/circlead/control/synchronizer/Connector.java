@@ -9,6 +9,7 @@
 package org.rogatio.circlead.control.synchronizer;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +32,10 @@ public class Connector {
 
 	/** The Constant logger. */
 	final static Logger LOGGER = LogManager.getLogger(Connector.class);
+	
+	public Collection<ISynchronizer> getSynchronizer() {
+		return 	SynchronizerFactory.getInstance().getSynchronizer();
+	}
 	
 	/**
 	 * Gets the synchronizer.

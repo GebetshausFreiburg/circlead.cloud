@@ -16,6 +16,7 @@ import static org.rogatio.circlead.model.Parameter.ROLESINTEAM;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.dmfs.rfc5545.recur.Freq;
 import org.jsoup.nodes.Element;
@@ -27,7 +28,9 @@ import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
 import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
+import org.rogatio.circlead.model.Parameter;
 import org.rogatio.circlead.model.data.ContactDataitem;
+import org.rogatio.circlead.model.data.IDataRow;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.PersonDataitem;
 import org.rogatio.circlead.model.data.TeamEntry;
@@ -40,7 +43,7 @@ import org.rogatio.circlead.view.IWorkitemRenderer;
 /**
  * The Class Person.
  */
-public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValidator {
+public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValidator, IDataRow {
 
 	/**
 	 * Instantiates a new person.
@@ -101,6 +104,14 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		this.getDataitem().setAvatar(avatar);
 	}
 
+	public String getFirstname() {
+		return this.getDataitem().getFirstname();
+	}
+
+	public String getSecondname() {
+		return this.getDataitem().getSecondname();
+	}
+
 	/**
 	 * Gets the fullname.
 	 *
@@ -128,6 +139,18 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		this.getDataitem().setContacts(contacts);
 	}
 
+	public ContactDataitem getContact(String organisationIdentifier) {
+		List<ContactDataitem> contacts = this.getDataitem().getContacts();
+		for (ContactDataitem contactDataitem : contacts) {
+			if (contactDataitem.getOrganisation() != null) {
+				if (contactDataitem.getOrganisation().equalsIgnoreCase(organisationIdentifier)) {
+					return contactDataitem;
+				}
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * Gets the first private contact.
 	 *
@@ -136,7 +159,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	public ContactDataitem getFirstPrivateContact() {
 		List<ContactDataitem> contacts = this.getDataitem().getContacts();
 		for (ContactDataitem contactDataitem : contacts) {
-			if (contactDataitem.getName().equalsIgnoreCase("Privat")) {
+			if (contactDataitem.getName().equalsIgnoreCase(Parameter.PRIVATE.toString())) {
 				return contactDataitem;
 			}
 		}
@@ -215,16 +238,16 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		}
 
 		double sumR = Repository.getInstance().getAverageAllokationInOrganisation(this.getFullname(), Freq.WEEKLY);
-		renderer.addH2(element, ROLESINORGANISATION.toString() + " ("+Math.round(sumR)+"h/Woche)");
-		
+		renderer.addH2(element, ROLESINORGANISATION.toString() + " (" + Math.round(sumR) + "h/Woche)");
+
 		List<Role> orgRoles = Repository.getInstance().getRolesWithPerson(this.getFullname());
 		renderer.addRoleList(element, orgRoles, this);
 
 		List<Team> foundTeams = Repository.getInstance().getTeamsWithMember(this);
 		if (ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
 			double sum = Repository.getInstance().getAverageAllokationInTeams(this, Freq.WEEKLY);
-			
-			renderer.addH2(element, ROLESINTEAM.toString()+ " ("+Math.round(sum)+"h/Woche)");
+
+			renderer.addH2(element, ROLESINTEAM.toString() + " (" + Math.round(sum) + "h/Woche)");
 			Element ul = element.appendElement("ul");
 			for (Team team : foundTeams) {
 				Element li = ul.appendElement("li");
@@ -234,11 +257,14 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 				}
 
 				if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
-					li.append("<ac:link><ri:page ri:content-title=\""+team.getTitle()+"\" ri:version-at-save=\"1\"/><ac:plain-text-link-body><![CDATA["+team.getTitle()+""+c+"]]></ac:plain-text-link-body></ac:link>");
+					li.append("<ac:link><ri:page ri:content-title=\"" + team.getTitle()
+							+ "\" ri:version-at-save=\"1\"/><ac:plain-text-link-body><![CDATA[" + team.getTitle() + ""
+							+ c + "]]></ac:plain-text-link-body></ac:link>");
 				} else if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
-					li.appendElement("a").attr("href", "../web/" + team.getId(synchronizer) + ".html").appendText(team.getTitle()+c);
+					li.appendElement("a").attr("href", "../web/" + team.getId(synchronizer) + ".html")
+							.appendText(team.getTitle() + c);
 				}
-				
+
 				List<TeamEntry> x = team.getTeamEntries();
 				Element ul2 = li.appendElement("ul");
 				for (TeamEntry e : x) {
@@ -310,13 +336,38 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 			m.warning("Person has no team-role", "Person '" + this.getFullname() + "' has no related team-role");
 			messages.add(m);
 		}
-		
+
 		/*
 		 * if (!this.hasAbbreviation()) { ValidationMessage m = new
 		 * ValidationMessage(this); m.warning("No abbreviation added", "Role '" +
 		 * this.getTitle() + "' has no abbreviation"); messages.add(m); }
 		 */
 		return messages;
+	}
+
+	@Override
+	public Map<Parameter, Object> getDataRow() {
+		Map<Parameter, Object> map = new TreeMap<Parameter, Object>();
+
+//		addDataRowElement(this.getTitle(), Parameter.TITLE, map);
+		addDataRowElement(this.getFirstname(), Parameter.FIRSTNAME, map);
+		addDataRowElement(this.getSecondname(), Parameter.SECONDNAME, map);
+		addDataRowElement(this.getFamilyname(), Parameter.FAMILYNAME, map);
+		addDataRowElement(this.getFirstname(), Parameter.FIRSTNAME, map);
+
+		ContactDataitem cdi = this.getFirstPrivateContact();
+		addDataRowElement(cdi.getMail(), Parameter.MAIL, map);
+		addDataRowElement(cdi.getMobile(), Parameter.MOBILE, map);
+		addDataRowElement(cdi.getPhone(), Parameter.PHONE, map);
+		addDataRowElement(cdi.getAddress(), Parameter.ADRESS, map);
+
+		return map;
+	}
+
+	private void addDataRowElement(String value, Parameter parameter, Map<Parameter, Object> map) {
+		if (StringUtil.isNotNullAndNotEmpty(value)) {
+			map.put(parameter, value);
+		}
 	}
 
 }

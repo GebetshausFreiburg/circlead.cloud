@@ -33,7 +33,7 @@ public enum WorkitemParameter {
 	ACTIVITYID(Parameter.ACTIVITYID, "Activity-ID", "Aid", "Alternative Id"),
 
 	/** The description. */
-	DESCRIPTION(Parameter.DESCRIPTION, "Description"),
+	DESCRIPTION(Parameter.DESCRIPTION, "Description", "Beschreibung"),
 	
 	RECURRENCERULE(Parameter.RECURRENCERULE, "RecurrenceRule", "RecurrencePattern"),
 	

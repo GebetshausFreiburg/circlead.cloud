@@ -13,8 +13,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.model.data.ActivityDataitem;
 import org.rogatio.circlead.model.work.Activity;
 
@@ -23,6 +26,8 @@ import org.rogatio.circlead.model.work.Activity;
  */
 public class ActivityTableParserElement implements IParserElement {
 
+	final static Logger LOGGER = LogManager.getLogger(ActivityTableParserElement.class);
+	
 	/**
 	 * Instantiates a new head table parser element.
 	 *
@@ -51,6 +56,8 @@ public class ActivityTableParserElement implements IParserElement {
 	 */
 	private void parse(Object text) {
 
+//		LOGGER.debug(text);
+		
 		if (text instanceof Element) {
 			Map<Integer, String> header = new HashMap<Integer, String>();
 
@@ -70,9 +77,15 @@ public class ActivityTableParserElement implements IParserElement {
 
 					columnCounter = 1;
 					for (Element td : row.getElementsByTag("td")) {
-						String key = header.get(columnCounter);
+						String key = header.get(columnCounter).trim();
+						
 						String value = td.text();
+						
+						if (value!=null) {
+							value = value.trim();
+						}
 						data.put(key, value);
+						
 						columnCounter++;
 					}
 
