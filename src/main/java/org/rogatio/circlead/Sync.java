@@ -45,24 +45,26 @@ public class Sync {
 	// TODO Activity-Process-Builder (yWorks) erzeugen
 
 	/** The Constant REPORTS. */
-	public static final boolean REPORTS = true;
+	public static final boolean REPORTS = false;
 
 	/** The Constant HOWTOS. */
-	public static final boolean HOWTOS = true;
+	public static final boolean HOWTOS = false;
 
 	/** The Constant ROLES. */
-	public static final boolean ROLES = true;
+	public static final boolean ROLES = false;
 
 	/** The Constant ROLEGROUPS. */
-	public static final boolean ROLEGROUPS = true;
+	public static final boolean ROLEGROUPS = false;
 
 	/** The Constant PERSONS. */
-	public static final boolean PERSONS = true;
+	public static final boolean PERSONS = false;
 
 	/** The Constant ACTIVITIES. */
-	public static final boolean ACTIVITIES = true;
+	public static final boolean ACTIVITIES = false;
 
 	public static final boolean TEAMS = true;
+
+	public static final boolean WRITE_UPDATE = false;
 
 	/** The Constant logger. */
 	final static Logger LOGGER = LogManager.getLogger(Sync.class);
@@ -123,7 +125,9 @@ public class Sync {
 		 * Re-Render loaded data back to set interfaces. Update pages in confluence and
 		 * writes html-pages to local folder 'web'
 		 */
-		results = repository.updateWorkitems();
+		if (WRITE_UPDATE) {
+			results = repository.updateWorkitems();
+		}
 
 		if (REPORTS) {
 			/* Add report-handler */
@@ -146,11 +150,17 @@ public class Sync {
 			results = repository.updateReports();
 		}
 
-		repository.writeExcel("Mitarbeiterliste", WorkitemType.PERSON, null);
-		repository.writeExcel("Rollen", WorkitemType.ROLE, null);
-		repository.writeExcel("Rollengruppen", WorkitemType.ROLEGROUP, null);
-	
-		ExcelUtil.writeExcelTeamCategory("TeamCategory", "Gebetsstunde");
+//		repository.writeExcel("Mitarbeiterliste", WorkitemType.PERSON, null);
+//		repository.writeExcel("Rollen", WorkitemType.ROLE, null);
+//		repository.writeExcel("Rollengruppen", WorkitemType.ROLEGROUP, null);
+
+		PrayHourExporter phe = new PrayHourExporter();
+		phe.addSheet(PrayHourExporter.MODE_EXTERN);
+		phe.addSheet(PrayHourExporter.MODE_INTERN);
+		phe.addSheet(PrayHourExporter.MODE_NEED);
+		phe.addSheet(PrayHourExporter.MODE_DETAIL);
+		phe.export("Gebetsstundenübersicht");
+		
 	}
 
 }

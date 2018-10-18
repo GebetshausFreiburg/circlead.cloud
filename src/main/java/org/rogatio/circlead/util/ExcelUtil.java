@@ -1,6 +1,5 @@
 package org.rogatio.circlead.util;
 
-import java.awt.Color;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -13,123 +12,33 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.dmfs.rfc5545.Weekday;
-import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.model.Parameter;
-import org.rogatio.circlead.model.work.Team;
 
 public class ExcelUtil {
 
 	final static Logger LOGGER = LogManager.getLogger(ExcelUtil.class);
-
-	public static void writeExcelTeamCategory(String filename, String category) {
-		XSSFWorkbook workbook = new XSSFWorkbook();
-		XSSFSheet sheet = workbook.createSheet("data");
-
-//		int rowCounter = 0;
-		XSSFRow rowOfDays = sheet.createRow(0);
-		XSSFCell cell = rowOfDays.createCell(1);
-		cell.setCellStyle(getBoldStyle(workbook));
-		cell.setCellValue("Montag");
-		cell = rowOfDays.createCell(2);
-		cell.setCellStyle(getBoldStyle(workbook));
-		cell.setCellValue("Dienstag");
-		cell = rowOfDays.createCell(3);
-		cell.setCellStyle(getBoldStyle(workbook));
-		cell.setCellValue("Mittwoch");
-		cell = rowOfDays.createCell(4);
-		cell.setCellStyle(getBoldStyle(workbook));
-		cell.setCellValue("Donnerstag");
-		cell = rowOfDays.createCell(5);
-		cell.setCellStyle(getBoldStyle(workbook));
-		cell.setCellValue("Freitag");
-		cell = rowOfDays.createCell(6);
-		cell.setCellStyle(getBoldStyle(workbook));
-		cell.setCellValue("Samstag");
-		cell = rowOfDays.createCell(7);
-		cell.setCellStyle(getBoldStyle(workbook));
-		cell.setCellValue("Sonntag");
-
-		for (int i = 0; i < 24; i++) {
-			XSSFRow row = sheet.createRow(i + 1);
-			cell = row.createCell(0);
-			cell.setCellStyle(getBoldStyle(workbook));
-			cell.setCellValue(StringUtil.addSpace(i + "", 2, '0'));
-		}
-
-		List<Team> teams = Repository.getInstance().getTeamsWithCategory(category);
-		for (Team team : teams) {
-			if (team.getRecurrenceRule() != null) {
-				CircleadRecurrenceRule crr = new CircleadRecurrenceRule(team.getRecurrenceRule());
-
-				Weekday wd = crr.getWeekday();
-				int hour = crr.getHour();
-
-				XSSFRow row = sheet.getRow(hour + 1);
-
-				cell = null;
-
-				if (wd == Weekday.MO) {
-					cell = row.createCell(1);
-				} else if (wd == Weekday.TU) {
-					cell = row.createCell(2);
-				} else if (wd == Weekday.WE) {
-					cell = row.createCell(3);
-				} else if (wd == Weekday.TH) {
-					cell = row.createCell(4);
-				} else if (wd == Weekday.FR) {
-					cell = row.createCell(5);
-				} else if (wd == Weekday.SA) {
-					cell = row.createCell(6);
-				} else if (wd == Weekday.SU) {
-					cell = row.createCell(7);
-				}
-
-				StringBuilder sb = new StringBuilder();
-
-				if (team.getTeamType() != null) {
-					sb.append(team.getTeamType());
-				}
-				if (team.getTeamSubtype() != null) {
-					sb.append("\n" + team.getTeamSubtype());
-				}
-
-				if (cell != null) {
-					cell.setCellValue(sb.toString());
-				}
-			}
-		}
-		
-		try {
-			FileOutputStream out = new FileOutputStream(new File("exports" + File.separatorChar + filename + ".xlsx"));
-			workbook.write(out);
-			out.close();
-		} catch (Exception e) {
-			LOGGER.error(e);
-		} finally {
-			try {
-				workbook.close();
-			} catch (IOException e) {
-				LOGGER.error(e);
-			}
-		}
-
+	
+	public static XSSFCellStyle addColorBackground(XSSFCellStyle style, byte r, byte g, byte b) {
+		XSSFColor color = new XSSFColor();
+		color.setRGB(new byte[] { r, g, b });
+		style.setFillForegroundColor(color);
+		style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		return style;
 	}
 
 	public static void writeExcel(String filename, List<Map<Parameter, Object>> dataMap, List<Parameter> headerRow) {
@@ -318,6 +227,16 @@ public class ExcelUtil {
 			return c;
 		}
 		return null;
+	}
+
+	public static XSSFRichTextString getRichString(String content, XSSFWorkbook workbook, boolean bold,
+			int textHeight) {
+		XSSFRichTextString rts = new XSSFRichTextString(content);
+		XSSFFont fontBold = workbook.createFont();
+		fontBold.setBold(bold);
+		fontBold.setFontHeight(textHeight);
+		rts.applyFont(fontBold);
+		return rts;
 	}
 
 	public static XSSFCellStyle getBoldStyle(XSSFWorkbook workbook) {

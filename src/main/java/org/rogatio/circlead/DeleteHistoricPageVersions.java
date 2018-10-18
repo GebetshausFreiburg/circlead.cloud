@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 /**
  * The Class DeleteOldVersions.
  */
-public class DeleteOldVersions {
+public class DeleteHistoricPageVersions {
 
 	/**
 	 * The main method.

@@ -361,9 +361,19 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		addDataRowElement(cdi.getPhone(), Parameter.PHONE, map);
 		addDataRowElement(cdi.getAddress(), Parameter.ADRESS, map);
 
+		/*Map<String, String> d = this.getData();
+		if (d != null) {
+			if (d.size() > 0) {
+				for (String key : d.keySet()) {
+					String value = d.get(key);
+					addDataRowElement(value, key, map);
+				}
+			}
+		}*/
+		
 		return map;
 	}
-
+	
 	private void addDataRowElement(String value, Parameter parameter, Map<Parameter, Object> map) {
 		if (StringUtil.isNotNullAndNotEmpty(value)) {
 			map.put(parameter, value);
