@@ -175,6 +175,7 @@ public class PrayHourExporter {
 					cellStyle.setAlignment(org.apache.poi.ss.usermodel.HorizontalAlignment.CENTER);
 					cellStyle.setVerticalAlignment(org.apache.poi.ss.usermodel.VerticalAlignment.TOP);
 					cellStyle.setWrapText(true);
+
 					// ExcelUtil.addColorBackground(cellStyle, (byte) 255, (byte) 255, (byte) 255);
 
 					if (mode.equals(MODE_INTERN)) {
