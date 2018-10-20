@@ -14,3 +14,7 @@ reports/
 /src/main/java/org/rogatio/circlead/control/synchronizer/atlassian/Constant.java
 /Stundenplan_GBH_Datenbank.xlsx
 /exports/
+/rogatio.app
+/gebetshaus.app
+/gebetshaus.credentials
+/rogatio.credentials

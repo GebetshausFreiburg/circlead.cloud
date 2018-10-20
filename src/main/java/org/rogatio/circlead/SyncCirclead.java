@@ -8,6 +8,7 @@
  */
 package org.rogatio.circlead;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,9 +21,11 @@ import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.model.Parameter;
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.work.Rolegroup;
+import org.rogatio.circlead.util.DropboxUtil;
 import org.rogatio.circlead.util.ExcelUtil;
 import org.rogatio.circlead.view.report.OverviewReport;
 import org.rogatio.circlead.view.report.PersonListReport;
+import org.rogatio.circlead.view.report.TeamCategegoryInternalReport;
 import org.rogatio.circlead.view.report.TeamCategoryReport;
 import org.rogatio.circlead.view.report.ReworkReport;
 import org.rogatio.circlead.view.report.RoleHolderReport;
@@ -30,22 +33,27 @@ import org.rogatio.circlead.view.report.RolegroupReport;
 import org.rogatio.circlead.view.report.RolegroupSummaryReport;
 import org.rogatio.circlead.view.report.ValidationReport;
 
+import com.dropbox.core.v2.DbxClientV2;
+import com.dropbox.core.v2.DbxTeamClientV2;
+
 /**
  * Synchronize-Starter.
  */
-public class Sync {
+public class SyncCirclead {
 	// TODO RecurrenceRule for person in team
+	// TODO Allokation in CRR with until-date
 	// TODO Comment for person in team
+	// TODO PrayHour-Excel-Export to Confluence Reports
+	// TODO Dropbox-Interface for PrayHour-XLSX
 	// TODO Validation role status vs. person-holder status (i.e. paused, closed)
 	// TODO Validation "empty" (<10 chars) text in role
-	// TODO Excel-Exporter Persons, Category-Teams, ...
 	// TODO FileSynchronizer-Image-Missing-Validator, Wrong-Image-Size (User)
 	// TODO Atlassian User-Check (for Image-Usage or User-Link)
 	// TODO Velocity als Render-Changer nutzen
 	// TODO Activity-Process-Builder (yWorks) erzeugen
 
 	/** The Constant REPORTS. */
-	public static final boolean REPORTS = false;
+	public static final boolean REPORTS = true;
 
 	/** The Constant HOWTOS. */
 	public static final boolean HOWTOS = false;
@@ -67,7 +75,7 @@ public class Sync {
 	public static final boolean WRITE_UPDATE = false;
 
 	/** The Constant logger. */
-	final static Logger LOGGER = LogManager.getLogger(Sync.class);
+	final static Logger LOGGER = LogManager.getLogger(SyncCirclead.class);
 
 	/**
 	 * The main method of the application.
@@ -143,6 +151,7 @@ public class Sync {
 			repository.addReport(new PersonListReport());
 			repository.addReport(new RolegroupSummaryReport());
 			repository.addReport(new TeamCategoryReport("Gebetsstunde"));
+			repository.addReport(new TeamCategegoryInternalReport("Gebetsstunde"));
 			// repository.addReport(new RoleIssueReport());
 
 			/* Rewrite Reports */
@@ -155,11 +164,10 @@ public class Sync {
 //		repository.writeExcel("Rollengruppen", WorkitemType.ROLEGROUP, null);
 
 		PrayHourExporter phe = new PrayHourExporter();
-		phe.addSheet(PrayHourExporter.MODE_EXTERN);
-		phe.addSheet(PrayHourExporter.MODE_INTERN);
-		phe.addSheet(PrayHourExporter.MODE_NEED);
-		phe.addSheet(PrayHourExporter.MODE_DETAIL);
 		phe.export("Gebetsstundenübersicht");
+		
+		DbxTeamClientV2 dbxClient = DropboxUtil.getTeamClient("gebetshaus.credentials");
+		DropboxUtil.uploadFileToTeamFolder(dbxClient, new File("exports/Gebetsstundenübersicht.xlsx"), "/06_GBH_BO_Gebetstundenorga/Gebetsstundenübersicht.xlsx", "Matthias Wegner");
 		
 	}
 

@@ -23,6 +23,7 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFPrintSetup;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -32,7 +33,7 @@ import org.rogatio.circlead.model.Parameter;
 public class ExcelUtil {
 
 	final static Logger LOGGER = LogManager.getLogger(ExcelUtil.class);
-	
+
 	public static XSSFCellStyle addColorBackground(XSSFCellStyle style, byte r, byte g, byte b) {
 		XSSFColor color = new XSSFColor();
 		color.setRGB(new byte[] { r, g, b });
@@ -62,12 +63,22 @@ public class ExcelUtil {
 		XSSFRow row = sheet.createRow(rowCounter);
 		for (Parameter p : headerRow) {
 			XSSFCell cell = row.createCell(headerRow.indexOf(p));
-			cell.setCellStyle(getBoldStyle(workbook));
-			cell.setCellValue(p.toString());
+			XSSFCellStyle HEADERSTYLE = workbook.createCellStyle();
+			HEADERSTYLE.setAlignment(org.apache.poi.ss.usermodel.HorizontalAlignment.CENTER.LEFT);
+			HEADERSTYLE.setVerticalAlignment(org.apache.poi.ss.usermodel.VerticalAlignment.TOP);
+			ExcelUtil.addColorBackground(HEADERSTYLE, (byte) 60, (byte) 60, (byte) 60);
+			cell.setCellStyle(HEADERSTYLE);
+//			cell.setCellValue(p.toString());
+			cell.setCellValue(ExcelUtil.getRichString(p.toString(), workbook, true, 12));
 		}
+
+		int maxColumn = headerRow.size();
+		int maxRow = 0;
 
 		for (Map<Parameter, Object> rowData : dataMap) {
 			rowCounter++;
+
+			maxRow = Math.max(maxRow, rowCounter);
 			XSSFRow dataRow = sheet.createRow(rowCounter);
 
 			for (int i = 0; i < headerRow.size(); i++) {
@@ -76,6 +87,11 @@ public class ExcelUtil {
 				for (Parameter parameter : keys) {
 					if (headerRow.get(i) == parameter) {
 						XSSFCell cell = dataRow.createCell(i);
+
+						XSSFCellStyle cellStyle = workbook.createCellStyle();
+						cellStyle.setAlignment(org.apache.poi.ss.usermodel.HorizontalAlignment.LEFT);
+						cellStyle.setVerticalAlignment(org.apache.poi.ss.usermodel.VerticalAlignment.TOP);
+						cellStyle.setWrapText(true);
 
 						Object val = rowData.get(parameter);
 						if (val instanceof String) {
@@ -106,6 +122,8 @@ public class ExcelUtil {
 			filename = filename.replace(".xlsx", "");
 		}
 
+		setPrintArea(workbook, sheet, maxRow, maxColumn, false);
+
 		try {
 			FileOutputStream out = new FileOutputStream(new File("exports" + File.separatorChar + filename + ".xlsx"));
 			workbook.write(out);
@@ -119,6 +137,27 @@ public class ExcelUtil {
 				LOGGER.error(e);
 			}
 		}
+	}
+
+	public static void setPrintArea(XSSFWorkbook workbook, XSSFSheet spreadsheet, int maxRow, int maxColumn,
+			boolean fitToPage) {
+		workbook.setPrintArea(workbook.getSheetIndex(spreadsheet), // sheet index
+				0, // start column
+				maxColumn, // end column
+				0, // start row
+				maxRow // end row
+		);
+
+		// set paper size
+		spreadsheet.getPrintSetup().setPaperSize(XSSFPrintSetup.A4_PAPERSIZE);
+		spreadsheet.setFitToPage(fitToPage);
+		spreadsheet.getPrintSetup().setLandscape(true);
+
+		// set display grid lines or not
+		spreadsheet.setDisplayGridlines(true);
+
+		// set print grid lines or not
+		spreadsheet.setPrintGridlines(true);
 	}
 
 	public static XSSFWorkbook readExcel(String fileName) {

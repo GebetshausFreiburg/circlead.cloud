@@ -29,46 +29,19 @@ import org.rogatio.circlead.util.StringUtil;
 public class PrayHourExporter {
 	final static Logger LOGGER = LogManager.getLogger(PrayHourExporter.class);
 
-	final List<Weekday> days = new ArrayList<Weekday>();
-	final Map<Integer, Weekday> dayMapR = new HashMap<Integer, Weekday>();
-	final Map<Weekday, Integer> dayMap = new HashMap<Weekday, Integer>();
-	final Map<Weekday, String> dayMap2 = new HashMap<Weekday, String>();
 	final XSSFWorkbook workbook = new XSSFWorkbook();
 	final XSSFCellStyle HEADERSTYLE = workbook.createCellStyle();
 
 	public PrayHourExporter() {
-		days.add(Weekday.MO);
-		days.add(Weekday.TU);
-		days.add(Weekday.WE);
-		days.add(Weekday.TH);
-		days.add(Weekday.FR);
-		days.add(Weekday.SA);
-		days.add(Weekday.SU);
-		dayMapR.put(1, Weekday.MO);
-		dayMapR.put(2, Weekday.TU);
-		dayMapR.put(3, Weekday.WE);
-		dayMapR.put(4, Weekday.TH);
-		dayMapR.put(5, Weekday.FR);
-		dayMapR.put(6, Weekday.SA);
-		dayMapR.put(7, Weekday.SU);
-		dayMap.put(Weekday.MO, 1);
-		dayMap.put(Weekday.TU, 2);
-		dayMap.put(Weekday.WE, 3);
-		dayMap.put(Weekday.TH, 4);
-		dayMap.put(Weekday.FR, 5);
-		dayMap.put(Weekday.SA, 6);
-		dayMap.put(Weekday.SU, 7);
-		dayMap2.put(Weekday.MO, "Montag");
-		dayMap2.put(Weekday.TU, "Dienstag");
-		dayMap2.put(Weekday.WE, "Mittwoch");
-		dayMap2.put(Weekday.TH, "Donnerstag");
-		dayMap2.put(Weekday.FR, "Freitag");
-		dayMap2.put(Weekday.SA, "Samstag");
-		dayMap2.put(Weekday.SU, "Sonntag");
-
 		HEADERSTYLE.setAlignment(org.apache.poi.ss.usermodel.HorizontalAlignment.CENTER);
 		HEADERSTYLE.setVerticalAlignment(org.apache.poi.ss.usermodel.VerticalAlignment.TOP);
 		ExcelUtil.addColorBackground(HEADERSTYLE, (byte) 60, (byte) 60, (byte) 60);
+	
+		addSheet(PrayHourExporter.MODE_EXTERN);
+		addSheet(PrayHourExporter.MODE_INTERN);
+		addSheet(PrayHourExporter.MODE_NEED);
+		addSheet(PrayHourExporter.MODE_DETAIL);
+		
 	}
 
 	public static String MODE_INTERN = new String("Intern");
@@ -84,7 +57,7 @@ public class PrayHourExporter {
 
 			cell.setCellStyle(HEADERSTYLE);
 			if (i > 0) {
-				cell.setCellValue(ExcelUtil.getRichString(dayMap2.get(dayMapR.get(i)), workbook, true, 12));
+				cell.setCellValue(ExcelUtil.getRichString(CircleadRecurrenceRule.WEEKDAYS2GERMAN.get(CircleadRecurrenceRule.DAYOFWEEK2WEEKDAY.get(i)), workbook, true, 12));
 			} else {
 				cell.setCellValue(" ");
 			}
@@ -117,14 +90,14 @@ public class PrayHourExporter {
 
 	private void addDayhours(XSSFSheet sheet) {
 		for (int i = 0; i < 24; i++) {
-			sheet.setColumnWidth(0, 3 * 256);
+			sheet.setColumnWidth(0, 7 * 256);
 			XSSFRow row = sheet.createRow(i + 1);
-			sheet.setColumnWidth(0, 3 * 256);
-			row = sheet.createRow(i + 1);
+//			sheet.setColumnWidth(0, 3 * 256);
+//			row = sheet.createRow(i + 1);
 			XSSFCell cell = row.createCell(0);
 			XSSFCellStyle s = HEADERSTYLE;
 			cell.setCellStyle(s);
-			cell.setCellValue(ExcelUtil.getRichString(StringUtil.addSpace(i + "", 2, '0'), workbook, true, 12));
+			cell.setCellValue(ExcelUtil.getRichString(StringUtil.addSpace(i + "", 2, '0')+":00", workbook, true, 12));
 		}
 	}
 
@@ -151,7 +124,7 @@ public class PrayHourExporter {
 				}
 
 				XSSFCell cell = null;
-				int pos = dayMap.get(wd);
+				int pos = CircleadRecurrenceRule.WEEKDAY2DAYOFWEEK.get(wd);
 				sheet.setColumnWidth(pos, 20 * 256);
 				cell = row.createCell(pos);
 
@@ -219,6 +192,7 @@ public class PrayHourExporter {
 			postProcessing(sheet);
 		}
 
+		ExcelUtil.setPrintArea(workbook, sheet, 24, 7, true);
 	}
 
 	public void export(String filename) {

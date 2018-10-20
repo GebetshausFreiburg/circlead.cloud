@@ -61,6 +61,8 @@ public enum WorkitemStatusParameter {
 	/** The temporary. */
 	TEMPORARY("Yellow", "Temporär", "Temporary"),
 
+	NEED("Yellow", "Unterbesetzt", "Need", "Teammitgliedmangel"),
+	
 	/** The inprogress. */
 	INPROGRESS("Yellow", "InBearbeitung", "InProgress", "InBearbeitung"),
 

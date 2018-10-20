@@ -6,7 +6,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,6 +24,42 @@ import org.dmfs.rfc5545.recur.RecurrenceRuleIterator;
 
 public class CircleadRecurrenceRule {
 
+	final static public List<Weekday> WEEKDAYS = new ArrayList<Weekday>();
+	final static public Map<Integer, Weekday> DAYOFWEEK2WEEKDAY = new HashMap<Integer, Weekday>();
+	final static public Map<Weekday, Integer> WEEKDAY2DAYOFWEEK = new HashMap<Weekday, Integer>();
+	final static public Map<Weekday, String> WEEKDAYS2GERMAN = new HashMap<Weekday, String>();
+	
+	static {
+		WEEKDAYS.add(Weekday.MO);
+		WEEKDAYS.add(Weekday.TU);
+		WEEKDAYS.add(Weekday.WE);
+		WEEKDAYS.add(Weekday.TH);
+		WEEKDAYS.add(Weekday.FR);
+		WEEKDAYS.add(Weekday.SA);
+		WEEKDAYS.add(Weekday.SU);
+		DAYOFWEEK2WEEKDAY.put(1, Weekday.MO);
+		DAYOFWEEK2WEEKDAY.put(2, Weekday.TU);
+		DAYOFWEEK2WEEKDAY.put(3, Weekday.WE);
+		DAYOFWEEK2WEEKDAY.put(4, Weekday.TH);
+		DAYOFWEEK2WEEKDAY.put(5, Weekday.FR);
+		DAYOFWEEK2WEEKDAY.put(6, Weekday.SA);
+		DAYOFWEEK2WEEKDAY.put(7, Weekday.SU);
+		WEEKDAY2DAYOFWEEK.put(Weekday.MO, 1);
+		WEEKDAY2DAYOFWEEK.put(Weekday.TU, 2);
+		WEEKDAY2DAYOFWEEK.put(Weekday.WE, 3);
+		WEEKDAY2DAYOFWEEK.put(Weekday.TH, 4);
+		WEEKDAY2DAYOFWEEK.put(Weekday.FR, 5);
+		WEEKDAY2DAYOFWEEK.put(Weekday.SA, 6);
+		WEEKDAY2DAYOFWEEK.put(Weekday.SU, 7);
+		WEEKDAYS2GERMAN.put(Weekday.MO, "Montag");
+		WEEKDAYS2GERMAN.put(Weekday.TU, "Dienstag");
+		WEEKDAYS2GERMAN.put(Weekday.WE, "Mittwoch");
+		WEEKDAYS2GERMAN.put(Weekday.TH, "Donnerstag");
+		WEEKDAYS2GERMAN.put(Weekday.FR, "Freitag");
+		WEEKDAYS2GERMAN.put(Weekday.SA, "Samstag");
+		WEEKDAYS2GERMAN.put(Weekday.SU, "Sonntag");
+	}
+	
 	final static Logger LOGGER = LogManager.getLogger(CircleadRecurrenceRule.class);
 
 	public String toString() {
@@ -38,7 +76,7 @@ public class CircleadRecurrenceRule {
 	}
 
 	private RecurrenceRule recurrenceRule;
-
+	
 	public CircleadRecurrenceRule(String rule) {
 		recurrenceRule = this.convert(rule);
 	}
