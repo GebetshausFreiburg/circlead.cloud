@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,7 +30,7 @@ public class CircleadRecurrenceRule {
 	final static public Map<Integer, Weekday> DAYOFWEEK2WEEKDAY = new HashMap<Integer, Weekday>();
 	final static public Map<Weekday, Integer> WEEKDAY2DAYOFWEEK = new HashMap<Weekday, Integer>();
 	final static public Map<Weekday, String> WEEKDAYS2GERMAN = new HashMap<Weekday, String>();
-	
+
 	static {
 		WEEKDAYS.add(Weekday.MO);
 		WEEKDAYS.add(Weekday.TU);
@@ -59,7 +61,7 @@ public class CircleadRecurrenceRule {
 		WEEKDAYS2GERMAN.put(Weekday.SA, "Samstag");
 		WEEKDAYS2GERMAN.put(Weekday.SU, "Sonntag");
 	}
-	
+
 	final static Logger LOGGER = LogManager.getLogger(CircleadRecurrenceRule.class);
 
 	public String toString() {
@@ -76,9 +78,19 @@ public class CircleadRecurrenceRule {
 	}
 
 	private RecurrenceRule recurrenceRule;
-	
+
 	public CircleadRecurrenceRule(String rule) {
 		recurrenceRule = this.convert(rule);
+	}
+
+	public void setUntil(int year, int month, int day) {
+//		TimeZone tz = TimeZone.getTimeZone("Europe/Berlin");
+		DateTime u = new DateTime(defaultTimeZone, year, month - 1, day, 0, 0, 0);
+		recurrenceRule.setUntil(u);
+	}
+
+	public void setUntil(DateTime until) {
+		recurrenceRule.setUntil(until);
 	}
 
 	public void setWeekStart(Weekday wkst) {
@@ -131,12 +143,250 @@ public class CircleadRecurrenceRule {
 		return rawRule;
 	}
 
+	public List<Timeslice> getAllokationSlices(Freq freq) {
+		return getAllokationSlices(freq.name());
+	}
+
+	public List<Timeslice> getAllokationSlices(String freq) {
+		List<Timeslice> list = null;
+		if (freq.equals(Freq.DAILY.name())) {
+			list = new ArrayList<Timeslice>();
+			for (int i = 1; i <= 365; i++) {
+				Timeslice val = getAllokation(Freq.DAILY.name(), i);
+				if (val != null) {
+					list.add(val);
+				}
+			}
+		}
+		if (freq.equals(Freq.WEEKLY.name())) {
+			list = new ArrayList<Timeslice>();
+			for (int i = 1; i <= 52; i++) {
+				Timeslice val = getAllokation(Freq.WEEKLY.name(), i);
+				if (val != null) {
+					list.add(val);
+				}
+			}
+		}
+		if (freq.equals(Freq.MONTHLY.name())) {
+			list = new ArrayList<Timeslice>();
+			for (int i = 1; i <= 12; i++) {
+				Timeslice val = getAllokation(Freq.MONTHLY.name(), i);
+				if (val != null) {
+					list.add(val);
+				}
+			}
+		}
+		if (freq.equals("QUATERLY")) {
+			list = new ArrayList<Timeslice>();
+			for (int i = 1; i <= 4; i++) {
+				Timeslice val = getAllokation("QUATERLY", i);
+				if (val != null) {
+					list.add(val);
+				}
+			}
+		}
+		return list;
+	}
+
 	public double getAverageAllokation(Freq freq) {
 		return getAverageAllokation(freq.name());
 	}
 
-	public double getAverageAllokation(String freq) {
+	public Timeslice getAllokation(String freq, int interval) {
+		if (freq.equals(Freq.DAILY.name())) {
+			if (interval < 0 || interval > 365) {
+				return null;
+			}
+		} else if (freq.equals(Freq.WEEKLY.name())) {
+			if (interval < 0 || interval > 52) {
+				return null;
+			}
+		} else if (freq.equals(Freq.MONTHLY.name())) {
+			if (interval < 0 || interval > 12) {
+				return null;
+			}
+		} else if (freq.equals("QUATERLY")) {
+			if (interval < 0 || interval > 4) {
+				return null;
+			}
+		} else {
+			return null;
+		}
 
+		double allokationUnit = getAllokationUnit();
+
+		Calendar start = Calendar.getInstance(defaultTimeZone);
+		Calendar end = null;
+		start.set(Calendar.MILLISECOND, 0);
+		start.set(Calendar.SECOND, 0);
+		start.set(Calendar.MINUTE, 0);
+		start.set(Calendar.HOUR_OF_DAY, 0);
+		if (freq.equals(Freq.DAILY.name())) {
+			start.add(Calendar.DAY_OF_YEAR, interval - 1);
+			end = Calendar.getInstance();
+			end.setTime(start.getTime());
+			end.add(Calendar.DAY_OF_YEAR, 1);
+		}
+		if (freq.equals(Freq.WEEKLY.name())) {
+			start.add(Calendar.WEEK_OF_YEAR, interval - 1);
+			start.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+			end = Calendar.getInstance();
+			end.setTime(start.getTime());
+			end.add(Calendar.DAY_OF_YEAR, 7);
+		}
+		if (freq.equals(Freq.MONTHLY.name())) {
+			start.add(Calendar.MONTH, interval - 1);
+			start.set(Calendar.DAY_OF_MONTH, 1);
+			end = Calendar.getInstance();
+			end.setTime(start.getTime());
+			end.add(Calendar.MONTH, 1);
+		}
+		if (freq.equals("QUATERLY")) {
+			if (start.get(Calendar.MONTH) >= 0 && start.get(Calendar.MONTH) <= 2) {
+				start.set(Calendar.MONTH, 0);
+				start.add(Calendar.MONTH, (interval - 1) * 3);
+			}
+			if (start.get(Calendar.MONTH) >= 3 && start.get(Calendar.MONTH) <= 5) {
+				start.set(Calendar.MONTH, 3);
+				start.add(Calendar.MONTH, (interval - 1) * 3);
+			}
+			if (start.get(Calendar.MONTH) >= 6 && start.get(Calendar.MONTH) <= 8) {
+				start.set(Calendar.MONTH, 6);
+				start.add(Calendar.MONTH, (interval - 1) * 3);
+			}
+			if (start.get(Calendar.MONTH) >= 9 && start.get(Calendar.MONTH) <= 11) {
+				start.set(Calendar.MONTH, 9);
+				start.add(Calendar.MONTH, (interval - 1) * 3);
+			}
+			start.set(Calendar.DAY_OF_MONTH, 1);
+			end = Calendar.getInstance();
+			end.setTime(start.getTime());
+			end.add(Calendar.MONTH, 3);
+		}
+
+		double sum = 0;
+		List<Event> events = this.getEventList(365);
+		for (Event event : events) {
+			if (event.getStartDate().after(start.getTime()) && event.getStartDate().before(end.getTime())) {
+				sum += this.duration * allokationUnit;
+			}
+		}
+
+		String sliceStart = null;
+		if (freq.equals(Freq.DAILY.name())) {
+			SimpleDateFormat sdf = new SimpleDateFormat("yy");
+			String date = sdf.format(start.getTime());
+			sliceStart = (StringUtil.addSpace(date + "/D" + start.get(Calendar.DAY_OF_YEAR), 3, '0'));
+		}
+		if (freq.equals(Freq.WEEKLY.name())) {
+			SimpleDateFormat sdf = new SimpleDateFormat("yy");
+			String date = sdf.format(start.getTime());
+			if (start.get(Calendar.YEAR) < end.get(Calendar.YEAR)) {
+				date = sdf.format(end.getTime());
+			}
+			sliceStart = (StringUtil.addSpace(date + "/W" + start.get(Calendar.WEEK_OF_YEAR), 2, '0'));
+		}
+
+		if (freq.equals(Freq.MONTHLY.name())) {
+			SimpleDateFormat sdf = new SimpleDateFormat("yy/'M'MM");
+			String date = sdf.format(start.getTime());
+			sliceStart = (date);
+		}
+
+		if (freq.equals("QUATERLY")) {
+			if (start.get(Calendar.MONTH) >= 0 && start.get(Calendar.MONTH) <= 2) {
+				SimpleDateFormat sdf = new SimpleDateFormat("yy/'Q1'");
+				sliceStart = sdf.format(start.getTime());
+			}
+			if (start.get(Calendar.MONTH) >= 3 && start.get(Calendar.MONTH) <= 5) {
+				SimpleDateFormat sdf = new SimpleDateFormat("yy/'Q2'");
+				sliceStart = sdf.format(start.getTime());
+			}
+			if (start.get(Calendar.MONTH) >= 6 && start.get(Calendar.MONTH) <= 8) {
+				SimpleDateFormat sdf = new SimpleDateFormat("yy/'Q3'");
+				sliceStart = sdf.format(start.getTime());
+			}
+			if (start.get(Calendar.MONTH) >= 9 && start.get(Calendar.MONTH) <= 11) {
+				SimpleDateFormat sdf = new SimpleDateFormat("yy/'Q4'");
+				sliceStart = sdf.format(start.getTime());
+			}
+
+		}
+
+		Timeslice ts = new Timeslice();
+		ts.setStart(start);
+		ts.setEnd(end);
+		ts.setAllokation(sum);
+		ts.setSliceStart(sliceStart);
+		ts.setFreq(freq);
+
+		return ts;
+	}
+
+	public class Timeslice {
+		private String freq;
+		private Calendar start;
+		private Calendar end;
+		private String sliceStart;
+		private double allokation;
+
+		public String toString() {
+			return sliceStart + "=" + allokation;
+		}
+
+		public String getFreq() {
+			return freq;
+		}
+
+		public void setFreq(String freq) {
+			this.freq = freq;
+		}
+
+		public void setFreq(Freq freq) {
+			this.freq = freq.name();
+		}
+
+		public Calendar getStart() {
+			return start;
+		}
+
+		public void setStart(Calendar start) {
+			this.start = start;
+		}
+
+		public Calendar getEnd() {
+			return end;
+		}
+
+		public void setEnd(Calendar end) {
+			this.end = end;
+		}
+
+		public String getSliceStart() {
+			return sliceStart;
+		}
+
+		public void setSliceStart(String sliceStart) {
+			this.sliceStart = sliceStart;
+		}
+
+		public double getAllokation() {
+			return allokation;
+		}
+
+		public void setAllokation(double allokation) {
+			this.allokation = allokation;
+		}
+
+	}
+
+	private TimeZone defaultTimeZone = TimeZone.getDefault();
+
+	public void setDefaultTimeZone(TimeZone timeZone) {
+		defaultTimeZone = timeZone;
+	}
+
+	private double getMultiplier(String freq) {
 		double multiplier = 0;
 		if (freq.equals(Freq.SECONDLY.name())) {
 			multiplier = 1.0 / (60.0 * 60.0);
@@ -155,7 +405,10 @@ public class CircleadRecurrenceRule {
 		} else if (freq.equals(Freq.YEARLY.name())) {
 			multiplier = 8.0 * 220.0;
 		}
+		return multiplier;
+	}
 
+	private double getAllokationUnit() {
 		double allokationUnit = 0.0;
 		if (this.durationunit != null) {
 			if (this.durationunit.equals(DURATIONBYHOUR)) {
@@ -172,7 +425,10 @@ public class CircleadRecurrenceRule {
 		} else {
 			return 0.0;
 		}
+		return allokationUnit;
+	}
 
+	private double getDivider() {
 		double divider = 0;
 		if (this.recurrenceRule.getFreq() == Freq.SECONDLY) {
 			divider = 1.0 / (60.0 * 60.0);
@@ -188,15 +444,16 @@ public class CircleadRecurrenceRule {
 		}
 		if (this.recurrenceRule.getFreq() == Freq.WEEKLY) {
 			divider = 8.0 * 5.0;
-			
-			/*List<Integer> daysInMonth = this.recurrenceRule.getByPart(Part.BYDAY);
-			if (ObjectUtil.isListNotNullAndEmpty(daysInMonth)) {
-				divider /= daysInMonth.size();
-			}*/
+
+			/*
+			 * List<Integer> daysInMonth = this.recurrenceRule.getByPart(Part.BYDAY); if
+			 * (ObjectUtil.isListNotNullAndEmpty(daysInMonth)) { divider /=
+			 * daysInMonth.size(); }
+			 */
 		}
 		if (this.recurrenceRule.getFreq() == Freq.MONTHLY && this.recurrenceRule.getInterval() == 1) {
 			divider = 8.0 * 20.0;
-			
+
 			List<Integer> daysInMonth = this.recurrenceRule.getByPart(Part.BYMONTHDAY);
 			if (ObjectUtil.isListNotNullAndEmpty(daysInMonth)) {
 				divider /= daysInMonth.size();
@@ -207,23 +464,42 @@ public class CircleadRecurrenceRule {
 		}
 		if (this.recurrenceRule.getFreq() == Freq.YEARLY) {
 			divider = 8.0 * 220.0;
-			
+
 			List<Integer> daysInYear = this.recurrenceRule.getByPart(Part.BYYEARDAY);
 			if (ObjectUtil.isListNotNullAndEmpty(daysInYear)) {
 				divider /= daysInYear.size();
 			}
-			
+
 			List<Integer> weeksInYear = this.recurrenceRule.getByPart(Part.BYWEEKNO);
 			if (ObjectUtil.isListNotNullAndEmpty(weeksInYear)) {
 				divider /= weeksInYear.size();
 			}
-			
+
 			List<Integer> monthsInYear = this.recurrenceRule.getByPart(Part.BYMONTH);
 			if (ObjectUtil.isListNotNullAndEmpty(monthsInYear)) {
 				divider /= monthsInYear.size();
 			}
 		}
 
+		return divider;
+	}
+
+	/**
+	 * 
+	 * 
+	 * @param freq
+	 * @return allokation in hours per week
+	 */
+	public double getAverageAllokation(String freq) {
+
+		double multiplier = getMultiplier(freq);
+
+		double allokationUnit = getAllokationUnit();
+		if (allokationUnit == 0.0) {
+			return 0.0;
+		}
+
+		double divider = getDivider();
 		if (divider == 0.0) {
 			return 0.0;
 		}
@@ -284,23 +560,23 @@ public class CircleadRecurrenceRule {
 	public String getDurationunit() {
 		return this.durationunit;
 	}
-	
+
 	public int getDuration() {
 		return this.duration;
 	}
-	
+
 	public Weekday getWeekday() {
 		return this.recurrenceRule.getWeekStart();
 	}
-	
+
 	public Integer getHour() {
 		List<Integer> hours = this.recurrenceRule.getByPart(Part.BYHOUR);
-		if (hours.size()>0) {
+		if (hours.size() > 0) {
 			return hours.get(0);
 		}
 		return null;
 	}
-	
+
 	private RecurrenceRule convert(String s) {
 
 		s = clean(s);
@@ -524,7 +800,7 @@ public class CircleadRecurrenceRule {
 		try {
 			Date parsedDate = df.parse(startRepresentation);
 
-			Calendar calendarDate = Calendar.getInstance();
+			Calendar calendarDate = Calendar.getInstance(defaultTimeZone);
 			calendarDate.setTime(parsedDate);
 
 			if (durationunit != null) {
@@ -636,7 +912,7 @@ public class CircleadRecurrenceRule {
 	private DateTime getStartByRule(DateTime startDateTime) {
 		Date date = convertDate(startDateTime);
 
-		Calendar cx = Calendar.getInstance();
+		Calendar cx = Calendar.getInstance(defaultTimeZone);
 		cx.setTime(date);
 
 		Calendar c = null;
@@ -706,7 +982,7 @@ public class CircleadRecurrenceRule {
 			x = x.replace("T000000", "");
 		}
 
-		DateTime y = DateTime.parse(x);
+		DateTime y = DateTime.parse(defaultTimeZone, x);
 //		System.out.println("FFF "+y);
 		return y;
 
@@ -788,7 +1064,7 @@ public class CircleadRecurrenceRule {
 			this.end = end;
 			this.crr = crr;
 		}
-		
+
 		public CircleadRecurrenceRule getRule() {
 			return crr;
 		}

@@ -9,7 +9,6 @@
 package org.rogatio.circlead;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -18,22 +17,17 @@ import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
 import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer;
 import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
-import org.rogatio.circlead.model.Parameter;
 import org.rogatio.circlead.model.WorkitemType;
-import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.DropboxUtil;
-import org.rogatio.circlead.util.ExcelUtil;
 import org.rogatio.circlead.view.report.OverviewReport;
 import org.rogatio.circlead.view.report.PersonListReport;
-import org.rogatio.circlead.view.report.TeamCategegoryInternalReport;
-import org.rogatio.circlead.view.report.TeamCategoryReport;
 import org.rogatio.circlead.view.report.ReworkReport;
 import org.rogatio.circlead.view.report.RoleHolderReport;
-import org.rogatio.circlead.view.report.RolegroupReport;
 import org.rogatio.circlead.view.report.RolegroupSummaryReport;
+import org.rogatio.circlead.view.report.TeamCategegoryInternalReport;
+import org.rogatio.circlead.view.report.TeamCategoryReport;
 import org.rogatio.circlead.view.report.ValidationReport;
 
-import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.DbxTeamClientV2;
 
 /**
@@ -43,8 +37,6 @@ public class SyncCirclead {
 	// TODO RecurrenceRule for person in team
 	// TODO Allokation in CRR with until-date
 	// TODO Comment for person in team
-	// TODO PrayHour-Excel-Export to Confluence Reports
-	// TODO Dropbox-Interface for PrayHour-XLSX
 	// TODO Validation role status vs. person-holder status (i.e. paused, closed)
 	// TODO Validation "empty" (<10 chars) text in role
 	// TODO FileSynchronizer-Image-Missing-Validator, Wrong-Image-Size (User)
@@ -56,23 +48,23 @@ public class SyncCirclead {
 	public static final boolean REPORTS = true;
 
 	/** The Constant HOWTOS. */
-	public static final boolean HOWTOS = false;
+	public static final boolean HOWTOS = true;
 
 	/** The Constant ROLES. */
-	public static final boolean ROLES = false;
+	public static final boolean ROLES = true;
 
 	/** The Constant ROLEGROUPS. */
-	public static final boolean ROLEGROUPS = false;
+	public static final boolean ROLEGROUPS = true;
 
 	/** The Constant PERSONS. */
-	public static final boolean PERSONS = false;
+	public static final boolean PERSONS = true;
 
 	/** The Constant ACTIVITIES. */
-	public static final boolean ACTIVITIES = false;
+	public static final boolean ACTIVITIES = true;
 
 	public static final boolean TEAMS = true;
 
-	public static final boolean WRITE_UPDATE = false;
+	public static final boolean WRITE_UPDATE = true;
 
 	/** The Constant logger. */
 	final static Logger LOGGER = LogManager.getLogger(SyncCirclead.class);
@@ -159,9 +151,9 @@ public class SyncCirclead {
 			results = repository.updateReports();
 		}
 
-//		repository.writeExcel("Mitarbeiterliste", WorkitemType.PERSON, null);
-//		repository.writeExcel("Rollen", WorkitemType.ROLE, null);
-//		repository.writeExcel("Rollengruppen", WorkitemType.ROLEGROUP, null);
+		repository.writeExcel("Mitarbeiterliste", WorkitemType.PERSON, null);
+		repository.writeExcel("Rollen", WorkitemType.ROLE, null);
+		repository.writeExcel("Rollengruppen", WorkitemType.ROLEGROUP, null);
 
 		PrayHourExporter phe = new PrayHourExporter();
 		phe.export("Gebetsstundenübersicht");
