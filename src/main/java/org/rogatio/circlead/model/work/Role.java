@@ -412,7 +412,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	public String getRecurrenceRule(String personIdentifier) {
 		return this.getDataitem().getRecurrenceRule(personIdentifier);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -444,7 +444,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			renderer.addPersonList(element, this.getPersonIdentifiers(), this);
 			foundSomeRoleResponsible = true;
 		}
-		
+
 		List<Team> foundTeams = Repository.getInstance().getTeamsWithRole(this);
 		if (ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
 			renderer.addH2(element, ROLEPERSONSINTEAM.toString());
@@ -455,20 +455,25 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 				if (StringUtil.isNotNullAndNotEmpty(team.getCategory())) {
 					c = " (" + team.getCategory() + ")";
 				}
+
+				if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
+					li.append("<ac:link><ri:page ri:content-title=\"" + team.getTitle()
+							+ "\" ri:version-at-save=\"1\"/><ac:plain-text-link-body><![CDATA[" + team.getTitle() + ""
+							+ c + "]]></ac:plain-text-link-body></ac:link>");
+				} else if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
+					li.appendElement("a").attr("href", "../web/" + team.getId(synchronizer) + ".html")
+							.appendText(team.getTitle() + c);
+				}
+
 				li.append("&nbsp;");
 				renderer.addStatus(li, team.getStatus());
-				
-				if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
-					li.append("<ac:link><ri:page ri:content-title=\""+team.getTitle()+"\" ri:version-at-save=\"1\"/><ac:plain-text-link-body><![CDATA["+team.getTitle()+""+c+"]]></ac:plain-text-link-body></ac:link>");
-				} else if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
-					li.appendElement("a").attr("href", "../web/" + team.getId(synchronizer) + ".html").appendText(team.getTitle()+c);
-				}
-				
+
 				List<TeamEntry> x = team.getTeamEntries();
 				Element ul2 = li.appendElement("ul");
 				for (TeamEntry e : x) {
+					//this.addTeamPerson(ul2, team, e, renderer);
 					if (e.getRoleIdentifier().equals(this.getTitle())) {
-						List<String> pi = e.getPersonIdentifiers();
+						List<String> pi = e.getPersons();
 						if (ObjectUtil.isListNotNullAndEmpty(pi)) {
 							for (String p : pi) {
 								Element li2 = ul2.appendElement("li");
@@ -480,7 +485,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 				}
 			}
 		}
-		
+
 		if (!foundSomeRoleResponsible) {
 			renderer.addH2(element, ROLEPERSONS.toString());
 			renderer.addStatus(element, UNRELATED.toString());
@@ -588,6 +593,55 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			}
 		}
 		return false;
+	}
+
+	@Deprecated
+	private boolean addTeamPerson(Element ulElement, Team team, TeamEntry teamEntry,
+			ISynchronizerRendererEngine renderer) {
+		boolean foundSomeRoleResponsible = false;
+		if (teamEntry.getRoleIdentifier().equals(this.getTitle())) {
+			List<String> pi = teamEntry.getPersons();
+			if (ObjectUtil.isListNotNullAndEmpty(pi)) {
+				for (String p : pi) {
+					Element listElement = ulElement.appendElement("li");
+
+					Person person = Repository.getInstance().getPerson(p);
+
+					if (teamEntry.getRoleIdentifier() != null) {
+						if (person != null) {
+							if (renderer.getSynchronizer().getClass().getSimpleName()
+									.equals(AtlassianSynchronizer.class.getSimpleName())) {
+								listElement.appendElement("ac:link").append("<ri:page ri:content-title=\""
+										+ person.getTitle() + "\" ri:version-at-save=\"1\" />");
+							} else if (renderer.getSynchronizer().getClass().getSimpleName()
+									.equals(FileSynchronizer.class.getSimpleName())) {
+								listElement.appendElement("a")
+										.attr("href", "../web/" + person.getId(renderer.getSynchronizer()) + ".html")
+										.appendText(person.getTitle());
+							}
+						} else {
+							listElement.appendText(teamEntry.getRoleIdentifier());
+
+							if (teamEntry.hasRecurrenceRule(person.getFullname())) {
+								String rule = teamEntry.getRecurrenceRule(person.getFullname());
+								listElement.append("&nbsp;<span style=\"color: rgb(192,192,192);\">"
+										+ rule.replace("R=", "").replace("RRULE=", "") + "</span>");
+							} else if (StringUtil.isNotNullAndNotEmpty(team.getRecurrenceRule())) {
+								String rule = team.getRecurrenceRule();
+								listElement.append("&nbsp;<span style=\"color: rgb(192,192,192);\">"
+										+ rule.replace("R=", "").replace("RRULE=", "") + "</span>");
+							}
+						}
+					} else {
+						listElement.appendText("-");
+					}
+
+					foundSomeRoleResponsible = true;
+				}
+			}
+		}
+
+		return foundSomeRoleResponsible;
 	}
 
 	/**
@@ -853,15 +907,15 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			for (String value : values) {
 				sb.append(" - ").append(value).append("\n");
 			}
-			
+
 			map.put(parameter, sb.toString());
 		}
 	}
-	
+
 	private void addDataRowElement(String value, Parameter parameter, Map<Parameter, Object> map) {
 		if (StringUtil.isNotNullAndNotEmpty(value)) {
 			map.put(parameter, value);
 		}
 	}
-	
+
 }

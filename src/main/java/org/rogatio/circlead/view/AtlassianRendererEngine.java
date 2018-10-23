@@ -28,6 +28,7 @@ import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.ObjectUtil;
+import org.rogatio.circlead.util.StringUtil;
 
 /**
  * The Class Atlassian Renderer allows rendering from object-data to html for
@@ -542,7 +543,7 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 						.append("<ri:page ri:content-title=\"" + r.getTitle() + "\" ri:version-at-save=\"1\" />");
 			} else {
 				div.appendText(content);
-			}
+			}		
 		} else {
 			div.appendText("-");
 		}

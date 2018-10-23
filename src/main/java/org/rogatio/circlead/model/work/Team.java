@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.dmfs.rfc5545.recur.Freq;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
@@ -29,6 +30,8 @@ import org.rogatio.circlead.control.validator.ValidationMessage;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.TeamDataitem;
 import org.rogatio.circlead.model.data.TeamEntry;
+import org.rogatio.circlead.model.data.Timeslice;
+import org.rogatio.circlead.util.CircleadRecurrenceRule;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
@@ -154,7 +157,7 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		List<TeamEntry> list = this.getTeamEntries();
 		if (ObjectUtil.isListNotNullAndEmpty(list)) {
 			for (TeamEntry teamEntry : list) {
-				List<String> p = teamEntry.getPersonIdentifiers();
+				List<String> p = teamEntry.getPersons();
 				if (ObjectUtil.isListNotNullAndEmpty(p)) {
 					if (teamEntry.getNeeded() >= 0.0) {
 						sum += ((double) p.size()) / ((double) teamEntry.getNeeded());
@@ -172,7 +175,7 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		List<String> personIdentifiers = new ArrayList<String>();
 		List<TeamEntry> list = this.getTeamEntries();
 		for (TeamEntry teamEntry : list) {
-			List<String> p = teamEntry.getPersonIdentifiers();
+			List<String> p = teamEntry.getPersons();
 			for (String pi : p) {
 				if (!personIdentifiers.contains(pi)) {
 					personIdentifiers.add(pi);
@@ -234,9 +237,9 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		List<TeamEntry> entries = this.getTeamEntries();
 		for (TeamEntry teamEntry : entries) {
-			if (ObjectUtil.isListNotNullAndEmpty(teamEntry.getPersonIdentifiers())) {
-				if (teamEntry.getPersonIdentifiers().size() < teamEntry.getNeeded()) {
-					int diff = -teamEntry.getNeeded() + teamEntry.getPersonIdentifiers().size();
+			if (ObjectUtil.isListNotNullAndEmpty(teamEntry.getPersons())) {
+				if (teamEntry.getPersons().size() < teamEntry.getNeeded()) {
+					int diff = -teamEntry.getNeeded() + teamEntry.getPersons().size();
 					map.put(teamEntry.getRoleIdentifier(), diff);
 				}
 			} else {
@@ -257,9 +260,9 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 
 		List<TeamEntry> entries = this.getTeamEntries();
 		for (TeamEntry teamEntry : entries) {
-			if (ObjectUtil.isListNotNullAndEmpty(teamEntry.getPersonIdentifiers())) {
+			if (ObjectUtil.isListNotNullAndEmpty(teamEntry.getPersons())) {
 
-				for (String identifier : teamEntry.getPersonIdentifiers()) {
+				for (String identifier : teamEntry.getPersons()) {
 					Person p = Repository.getInstance().getPerson(identifier);
 					if (p == null) {
 						ValidationMessage m = new ValidationMessage(this);
@@ -270,12 +273,12 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 					}
 				}
 
-				if (teamEntry.getPersonIdentifiers().size() < teamEntry.getNeeded()) {
+				if (teamEntry.getPersons().size() < teamEntry.getNeeded()) {
 					ValidationMessage m = new ValidationMessage(this);
 					m.warning("Teamrole not completly set",
 							"Teamrole '" + teamEntry.getRoleIdentifier() + "' in Team '" + this.getTitle() + "' needs "
 									+ teamEntry.getNeeded() + "persons and has only "
-									+ teamEntry.getPersonIdentifiers().size());
+									+ teamEntry.getPersons().size());
 					messages.add(m);
 				}
 			} else {
@@ -288,5 +291,88 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 
 		return messages;
 	}
-
+	
+	public List<Timeslice> getAllokationSlices(Person person, Freq freq) {
+		//System.out.println(rule.getAllokationSlices(Freq.WEEKLY));
+		List<Timeslice> slices = null;
+		List<TeamEntry> x = getTeamEntries();
+		
+		if (x==null) {
+			if (StringUtil.isNotNullAndNotEmpty(this.getRecurrenceRule())) {
+				CircleadRecurrenceRule crr = new CircleadRecurrenceRule(getRecurrenceRule());
+				slices = crr.getAllokationSlices(freq);
+				return slices;
+			} else {
+				return null;
+			}
+		}
+		
+		int counter = 0;
+		for (TeamEntry e : x) {
+			if (e.getPersons().contains(person.getFullname())) {
+				counter++;
+				if (e.hasRecurrenceRule(person.getFullname())) {
+					String rule = e.getRecurrenceRule(person.getFullname());
+					CircleadRecurrenceRule crr = new CircleadRecurrenceRule(rule);
+					List<Timeslice> tempSlices = crr.getAllokationSlices(freq);
+					slices = ObjectUtil.merge(tempSlices, slices);
+				} else if (StringUtil.isNotNullAndNotEmpty(this.getRecurrenceRule())) {
+					CircleadRecurrenceRule crr = new CircleadRecurrenceRule(getRecurrenceRule());
+					List<Timeslice> tempSlices = crr.getAllokationSlices(freq);
+					slices = ObjectUtil.merge(tempSlices, slices);
+				}
+			}
+		}
+		
+		if (counter == 0) {
+			CircleadRecurrenceRule crr = new CircleadRecurrenceRule(getRecurrenceRule());
+			slices = crr.getAllokationSlices(freq);
+			return slices;
+		}
+		
+		slices = ObjectUtil.divideSlices(slices, counter);
+		
+		return slices;
+	}
+	
+	public double getAverageAllokation(Person person, Freq freq) {
+		double sum = 0;
+		List<TeamEntry> x = getTeamEntries();
+		
+		if (x==null) {
+			if (StringUtil.isNotNullAndNotEmpty(this.getRecurrenceRule())) {
+				CircleadRecurrenceRule crr = new CircleadRecurrenceRule(getRecurrenceRule());
+				double allok = crr.getAverageAllokation(freq);
+				return allok;
+			} else {
+				return 0;
+			}
+		}
+		
+		int counter = 0;
+		for (TeamEntry e : x) {
+			if (e.getPersons().contains(person.getFullname())) {
+				counter++;
+				if (e.hasRecurrenceRule(person.getFullname())) {
+					String rule = e.getRecurrenceRule(person.getFullname());
+					CircleadRecurrenceRule crr = new CircleadRecurrenceRule(rule);
+					double allok = crr.getAverageAllokation(freq);
+					sum += allok;
+				} else if (StringUtil.isNotNullAndNotEmpty(this.getRecurrenceRule())) {
+					CircleadRecurrenceRule crr = new CircleadRecurrenceRule(getRecurrenceRule());
+					double allok = crr.getAverageAllokation(freq);
+					sum += allok;
+				}
+			}
+		}
+		
+		if (counter == 0) {
+			CircleadRecurrenceRule crr = new CircleadRecurrenceRule(getRecurrenceRule());
+			double allok = crr.getAverageAllokation(freq);
+			return allok;
+		}
+		
+		return sum / ((double)counter);
+	}
+	
 }

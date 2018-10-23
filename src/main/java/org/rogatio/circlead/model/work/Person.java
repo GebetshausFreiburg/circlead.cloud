@@ -29,6 +29,7 @@ import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
 import org.rogatio.circlead.model.Parameter;
+import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.data.ContactDataitem;
 import org.rogatio.circlead.model.data.IDataRow;
 import org.rogatio.circlead.model.data.IDataitem;
@@ -255,7 +256,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 				if (StringUtil.isNotNullAndNotEmpty(team.getCategory())) {
 					c = " (" + team.getCategory() + ")";
 				}
-
+				
 				if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
 					li.append("<ac:link><ri:page ri:content-title=\"" + team.getTitle()
 							+ "\" ri:version-at-save=\"1\"/><ac:plain-text-link-body><![CDATA[" + team.getTitle() + ""
@@ -264,13 +265,22 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 					li.appendElement("a").attr("href", "../web/" + team.getId(synchronizer) + ".html")
 							.appendText(team.getTitle() + c);
 				}
+				
+				WorkitemStatusParameter status = WorkitemStatusParameter.get(team.getStatus());
+				if (status != null) {
+					Element s = Parser.getStatus(status.getName());
+					li.append("&nbsp;");
+					s.appendTo(li);
+				}
+				
+//				li.appendText(team.getAllokationSlices(this, Freq.WEEKLY).toString());
 
 				List<TeamEntry> x = team.getTeamEntries();
 				Element ul2 = li.appendElement("ul");
 				for (TeamEntry e : x) {
-					if (e.getPersonIdentifiers().contains(this.getFullname())) {
+					if (e.getPersons().contains(this.getFullname())) {
 						Element li2 = ul2.appendElement("li");
-						renderer.addRoleItem(li2, null, e.getRoleIdentifier());
+						addTeamEntry(li2, team, e, renderer);
 					}
 				}
 			}
@@ -279,6 +289,36 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		return element;
 	}
 
+	private void addTeamEntry(Element listElement, Team team, TeamEntry teamEntry, ISynchronizerRendererEngine renderer) {
+		Role role = Repository.getInstance().getRole(teamEntry.getRoleIdentifier());
+
+		if (teamEntry.getRoleIdentifier() != null) {
+			if (role != null) {
+				if (renderer.getSynchronizer().getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
+				listElement.appendElement("ac:link")
+						.append("<ri:page ri:content-title=\"" + role.getTitle() + "\" ri:version-at-save=\"1\" />");
+				} else if (renderer.getSynchronizer().getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
+					listElement.appendElement("a").attr("href", "../web/" + role.getId(renderer.getSynchronizer()) + ".html")
+					.appendText(role.getTitle());
+				}
+				} else {
+				listElement.appendText(teamEntry.getRoleIdentifier());
+			}		
+		} else {
+			listElement.appendText("-");
+		}
+		
+		if (teamEntry.hasRecurrenceRule(this.getFullname())) {
+			String rule = teamEntry.getRecurrenceRule(this.getFullname());
+			listElement.append("&nbsp;<span style=\"color: rgb(192,192,192);\">"+rule.replace("R=", "").replace("RRULE=", "")+"</span>");
+		} else if (StringUtil.isNotNullAndNotEmpty(team.getRecurrenceRule())) {
+			String rule = team.getRecurrenceRule();
+			listElement.append("&nbsp;<span style=\"color: rgb(192,192,192);\">"+rule.replace("R=", "").replace("RRULE=", "")+"</span>");
+		}
+		
+//		listElement.appendText(""+ team.getAverageAllokation(this, Freq.WEEKLY) );
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

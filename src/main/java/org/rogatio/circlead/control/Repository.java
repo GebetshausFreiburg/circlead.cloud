@@ -587,12 +587,7 @@ public final class Repository {
 			for (Team team : foundTeams) {
 				WorkitemStatusParameter wsp = WorkitemStatusParameter.get(team.getStatus());
 				if ((wsp != WorkitemStatusParameter.PAUSED) ||(wsp != WorkitemStatusParameter.CLOSED) || (wsp != WorkitemStatusParameter.INACTIVE)) {
-					String rule = team.getRecurrenceRule();
-					if (StringUtil.isNotNullAndNotEmpty(rule)) {
-						CircleadRecurrenceRule crr = new CircleadRecurrenceRule(rule);
-						double allok = crr.getAverageAllokation(freq);
-						sum += allok;
-					}
+					sum += team.getAverageAllokation(person, freq);
 				}
 			}
 		}
@@ -832,8 +827,8 @@ public final class Repository {
 			List<TeamEntry> entries = team.getTeamEntries();
 			if (ObjectUtil.isListNotNullAndEmpty(entries)) {
 				for (TeamEntry entry : entries) {
-					if (entry.getPersonIdentifiers() != null) {
-						if (entry.getPersonIdentifiers().contains(person.getFullname())) {
+					if (entry.getPersons() != null) {
+						if (entry.getPersons().contains(person.getFullname())) {
 							if (!list.contains(team)) {
 								list.add(team);
 							}

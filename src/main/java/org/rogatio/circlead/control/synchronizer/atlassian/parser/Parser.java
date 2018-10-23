@@ -264,7 +264,7 @@ public class Parser {
 					tr.appendElement("td").attr("colspan", "1")
 							.appendText(StringUtil.join(entry.getPersonIdentifiers()));
 				} else {
-					addPersonListToTableCell(tr, entry.getPersonIdentifiers(), synchronizer);
+					addPersonListToTableCell(tr, entry.getPersons(), synchronizer);
 				}
 			} else {
 				tr.appendElement("td").attr("colspan", "1").appendText("");
