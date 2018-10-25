@@ -129,6 +129,10 @@ public enum Parameter {
 	/** The informed. */
 	INFORMED("Informierte"),
 	
+	TEAMFRACTION("Teamanteil"),
+	
+	FTE("Vollzeitäquivalent"),
+	
 	/** The subactivities. */
 	SUBACTIVITIES("Teilaktivitäten"),
 	

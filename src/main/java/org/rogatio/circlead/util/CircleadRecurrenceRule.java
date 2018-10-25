@@ -192,7 +192,7 @@ public class CircleadRecurrenceRule {
 	public double getAverageAllokation(Freq freq) {
 		return getAverageAllokation(freq.name());
 	}
-
+	
 	public Timeslice getAllokation(String freq, int interval) {
 		if (freq.equals(Freq.DAILY.name())) {
 			if (interval < 0 || interval > 365) {
@@ -273,11 +273,13 @@ public class CircleadRecurrenceRule {
 			}
 		}
 
+		int unitValue = 0;
 		String sliceStart = null;
 		if (freq.equals(Freq.DAILY.name())) {
 			SimpleDateFormat sdf = new SimpleDateFormat("yy");
 			String date = sdf.format(start.getTime());
 			sliceStart = (StringUtil.addSpace(date + "/D" + start.get(Calendar.DAY_OF_YEAR), 3, '0'));
+			unitValue = start.get(Calendar.DAY_OF_YEAR);
 		}
 		if (freq.equals(Freq.WEEKLY.name())) {
 			SimpleDateFormat sdf = new SimpleDateFormat("yy");
@@ -286,30 +288,36 @@ public class CircleadRecurrenceRule {
 				date = sdf.format(end.getTime());
 			}
 			sliceStart = (StringUtil.addSpace(date + "/W" + start.get(Calendar.WEEK_OF_YEAR), 2, '0'));
+			unitValue = start.get(Calendar.WEEK_OF_YEAR);
 		}
 
 		if (freq.equals(Freq.MONTHLY.name())) {
 			SimpleDateFormat sdf = new SimpleDateFormat("yy/'M'MM");
 			String date = sdf.format(start.getTime());
 			sliceStart = (date);
+			unitValue = start.get(Calendar.MONTH) + 1;
 		}
 
 		if (freq.equals("QUATERLY")) {
 			if (start.get(Calendar.MONTH) >= 0 && start.get(Calendar.MONTH) <= 2) {
 				SimpleDateFormat sdf = new SimpleDateFormat("yy/'Q1'");
 				sliceStart = sdf.format(start.getTime());
+				unitValue = 1;
 			}
 			if (start.get(Calendar.MONTH) >= 3 && start.get(Calendar.MONTH) <= 5) {
 				SimpleDateFormat sdf = new SimpleDateFormat("yy/'Q2'");
 				sliceStart = sdf.format(start.getTime());
+				unitValue = 2;
 			}
 			if (start.get(Calendar.MONTH) >= 6 && start.get(Calendar.MONTH) <= 8) {
 				SimpleDateFormat sdf = new SimpleDateFormat("yy/'Q3'");
 				sliceStart = sdf.format(start.getTime());
+				unitValue = 3;
 			}
 			if (start.get(Calendar.MONTH) >= 9 && start.get(Calendar.MONTH) <= 11) {
 				SimpleDateFormat sdf = new SimpleDateFormat("yy/'Q4'");
 				sliceStart = sdf.format(start.getTime());
+				unitValue = 4;
 			}
 
 		}
@@ -318,6 +326,7 @@ public class CircleadRecurrenceRule {
 		ts.setStart(start);
 		ts.setEnd(end);
 		ts.setAllokation(sum);
+		ts.setUnitValue(unitValue);
 		ts.setSliceStart(sliceStart);
 		ts.setFreq(freq);
 
@@ -629,6 +638,8 @@ public class CircleadRecurrenceRule {
 			} catch (InvalidRecurrenceRuleException e) {
 			}
 
+//			LOGGER.debug("Set RecurrenceRule from '" + s + "' to '" + rule.toString() + "'");
+
 			return rule;
 		}
 
@@ -677,6 +688,8 @@ public class CircleadRecurrenceRule {
 			return getRecurrenceRule(s);
 		}
 
+//		LOGGER.error("RecurrenceRule could not set '" + s + "'");
+		
 		return null;
 	}
 
@@ -797,7 +810,16 @@ public class CircleadRecurrenceRule {
 		return getEvent(this.getStartDate());
 	}
 
+	public void setStartDate(DateTime startDate) {
+		this.startDate = startDate;
+	}
+	
+	private DateTime startDate;
+	
 	public DateTime getStartDate() {
+		if (startDate!=null) {
+			return startDate;
+		}
 		List<DateTime> list = getStartDateList(1);
 		if (list.size() == 1) {
 			return list.get(0);
@@ -854,13 +876,20 @@ public class CircleadRecurrenceRule {
 	}
 
 	private DateTime getStartByRule(DateTime startDateTime) {
+		
+		if (recurrenceRule==null) {
+			return null;
+		}
+		
 		Date date = convertDate(startDateTime);
 
 		Calendar cx = Calendar.getInstance(defaultTimeZone);
 		cx.setTime(date);
 
-		Calendar c = null;
+		Calendar c = null;//(Calendar) cx.clone();
 
+//		LOGGER.debug(recurrenceRule);
+//		LOGGER.debug(recurrenceRule.getWeekStart());
 //		System.out.println(recurrenceRule.getWeekStart());
 
 		for (int i = 0; i <= 7; i++) {
@@ -868,39 +897,41 @@ public class CircleadRecurrenceRule {
 //				System.out.println(i + " - " + c.getTime());
 //			}
 			cx.add(Calendar.DAY_OF_WEEK, 1);
-			if (recurrenceRule.getWeekStart() == Weekday.MO) {
-				if (cx.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
-					c = (Calendar) cx.clone();
+			if (recurrenceRule.getWeekStart() != null) {
+				if (recurrenceRule.getWeekStart() == Weekday.MO) {
+					if (cx.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
+						c = (Calendar) cx.clone();
+					}
 				}
-			}
-			if (recurrenceRule.getWeekStart() == Weekday.TU) {
-				if (cx.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY) {
-					c = (Calendar) cx.clone();
+				if (recurrenceRule.getWeekStart() == Weekday.TU) {
+					if (cx.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY) {
+						c = (Calendar) cx.clone();
+					}
 				}
-			}
-			if (recurrenceRule.getWeekStart() == Weekday.WE) {
-				if (cx.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY) {
-					c = (Calendar) cx.clone();
+				if (recurrenceRule.getWeekStart() == Weekday.WE) {
+					if (cx.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY) {
+						c = (Calendar) cx.clone();
+					}
 				}
-			}
-			if (recurrenceRule.getWeekStart() == Weekday.TH) {
-				if (cx.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY) {
-					c = (Calendar) cx.clone();
+				if (recurrenceRule.getWeekStart() == Weekday.TH) {
+					if (cx.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY) {
+						c = (Calendar) cx.clone();
+					}
 				}
-			}
-			if (recurrenceRule.getWeekStart() == Weekday.FR) {
-				if (cx.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
-					c = (Calendar) cx.clone();
+				if (recurrenceRule.getWeekStart() == Weekday.FR) {
+					if (cx.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
+						c = (Calendar) cx.clone();
+					}
 				}
-			}
-			if (recurrenceRule.getWeekStart() == Weekday.SA) {
-				if (cx.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
-					c = (Calendar) cx.clone();
+				if (recurrenceRule.getWeekStart() == Weekday.SA) {
+					if (cx.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
+						c = (Calendar) cx.clone();
+					}
 				}
-			}
-			if (recurrenceRule.getWeekStart() == Weekday.SU) {
-				if (cx.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
-					c = (Calendar) cx.clone();
+				if (recurrenceRule.getWeekStart() == Weekday.SU) {
+					if (cx.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+						c = (Calendar) cx.clone();
+					}
 				}
 			}
 		}

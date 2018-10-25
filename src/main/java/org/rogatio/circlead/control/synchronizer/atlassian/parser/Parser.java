@@ -9,6 +9,8 @@
 package org.rogatio.circlead.control.synchronizer.atlassian.parser;
 
 import static org.rogatio.circlead.model.Parameter.CATEGORY;
+import static org.rogatio.circlead.model.Parameter.FTE;
+import static org.rogatio.circlead.model.Parameter.TEAMFRACTION;
 import static org.rogatio.circlead.model.Parameter.RECURRENCERULE;
 import static org.rogatio.circlead.model.Parameter.ABBREVIATION;
 import static org.rogatio.circlead.model.Parameter.TEAMROLES;
@@ -63,6 +65,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.Vector;
 
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.Repository;
@@ -84,6 +87,7 @@ import org.rogatio.circlead.model.data.RoleDataitem;
 import org.rogatio.circlead.model.data.RolegroupDataitem;
 import org.rogatio.circlead.model.data.TeamDataitem;
 import org.rogatio.circlead.model.data.TeamEntry;
+import org.rogatio.circlead.model.data.Timeslice;
 import org.rogatio.circlead.model.work.Activity;
 import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
@@ -252,7 +256,7 @@ public class Parser {
 						Element td = tr.appendElement("td");
 						s.appendTo(td);
 					} else {
-						tr.appendElement("td").attr("colspan", "1").appendText(entry.getLevel()+"%");
+						tr.appendElement("td").attr("colspan", "1").appendText(entry.getLevel() + "%");
 					}
 				} else {
 					tr.appendElement("td").attr("colspan", "1").appendText("");
@@ -402,6 +406,70 @@ public class Parser {
 		return table;
 	}
 
+	private static Element addParameter(String name, String parameter, Element macro) {
+		Element param = macro.appendElement("ac:parameter");
+		param.attr("ac:name", name).appendText(parameter);
+		return param;
+	}
+
+	public static Element addChartMacro(String title, String xLabel, String yLabel, String colors,
+			Map<String, List<Timeslice>> dataMap) {
+		Element macro = new Element("ac:structured-macro");
+		macro.attr("ac:name", "chart").attr("ac:schema-version", "1").attr("ac:macro-id", UUID.randomUUID().toString());
+		addParameter("orientation", "vertical", macro);
+		addParameter("stacked", "true", macro);
+		if (StringUtil.isNotNullAndNotEmpty(title)) {
+			addParameter("title", title, macro);
+		}
+//		addParameter("subTitle", "in Kalenderwochen", macro);
+		addParameter("opacity", "85", macro);
+		if (StringUtil.isNotNullAndNotEmpty(colors)) {
+			addParameter("colors", colors, macro);
+		}
+		addParameter("height", "480", macro);
+		addParameter("width", "640", macro);
+		addParameter("type", "bar", macro);
+		addParameter("yLabel", yLabel, macro);
+		addParameter("xLabel", xLabel, macro);
+		Element body = macro.appendElement("ac:rich-text-body");
+
+		Element table = body.appendElement("table");
+		table.attr("class", "wrapped");
+		Element tbody = table.appendElement("tbody");
+		Element tr = tbody.appendElement("tr");
+		tr.appendElement("th");
+
+		if (dataMap == null) {
+			return null;
+		}
+
+		if (dataMap.size() == 0) {
+			return null;
+		}
+
+		ArrayList<String> keys = new ArrayList<String>(dataMap.keySet());
+
+		if (dataMap.keySet().size() == 0) {
+			return null;
+		}
+
+		List<Timeslice> dataset = dataMap.get(keys.get(0));
+		for (Timeslice timeslice : dataset) {
+			tr.appendElement("th").appendText("" + timeslice.getUnitValue());
+		}
+
+		for (String key : keys) {
+			tr = tbody.appendElement("tr");
+			tr.appendElement("td").appendText(key);
+			dataset = dataMap.get(key);
+			for (Timeslice timeslice : dataset) {
+				tr.appendElement("td").appendText("" + timeslice.getAllokation());
+			}
+		}
+
+		return macro;
+	}
+
 	private static void addPersonListToTableCell(Element tr, List<String> personIdentifiers,
 			ISynchronizer synchronizer) {
 		Element td = tr.appendElement("td").attr("colspan", "1");
@@ -443,7 +511,8 @@ public class Parser {
 			TeamDataitem d = w.getDataitem();
 			addDataPair(ID.toString(), d.getIds(), table);
 			addDataPair(DESCRIPTION.toString(), d.getDescription(), table);
-			addDataPair(TEAMROLES.toString(), Parser.createTeamEntryTable(d.getTeamEntries(), synchronizer, false), table);
+			addDataPair(TEAMROLES.toString(), Parser.createTeamEntryTable(d.getTeamEntries(), synchronizer, false),
+					table);
 			addDataPair(RECURRENCERULE.toString(), d.getRecurrenceRule(), table);
 			addDataPair(CATEGORY.toString(), d.getCategory(), table);
 			addDataPair(TYPE.toString(), d.getType(), table);
@@ -517,6 +586,8 @@ public class Parser {
 
 			addDataPair(CONTACTS2.toString(), Parser.getContacts(d.getContacts()), table);
 			addDataPair(STATUS.toString(), Parser.getStatus(d.getStatus()), table);
+			addDataPair(FTE.toString(), ""+Math.round(d.getFullTimeEquivalent())+"%", table);
+			addDataPair(TEAMFRACTION.toString(), ""+Math.round(d.getTeamFraction())+"%", table);
 			addDataPair(DATA.toString(), Parser.getDataTable(d.getData()), table);
 		}
 
@@ -912,7 +983,7 @@ public class Parser {
 		param.attr("ac:name", "title").appendText(name);
 		return macro;
 	}
-	
+
 	public static Element getStatus(String title, String forcedColor) {
 
 		String color = "Red";
@@ -923,7 +994,7 @@ public class Parser {
 			color = s.getColor();
 			name = s.getName();
 		}
-		
+
 		color = forcedColor;
 
 		Element macro = new Element("ac:structured-macro");

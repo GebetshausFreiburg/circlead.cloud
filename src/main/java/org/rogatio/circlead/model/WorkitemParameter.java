@@ -108,6 +108,10 @@ public enum WorkitemParameter {
 	/** The informed. */
 	INFORMED(Parameter.INFORMED, "Informierter", "Informed", "Informierte"),
 
+	TEAMFRACTION(Parameter.TEAMFRACTION, "Projektanteil", "Teamfraction", "Projectfraction"),
+	
+	FTE(Parameter.FTE, "Vollzeitäquivalent", "FTE", "FullTimeEquivalent"),
+	
 	/** The image. */
 	IMAGE(Parameter.IMAGE, "Image", "User", "Avatar"),
 	

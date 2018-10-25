@@ -863,6 +863,10 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 					person.setCreated(value.toString());
 				} else if (WorkitemParameter.MODIFIED.has(key)) {
 					person.setModified(value.toString());
+				} else if (WorkitemParameter.TEAMFRACTION.has(key)) {
+					person.setTeamFraction(value.toString());
+				} else if (WorkitemParameter.FTE.has(key)) {
+					person.setFullTimeEquivalent(value.toString());
 				} else if (WorkitemParameter.IMAGE.has(key)) {
 					person.setAvatar(((ImageParserElement) value).toString());
 				} else if (WorkitemParameter.IGNORE.has(key)) {

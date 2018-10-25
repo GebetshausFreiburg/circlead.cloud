@@ -9,7 +9,16 @@ public class Timeslice {
 	private Calendar start;
 	private Calendar end;
 	private String sliceStart;
+	private int unitValue;
 	private double allokation;
+	
+	public int getUnitValue() {
+		return unitValue;
+	}
+
+	public void setUnitValue(int unitValue) {
+		this.unitValue = unitValue;
+	}
 
 	public String toString() {
 		return sliceStart + "=" + allokation;

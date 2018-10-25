@@ -527,10 +527,12 @@ public class RoleDataitem extends DefaultDataitem {
 
 	@JsonIgnore
 	private void setStatusMatch(String personFullname, String value) {
-		WorkitemStatusParameter status = WorkitemStatusParameter.get(value);
-		if (status != null) {
-			value = status.getName();
-			representations.put(personFullname, value.toLowerCase());
+		if (!value.contains("%")) {
+			WorkitemStatusParameter status = WorkitemStatusParameter.get(value);
+			if (status != null) {
+				value = status.getName();
+				representations.put(personFullname, value.toLowerCase());
+			}
 		}
 	}
 
@@ -576,7 +578,7 @@ public class RoleDataitem extends DefaultDataitem {
 			String comment = null;
 			if (person.contains("##")) {
 				int idx = person.indexOf("##");
-				comment = person.substring(idx+2, person.length()).trim();
+				comment = person.substring(idx + 2, person.length()).trim();
 				person = person.substring(0, idx).trim();
 			}
 

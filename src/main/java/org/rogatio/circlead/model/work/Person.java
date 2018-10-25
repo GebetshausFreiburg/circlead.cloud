@@ -14,9 +14,12 @@ import static org.rogatio.circlead.model.Parameter.ROLESINORGANISATION;
 import static org.rogatio.circlead.model.Parameter.ROLESINTEAM;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.Vector;
 
 import org.dmfs.rfc5545.recur.Freq;
 import org.jsoup.nodes.Element;
@@ -35,6 +38,7 @@ import org.rogatio.circlead.model.data.IDataRow;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.PersonDataitem;
 import org.rogatio.circlead.model.data.TeamEntry;
+import org.rogatio.circlead.model.data.Timeslice;
 import org.rogatio.circlead.util.CircleadRecurrenceRule;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
@@ -103,6 +107,82 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	 */
 	public void setAvatar(String avatar) {
 		this.getDataitem().setAvatar(avatar);
+	}
+
+	public void setTeamFraction(double fte) {
+		this.getDataitem().setTeamFraction(fte);
+	}
+
+	public double getOrganisationalWorkload() {
+		double fte = this.getDataitem().getFullTimeEquivalent();
+
+		if (fte == 0) {
+			return 0;
+		}
+
+		double tf = this.getDataitem().getTeamFraction();
+
+		double divider = (fte / 100.0) * ((100.0 - tf) / 100.0);
+
+		// System.out.println("do"+divider);
+		double alloc = Repository.getInstance().getAverageAllokationInOrganisation(this.getFullname(), Freq.WEEKLY);
+
+		// alloc = 10;
+
+		return 100 * alloc / (divider * 40.0);
+	}
+
+	public double getTeamWorkload() {
+		double fte = this.getDataitem().getFullTimeEquivalent();
+
+		if (fte == 0) {
+			return 0;
+		}
+
+		double tf = this.getDataitem().getTeamFraction();
+		if (tf == 0) {
+			return 0;
+		}
+
+		double divider = (fte / 100.0) * (tf / 100.0);
+
+		// System.out.println("dt"+divider);
+
+		double teamAllocation = Repository.getInstance().getAverageAllokationInTeams(this, Freq.WEEKLY);
+
+		// teamAllocation = 10;
+
+		return 100 * teamAllocation / (divider * 40.0);
+	}
+
+	public double getTeamFraction() {
+		return this.getDataitem().getTeamFraction();
+	}
+
+	public void setTeamFraction(String tf) {
+		if (StringUtil.isNotNullAndNotEmpty(tf)) {
+			double f = Double.parseDouble(tf.replace("%", ""));
+			this.getDataitem().setTeamFraction(f);
+		} else {
+			this.getDataitem().setTeamFraction(0.0);
+		}
+	}
+
+	public void setFullTimeEquivalent(String fte) {
+		if (StringUtil.isNotNullAndNotEmpty(fte)) {
+			double f = Double.parseDouble(fte.replace("%", ""));
+			this.getDataitem().setFullTimeEquivalent(f);
+		} else {
+			this.getDataitem().setTeamFraction(0.0);
+		}
+	}
+
+	public void setFullTimeEquivalent(double fte) {
+		this.getDataitem().setFullTimeEquivalent(fte);
+	}
+
+	public double getFullTimeEquivalent() {
+		return this.getDataitem().getFullTimeEquivalent();
 	}
 
 	public String getFirstname() {
@@ -203,6 +283,63 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		this.getDataitem().setContacts(contactTables.getContacts());
 	}
 
+	public Map<String, List<Timeslice>> getTimeslices(Freq freq) {
+		final Map<String, List<Timeslice>> map = this.getOrganisationalTimeslices(freq, false);
+		Map<String, List<Timeslice>> m = this.getTeamTimeslices(freq);
+		m.forEach((k, v) -> map.put(k, v));
+		return map;
+	}
+
+	public Map<String, List<Timeslice>> getOrganisationalTimeslices(Freq freq, boolean optimize) {
+		LinkedHashMap<String, List<Timeslice>> map = new LinkedHashMap<String, List<Timeslice>>();
+		List<Role> orgRoles = Repository.getInstance().getRolesWithPerson(this.getFullname());
+		for (Role role : orgRoles) {
+			String rule = role.getRecurrenceRule(this.getFullname());
+			if (StringUtil.isNotNullAndNotEmpty(rule)) {
+				CircleadRecurrenceRule crr = new CircleadRecurrenceRule(rule);
+				List<Timeslice> ts = crr.getAllokationSlices(freq);
+				map.put(role.getTitle(), ts);
+			}
+		}
+
+		if (optimize) {
+			// Merge Timeslices of small taken roles to optimize view
+			if (map.size() > 3) {
+				// Sort timeslice-dataets by size
+				Map<String, List<Timeslice>> dmap = ObjectUtil.sort(map);
+				map = new LinkedHashMap<String, List<Timeslice>>();
+				Map<String, List<Timeslice>> tmap = new LinkedHashMap<String, List<Timeslice>>();
+
+				// hold biggest three slice-datasets and merge rest
+				Vector<String> keys = new Vector<String>(dmap.keySet());
+				for (int i = keys.size() - 1; i >= 0; i--) {
+					if (i > keys.size() - 4) {
+						map.put(keys.get(i), dmap.get(keys.get(i)));
+					} else {
+						tmap.put(keys.get(i), dmap.get(keys.get(i)));
+					}
+				}
+				List<Timeslice> ld = ObjectUtil.merge(tmap);
+				if (ld != null) {
+					map.put("Andere Rollen", ld);
+				}
+			}
+		}
+		return map;
+	}
+
+	public Map<String, List<Timeslice>> getTeamTimeslices(Freq freq) {
+		Map<String, List<Timeslice>> map = new LinkedHashMap<String, List<Timeslice>>();
+
+		List<Team> foundTeams = Repository.getInstance().getTeamsWithMember(this);
+		for (Team team : foundTeams) {
+			List<Timeslice> ts = team.getAllokationSlices(this, freq);
+			map.put(team.getTitle(), ts);
+		}
+
+		return map;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -213,6 +350,10 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 
 		Element element = new Element("p");
+
+		renderer.addH2(element, "Plankapazität");
+		renderer.addItem(element, Parameter.FTE.toString(), Math.round(this.getFullTimeEquivalent()) + "%");
+		renderer.addItem(element, Parameter.TEAMFRACTION.toString(), Math.round(this.getTeamFraction()) + "%");
 
 		if (StringUtil.isNotNullAndNotEmpty(this.getAvatar())) {
 			if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
@@ -239,7 +380,19 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		}
 
 		double sumR = Repository.getInstance().getAverageAllokationInOrganisation(this.getFullname(), Freq.WEEKLY);
-		renderer.addH2(element, ROLESINORGANISATION.toString() + " (" + Math.round(sumR) + "h/Woche)");
+
+		double ow = this.getOrganisationalWorkload();
+		String orgWorkload = "";
+		if (ow != 0.0) {
+			orgWorkload = ", " + Math.round(ow) + "%";
+		}
+
+		String add = "";
+		if (sumR != 0) {
+			add = " (" + Math.round(sumR) + "h/Woche" + orgWorkload + ")";
+		}
+
+		renderer.addH2(element, ROLESINORGANISATION.toString() + add);
 
 		List<Role> orgRoles = Repository.getInstance().getRolesWithPerson(this.getFullname());
 		renderer.addRoleList(element, orgRoles, this);
@@ -248,7 +401,13 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		if (ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
 			double sum = Repository.getInstance().getAverageAllokationInTeams(this, Freq.WEEKLY);
 
-			renderer.addH2(element, ROLESINTEAM.toString() + " (" + Math.round(sum) + "h/Woche)");
+			double tw = this.getTeamWorkload();
+			String teamWorkload = "";
+			if (tw != 0.0) {
+				teamWorkload = ", " + Math.round(tw) + "%";
+			}
+
+			renderer.addH2(element, ROLESINTEAM.toString() + " (" + Math.round(sum) + "h/Woche" + teamWorkload + ")");
 			Element ul = element.appendElement("ul");
 			for (Team team : foundTeams) {
 				Element li = ul.appendElement("li");
@@ -256,7 +415,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 				if (StringUtil.isNotNullAndNotEmpty(team.getCategory())) {
 					c = " (" + team.getCategory() + ")";
 				}
-				
+
 				if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
 					li.append("<ac:link><ri:page ri:content-title=\"" + team.getTitle()
 							+ "\" ri:version-at-save=\"1\"/><ac:plain-text-link-body><![CDATA[" + team.getTitle() + ""
@@ -265,14 +424,14 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 					li.appendElement("a").attr("href", "../web/" + team.getId(synchronizer) + ".html")
 							.appendText(team.getTitle() + c);
 				}
-				
+
 				WorkitemStatusParameter status = WorkitemStatusParameter.get(team.getStatus());
 				if (status != null) {
 					Element s = Parser.getStatus(status.getName());
 					li.append("&nbsp;");
 					s.appendTo(li);
 				}
-				
+
 //				li.appendText(team.getAllokationSlices(this, Freq.WEEKLY).toString());
 
 				List<TeamEntry> x = team.getTeamEntries();
@@ -286,39 +445,73 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 			}
 		}
 
+		if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
+
+			final Map<String, List<Timeslice>> map = this.getOrganisationalTimeslices(Freq.MONTHLY, true);
+
+			String colors = "";
+			String colorArray[] = { "#989898", "#A8A8A8", "#B8B8B8", "#C0C0C0" };
+
+			for (int i = 0; i < map.size(); i++) {
+				if (colors == null) {
+					colors = new String("");
+				}
+				colors += colorArray[i];
+
+				if ((i + 1) < map.size()) {
+					colors += ", ";
+				}
+			}
+
+			Map<String, List<Timeslice>> m = this.getTeamTimeslices(Freq.MONTHLY);
+			m.forEach((k, v) -> map.put(k, v));
+
+			Element chart = Parser.addChartMacro("", "h/Monat", "Monat", colors, map);
+			if (chart != null) {
+				renderer.addH2(element, "Ressourcenallokation");
+				chart.appendTo(element);
+			}
+		}
+
 		return element;
 	}
 
-	private void addTeamEntry(Element listElement, Team team, TeamEntry teamEntry, ISynchronizerRendererEngine renderer) {
+	private void addTeamEntry(Element listElement, Team team, TeamEntry teamEntry,
+			ISynchronizerRendererEngine renderer) {
 		Role role = Repository.getInstance().getRole(teamEntry.getRoleIdentifier());
 
 		if (teamEntry.getRoleIdentifier() != null) {
 			if (role != null) {
-				if (renderer.getSynchronizer().getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
-				listElement.appendElement("ac:link")
-						.append("<ri:page ri:content-title=\"" + role.getTitle() + "\" ri:version-at-save=\"1\" />");
-				} else if (renderer.getSynchronizer().getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
-					listElement.appendElement("a").attr("href", "../web/" + role.getId(renderer.getSynchronizer()) + ".html")
-					.appendText(role.getTitle());
+				if (renderer.getSynchronizer().getClass().getSimpleName()
+						.equals(AtlassianSynchronizer.class.getSimpleName())) {
+					listElement.appendElement("ac:link").append(
+							"<ri:page ri:content-title=\"" + role.getTitle() + "\" ri:version-at-save=\"1\" />");
+				} else if (renderer.getSynchronizer().getClass().getSimpleName()
+						.equals(FileSynchronizer.class.getSimpleName())) {
+					listElement.appendElement("a")
+							.attr("href", "../web/" + role.getId(renderer.getSynchronizer()) + ".html")
+							.appendText(role.getTitle());
 				}
-				} else {
+			} else {
 				listElement.appendText(teamEntry.getRoleIdentifier());
-			}		
+			}
 		} else {
 			listElement.appendText("-");
 		}
-		
+
 		if (teamEntry.hasRecurrenceRule(this.getFullname())) {
 			String rule = teamEntry.getRecurrenceRule(this.getFullname());
-			listElement.append("&nbsp;<span style=\"color: rgb(192,192,192);\">"+rule.replace("R=", "").replace("RRULE=", "")+"</span>");
+			listElement.append("&nbsp;<span style=\"color: rgb(192,192,192);\">"
+					+ rule.replace("R=", "").replace("RRULE=", "") + "</span>");
 		} else if (StringUtil.isNotNullAndNotEmpty(team.getRecurrenceRule())) {
 			String rule = team.getRecurrenceRule();
-			listElement.append("&nbsp;<span style=\"color: rgb(192,192,192);\">"+rule.replace("R=", "").replace("RRULE=", "")+"</span>");
+			listElement.append("&nbsp;<span style=\"color: rgb(192,192,192);\">"
+					+ rule.replace("R=", "").replace("RRULE=", "") + "</span>");
 		}
-		
+
 //		listElement.appendText(""+ team.getAverageAllokation(this, Freq.WEEKLY) );
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -401,19 +594,15 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		addDataRowElement(cdi.getPhone(), Parameter.PHONE, map);
 		addDataRowElement(cdi.getAddress(), Parameter.ADRESS, map);
 
-		/*Map<String, String> d = this.getData();
-		if (d != null) {
-			if (d.size() > 0) {
-				for (String key : d.keySet()) {
-					String value = d.get(key);
-					addDataRowElement(value, key, map);
-				}
-			}
-		}*/
-		
+		/*
+		 * Map<String, String> d = this.getData(); if (d != null) { if (d.size() > 0) {
+		 * for (String key : d.keySet()) { String value = d.get(key);
+		 * addDataRowElement(value, key, map); } } }
+		 */
+
 		return map;
 	}
-	
+
 	private void addDataRowElement(String value, Parameter parameter, Map<Parameter, Object> map) {
 		if (StringUtil.isNotNullAndNotEmpty(value)) {
 			map.put(parameter, value);
