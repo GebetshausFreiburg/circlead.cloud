@@ -8,7 +8,6 @@
  */
 package org.rogatio.circlead.control.validator;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ValidationMessage.
  */

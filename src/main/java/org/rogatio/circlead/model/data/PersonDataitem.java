@@ -38,8 +38,10 @@ public class PersonDataitem extends DefaultDataitem {
 	/** The data. */
 	private Map<String, String> data = new HashMap<String, String>();
 
+	/** The full time equivalent. */
 	private double fullTimeEquivalent;
 	
+	/** The team fraction. */
 	private double teamFraction;
 	
 	/**
@@ -227,18 +229,38 @@ public class PersonDataitem extends DefaultDataitem {
 		return sb.toString().trim();
 	}
 
+	/**
+	 * Gets the full time equivalent.
+	 *
+	 * @return the full time equivalent
+	 */
 	public double getFullTimeEquivalent() {
 		return fullTimeEquivalent;
 	}
 
+	/**
+	 * Sets the full time equivalent.
+	 *
+	 * @param fullTimeEquivalent the new full time equivalent
+	 */
 	public void setFullTimeEquivalent(double fullTimeEquivalent) {
 		this.fullTimeEquivalent = fullTimeEquivalent;
 	}
 
+	/**
+	 * Gets the team fraction.
+	 *
+	 * @return the team fraction
+	 */
 	public double getTeamFraction() {
 		return teamFraction;
 	}
 
+	/**
+	 * Sets the team fraction.
+	 *
+	 * @param teamFraction the new team fraction
+	 */
 	public void setTeamFraction(double teamFraction) {
 		this.teamFraction = teamFraction;
 	}

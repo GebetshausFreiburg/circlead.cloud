@@ -6,20 +6,39 @@ import java.util.List;
 import java.util.Map;
 
 import org.rogatio.circlead.model.Parameter;
+import org.rogatio.circlead.util.CircleadRecurrenceRule;
 import org.rogatio.circlead.util.StringUtil;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+/**
+ * The Class TeamEntry.
+ */
 public class TeamEntry {
 
+	/** The role identifier. */
 	private String roleIdentifier;
+	
+	/** The needed. */
 	private int needed;
+	
+	/** The level. */
 	private String level;
+	
+	/** The person identifiers. */
 	private List<String> personIdentifiers;
 
+	/**
+	 * Instantiates a new team entry.
+	 */
 	public TeamEntry() {
 	}
 
+	/**
+	 * Instantiates a new team entry.
+	 *
+	 * @param dataMap the data map
+	 */
 	public TeamEntry(Map<String, String> dataMap) {
 		this.setRoleIdentifier(dataMap.get(Parameter.ROLE.toString()));
 		this.setNeeded(dataMap.get(Parameter.NEEDED.toString()));
@@ -27,18 +46,38 @@ public class TeamEntry {
 		this.setPersonIdentifiers(dataMap.get(Parameter.PERSON.toString()));
 	}
 
+	/**
+	 * Gets the role identifier.
+	 *
+	 * @return the role identifier
+	 */
 	public String getRoleIdentifier() {
 		return roleIdentifier;
 	}
 
+	/**
+	 * Sets the role identifier.
+	 *
+	 * @param roleIdentifier the new role identifier
+	 */
 	public void setRoleIdentifier(String roleIdentifier) {
 		this.roleIdentifier = roleIdentifier;
 	}
 
+	/**
+	 * Gets the needed.
+	 *
+	 * @return the needed
+	 */
 	public int getNeeded() {
 		return needed;
 	}
 
+	/**
+	 * Sets the needed.
+	 *
+	 * @param needed the new needed
+	 */
 	public void setNeeded(String needed) {
 		try {
 			this.needed = Integer.parseInt(needed);
@@ -47,14 +86,29 @@ public class TeamEntry {
 		}
 	}
 
+	/**
+	 * Sets the needed.
+	 *
+	 * @param needed the new needed
+	 */
 	public void setNeeded(int needed) {
 		this.needed = needed;
 	}
 
+	/**
+	 * Gets the level.
+	 *
+	 * @return the level
+	 */
 	public String getLevel() {
 		return level;
 	}
 
+	/**
+	 * Sets the level.
+	 *
+	 * @param level the new level
+	 */
 	public void setLevel(String level) {
 		if (StringUtil.isNotNullAndNotEmpty(level)) {
 			level = level.trim().replace("%", "");
@@ -62,10 +116,20 @@ public class TeamEntry {
 		this.level = level;
 	}
 
+	/**
+	 * Gets the persons.
+	 *
+	 * @return the persons
+	 */
 	public List<String> getPersons() {
 		return personIdentifiers;
 	}
 
+	/**
+	 * Gets the person identifiers.
+	 *
+	 * @return the person identifiers
+	 */
 	public List<String> getPersonIdentifiers() {
 		List<String> list = new ArrayList<String>();
 
@@ -85,7 +149,13 @@ public class TeamEntry {
 
 		return list;
 	}
-
+	
+	/**
+	 * Gets the recurrence rule.
+	 *
+	 * @param personIdentifier the person identifier
+	 * @return the recurrence rule
+	 */
 	@JsonIgnore
 	public String getRecurrenceRule(String personIdentifier) {
 		if (recurrenceRules.containsKey(personIdentifier)) {
@@ -95,6 +165,12 @@ public class TeamEntry {
 		return "";
 	}
 
+	/**
+	 * Checks for recurrence rule.
+	 *
+	 * @param personIdentifier the person identifier
+	 * @return true, if successful
+	 */
 	@JsonIgnore
 	public boolean hasRecurrenceRule(String personIdentifier) {
 		if (recurrenceRules.containsKey(personIdentifier)) {
@@ -103,12 +179,20 @@ public class TeamEntry {
 		return false;
 	}
 
+	/** The comments. */
 	@JsonIgnore
 	private Map<String, String> comments = new HashMap<String, String>();
 
+	/** The recurrence rules. */
 	@JsonIgnore
 	private Map<String, String> recurrenceRules = new HashMap<String, String>();
 
+	/**
+	 * Sets the recurrence rule match.
+	 *
+	 * @param personFullname the person fullname
+	 * @param value the value
+	 */
 	@JsonIgnore
 	private void setRecurrenceRuleMatch(String personFullname, String value) {
 		value = value.trim();
@@ -117,6 +201,11 @@ public class TeamEntry {
 		}
 	}
 
+	/**
+	 * Sets the person identifiers.
+	 *
+	 * @param personIdentifiers the new person identifiers
+	 */
 	public void setPersonIdentifiers(String personIdentifiers) {
 
 		List<String> list = new ArrayList<String>();

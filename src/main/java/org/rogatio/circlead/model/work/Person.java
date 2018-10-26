@@ -14,7 +14,6 @@ import static org.rogatio.circlead.model.Parameter.ROLESINORGANISATION;
 import static org.rogatio.circlead.model.Parameter.ROLESINTEAM;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -109,10 +108,20 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		this.getDataitem().setAvatar(avatar);
 	}
 
+	/**
+	 * Sets the team fraction.
+	 *
+	 * @param fte the new team fraction
+	 */
 	public void setTeamFraction(double fte) {
 		this.getDataitem().setTeamFraction(fte);
 	}
 
+	/**
+	 * Gets the organisational workload.
+	 *
+	 * @return the organisational workload
+	 */
 	public double getOrganisationalWorkload() {
 		double fte = this.getDataitem().getFullTimeEquivalent();
 
@@ -132,6 +141,11 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		return 100 * alloc / (divider * 40.0);
 	}
 
+	/**
+	 * Gets the team workload.
+	 *
+	 * @return the team workload
+	 */
 	public double getTeamWorkload() {
 		double fte = this.getDataitem().getFullTimeEquivalent();
 
@@ -155,10 +169,20 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		return 100 * teamAllocation / (divider * 40.0);
 	}
 
+	/**
+	 * Gets the team fraction.
+	 *
+	 * @return the team fraction
+	 */
 	public double getTeamFraction() {
 		return this.getDataitem().getTeamFraction();
 	}
 
+	/**
+	 * Sets the team fraction.
+	 *
+	 * @param tf the new team fraction
+	 */
 	public void setTeamFraction(String tf) {
 		if (StringUtil.isNotNullAndNotEmpty(tf)) {
 			double f = Double.parseDouble(tf.replace("%", ""));
@@ -168,6 +192,11 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		}
 	}
 
+	/**
+	 * Sets the full time equivalent.
+	 *
+	 * @param fte the new full time equivalent
+	 */
 	public void setFullTimeEquivalent(String fte) {
 		if (StringUtil.isNotNullAndNotEmpty(fte)) {
 			double f = Double.parseDouble(fte.replace("%", ""));
@@ -177,18 +206,38 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		}
 	}
 
+	/**
+	 * Sets the full time equivalent.
+	 *
+	 * @param fte the new full time equivalent
+	 */
 	public void setFullTimeEquivalent(double fte) {
 		this.getDataitem().setFullTimeEquivalent(fte);
 	}
 
+	/**
+	 * Gets the full time equivalent.
+	 *
+	 * @return the full time equivalent
+	 */
 	public double getFullTimeEquivalent() {
 		return this.getDataitem().getFullTimeEquivalent();
 	}
 
+	/**
+	 * Gets the firstname.
+	 *
+	 * @return the firstname
+	 */
 	public String getFirstname() {
 		return this.getDataitem().getFirstname();
 	}
 
+	/**
+	 * Gets the secondname.
+	 *
+	 * @return the secondname
+	 */
 	public String getSecondname() {
 		return this.getDataitem().getSecondname();
 	}
@@ -220,6 +269,12 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		this.getDataitem().setContacts(contacts);
 	}
 
+	/**
+	 * Gets the contact.
+	 *
+	 * @param organisationIdentifier the organisation identifier
+	 * @return the contact
+	 */
 	public ContactDataitem getContact(String organisationIdentifier) {
 		List<ContactDataitem> contacts = this.getDataitem().getContacts();
 		for (ContactDataitem contactDataitem : contacts) {
@@ -283,6 +338,12 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		this.getDataitem().setContacts(contactTables.getContacts());
 	}
 
+	/**
+	 * Gets the timeslices.
+	 *
+	 * @param freq the freq
+	 * @return the timeslices
+	 */
 	public Map<String, List<Timeslice>> getTimeslices(Freq freq) {
 		final Map<String, List<Timeslice>> map = this.getOrganisationalTimeslices(freq, false);
 		Map<String, List<Timeslice>> m = this.getTeamTimeslices(freq);
@@ -290,6 +351,13 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		return map;
 	}
 
+	/**
+	 * Gets the organisational timeslices.
+	 *
+	 * @param freq     the freq
+	 * @param optimize the optimize
+	 * @return the organisational timeslices
+	 */
 	public Map<String, List<Timeslice>> getOrganisationalTimeslices(Freq freq, boolean optimize) {
 		LinkedHashMap<String, List<Timeslice>> map = new LinkedHashMap<String, List<Timeslice>>();
 		List<Role> orgRoles = Repository.getInstance().getRolesWithPerson(this.getFullname());
@@ -328,6 +396,12 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		return map;
 	}
 
+	/**
+	 * Gets the team timeslices.
+	 *
+	 * @param freq the freq
+	 * @return the team timeslices
+	 */
 	public Map<String, List<Timeslice>> getTeamTimeslices(Freq freq) {
 		Map<String, List<Timeslice>> map = new LinkedHashMap<String, List<Timeslice>>();
 
@@ -351,10 +425,6 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 
 		Element element = new Element("p");
 
-		renderer.addH2(element, "Plankapazität");
-		renderer.addItem(element, Parameter.FTE.toString(), Math.round(this.getFullTimeEquivalent()) + "%");
-		renderer.addItem(element, Parameter.TEAMFRACTION.toString(), Math.round(this.getTeamFraction()) + "%");
-
 		if (StringUtil.isNotNullAndNotEmpty(this.getAvatar())) {
 			if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
 				element.append(Parser.addImage(getAvatar(), 250, 1));
@@ -363,6 +433,10 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 						+ "\" width=\"250px\">");
 			}
 		}
+
+		renderer.addH2(element, "Plankapazität");
+		renderer.addItem(element, Parameter.FTE.toString(), Math.round(this.getFullTimeEquivalent()) + "%");
+		renderer.addItem(element, Parameter.TEAMFRACTION.toString(), Math.round(this.getTeamFraction()) + "%");
 
 		renderer.addH2(element, CONTACTS.toString());
 
@@ -432,8 +506,6 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 					s.appendTo(li);
 				}
 
-//				li.appendText(team.getAllokationSlices(this, Freq.WEEKLY).toString());
-
 				List<TeamEntry> x = team.getTeamEntries();
 				Element ul2 = li.appendElement("ul");
 				for (TeamEntry e : x) {
@@ -445,8 +517,15 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 			}
 		}
 
-		if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
+		addRessourceChart(synchronizer, element);
 
+		return element;
+	}
+
+	private void addRessourceChart(ISynchronizer synchronizer, Element element) {
+		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
+
+		if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
 			final Map<String, List<Timeslice>> map = this.getOrganisationalTimeslices(Freq.MONTHLY, true);
 
 			String colors = "";
@@ -472,10 +551,16 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 				chart.appendTo(element);
 			}
 		}
-
-		return element;
 	}
 
+	/**
+	 * Adds the team entry.
+	 *
+	 * @param listElement the list element
+	 * @param team        the team
+	 * @param teamEntry   the team entry
+	 * @param renderer    the renderer
+	 */
 	private void addTeamEntry(Element listElement, Team team, TeamEntry teamEntry,
 			ISynchronizerRendererEngine renderer) {
 		Role role = Repository.getInstance().getRole(teamEntry.getRoleIdentifier());
@@ -578,6 +663,11 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		return messages;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.rogatio.circlead.model.data.IDataRow#getDataRow()
+	 */
 	@Override
 	public Map<Parameter, Object> getDataRow() {
 		Map<Parameter, Object> map = new TreeMap<Parameter, Object>();
@@ -603,6 +693,13 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		return map;
 	}
 
+	/**
+	 * Adds the data row element.
+	 *
+	 * @param value     the value
+	 * @param parameter the parameter
+	 * @param map       the map
+	 */
 	private void addDataRowElement(String value, Parameter parameter, Map<Parameter, Object> map) {
 		if (StringUtil.isNotNullAndNotEmpty(value)) {
 			map.put(parameter, value);

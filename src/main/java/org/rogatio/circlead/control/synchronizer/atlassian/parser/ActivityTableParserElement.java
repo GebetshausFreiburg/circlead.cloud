@@ -17,7 +17,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.model.data.ActivityDataitem;
 import org.rogatio.circlead.model.work.Activity;
 

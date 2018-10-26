@@ -21,7 +21,6 @@ import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface ISynchronizerRenderer.
  */
@@ -181,8 +180,22 @@ public interface ISynchronizerRendererEngine {
 	 */
 	public void addRoleItem(Element element, String description, String content);
 
+	/**
+	 * Adds the person item.
+	 *
+	 * @param element the element
+	 * @param description the description
+	 * @param content the content
+	 */
 	public void addPersonItem(Element element, String description, String content);
 
+	/**
+	 * Adds the team item.
+	 *
+	 * @param element the element
+	 * @param description the description
+	 * @param content the content
+	 */
 	public void addTeamItem(Element element, String description, String content);
 	
 	/**

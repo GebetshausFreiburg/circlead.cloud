@@ -8,47 +8,47 @@
  */
 package org.rogatio.circlead.control.synchronizer.atlassian.parser;
 
-import static org.rogatio.circlead.model.Parameter.CATEGORY;
-import static org.rogatio.circlead.model.Parameter.FTE;
-import static org.rogatio.circlead.model.Parameter.TEAMFRACTION;
-import static org.rogatio.circlead.model.Parameter.RECURRENCERULE;
 import static org.rogatio.circlead.model.Parameter.ABBREVIATION;
-import static org.rogatio.circlead.model.Parameter.TEAMROLES;
 import static org.rogatio.circlead.model.Parameter.ABBREVIATION2;
-import static org.rogatio.circlead.model.Parameter.IMAGE;
 import static org.rogatio.circlead.model.Parameter.ACTIVITIES;
 import static org.rogatio.circlead.model.Parameter.ACTIVITY;
 import static org.rogatio.circlead.model.Parameter.ACTIVITYID;
 import static org.rogatio.circlead.model.Parameter.ADRESS;
 import static org.rogatio.circlead.model.Parameter.BPMN;
+import static org.rogatio.circlead.model.Parameter.CATEGORY;
 import static org.rogatio.circlead.model.Parameter.COMPETENCIES;
 import static org.rogatio.circlead.model.Parameter.CONSULTANT;
 import static org.rogatio.circlead.model.Parameter.CONTACTPERSON;
 import static org.rogatio.circlead.model.Parameter.CONTACTS2;
 import static org.rogatio.circlead.model.Parameter.DATA;
 import static org.rogatio.circlead.model.Parameter.DESCRIPTION;
+import static org.rogatio.circlead.model.Parameter.ENDDATE;
+import static org.rogatio.circlead.model.Parameter.FTE;
 import static org.rogatio.circlead.model.Parameter.HOWTOS;
 import static org.rogatio.circlead.model.Parameter.ID;
+import static org.rogatio.circlead.model.Parameter.IMAGE;
 import static org.rogatio.circlead.model.Parameter.INFORMED;
+import static org.rogatio.circlead.model.Parameter.LEVEL;
 import static org.rogatio.circlead.model.Parameter.MAIL;
 import static org.rogatio.circlead.model.Parameter.MOBILE;
 import static org.rogatio.circlead.model.Parameter.NAME;
-import static org.rogatio.circlead.model.Parameter.ROLE;
 import static org.rogatio.circlead.model.Parameter.NEEDED;
-import static org.rogatio.circlead.model.Parameter.LEVEL;
-import static org.rogatio.circlead.model.Parameter.PERSON;
 import static org.rogatio.circlead.model.Parameter.OPPORTUNITIES;
 import static org.rogatio.circlead.model.Parameter.ORGANISATION;
+import static org.rogatio.circlead.model.Parameter.PERSON;
 import static org.rogatio.circlead.model.Parameter.PERSONS;
 import static org.rogatio.circlead.model.Parameter.PHONE;
 import static org.rogatio.circlead.model.Parameter.PREDECESSOR;
 import static org.rogatio.circlead.model.Parameter.PURPOSESHORT;
+import static org.rogatio.circlead.model.Parameter.RECURRENCERULE;
 import static org.rogatio.circlead.model.Parameter.RESPONSIBILITY;
 import static org.rogatio.circlead.model.Parameter.RESPONSIBLE;
 import static org.rogatio.circlead.model.Parameter.RESPONSIBLE2;
 import static org.rogatio.circlead.model.Parameter.RESULT;
+import static org.rogatio.circlead.model.Parameter.ROLE;
 import static org.rogatio.circlead.model.Parameter.ROLEGROUP;
 import static org.rogatio.circlead.model.Parameter.RULES;
+import static org.rogatio.circlead.model.Parameter.STARTDATE;
 import static org.rogatio.circlead.model.Parameter.STATUS;
 import static org.rogatio.circlead.model.Parameter.SUBACTIVITIES;
 import static org.rogatio.circlead.model.Parameter.SUBTYPE;
@@ -56,6 +56,8 @@ import static org.rogatio.circlead.model.Parameter.SUCCESSOR;
 import static org.rogatio.circlead.model.Parameter.SUMMARY;
 import static org.rogatio.circlead.model.Parameter.SUPPORTER;
 import static org.rogatio.circlead.model.Parameter.SYNONYMS;
+import static org.rogatio.circlead.model.Parameter.TEAMFRACTION;
+import static org.rogatio.circlead.model.Parameter.TEAMROLES;
 import static org.rogatio.circlead.model.Parameter.TYPE;
 import static org.rogatio.circlead.model.Parameter.UNKNOWN;
 
@@ -65,7 +67,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.Vector;
 
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.Repository;
@@ -206,6 +207,14 @@ public class Parser {
 				+ "\" ri:version-at-save=\"" + version + "\" /></ac:image>";
 	}
 
+	/**
+	 * Creates the team entry table.
+	 *
+	 * @param teamentries the teamentries
+	 * @param synchronizer the synchronizer
+	 * @param activatedLinks the activated links
+	 * @return the element
+	 */
 	public static Element createTeamEntryTable(List<TeamEntry> teamentries, ISynchronizer synchronizer,
 			boolean activatedLinks) {
 
@@ -406,12 +415,30 @@ public class Parser {
 		return table;
 	}
 
+	/**
+	 * Adds the parameter.
+	 *
+	 * @param name the name
+	 * @param parameter the parameter
+	 * @param macro the macro
+	 * @return the element
+	 */
 	private static Element addParameter(String name, String parameter, Element macro) {
 		Element param = macro.appendElement("ac:parameter");
 		param.attr("ac:name", name).appendText(parameter);
 		return param;
 	}
 
+	/**
+	 * Adds the chart macro.
+	 *
+	 * @param title the title
+	 * @param xLabel the x label
+	 * @param yLabel the y label
+	 * @param colors the colors
+	 * @param dataMap the data map
+	 * @return the element
+	 */
 	public static Element addChartMacro(String title, String xLabel, String yLabel, String colors,
 			Map<String, List<Timeslice>> dataMap) {
 		Element macro = new Element("ac:structured-macro");
@@ -470,6 +497,13 @@ public class Parser {
 		return macro;
 	}
 
+	/**
+	 * Adds the person list to table cell.
+	 *
+	 * @param tr the tr
+	 * @param personIdentifiers the person identifiers
+	 * @param synchronizer the synchronizer
+	 */
 	private static void addPersonListToTableCell(Element tr, List<String> personIdentifiers,
 			ISynchronizer synchronizer) {
 		Element td = tr.appendElement("td").attr("colspan", "1");
@@ -517,6 +551,8 @@ public class Parser {
 			addDataPair(CATEGORY.toString(), d.getCategory(), table);
 			addDataPair(TYPE.toString(), d.getType(), table);
 			addDataPair(SUBTYPE.toString(), d.getSubtype(), table);
+			addDataPair(STARTDATE.toString(), d.getStart(), table);
+			addDataPair(ENDDATE.toString(), d.getEnd(), table);
 			addDataPair(STATUS.toString(), Parser.getStatus(d.getStatus()), table);
 		}
 
@@ -984,6 +1020,13 @@ public class Parser {
 		return macro;
 	}
 
+	/**
+	 * Gets the status.
+	 *
+	 * @param title the title
+	 * @param forcedColor the forced color
+	 * @return the status
+	 */
 	public static Element getStatus(String title, String forcedColor) {
 
 		String color = "Red";

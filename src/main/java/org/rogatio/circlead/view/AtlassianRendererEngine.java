@@ -28,7 +28,6 @@ import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.ObjectUtil;
-import org.rogatio.circlead.util.StringUtil;
 
 /**
  * The Class Atlassian Renderer allows rendering from object-data to html for
@@ -549,6 +548,9 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addPersonItem(org.jsoup.nodes.Element, java.lang.String, java.lang.String)
+	 */
 	public void addPersonItem(Element element, String description, String content) {
 		Person r = Repository.getInstance().getPerson(content);
 
@@ -569,6 +571,9 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addTeamItem(org.jsoup.nodes.Element, java.lang.String, java.lang.String)
+	 */
 	public void addTeamItem(Element element, String description, String content) {
 		Team r = Repository.getInstance().getTeam(content);
 

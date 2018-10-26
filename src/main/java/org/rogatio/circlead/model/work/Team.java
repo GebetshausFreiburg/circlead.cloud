@@ -42,6 +42,9 @@ import org.rogatio.circlead.view.IWorkitemRenderer;
  */
 public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidator {
 
+	/**
+	 * Instantiates a new team.
+	 */
 	public Team() {
 		this.dataitem = new TeamDataitem();
 	}
@@ -55,34 +58,137 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		super(dataitem);
 	}
 
+	/**
+	 * Sets the recurrence rule.
+	 *
+	 * @param recurrenceRule the new recurrence rule
+	 */
 	public void setRecurrenceRule(String recurrenceRule) {
 		this.getDataitem().setRecurrenceRule(recurrenceRule);
 	}
 
+	/**
+	 * Sets the team type.
+	 *
+	 * @param type the new team type
+	 */
 	public void setTeamType(String type) {
 		this.getDataitem().setType(type);
 	}
 
+	/**
+	 * Gets the team type.
+	 *
+	 * @return the team type
+	 */
 	public String getTeamType() {
 		return this.getDataitem().getType();
 	}
 
+	/**
+	 * Sets the team subtype.
+	 *
+	 * @param subtype the new team subtype
+	 */
 	public void setTeamSubtype(String subtype) {
 		this.getDataitem().setSubtype(subtype);
 	}
 
+	/**
+	 * Gets the team subtype.
+	 *
+	 * @return the team subtype
+	 */
 	public String getTeamSubtype() {
 		return this.getDataitem().getSubtype();
 	}
 
+	/**
+	 * Sets the end.
+	 *
+	 * @param end the new end
+	 */
+	public void setEnd(String end) {
+		this.getDataitem().setEnd(end);
+	}
+
+	/**
+	 * Gets the end.
+	 *
+	 * @return the end
+	 */
+	public String getEnd() {
+		return this.getDataitem().getEnd();
+	}
+
+	/**
+	 * Sets the start.
+	 *
+	 * @param start the new start
+	 */
+	public void setStart(String start) {
+		this.getDataitem().setStart(start);
+	}
+
+	/**
+	 * Gets the start.
+	 *
+	 * @return the start
+	 */
+	public String getStart() {
+		return this.getDataitem().getStart();
+	}
+
+	/**
+	 * Sets the category.
+	 *
+	 * @param category the new category
+	 */
 	public void setCategory(String category) {
 		this.getDataitem().setCategory(category);
 	}
 
+	/**
+	 * Gets the category.
+	 *
+	 * @return the category
+	 */
 	public String getCategory() {
 		return this.getDataitem().getCategory();
 	}
 
+	/**
+	 * Gets the circlead recurrence rule.
+	 *
+	 * @return the circlead recurrence rule
+	 */
+	public CircleadRecurrenceRule getCircleadRecurrenceRule() {
+
+		if (StringUtil.isNotNullAndNotEmpty(getRecurrenceRule())) {
+			CircleadRecurrenceRule crr = new CircleadRecurrenceRule(getRecurrenceRule());
+
+			// Set start-date, if not null
+			if (StringUtil.isNotNullAndNotEmpty(this.getStart())) {
+				crr.setStartDate(this.getStart());
+			}
+
+			// Set end-date, if not null
+			if (StringUtil.isNotNullAndNotEmpty(this.getEnd())) {
+				crr.setUntilDate(this.getEnd());
+			}
+
+			return crr;
+
+		}
+
+		return null;
+	}
+
+	/**
+	 * Gets the recurrence rule.
+	 *
+	 * @return the recurrence rule
+	 */
 	public String getRecurrenceRule() {
 		return this.getDataitem().getRecurrenceRule();
 	}
@@ -105,6 +211,12 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		this.getDataitem().setDescription(description);
 	}
 
+	/**
+	 * Sets the team-entries from html-table-parser. Only add teamentry if
+	 * roleodentifier is named
+	 *
+	 * @param table the new team table
+	 */
 	public void setTeamTable(TeamTableParserElement table) {
 		List<Map<String, String>> dataList = table.getDataList();
 		if (dataList.size() > 0) {
@@ -120,10 +232,20 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 
 	}
 
+	/**
+	 * Adds the team enty.
+	 *
+	 * @param teamEntry the team entry
+	 */
 	public void addTeamEnty(TeamEntry teamEntry) {
 		this.getDataitem().addTeamEntry(teamEntry);
 	}
 
+	/**
+	 * Gets the team entries.
+	 *
+	 * @return the team entries
+	 */
 	public List<TeamEntry> getTeamEntries() {
 		return this.getDataitem().getTeamEntries();
 	}
@@ -148,10 +270,22 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		return this.getDataitem().toString() + ", type=" + getType();
 	}
 
+	/**
+	 * Gets the team size.
+	 *
+	 * @return the team size
+	 */
 	public int getTeamSize() {
 		return getTeamMembers().size();
 	}
 
+	/**
+	 * Gets the team redundance. The needs in the team are used to calculate if the
+	 * team has fullfilled roles or not. 100% mean that every role is only be taken
+	 * by one person. Ideal a team has >200%
+	 *
+	 * @return the team redundance
+	 */
 	public double getTeamRedundance() {
 		double sum = 0;
 		List<TeamEntry> list = this.getTeamEntries();
@@ -171,6 +305,11 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		return sum;
 	}
 
+	/**
+	 * Count the number of team members.
+	 *
+	 * @return the team members
+	 */
 	public List<String> getTeamMembers() {
 		List<String> personIdentifiers = new ArrayList<String>();
 		List<TeamEntry> list = this.getTeamEntries();
@@ -233,6 +372,11 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		return element;
 	}
 
+	/**
+	 * Gets the teamrole match.
+	 *
+	 * @return the teamrole match
+	 */
 	public Map<String, Integer> getTeamroleMatch() {
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		List<TeamEntry> entries = this.getTeamEntries();
@@ -277,8 +421,7 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 					ValidationMessage m = new ValidationMessage(this);
 					m.warning("Teamrole not completly set",
 							"Teamrole '" + teamEntry.getRoleIdentifier() + "' in Team '" + this.getTitle() + "' needs "
-									+ teamEntry.getNeeded() + "persons and has only "
-									+ teamEntry.getPersons().size());
+									+ teamEntry.getNeeded() + "persons and has only " + teamEntry.getPersons().size());
 					messages.add(m);
 				}
 			} else {
@@ -291,71 +434,124 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 
 		return messages;
 	}
-	
+
+	/**
+	 * Gets the circlead recurrence rule.
+	 *
+	 * @param e                the e
+	 * @param personIdentifier the person identifier
+	 * @return the circlead recurrence rule
+	 */
+	private CircleadRecurrenceRule getCircleadRecurrenceRule(TeamEntry e, String personIdentifier) {
+		String rule = e.getRecurrenceRule(personIdentifier);
+		CircleadRecurrenceRule crr = new CircleadRecurrenceRule(rule);
+		if (this.getCircleadRecurrenceRule() != null) {
+			CircleadRecurrenceRule cx = this.getCircleadRecurrenceRule();
+			if (cx.getStartDate() != null) {
+				crr.setStartDate(cx.getStartDate().toString());
+			}
+			if (cx.getUntilDate() != null) {
+				crr.setUntilDate(cx.getUntilDate().toString());
+			}
+		}
+		return crr;
+	}
+
+	/**
+	 * Gets the allokation slices.
+	 *
+	 * @param person the person
+	 * @param freq   the freq
+	 * @return the allokation slices
+	 */
 	public List<Timeslice> getAllokationSlices(Person person, Freq freq) {
-		//System.out.println(rule.getAllokationSlices(Freq.WEEKLY));
+		// System.out.println(rule.getAllokationSlices(Freq.WEEKLY));
 		List<Timeslice> slices = null;
 		List<TeamEntry> x = getTeamEntries();
-		
-		if (x==null) {
-			if (StringUtil.isNotNullAndNotEmpty(this.getRecurrenceRule())) {
-				CircleadRecurrenceRule crr = new CircleadRecurrenceRule(getRecurrenceRule());
+
+		if (x == null) {
+			CircleadRecurrenceRule crr = this.getCircleadRecurrenceRule();
+			if (crr != null) {
 				slices = crr.getAllokationSlices(freq);
 				return slices;
 			} else {
 				return null;
 			}
 		}
-		
+
 		int counter = 0;
 		for (TeamEntry e : x) {
 			if (e.getPersons().contains(person.getFullname())) {
 				counter++;
+				// Use as default team-recurrencerule, but if person has own rule then overwrite
+				// default
 				if (e.hasRecurrenceRule(person.getFullname())) {
-					String rule = e.getRecurrenceRule(person.getFullname());
-					CircleadRecurrenceRule crr = new CircleadRecurrenceRule(rule);
+					CircleadRecurrenceRule crr = getCircleadRecurrenceRule(e, person.getFullname());
+//					String rule = e.getRecurrenceRule(person.getFullname());
+//					CircleadRecurrenceRule crr = new CircleadRecurrenceRule(rule);
+//					if (this.getCircleadRecurrenceRule() != null) {
+//						CircleadRecurrenceRule cx = this.getCircleadRecurrenceRule();
+//						if (cx.getStartDate() != null) {
+//							crr.setStartDate(cx.getStartDate().toString());
+//						}
+//						if (cx.getUntilDate() != null) {
+//							crr.setUntilDate(cx.getUntilDate().toString());
+//						}
+//					}
 					List<Timeslice> tempSlices = crr.getAllokationSlices(freq);
 					slices = ObjectUtil.merge(tempSlices, slices);
 				} else if (StringUtil.isNotNullAndNotEmpty(this.getRecurrenceRule())) {
-					CircleadRecurrenceRule crr = new CircleadRecurrenceRule(getRecurrenceRule());
+					CircleadRecurrenceRule crr = this.getCircleadRecurrenceRule();
 					List<Timeslice> tempSlices = crr.getAllokationSlices(freq);
 					slices = ObjectUtil.merge(tempSlices, slices);
 				}
 			}
 		}
-		
+
 		if (counter == 0) {
 			CircleadRecurrenceRule crr = new CircleadRecurrenceRule(getRecurrenceRule());
 			slices = crr.getAllokationSlices(freq);
 			return slices;
 		}
-		
+
 		slices = ObjectUtil.divideSlices(slices, counter);
-		
+
 		return slices;
 	}
-	
+
+	/**
+	 * Gets the average allokation.
+	 *
+	 * @param person the person
+	 * @param freq   the freq
+	 * @return the average allokation
+	 */
 	public double getAverageAllokation(Person person, Freq freq) {
 		double sum = 0;
-		List<TeamEntry> x = getTeamEntries();
-		
-		if (x==null) {
-			if (StringUtil.isNotNullAndNotEmpty(this.getRecurrenceRule())) {
-				CircleadRecurrenceRule crr = new CircleadRecurrenceRule(getRecurrenceRule());
+		List<TeamEntry> teamEntries = getTeamEntries();
+
+		// if no entry found, the use average allocation from team recurrence-rule
+		if (teamEntries == null) {
+			CircleadRecurrenceRule crr = this.getCircleadRecurrenceRule();
+			if (crr != null) {
 				double allok = crr.getAverageAllokation(freq);
 				return allok;
 			} else {
 				return 0;
 			}
 		}
-		
+
 		int counter = 0;
-		for (TeamEntry e : x) {
-			if (e.getPersons().contains(person.getFullname())) {
+		// if entries found, then calculate average allocation by person, because one
+		// person can take more than one role in a team
+		for (TeamEntry entry : teamEntries) {
+			if (entry.getPersons().contains(person.getFullname())) {
 				counter++;
-				if (e.hasRecurrenceRule(person.getFullname())) {
-					String rule = e.getRecurrenceRule(person.getFullname());
-					CircleadRecurrenceRule crr = new CircleadRecurrenceRule(rule);
+				// if recurrencerule for person is set, the use it. When not use default of team
+				if (entry.hasRecurrenceRule(person.getFullname())) {
+					CircleadRecurrenceRule crr = getCircleadRecurrenceRule(entry, person.getFullname());
+//					String rule = entry.getRecurrenceRule(person.getFullname());
+//					CircleadRecurrenceRule crr = new CircleadRecurrenceRule(rule);
 					double allok = crr.getAverageAllokation(freq);
 					sum += allok;
 				} else if (StringUtil.isNotNullAndNotEmpty(this.getRecurrenceRule())) {
@@ -365,14 +561,14 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 				}
 			}
 		}
-		
+
 		if (counter == 0) {
 			CircleadRecurrenceRule crr = new CircleadRecurrenceRule(getRecurrenceRule());
 			double allok = crr.getAverageAllokation(freq);
 			return allok;
 		}
-		
-		return sum / ((double)counter);
+
+		return sum / ((double) counter);
 	}
-	
+
 }

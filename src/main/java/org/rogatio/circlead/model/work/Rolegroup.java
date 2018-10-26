@@ -317,6 +317,9 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 		this.getDataitem().setSynonyms(synonyms);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.model.data.IDataRow#getDataRow()
+	 */
 	@Override
 	public Map<Parameter, Object> getDataRow() {
 		Map<Parameter, Object> map = new TreeMap<Parameter, Object>();
@@ -332,6 +335,13 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 		return map;
 	}
 
+	/**
+	 * Adds the data row element.
+	 *
+	 * @param values the values
+	 * @param parameter the parameter
+	 * @param map the map
+	 */
 	private void addDataRowElement(List<String> values, Parameter parameter, Map<Parameter, Object> map) {
 		if (ObjectUtil.isListNotNullAndEmpty(values)) {
 			StringBuilder sb = new StringBuilder();
@@ -343,6 +353,13 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 		}
 	}
 	
+	/**
+	 * Adds the data row element.
+	 *
+	 * @param value the value
+	 * @param parameter the parameter
+	 * @param map the map
+	 */
 	private void addDataRowElement(String value, Parameter parameter, Map<Parameter, Object> map) {
 		if (StringUtil.isNotNullAndNotEmpty(value)) {
 			map.put(parameter, value);

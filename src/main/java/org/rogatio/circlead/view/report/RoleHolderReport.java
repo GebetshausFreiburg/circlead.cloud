@@ -24,8 +24,14 @@ import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
+/**
+ * The Class RoleHolderReport.
+ */
 public class RoleHolderReport extends DefaultReport {
 
+	/**
+	 * Instantiates a new role holder report.
+	 */
 	public RoleHolderReport() {
 		this.setName("RoleHolder Report");
 	}
@@ -79,6 +85,16 @@ public class RoleHolderReport extends DefaultReport {
 		return element;
 	}
 	
+	/**
+	 * Adds the roles.
+	 *
+	 * @param title the title
+	 * @param wis the wis
+	 * @param wiStatus the wi status
+	 * @param skillLevel the skill level
+	 * @param synchronizer the synchronizer
+	 * @param element the element
+	 */
 	private void addRoles(String title, WorkitemStatusParameter wis, WorkitemStatusParameter wiStatus, String skillLevel,  ISynchronizer synchronizer, Element element) {
 		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 		renderer.addH2(element, title);
@@ -114,6 +130,14 @@ public class RoleHolderReport extends DefaultReport {
 		}
 	}
 	
+	/**
+	 * Adds the roles.
+	 *
+	 * @param title the title
+	 * @param wiStatus the wi status
+	 * @param synchronizer the synchronizer
+	 * @param element the element
+	 */
 	private void addRoles(String title, WorkitemStatusParameter wiStatus, ISynchronizer synchronizer, Element element) {
 		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 		renderer.addH2(element, title);
@@ -140,6 +164,14 @@ public class RoleHolderReport extends DefaultReport {
 		}
 	}
 
+	/**
+	 * Adds the link.
+	 *
+	 * @param synchronizer the synchronizer
+	 * @param ul the ul
+	 * @param role the role
+	 * @param person the person
+	 */
 	private void addLink(ISynchronizer synchronizer, Element ul, Role role, Person person) {
 		if (synchronizer.getClass().getSimpleName()
 				.equals(FileSynchronizer.class.getSimpleName())) {

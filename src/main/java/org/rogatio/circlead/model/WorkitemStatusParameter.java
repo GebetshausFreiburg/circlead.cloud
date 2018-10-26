@@ -27,6 +27,7 @@ public enum WorkitemStatusParameter {
 	 */
 	STARTER("Red", "Anfänger", "Starter", "25%"),
 	
+	/** The substitute. */
 	SUBSTITUTE("Grey", "Vertretung", "Substitute", "Vertreter", "Vertreterin"),
 
 	/** Kann die Aufgabe in Teile und mit Hilfe umsetzen. */
@@ -56,11 +57,13 @@ public enum WorkitemStatusParameter {
 	/** The inactive. */
 	INACTIVE("Grey", "Inaktiv", "Inactive"),
 
+	/** The paused. */
 	PAUSED("Blue", "Pausiert", "Paused", "Pause", "Elternzeit", "Auslandsaufenthalt"),
 	
 	/** The temporary. */
 	TEMPORARY("Yellow", "Temporär", "Temporary"),
 
+	/** The need. */
 	NEED("Yellow", "Unterbesetzt", "Need", "Teammitgliedmangel"),
 	
 	/** The inprogress. */

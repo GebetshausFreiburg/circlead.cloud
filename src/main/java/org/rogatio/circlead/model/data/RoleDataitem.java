@@ -22,7 +22,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaDescription;
 import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaTitle;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class RoleDataitem.
  */
@@ -419,9 +418,11 @@ public class RoleDataitem extends DefaultDataitem {
 	@JsonIgnore
 	private Map<String, String> skills = new HashMap<String, String>();
 
+	/** The comments. */
 	@JsonIgnore
 	private Map<String, String> comments = new HashMap<String, String>();
 
+	/** The recurrence rules. */
 	@JsonIgnore
 	private Map<String, String> recurrenceRules = new HashMap<String, String>();
 
@@ -443,6 +444,12 @@ public class RoleDataitem extends DefaultDataitem {
 		return false;
 	}
 
+	/**
+	 * Gets the recurrence rule.
+	 *
+	 * @param personIdentifier the person identifier
+	 * @return the recurrence rule
+	 */
 	@JsonIgnore
 	public String getRecurrenceRule(String personIdentifier) {
 		if (recurrenceRules.containsKey(personIdentifier)) {
@@ -465,6 +472,12 @@ public class RoleDataitem extends DefaultDataitem {
 		return "";
 	}
 
+	/**
+	 * Checks for recurrence rule.
+	 *
+	 * @param personIdentifier the person identifier
+	 * @return true, if successful
+	 */
 	@JsonIgnore
 	public boolean hasRecurrenceRule(String personIdentifier) {
 		if (recurrenceRules.containsKey(personIdentifier)) {
@@ -473,6 +486,12 @@ public class RoleDataitem extends DefaultDataitem {
 		return false;
 	}
 
+	/**
+	 * Checks for comment.
+	 *
+	 * @param personIdentifier the person identifier
+	 * @return true, if successful
+	 */
 	@JsonIgnore
 	public boolean hasComment(String personIdentifier) {
 		if (comments.containsKey(personIdentifier)) {
@@ -495,6 +514,12 @@ public class RoleDataitem extends DefaultDataitem {
 		return false;
 	}
 
+	/**
+	 * Gets the comment.
+	 *
+	 * @param personIdentifier the person identifier
+	 * @return the comment
+	 */
 	@JsonIgnore
 	public String getComment(String personIdentifier) {
 		if (comments.containsKey(personIdentifier)) {
@@ -517,6 +542,12 @@ public class RoleDataitem extends DefaultDataitem {
 		return null;
 	}
 
+	/**
+	 * Sets the recurrence rule match.
+	 *
+	 * @param personFullname the person fullname
+	 * @param value the value
+	 */
 	@JsonIgnore
 	private void setRecurrenceRuleMatch(String personFullname, String value) {
 		value = value.trim();
@@ -525,6 +556,12 @@ public class RoleDataitem extends DefaultDataitem {
 		}
 	}
 
+	/**
+	 * Sets the status match.
+	 *
+	 * @param personFullname the person fullname
+	 * @param value the value
+	 */
 	@JsonIgnore
 	private void setStatusMatch(String personFullname, String value) {
 		if (!value.contains("%")) {
@@ -536,6 +573,12 @@ public class RoleDataitem extends DefaultDataitem {
 		}
 	}
 
+	/**
+	 * Sets the comment match.
+	 *
+	 * @param personFullname the person fullname
+	 * @param value the value
+	 */
 	@JsonIgnore
 	private void setCommentMatch(String personFullname, String value) {
 		value = value.trim();
@@ -551,6 +594,12 @@ public class RoleDataitem extends DefaultDataitem {
 		}
 	}
 
+	/**
+	 * Sets the skill match.
+	 *
+	 * @param personFullname the person fullname
+	 * @param value the value
+	 */
 	@JsonIgnore
 	private void setSkillMatch(String personFullname, String value) {
 		if (value.contains("%")) {

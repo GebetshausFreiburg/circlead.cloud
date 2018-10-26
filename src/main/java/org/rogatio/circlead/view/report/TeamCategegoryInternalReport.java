@@ -8,37 +8,30 @@
  */
 package org.rogatio.circlead.view.report;
 
-import static org.rogatio.circlead.model.Parameter.ACTIVITYID;
-
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.dmfs.rfc5545.Weekday;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
-import org.rogatio.circlead.model.WorkitemStatusParameter;
-import org.rogatio.circlead.model.work.IWorkitem;
-import org.rogatio.circlead.model.work.Role;
-import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.CircleadRecurrenceRule;
-import org.rogatio.circlead.util.ExcelUtil;
-import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
 /**
- * The Class ReworkReport.
+ * The Class TeamCategegoryInternalReport.
  */
 public class TeamCategegoryInternalReport extends DefaultReport {
 
+	/** The category. */
 	private String category;
 
+	/**
+	 * Instantiates a new team categegory internal report.
+	 *
+	 * @param category the category
+	 */
 	public TeamCategegoryInternalReport(String category) {
 		this.setName("Team Category Analysis Report");
 		this.category = category;

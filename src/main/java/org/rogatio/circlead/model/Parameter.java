@@ -8,12 +8,16 @@ public enum Parameter {
 	/** The abbreviation. */
 	ABBREVIATION("Abkürzung"),
 	
+	/** The title. */
 	TITLE("Titel"),
 	
+	/** The bussiness. */
 	BUSSINESS("Geschäftlich"),
 	
+	/** The private. */
 	PRIVATE("Privat"),
 	
+	/** The secondname. */
 	SECONDNAME("Zweitname"),
 	
 	/** The image. */
@@ -25,7 +29,10 @@ public enum Parameter {
 	/** The rolepersons. */
 	ROLEPERSONS("Rollenträger"),
 	
+	/** The rolepersonsinorganisation. */
 	ROLEPERSONSINORGANISATION("Rollenträger in Organisation"),
+	
+	/** The rolepersonsinteam. */
 	ROLEPERSONSINTEAM("Rollenträger im Team"),
 	
 	/** The tasks. */
@@ -76,7 +83,10 @@ public enum Parameter {
 	/** The roles. */
 	ROLES("Rollen"),
 	
+	/** The rolesinteam. */
 	ROLESINTEAM("Rollen im Team"),
+	
+	/** The rolesinorganisation. */
 	ROLESINORGANISATION("Rollen in der Organisation"),
 	
 	/** The responsible. */
@@ -94,8 +104,17 @@ public enum Parameter {
 	/** The description. */
 	DESCRIPTION("Beschreibung"),
 	
+	/** The recurrencerule. */
 	RECURRENCERULE("Wiederholungsmuster"),
+	
+	/** The category. */
 	CATEGORY("Kategorie"),
+	
+	/** The startdate. */
+	STARTDATE("Start"),
+	
+	/** The enddate. */
+	ENDDATE("Ende"),
 	
 	/** The bpmn. */
 	BPMN("BPMN"),
@@ -112,6 +131,7 @@ public enum Parameter {
 	/** The rolegroup. */
 	ROLEGROUP("Rollengruppe"),
 	
+	/** The role. */
 	ROLE("Rolle"),
 	
 	/** The predecessor. */
@@ -129,8 +149,10 @@ public enum Parameter {
 	/** The informed. */
 	INFORMED("Informierte"),
 	
+	/** The teamfraction. */
 	TEAMFRACTION("Teamanteil"),
 	
+	/** The fte. */
 	FTE("Vollzeitäquivalent"),
 	
 	/** The subactivities. */
@@ -139,6 +161,7 @@ public enum Parameter {
 	/** The persons. */
 	PERSONS("Personen"),
 	
+	/** The teamroles. */
 	TEAMROLES("Teamrollen"),
 	
 	/** The howtos. */
@@ -213,8 +236,13 @@ public enum Parameter {
 	/** The status. */
 	STATUS("Status"),
 	
+	/** The needed. */
 	NEEDED("Mindestanzahl"),
+	
+	/** The level. */
 	LEVEL("Mindestlevel"),
+	
+	/** The person. */
 	PERSON("Person"),
 	
 	/** The organisation. */

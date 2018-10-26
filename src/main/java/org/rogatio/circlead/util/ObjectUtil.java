@@ -9,9 +9,7 @@
 package org.rogatio.circlead.util;
 
 import java.util.ArrayList;
-
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +18,6 @@ import java.util.Vector;
 
 import org.rogatio.circlead.model.data.Timeslice;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ObjectUtil is a simple helper for objects.
  */
@@ -59,6 +56,13 @@ public class ObjectUtil {
 		return false;
 	}
 
+	/**
+	 * Divide slices.
+	 *
+	 * @param slices the slices
+	 * @param size the size
+	 * @return the list
+	 */
 	public static List<Timeslice> divideSlices(List<Timeslice> slices, int size) {
 		// List<Timeslice> list = new ArrayList<Timeslice>();
 		for (Timeslice timeslice : slices) {
@@ -67,6 +71,12 @@ public class ObjectUtil {
 		return slices;
 	}
 
+	/**
+	 * Creates the empty slices.
+	 *
+	 * @param size the size
+	 * @return the list
+	 */
 	public static List<Timeslice> createEmptySlices(int size) {
 		List<Timeslice> list = new ArrayList<Timeslice>();
 		for (int i = 0; i < size; i++) {
@@ -75,6 +85,13 @@ public class ObjectUtil {
 		return list;
 	}
 
+	/**
+	 * Merge.
+	 *
+	 * @param slices1 the slices 1
+	 * @param slices2 the slices 2
+	 * @return the list
+	 */
 	public static List<Timeslice> merge(List<Timeslice> slices1, List<Timeslice> slices2) {
 		List<Timeslice> list = new ArrayList<Timeslice>();
 		if (slices1 == null) {
@@ -103,6 +120,12 @@ public class ObjectUtil {
 		return list;
 	}
 
+	/**
+	 * Merge.
+	 *
+	 * @param dataMap the data map
+	 * @return the list
+	 */
 	public static List<Timeslice> merge(Map<String, List<Timeslice>> dataMap) {
 		List<Timeslice> list = null;
 		
@@ -115,6 +138,12 @@ public class ObjectUtil {
 		return list;
 	}
 	
+	/**
+	 * Sort.
+	 *
+	 * @param dataMap the data map
+	 * @return the map
+	 */
 	public static Map<String, List<Timeslice>> sort(Map<String, List<Timeslice>> dataMap) {
 		Map<Double, String> sortedMap = new TreeMap<Double, String>();
 

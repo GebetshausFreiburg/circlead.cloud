@@ -24,6 +24,7 @@ public enum WorkitemParameter {
 	/** The howtos. */
 	HOWTOS(Parameter.HOWTOS, "Arbeitsanweisungen", "Anleitungen", "Erläuterungen", "Knowledgebase"),
 
+	/** The teamroles. */
 	TEAMROLES(Parameter.TEAMROLES, "Teamroles", "Team"),
 	
 	/** The subactivity. */
@@ -35,8 +36,16 @@ public enum WorkitemParameter {
 	/** The description. */
 	DESCRIPTION(Parameter.DESCRIPTION, "Description", "Beschreibung"),
 	
+	/** The recurrencerule. */
 	RECURRENCERULE(Parameter.RECURRENCERULE, "RecurrenceRule", "RecurrencePattern"),
 	
+	/** The startdate. */
+	ENDDATE(Parameter.ENDDATE, "Enddatum", "Ende", "End", "Abschluss", "Abschluß", "Liefertermin"),
+	
+	/** The enddate. */
+	STARTDATE(Parameter.STARTDATE, "Startdatum", "Start", "Beginn"),
+
+	/** The category. */
 	CATEGORY(Parameter.CATEGORY, "Category"),
 
 	/** The created. */
@@ -60,7 +69,10 @@ public enum WorkitemParameter {
 	/** The synonym. */
 	SYNONYM(Parameter.SYNONYMS, "Synonym"),
 	
+	/** The type. */
 	TYPE(Parameter.TYPE, "Type"),
+	
+	/** The subtype. */
 	SUBTYPE(Parameter.SUBTYPE, "Subtype"),
 
 	/** The status. */
@@ -108,8 +120,10 @@ public enum WorkitemParameter {
 	/** The informed. */
 	INFORMED(Parameter.INFORMED, "Informierter", "Informed", "Informierte"),
 
+	/** The teamfraction. */
 	TEAMFRACTION(Parameter.TEAMFRACTION, "Projektanteil", "Teamfraction", "Projectfraction"),
 	
+	/** The fte. */
 	FTE(Parameter.FTE, "Vollzeitäquivalent", "FTE", "FullTimeEquivalent"),
 	
 	/** The image. */

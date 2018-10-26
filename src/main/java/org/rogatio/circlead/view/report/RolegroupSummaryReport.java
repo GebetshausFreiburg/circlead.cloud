@@ -21,8 +21,14 @@ import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
+/**
+ * The Class RolegroupSummaryReport.
+ */
 public class RolegroupSummaryReport extends DefaultReport {
 
+	/**
+	 * Instantiates a new rolegroup summary report.
+	 */
 	public RolegroupSummaryReport() {
 		this.setName("Rolegroup-Summary Report");
 	}

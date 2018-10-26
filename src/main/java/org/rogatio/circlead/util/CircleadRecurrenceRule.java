@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,11 +24,27 @@ import org.dmfs.rfc5545.recur.RecurrenceRule.Part;
 import org.dmfs.rfc5545.recur.RecurrenceRuleIterator;
 import org.rogatio.circlead.model.data.Timeslice;
 
+/**
+ * The Class CircleadRecurrenceRule.
+ */
 public class CircleadRecurrenceRule {
 
+	/**
+	 * The Constant WEEKDAYS contains the enum Weekday as ordered list, beginning on
+	 * monday
+	 */
 	final static public List<Weekday> WEEKDAYS = new ArrayList<Weekday>();
+
+	/** The Constant DAYOFWEEK2WEEKDAY maps 1 to monday, 2 to tuesday, .... */
 	final static public Map<Integer, Weekday> DAYOFWEEK2WEEKDAY = new HashMap<Integer, Weekday>();
+
+	/**
+	 * The Constant WEEKDAY2DAYOFWEEK maps weekday-enum to number. monday is 1,
+	 * tuesday is 2
+	 */
 	final static public Map<Weekday, Integer> WEEKDAY2DAYOFWEEK = new HashMap<Weekday, Integer>();
+
+	/** The Constant WEEKDAYS2GERMAN map enum weekday to german name of weekday */
 	final static public Map<Weekday, String> WEEKDAYS2GERMAN = new HashMap<Weekday, String>();
 
 	static {
@@ -63,8 +78,14 @@ public class CircleadRecurrenceRule {
 		WEEKDAYS2GERMAN.put(Weekday.SU, "Sonntag");
 	}
 
+	/** The Constant LOGGER. */
 	final static Logger LOGGER = LogManager.getLogger(CircleadRecurrenceRule.class);
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
@@ -78,31 +99,77 @@ public class CircleadRecurrenceRule {
 		return sb.toString();
 	}
 
+	/** The recurrence rule. */
 	private RecurrenceRule recurrenceRule;
 
+	/**
+	 * Instantiates a new circlead recurrence rule.
+	 *
+	 * @param rule the rule
+	 */
 	public CircleadRecurrenceRule(String rule) {
 		recurrenceRule = this.convert(rule);
 	}
 
-	public void setUntil(int year, int month, int day) {
-//		TimeZone tz = TimeZone.getTimeZone("Europe/Berlin");
+	/**
+	 * Sets the until date.
+	 *
+	 * @param year  the year
+	 * @param month the month
+	 * @param day   the day
+	 */
+	public void setUntilDateNonAllDay(int year, int month, int day) {
 		DateTime u = new DateTime(defaultTimeZone, year, month - 1, day, 0, 0, 0);
 		recurrenceRule.setUntil(u);
 	}
 
-	public void setUntil(DateTime until) {
+	/**
+	 * Sets the start date.
+	 *
+	 * @param year  the year
+	 * @param month the month
+	 * @param day   the day
+	 */
+	public void setStartDateNonAllDay(int year, int month, int day) {
+		startDate = new DateTime(defaultTimeZone, year, month - 1, day, 0, 0, 0);
+		System.out.println(startDate.isAllDay());
+	}
+
+	/**
+	 * Sets the until date.
+	 *
+	 * @param until the new until date
+	 */
+	public void setUntilDateAllDay(DateTime until) {
+		until = new DateTime(defaultTimeZone, until.getYear(), until.getMonth(), until.getDayOfMonth(), 0, 0, 0);
 		recurrenceRule.setUntil(until);
 	}
 
+	/**
+	 * Sets the week start.
+	 *
+	 * @param wkst the new week start
+	 */
 	public void setWeekStart(Weekday wkst) {
 		recurrenceRule.setWeekStart(wkst);
 	}
 
+	/**
+	 * Instantiates a new circlead recurrence rule.
+	 *
+	 * @param freq the freq
+	 */
 	public CircleadRecurrenceRule(Freq freq) {
 		recurrenceRule = new RecurrenceRule(freq);
 		this.type = this.TYPE_RFC5545;
 	}
 
+	/**
+	 * Clean.
+	 *
+	 * @param rule the rule
+	 * @return the string
+	 */
 	private String clean(String rule) {
 		if (rule.startsWith("R=")) {
 			rule = rule.substring(2, rule.length());
@@ -119,6 +186,12 @@ public class CircleadRecurrenceRule {
 		return rule.toUpperCase();
 	}
 
+	/**
+	 * Gets the recurrence rule.
+	 *
+	 * @param rule the rule
+	 * @return the recurrence rule
+	 */
 	private RecurrenceRule getRecurrenceRule(String rule) {
 		try {
 			RecurrenceRule rrule = new RecurrenceRule(clean(rule));
@@ -130,24 +203,51 @@ public class CircleadRecurrenceRule {
 		}
 	}
 
+	/**
+	 * Sets the duration.
+	 *
+	 * @param durationunit the durationunit
+	 * @param duration     the duration
+	 */
 	public void setDuration(Duration durationunit, int duration) {
 		this.durationunit = durationunit.name();
 		this.duration = duration;
 	}
 
+	/** The duration. */
 	private int duration;
+
+	/** The durationunit. */
 	private String durationunit;
 
+	/** The raw rule. */
 	private String rawRule;
 
+	/**
+	 * Gets the raw rule.
+	 *
+	 * @return the raw rule
+	 */
 	public String getRawRule() {
 		return rawRule;
 	}
 
+	/**
+	 * Gets the allokation slices.
+	 *
+	 * @param freq the freq
+	 * @return the allokation slices
+	 */
 	public List<Timeslice> getAllokationSlices(Freq freq) {
 		return getAllokationSlices(freq.name());
 	}
 
+	/**
+	 * Gets the allokation slices.
+	 *
+	 * @param freq the freq
+	 * @return the allokation slices
+	 */
 	public List<Timeslice> getAllokationSlices(String freq) {
 		List<Timeslice> list = null;
 		if (freq.equals(Freq.DAILY.name())) {
@@ -189,10 +289,23 @@ public class CircleadRecurrenceRule {
 		return list;
 	}
 
+	/**
+	 * Gets the average allokation.
+	 *
+	 * @param freq the freq
+	 * @return the average allokation
+	 */
 	public double getAverageAllokation(Freq freq) {
 		return getAverageAllokation(freq.name());
 	}
-	
+
+	/**
+	 * Gets the allokation.
+	 *
+	 * @param freq     the freq
+	 * @param interval the interval
+	 * @return the allokation
+	 */
 	public Timeslice getAllokation(String freq, int interval) {
 		if (freq.equals(Freq.DAILY.name())) {
 			if (interval < 0 || interval > 365) {
@@ -269,7 +382,11 @@ public class CircleadRecurrenceRule {
 		List<Event> events = this.getEventList(365);
 		for (Event event : events) {
 			if (event.getStartDate().after(start.getTime()) && event.getStartDate().before(end.getTime())) {
+//			if () {
+				
+//			}
 				sum += this.duration * allokationUnit;
+			
 			}
 		}
 
@@ -333,12 +450,24 @@ public class CircleadRecurrenceRule {
 		return ts;
 	}
 
+	/** The default time zone. */
 	private TimeZone defaultTimeZone = TimeZone.getDefault();
 
+	/**
+	 * Sets the default time zone.
+	 *
+	 * @param timeZone the new default time zone
+	 */
 	public void setDefaultTimeZone(TimeZone timeZone) {
 		defaultTimeZone = timeZone;
 	}
 
+	/**
+	 * Gets the multiplier.
+	 *
+	 * @param freq the freq
+	 * @return the multiplier
+	 */
 	private double getMultiplier(String freq) {
 		double multiplier = 0;
 		if (freq.equals(Freq.SECONDLY.name())) {
@@ -361,6 +490,11 @@ public class CircleadRecurrenceRule {
 		return multiplier;
 	}
 
+	/**
+	 * Gets the allokation unit.
+	 *
+	 * @return the allokation unit
+	 */
 	private double getAllokationUnit() {
 		double allokationUnit = 0.0;
 		if (this.durationunit != null) {
@@ -381,6 +515,11 @@ public class CircleadRecurrenceRule {
 		return allokationUnit;
 	}
 
+	/**
+	 * Gets the divider.
+	 *
+	 * @return the divider
+	 */
 	private double getDivider() {
 		double divider = 0;
 		if (this.recurrenceRule.getFreq() == Freq.SECONDLY) {
@@ -438,9 +577,9 @@ public class CircleadRecurrenceRule {
 	}
 
 	/**
-	 * 
-	 * 
-	 * @param freq
+	 * Gets the average allokation.
+	 *
+	 * @param freq the freq
 	 * @return allokation in hours per week
 	 */
 	public double getAverageAllokation(String freq) {
@@ -460,68 +599,38 @@ public class CircleadRecurrenceRule {
 		return multiplier * this.duration * allokationUnit / divider;
 	}
 
-	/*
-	 * public double getAllokation(String freq) {
-	 * 
-	 * double divider = 0;
-	 * 
-	 * if (freq.equals(Freq.SECONDLY.name())) { divider = 11.0 * 4.0 * 5.0 * 8.0 *
-	 * 60.0 * 60.0; } else if (freq.equals(Freq.MINUTELY.name())) { divider = 11.0 *
-	 * 4.0 * 5.0 * 8.0 * 60.0; } else if (freq.equals(Freq.HOURLY.name())) { divider
-	 * = 11.0 * 4.0 * 5.0 * 8.0; } else if (freq.equals(Freq.DAILY.name())) {
-	 * divider = 11.0 * 4.0 * 5.0; } else if (freq.equals(Freq.WEEKLY.name())) {
-	 * divider = 11.0 * 4.0; } else if (freq.equals(Freq.MONTHLY.name())) { divider
-	 * = 11.0; } else if (freq.equals("QUATERLY") || freq.equals("QUATER")) {
-	 * divider = 11.0 / 4.0; } else if (freq.equals(Freq.YEARLY.name())) { divider =
-	 * 1.0; }
-	 * 
-	 * divider = divider / (11.0 * 4 * 5);
-	 * 
-	 * System.out.println("divider" + divider);
-	 * 
-	 * double allokationUnit = 0.0; if (this.durationunit.equals(DURATIONBYHOUR)) {
-	 * allokationUnit = 1.0; } else if (this.durationunit.equals(DURATIONBYDAY)) {
-	 * allokationUnit = 8.0; } else if (this.durationunit.equals(DURATIONBYWEEK)) {
-	 * allokationUnit = 40.0; } else if (this.durationunit.equals(DURATIONBYMONTH))
-	 * { allokationUnit = 160.0; } else if
-	 * (this.durationunit.equals(DURATIONBYQUARTER)) { allokationUnit = (160.0 *
-	 * 3.0); }
-	 * 
-	 * System.out.println("allocUnit" + allokationUnit);
-	 * 
-	 * double amount = 0; // System.out.println(recurrenceRule.getFreq()); if
-	 * (this.recurrenceRule.getFreq() == Freq.SECONDLY) { amount = 1.0 * 60.0 *
-	 * 60.0; } if (this.recurrenceRule.getFreq() == Freq.MINUTELY) { amount = 1.0 *
-	 * 60.0; } if (this.recurrenceRule.getFreq() == Freq.HOURLY) { amount = 1.0; }
-	 * if (this.recurrenceRule.getFreq() == Freq.DAILY) { amount = 1.0 / 8.0; } if
-	 * (this.recurrenceRule.getFreq() == Freq.WEEKLY) { amount = 1.0 / 40.0; } if
-	 * (this.recurrenceRule.getFreq() == Freq.MONTHLY &&
-	 * this.recurrenceRule.getInterval() == 1) { amount = 1.0 / (40.0 * 4.0); } if
-	 * (this.recurrenceRule.getFreq() == Freq.MONTHLY &&
-	 * this.recurrenceRule.getInterval() == 3) { amount = 1.0 / (40.0 * 4.0 * 3.0);
-	 * } if (this.recurrenceRule.getFreq() == Freq.YEARLY) { amount = 1.0 / (40.0 *
-	 * 4.0 * 12.0); }
-	 * 
-	 * System.out.println("amount" + amount); System.out.println("duration" +
-	 * duration);
-	 * 
-	 * amount = 1.0; // divider = 1.0 ;
-	 * 
-	 * return amount * this.duration * allokationUnit * divider; }
+	/**
+	 * Gets the durationunit.
+	 *
+	 * @return the durationunit
 	 */
-
 	public String getDurationunit() {
 		return this.durationunit;
 	}
 
+	/**
+	 * Gets the duration.
+	 *
+	 * @return the duration
+	 */
 	public int getDuration() {
 		return this.duration;
 	}
 
+	/**
+	 * Gets the weekday.
+	 *
+	 * @return the weekday
+	 */
 	public Weekday getWeekday() {
 		return this.recurrenceRule.getWeekStart();
 	}
 
+	/**
+	 * Gets the hour.
+	 *
+	 * @return the hour
+	 */
 	public Integer getHour() {
 		List<Integer> hours = this.recurrenceRule.getByPart(Part.BYHOUR);
 		if (hours.size() > 0) {
@@ -530,6 +639,12 @@ public class CircleadRecurrenceRule {
 		return null;
 	}
 
+	/**
+	 * Convert.
+	 *
+	 * @param s the s
+	 * @return the recurrence rule
+	 */
 	private RecurrenceRule convert(String s) {
 
 		s = clean(s);
@@ -547,8 +662,6 @@ public class CircleadRecurrenceRule {
 			String[] oc = s.split("/");
 			String duration = oc[0];
 			String period = oc[1];
-//			System.out.println(s);
-//System.out.println(duration);
 
 			if (duration.endsWith("H")) {
 				durationunit = DURATIONBYHOUR;
@@ -565,7 +678,6 @@ public class CircleadRecurrenceRule {
 			if (duration.endsWith("Q")) {
 				durationunit = DURATIONBYQUARTER;
 			}
-//			System.out.println(durationunit);
 
 			int hour = 0;
 			String d = duration;
@@ -638,8 +750,6 @@ public class CircleadRecurrenceRule {
 			} catch (InvalidRecurrenceRuleException e) {
 			}
 
-//			LOGGER.debug("Set RecurrenceRule from '" + s + "' to '" + rule.toString() + "'");
-
 			return rule;
 		}
 
@@ -688,31 +798,68 @@ public class CircleadRecurrenceRule {
 			return getRecurrenceRule(s);
 		}
 
-//		LOGGER.error("RecurrenceRule could not set '" + s + "'");
-		
 		return null;
 	}
 
+	/**
+	 * The Enum Duration.
+	 */
 	public enum Duration {
-		DURATIONBYHOUR, DURATIONBYDAY, DURATIONBYWEEK, DURATIONBYMONTH, DURATIONBYQUARTER;
+
+		/** The durationbyhour. */
+		DURATIONBYHOUR,
+		/** The durationbyday. */
+		DURATIONBYDAY,
+		/** The durationbyweek. */
+		DURATIONBYWEEK,
+		/** The durationbymonth. */
+		DURATIONBYMONTH,
+		/** The durationbyquarter. */
+		DURATIONBYQUARTER;
 	}
 
+	/** The durationbyhour. */
 	private final String DURATIONBYHOUR = "DURATIONBYHOUR";
+
+	/** The durationbyday. */
 	private final String DURATIONBYDAY = "DURATIONBYDAY";
+
+	/** The durationbyweek. */
 	private final String DURATIONBYWEEK = "DURATIONBYWEEK";
+
+	/** The durationbymonth. */
 	private final String DURATIONBYMONTH = "DURATIONBYMONTH";
+
+	/** The durationbyquarter. */
 	private final String DURATIONBYQUARTER = "DURATIONBYQUARTER";
 
+	/** The type circlead. */
 	private final String TYPE_CIRCLEAD = "CIRCLEAD";
+
+	/** The type rfc5545. */
 	private final String TYPE_RFC5545 = "RFC5545";
+
+	/** The type undefined. */
 	private final String TYPE_UNDEFINED = "UNDEFINED";
 
+	/** The type. */
 	private String type;
 
+	/**
+	 * Gets the type.
+	 *
+	 * @return the type
+	 */
 	public String getType() {
 		return type;
 	}
 
+	/**
+	 * Gets the type.
+	 *
+	 * @param rule the rule
+	 * @return the type
+	 */
 	private String getType(String rule) {
 		final String circleadTypeRegex = "([0-9]+)?(SU|MO|TU|WE|TH|FR|SA)?([0-9]+)(H|D|W|M|Q)(/(D|W|M|Q|Y))?";
 
@@ -731,18 +878,40 @@ public class CircleadRecurrenceRule {
 		return TYPE_UNDEFINED;
 	}
 
+	/**
+	 * Sets the count.
+	 *
+	 * @param count the new count
+	 */
 	public void setCount(int count) {
 		recurrenceRule.setCount(count);
 	}
 
+	/**
+	 * Checks if is infinite.
+	 *
+	 * @return true, if is infinite
+	 */
 	public boolean isInfinite() {
 		return recurrenceRule.isInfinite();
 	}
 
+	/**
+	 * Gets the end date.
+	 *
+	 * @param startDateTime the start date time
+	 * @return the end date
+	 */
 	public DateTime getEndDate(DateTime startDateTime) {
 		return getEndDate(startDateTime.toString());
 	}
 
+	/**
+	 * Gets the end date.
+	 *
+	 * @param startDateTime the start date time
+	 * @return the end date
+	 */
 	public DateTime getEndDate(String startDateTime) {
 		String startRepresentation = startDateTime;
 
@@ -795,10 +964,22 @@ public class CircleadRecurrenceRule {
 		return null;
 	}
 
+	/**
+	 * Gets the event.
+	 *
+	 * @param startDate the start date
+	 * @return the event
+	 */
 	public Event getEvent(String startDate) {
 		return getEvent(DateTime.parse(startDate));
 	}
 
+	/**
+	 * Gets the event.
+	 *
+	 * @param startDate the start date
+	 * @return the event
+	 */
 	public Event getEvent(DateTime startDate) {
 		DateTime s = startDate;
 		DateTime e = this.getEndDate(s);
@@ -806,27 +987,76 @@ public class CircleadRecurrenceRule {
 		return evt;
 	}
 
+	/**
+	 * Gets the event.
+	 *
+	 * @return the event
+	 */
 	public Event getEvent() {
 		return getEvent(this.getStartDate());
 	}
 
-	public void setStartDate(DateTime startDate) {
+	public void setStartDateNonAllDay(DateTime startDate) {
 		this.startDate = startDate;
 	}
-	
-	private DateTime startDate;
-	
-	public DateTime getStartDate() {
-		if (startDate!=null) {
-			return startDate;
+
+	public void setUntilDate(String untilDate) {
+		if (startDate == null) {
+			DateTime u = DateTime.parse(defaultTimeZone, untilDate);
+			this.setUntilDateNonAllDay(u.getYear(), u.getMonth() + 1, u.getDayOfMonth());
+		} else {
+			this.setUntilDateAllDay(untilDate);
 		}
+
+	}
+
+	public void setUntilDateAllDay(String untilDate) {
+		DateTime u = DateTime.parse(untilDate);
+		recurrenceRule.setUntil(u);
+	}
+
+	public void setStartDate(String startDate) {
+		setStartDateAllDay(startDate);
+	}
+
+	/**
+	 * Sets the start date.
+	 *
+	 * @param startDate the new start date
+	 */
+	public void setStartDateAllDay(String startDate) {
+		this.startDate = DateTime.parse(startDate);
+	}
+
+	/** The start date. */
+	private DateTime startDate;
+
+	/**
+	 * Gets the start date.
+	 *
+	 * @return the start date
+	 */
+	public DateTime getStartDate() {
+		//Look for first date in recurrent rule
 		List<DateTime> list = getStartDateList(1);
+		// if valid, then return
 		if (list.size() == 1) {
 			return list.get(0);
 		}
+		// if something went wrong, return null
 		return null;
 	}
+	
+	public DateTime getUntilDate() {
+		return recurrenceRule.getUntil();
+	}
 
+	/**
+	 * Gets the start date.
+	 *
+	 * @param startDateTime the start date time
+	 * @return the start date
+	 */
 	public DateTime getStartDate(String startDateTime) {
 		List<DateTime> list = getStartDateList(startDateTime, 1);
 		if (list.size() == 1) {
@@ -835,9 +1065,22 @@ public class CircleadRecurrenceRule {
 		return null;
 	}
 
+	/**
+	 * Gets the event list.
+	 *
+	 * @param maxInstances the max instances
+	 * @return the event list
+	 */
 	public List<Event> getEventList(int maxInstances) {
 		List<Event> events = new ArrayList<Event>();
-		List<DateTime> list = getStartDateList(DateTime.nowAndHere(), maxInstances);
+
+		List<DateTime> list = null;
+		if (this.startDate != null) {
+			list = getStartDateList(startDate, maxInstances);
+		} else {
+			list = getStartDateList(DateTime.nowAndHere(), maxInstances);
+		}
+
 		for (DateTime dateTime : list) {
 			Event e = this.getEvent(dateTime);
 			events.add(e);
@@ -845,18 +1088,48 @@ public class CircleadRecurrenceRule {
 		return events;
 	}
 
+	/**
+	 * Gets the details.
+	 *
+	 * @return the details
+	 */
 	public String getDetails() {
 		return this.getType() + " : " + this.getRawRule() + " : " + this.toString();
 	}
 
+	/**
+	 * Gets the start date list.
+	 *
+	 * @param maxInstances the max instances
+	 * @return the start date list
+	 */
 	public List<DateTime> getStartDateList(int maxInstances) {
-		return getStartDateList(DateTime.nowAndHere(), maxInstances);
+		// use given start date for recurring rule if set. if not use today
+		if (startDate != null) {
+			return getStartDateList(startDate, maxInstances);
+		} else {
+			return getStartDateList(DateTime.nowAndHere(), maxInstances);
+		}
 	}
 
+	/**
+	 * Gets the event list.
+	 *
+	 * @param startDateTime the start date time
+	 * @param maxInstances  the max instances
+	 * @return the event list
+	 */
 	public List<Event> getEventList(DateTime startDateTime, int maxInstances) {
 		return this.getEventList(startDateTime.toString(), maxInstances);
 	}
 
+	/**
+	 * Gets the event list.
+	 *
+	 * @param startDateTime the start date time
+	 * @param maxInstances  the max instances
+	 * @return the event list
+	 */
 	public List<Event> getEventList(String startDateTime, int maxInstances) {
 		List<Event> events = new ArrayList<Event>();
 		List<DateTime> list = getStartDateList(startDateTime, maxInstances);
@@ -867,6 +1140,13 @@ public class CircleadRecurrenceRule {
 		return events;
 	}
 
+	/**
+	 * Gets the start date list.
+	 *
+	 * @param startDateTime the start date time
+	 * @param maxInstances  the max instances
+	 * @return the start date list
+	 */
 	public List<DateTime> getStartDateList(String startDateTime, int maxInstances) {
 		if (startDateTime == null) {
 			return getStartDateList(maxInstances);
@@ -875,27 +1155,26 @@ public class CircleadRecurrenceRule {
 		return getStartDateList(DateTime.parse(startDateTime), maxInstances);
 	}
 
+	/**
+	 * Gets the start by rule.
+	 *
+	 * @param startDateTime the start date time
+	 * @return the start by rule
+	 */
 	private DateTime getStartByRule(DateTime startDateTime) {
-		
-		if (recurrenceRule==null) {
+
+		if (recurrenceRule == null) {
 			return null;
 		}
-		
+
 		Date date = convertDate(startDateTime);
 
 		Calendar cx = Calendar.getInstance(defaultTimeZone);
 		cx.setTime(date);
 
-		Calendar c = null;//(Calendar) cx.clone();
-
-//		LOGGER.debug(recurrenceRule);
-//		LOGGER.debug(recurrenceRule.getWeekStart());
-//		System.out.println(recurrenceRule.getWeekStart());
+		Calendar c = null;
 
 		for (int i = 0; i <= 7; i++) {
-//			if (c != null) {
-//				System.out.println(i + " - " + c.getTime());
-//			}
 			cx.add(Calendar.DAY_OF_WEEK, 1);
 			if (recurrenceRule.getWeekStart() != null) {
 				if (recurrenceRule.getWeekStart() == Weekday.MO) {
@@ -936,8 +1215,6 @@ public class CircleadRecurrenceRule {
 			}
 		}
 
-//		System.out.println(c.getTime()+" - FOUND");
-
 		if (recurrenceRule.getFreq() == Freq.YEARLY) {
 			c.add(Calendar.MONTH, -12);
 		}
@@ -958,25 +1235,18 @@ public class CircleadRecurrenceRule {
 		}
 
 		DateTime y = DateTime.parse(defaultTimeZone, x);
-//		System.out.println("FFF "+y);
 		return y;
-
-//		return null;
 	}
 
 	/**
-	 * 
-	 * @param startDateTime
+	 * Gets the start date list.
+	 *
+	 * @param startDateTime the start date time
 	 * @param maxInstances  limit instances for rules that recur forever
+	 * @return the start date list
 	 */
 	public List<DateTime> getStartDateList(DateTime startDateTime, int maxInstances) {
-
-//		System.out.println("A: " + startDateTime);
-
 		startDateTime = getStartByRule(startDateTime);
-
-//		System.out.println("B: " + startDateTime);
-
 		List<DateTime> list = new ArrayList<DateTime>();
 		RecurrenceRuleIterator it = startDateIterator(startDateTime);
 		while (it.hasNext() && (!recurrenceRule.isInfinite() || maxInstances-- > 0)) {
@@ -987,10 +1257,10 @@ public class CircleadRecurrenceRule {
 	}
 
 	/**
-	 * 
-	 * 
-	 * @param dateTime Must be in Format yyyyMMdd or yyyyMMddThhmmss
-	 * @return
+	 * Start date iterator.
+	 *
+	 * @param startDateTime the start date time
+	 * @return the recurrence rule iterator
 	 */
 	public RecurrenceRuleIterator startDateIterator(String startDateTime) {
 		return startDateIterator(DateTime.parse(startDateTime));
@@ -998,21 +1268,38 @@ public class CircleadRecurrenceRule {
 
 	/**
 	 * Start iterator from actual data and time.
-	 * 
-	 * @return
+	 *
+	 * @return the recurrence rule iterator
 	 */
 	public RecurrenceRuleIterator startDateIterator() {
 		return startDateIterator(DateTime.nowAndHere());
 	}
 
+	/**
+	 * Start date iterator.
+	 *
+	 * @param start the start
+	 * @return the recurrence rule iterator
+	 */
 	public RecurrenceRuleIterator startDateIterator(DateTime start) {
 		return recurrenceRule.iterator(start);
 	}
 
+	/**
+	 * Sets the interval.
+	 *
+	 * @param interval the new interval
+	 */
 	public void setInterval(int interval) {
 		recurrenceRule.setInterval(interval);
 	}
 
+	/**
+	 * Sets the by part.
+	 *
+	 * @param part   the part
+	 * @param values the values
+	 */
 	public void setByPart(Part part, List<Integer> values) {
 		try {
 			recurrenceRule.setByPart(part, values);
@@ -1021,6 +1308,12 @@ public class CircleadRecurrenceRule {
 		}
 	}
 
+	/**
+	 * Sets the by part.
+	 *
+	 * @param part   the part
+	 * @param values the values
+	 */
 	public void setByPart(Part part, Integer... values) {
 		try {
 			recurrenceRule.setByPart(part, values);
@@ -1029,43 +1322,95 @@ public class CircleadRecurrenceRule {
 		}
 	}
 
+	/**
+	 * The Class Event.
+	 */
 	public class Event {
+
+		/** The start. */
 		private DateTime start;
+
+		/** The end. */
 		private DateTime end;
+
+		/** The crr. */
 		private CircleadRecurrenceRule crr = null;
 
+		/**
+		 * Instantiates a new event.
+		 *
+		 * @param start the start
+		 * @param end   the end
+		 * @param crr   the crr
+		 */
 		private Event(DateTime start, DateTime end, CircleadRecurrenceRule crr) {
 			this.start = start;
 			this.end = end;
 			this.crr = crr;
 		}
 
+		/**
+		 * Gets the rule.
+		 *
+		 * @return the rule
+		 */
 		public CircleadRecurrenceRule getRule() {
 			return crr;
 		}
 
+		/**
+		 * Gets the start.
+		 *
+		 * @return the start
+		 */
 		public DateTime getStart() {
 			return this.start;
 		}
 
+		/**
+		 * Gets the end.
+		 *
+		 * @return the end
+		 */
 		public DateTime getEnd() {
 			return this.end;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.lang.Object#toString()
+		 */
 		public String toString() {
 			return "Event:" + start.toString() + " - " + end.toString();
 		}
 
+		/**
+		 * Gets the end date.
+		 *
+		 * @return the end date
+		 */
 		public Date getEndDate() {
 			return convertDate(end);
 		}
 
+		/**
+		 * Gets the start date.
+		 *
+		 * @return the start date
+		 */
 		public Date getStartDate() {
 			return convertDate(start);
 		}
 
 	}
 
+	/**
+	 * Convert date.
+	 *
+	 * @param date the date
+	 * @return the date
+	 */
 	private Date convertDate(DateTime date) {
 		String startRepresentation = date.toString();
 

@@ -21,7 +21,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.kjetland.jackson.jsonSchema.JsonSchemaGenerator;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class FileUtil is a simple helper for File-IO-Handling.
  */

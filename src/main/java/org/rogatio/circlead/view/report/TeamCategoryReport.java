@@ -22,15 +22,27 @@ import org.rogatio.circlead.util.CircleadRecurrenceRule;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
+/**
+ * The Class TeamCategoryReport.
+ */
 public class TeamCategoryReport extends DefaultReport {
 
+	/** The category. */
 	private String category;
 
+	/**
+	 * Instantiates a new team category report.
+	 *
+	 * @param category the category
+	 */
 	public TeamCategoryReport(String category) {
 		this.setName("Team Category Report");
 		this.category = category;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.report.DefaultReport#getHead()
+	 */
 	@Override
 	public List<String> getHead() {
 		List<String> list = new ArrayList<String>();
@@ -92,6 +104,11 @@ public class TeamCategoryReport extends DefaultReport {
 		return element;
 	}
 
+	/**
+	 * Gets the week.
+	 *
+	 * @return the week
+	 */
 	private List<Weekday> getWeek() {
 		List<Weekday> weekdays = new ArrayList<Weekday>();
 		weekdays.add(Weekday.MO);
@@ -104,9 +121,20 @@ public class TeamCategoryReport extends DefaultReport {
 		return weekdays;
 	}
 
+	/** The onehour. */
 	private final String ONEHOUR = "onehour";
+	
+	/** The twohour. */
 	private final String TWOHOUR = "twohour";
 
+	/**
+	 * Sets the hour.
+	 *
+	 * @param weekday the weekday
+	 * @param hour the hour
+	 * @param ul the ul
+	 * @return the int
+	 */
 	private int setHour(Weekday weekday, int hour, Element ul) {
 		List<Team> teams = Repository.getInstance().getTeamsWithCategory(category);
 		boolean found = false;
@@ -126,6 +154,15 @@ public class TeamCategoryReport extends DefaultReport {
 		return durrationTime;
 	}
 
+	/**
+	 * Sets the hour.
+	 *
+	 * @param team the team
+	 * @param weekday the weekday
+	 * @param hour the hour
+	 * @param ul the ul
+	 * @return the int
+	 */
 	private int setHour(Team team, Weekday weekday, int hour, Element ul) {
 		String addition = "";
 		String duration = ONEHOUR;

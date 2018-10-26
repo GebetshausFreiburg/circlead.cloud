@@ -27,7 +27,6 @@ import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.ObjectUtil;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class RenderUtil.
  */
@@ -542,6 +541,9 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addTeamItem(org.jsoup.nodes.Element, java.lang.String, java.lang.String)
+	 */
 	public void addTeamItem(Element element, String description, String content) {
 		Team r = Repository.getInstance().getTeam(content);
 
@@ -562,6 +564,9 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addPersonItem(org.jsoup.nodes.Element, java.lang.String, java.lang.String)
+	 */
 	public void addPersonItem(Element element, String description, String content) {
 		Person r = Repository.getInstance().getPerson(content);
 

@@ -17,7 +17,6 @@ import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.report.IReport;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class DefaultSynchronizer.
  */

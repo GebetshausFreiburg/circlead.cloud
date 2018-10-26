@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.rogatio.circlead.SyncCirclead;
 
 import com.dropbox.core.DbxAuthInfo;
 import com.dropbox.core.DbxException;
@@ -21,22 +20,24 @@ import com.dropbox.core.v2.DbxTeamClientV2;
 import com.dropbox.core.v2.files.FileMetadata;
 import com.dropbox.core.v2.files.UploadErrorException;
 import com.dropbox.core.v2.files.WriteMode;
-import com.dropbox.core.v2.team.TeamFolderListResult;
-import com.dropbox.core.v2.team.TeamFolderMetadata;
 import com.dropbox.core.v2.team.TeamGetInfoResult;
 import com.dropbox.core.v2.team.TeamMemberInfo;
-import com.dropbox.core.v2.team.TeamMemberProfile;
-import com.dropbox.core.v2.team.TokenGetAuthenticatedAdminResult;
 import com.dropbox.core.v2.users.FullAccount;
 
+/**
+ * The Class DropboxUtil.
+ */
 public class DropboxUtil {
 
+	/** The Constant LOGGER. */
 	final static Logger LOGGER = LogManager.getLogger(DropboxUtil.class);
 
 	/**
+	 * Gets the client.
+	 *
+	 * @param authFile the auth file
+	 * @return the client
 	 * @see https://blogs.dropbox.com/developers/2014/05/generate-an-access-token-for-your-own-account/
-	 * @param authFile
-	 * @return
 	 */
 	public static DbxClientV2 getClient(String authFile) {
 
@@ -68,16 +69,16 @@ public class DropboxUtil {
 		LOGGER.info("Load Dropbox-Client '" + dbxAccountInfo.getTeam().getName() + "' for user '"
 				+ dbxAccountInfo.getName().getDisplayName() + "'");
 
-//		dbxClient.files().upload(path)
-
-//	        System.out.println(dbxClient.files().listRevisions("/Wiki/data/database/xwiki_db.script").toStringMultiline());
-
-//	        System.out.println(dbxClient.files().getMetadata("/Wiki/data/database/xwiki_db.script").toStringMultiline());
-
 		return dbxClient;
 
 	}
 
+	/**
+	 * Gets the team client.
+	 *
+	 * @param authFile the auth file
+	 * @return the team client
+	 */
 	public static DbxTeamClientV2 getTeamClient(String authFile) {
 
 		/**
@@ -111,21 +112,29 @@ public class DropboxUtil {
 
 	}
 
+	/**
+	 * Prints the progress.
+	 *
+	 * @param uploaded the uploaded
+	 * @param size the size
+	 */
 	private static void printProgress(long uploaded, long size) {
 		LOGGER.info("Uploaded "+uploaded+" / "+size+" bytes ("+100 * (uploaded / (double) size)+"%)" );
 	}
 
 	/**
+	 * Upload file.
+	 *
+	 * @param dbxClient the dbx client
+	 * @param localFile the local file
+	 * @param dropboxPath the dropbox path
 	 * @see https://github.com/dropbox/dropbox-sdk-java/blob/master/examples/upload-file/src/main/java/com/dropbox/core/examples/upload_file/Main.java
-	 * @param dbxClient
-	 * @param localFile
-	 * @param dropboxPath
 	 */
 	public static void uploadFile(DbxClientV2 dbxClient, File localFile, String dropboxPath) {
 		try (InputStream in = new FileInputStream(localFile)) {
 			ProgressListener progressListener = l -> printProgress(l, localFile.length());
 
-			FileMetadata metadata = dbxClient.files().uploadBuilder(dropboxPath).withMode(WriteMode.ADD)
+			FileMetadata metadata = dbxClient.files().uploadBuilder(dropboxPath).withMode(WriteMode.OVERWRITE)
 					.withClientModified(new Date(localFile.lastModified())).uploadAndFinish(in, progressListener);
 
 			LOGGER.info("File '"+metadata.getName()+"' uploaded to '"+dropboxPath+"'");
@@ -141,6 +150,14 @@ public class DropboxUtil {
 		}
 	}
 
+	/**
+	 * Upload file to team folder.
+	 *
+	 * @param dbxClient the dbx client
+	 * @param localFile the local file
+	 * @param targetPath the target path
+	 * @param displayUserName the display user name
+	 */
 	public static void uploadFileToTeamFolder(DbxTeamClientV2 dbxClient, File localFile, String targetPath, String displayUserName) {
 		try {
 //			List<TeamFolderMetadata> folders = dbxClient.team().teamFolderList().getTeamFolders();
@@ -154,7 +171,6 @@ public class DropboxUtil {
 			String memberId = null;
 			List<TeamMemberInfo> members = dbxClient.team().membersList().getMembers();
 			for (TeamMemberInfo teamMemberInfo : members) {
-			//	System.out.println(teamMemberInfo);
 				if (teamMemberInfo.getProfile().getName().getDisplayName().equals(displayUserName)) {
 					memberId = teamMemberInfo.getProfile().getTeamMemberId();
 				}

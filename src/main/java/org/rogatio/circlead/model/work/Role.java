@@ -8,7 +8,23 @@
  */
 package org.rogatio.circlead.model.work;
 
-import static org.rogatio.circlead.model.Parameter.*;
+import static org.rogatio.circlead.model.Parameter.ABBREVIATION;
+import static org.rogatio.circlead.model.Parameter.CARRYROLEGROUP;
+import static org.rogatio.circlead.model.Parameter.CHILDS;
+import static org.rogatio.circlead.model.Parameter.COMPETENCIES;
+import static org.rogatio.circlead.model.Parameter.OPPORTUNITIES;
+import static org.rogatio.circlead.model.Parameter.ORGANISATION;
+import static org.rogatio.circlead.model.Parameter.PARENT;
+import static org.rogatio.circlead.model.Parameter.PURPOSE;
+import static org.rogatio.circlead.model.Parameter.RESPONSIBILITIES;
+import static org.rogatio.circlead.model.Parameter.ROLEPERSONS;
+import static org.rogatio.circlead.model.Parameter.ROLEPERSONSINORGANISATION;
+import static org.rogatio.circlead.model.Parameter.ROLEPERSONSINTEAM;
+import static org.rogatio.circlead.model.Parameter.RULES;
+import static org.rogatio.circlead.model.Parameter.SYNONYMS;
+import static org.rogatio.circlead.model.Parameter.TASKS;
+import static org.rogatio.circlead.model.Parameter.UNRELATED;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,7 +42,6 @@ import org.rogatio.circlead.control.validator.ValidationMessage;
 import org.rogatio.circlead.model.Parameter;
 import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.data.ActivityDataitem;
-import org.rogatio.circlead.model.data.ContactDataitem;
 import org.rogatio.circlead.model.data.IDataRow;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.RoleDataitem;
@@ -409,6 +424,12 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		return this.getDataitem().toString() + ", type=" + getType();
 	}
 
+	/**
+	 * Gets the recurrence rule.
+	 *
+	 * @param personIdentifier the person identifier
+	 * @return the recurrence rule
+	 */
 	public String getRecurrenceRule(String personIdentifier) {
 		return this.getDataitem().getRecurrenceRule(personIdentifier);
 	}
@@ -445,40 +466,43 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			foundSomeRoleResponsible = true;
 		}
 
-		List<Team> foundTeams = Repository.getInstance().getTeamsWithRole(this);
-		if (ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
-			renderer.addH2(element, ROLEPERSONSINTEAM.toString());
-			Element ul = element.appendElement("ul");
-			for (Team team : foundTeams) {
-				Element li = ul.appendElement("li");
-				String c = "";
-				if (StringUtil.isNotNullAndNotEmpty(team.getCategory())) {
-					c = " (" + team.getCategory() + ")";
-				}
+		// Only show teamroles in atlassian, not in files because print is to big
+		if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
+			List<Team> foundTeams = Repository.getInstance().getTeamsWithRole(this);
+			if (ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
+				renderer.addH2(element, ROLEPERSONSINTEAM.toString());
+				Element ul = element.appendElement("ul");
+				for (Team team : foundTeams) {
+					Element li = ul.appendElement("li");
+					String c = "";
+					if (StringUtil.isNotNullAndNotEmpty(team.getCategory())) {
+						c = " (" + team.getCategory() + ")";
+					}
 
-				if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
-					li.append("<ac:link><ri:page ri:content-title=\"" + team.getTitle()
-							+ "\" ri:version-at-save=\"1\"/><ac:plain-text-link-body><![CDATA[" + team.getTitle() + ""
-							+ c + "]]></ac:plain-text-link-body></ac:link>");
-				} else if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
-					li.appendElement("a").attr("href", "../web/" + team.getId(synchronizer) + ".html")
-							.appendText(team.getTitle() + c);
-				}
+					if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
+						li.append("<ac:link><ri:page ri:content-title=\"" + team.getTitle()
+								+ "\" ri:version-at-save=\"1\"/><ac:plain-text-link-body><![CDATA[" + team.getTitle()
+								+ "" + c + "]]></ac:plain-text-link-body></ac:link>");
+					} else if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
+						li.appendElement("a").attr("href", "../web/" + team.getId(synchronizer) + ".html")
+								.appendText(team.getTitle() + c);
+					}
 
-				li.append("&nbsp;");
-				renderer.addStatus(li, team.getStatus());
+					li.append("&nbsp;");
+					renderer.addStatus(li, team.getStatus());
 
-				List<TeamEntry> x = team.getTeamEntries();
-				Element ul2 = li.appendElement("ul");
-				for (TeamEntry e : x) {
-					//this.addTeamPerson(ul2, team, e, renderer);
-					if (e.getRoleIdentifier().equals(this.getTitle())) {
-						List<String> pi = e.getPersons();
-						if (ObjectUtil.isListNotNullAndEmpty(pi)) {
-							for (String p : pi) {
-								Element li2 = ul2.appendElement("li");
-								renderer.addPersonItem(li2, null, p);
-								foundSomeRoleResponsible = true;
+					List<TeamEntry> x = team.getTeamEntries();
+					Element ul2 = li.appendElement("ul");
+					for (TeamEntry e : x) {
+						// this.addTeamPerson(ul2, team, e, renderer);
+						if (e.getRoleIdentifier().equals(this.getTitle())) {
+							List<String> pi = e.getPersons();
+							if (ObjectUtil.isListNotNullAndEmpty(pi)) {
+								for (String p : pi) {
+									Element li2 = ul2.appendElement("li");
+									renderer.addPersonItem(li2, null, p);
+									foundSomeRoleResponsible = true;
+								}
 							}
 						}
 					}
@@ -595,6 +619,15 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		return false;
 	}
 
+	/**
+	 * Adds the team person.
+	 *
+	 * @param ulElement the ul element
+	 * @param team      the team
+	 * @param teamEntry the team entry
+	 * @param renderer  the renderer
+	 * @return true, if successful
+	 */
 	@Deprecated
 	private boolean addTeamPerson(Element ulElement, Team team, TeamEntry teamEntry,
 			ISynchronizerRendererEngine renderer) {
@@ -880,6 +913,11 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		return messages;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.rogatio.circlead.model.data.IDataRow#getDataRow()
+	 */
 	@Override
 	public Map<Parameter, Object> getDataRow() {
 		Map<Parameter, Object> map = new TreeMap<Parameter, Object>();
@@ -901,6 +939,13 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		return map;
 	}
 
+	/**
+	 * Adds the data row element.
+	 *
+	 * @param values    the values
+	 * @param parameter the parameter
+	 * @param map       the map
+	 */
 	private void addDataRowElement(List<String> values, Parameter parameter, Map<Parameter, Object> map) {
 		if (ObjectUtil.isListNotNullAndEmpty(values)) {
 			StringBuilder sb = new StringBuilder();
@@ -912,6 +957,13 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		}
 	}
 
+	/**
+	 * Adds the data row element.
+	 *
+	 * @param value     the value
+	 * @param parameter the parameter
+	 * @param map       the map
+	 */
 	private void addDataRowElement(String value, Parameter parameter, Map<Parameter, Object> map) {
 		if (StringUtil.isNotNullAndNotEmpty(value)) {
 			map.put(parameter, value);

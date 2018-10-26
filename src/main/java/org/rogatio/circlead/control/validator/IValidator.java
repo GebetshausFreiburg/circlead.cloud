@@ -10,7 +10,6 @@ package org.rogatio.circlead.control.validator;
 
 import java.util.List;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface IValidator allows data-validation.
  */

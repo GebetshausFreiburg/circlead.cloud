@@ -8,7 +8,6 @@
  */
 package org.rogatio.circlead.control.synchronizer;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class SynchronizerResult.
  */
