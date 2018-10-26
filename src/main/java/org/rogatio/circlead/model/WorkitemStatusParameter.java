@@ -19,25 +19,25 @@ import java.util.List;
 public enum WorkitemStatusParameter {
 
 	/** Kennt das Thema nicht. */
-	UNSKILLED("Grey", "Unwissender", "Untrainiert", "Untrainierter", "Unskilled", "0%"),
+	UNSKILLED("Grey", true, "Unwissender", "Untrainiert", "Untrainierter", "Unskilled", "0%"),
 
 	/**
 	 * Kann die Aufgabenstellung nachvollziehen, aber noch nicht in allen Teilen
 	 * umsetzen.
 	 */
-	STARTER("Red", "Anfänger", "Starter", "25%"),
-	
+	STARTER("Red", true, "Anfänger", "Starter", "25%"),
+
 	/** The substitute. */
 	SUBSTITUTE("Grey", "Vertretung", "Substitute", "Vertreter", "Vertreterin"),
 
 	/** Kann die Aufgabe in Teile und mit Hilfe umsetzen. */
-	BEGINNER("Yellow", "Beginner", "Beginner", "50%"),
+	BEGINNER("Yellow", true, "Beginner", "Beginner", "50%"),
 
 	/** Kann die Aufgabe vollständig und selbständig umsetzen. */
-	EXPERT("Green", "Experte", "Expert", "75%"),
+	EXPERT("Green", true, "Experte", "Expert", "75%"),
 
 	/** Kann Andere anleiten. */
-	SKILLED("Blue", "Unterstützer", "Skilled", "100%"),
+	SKILLED("Blue", true, "Unterstützer", "Skilled", "100%"),
 
 	/** The active. */
 	ACTIVE("Green", "Aktiv", "Active"),
@@ -50,8 +50,11 @@ public enum WorkitemStatusParameter {
 
 	/** The deprecated. Should not be used or picked any more. */
 	DEPRECATED("Red", "Veraltet", "Deprecated"),
-	
-	/** Closed Status. Means this item is in no wy used any more. Could be also deleted.*/
+
+	/**
+	 * Closed Status. Means this item is in no wy used any more. Could be also
+	 * deleted.
+	 */
 	CLOSED("Grey", "Archiviert", "Closed", "Geschlossen", "Abgeschlossen"),
 
 	/** The inactive. */
@@ -59,13 +62,13 @@ public enum WorkitemStatusParameter {
 
 	/** The paused. */
 	PAUSED("Blue", "Pausiert", "Paused", "Pause", "Elternzeit", "Auslandsaufenthalt"),
-	
+
 	/** The temporary. */
 	TEMPORARY("Yellow", "Temporär", "Temporary"),
 
 	/** The need. */
 	NEED("Yellow", "Unterbesetzt", "Need", "Teammitgliedmangel"),
-	
+
 	/** The inprogress. */
 	INPROGRESS("Yellow", "InBearbeitung", "InProgress", "InBearbeitung"),
 
@@ -87,6 +90,23 @@ public enum WorkitemStatusParameter {
 	/** The aliases. */
 	private final List<String> aliases = new ArrayList<String>();
 
+	private final boolean invertedColor;
+
+	public boolean isInvertedColor() {
+		return invertedColor;
+	}
+
+	private WorkitemStatusParameter(String color, boolean invertedColor, String name, String... aliases) {
+		this.color = color;
+		this.name = name;
+		this.invertedColor = invertedColor;
+		this.aliases.add(name.toUpperCase());
+		List<String> aliasesList = Arrays.asList(aliases);
+		for (String string : aliasesList) {
+			this.aliases.add(string.toUpperCase());
+		}
+	}
+
 	/**
 	 * Instantiates a new status parameter.
 	 *
@@ -97,6 +117,7 @@ public enum WorkitemStatusParameter {
 	private WorkitemStatusParameter(String color, String name, String... aliases) {
 		this.color = color;
 		this.name = name;
+		invertedColor = false;
 		this.aliases.add(name.toUpperCase());
 		List<String> aliasesList = Arrays.asList(aliases);
 		for (String string : aliasesList) {

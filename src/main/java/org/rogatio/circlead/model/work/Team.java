@@ -305,6 +305,22 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		return sum;
 	}
 
+	public List<String> getTeamMembers(Role role) {
+		List<String> personIdentifiers = new ArrayList<String>();
+		List<TeamEntry> list = this.getTeamEntries();
+		for (TeamEntry teamEntry : list) {
+			if (teamEntry.getRoleIdentifier().equals(role.getTitle())) {
+				List<String> p = teamEntry.getPersons();
+				for (String pi : p) {
+					if (!personIdentifiers.contains(pi)) {
+						personIdentifiers.add(pi);
+					}
+				}
+			}
+		}
+		return personIdentifiers;
+	}
+
 	/**
 	 * Count the number of team members.
 	 *

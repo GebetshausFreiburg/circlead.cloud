@@ -26,6 +26,8 @@ import org.rogatio.circlead.model.data.Timeslice;
 
 /**
  * The Class CircleadRecurrenceRule.
+ * 
+ * @see https://www.textmagic.com/free-tools/rrule-generator
  */
 public class CircleadRecurrenceRule {
 

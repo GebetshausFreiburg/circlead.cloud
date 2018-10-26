@@ -302,18 +302,18 @@ public final class Repository {
 	public void writeExcel(String filename, WorkitemType type, List<Parameter> fields) {
 		List<IWorkitem> list = getWorkitems();
 		List<Map<Parameter, Object>> dataMap = new ArrayList<Map<Parameter, Object>>();
-		
+
 		for (IWorkitem wi : list) {
 			if (type.isTypeOf(wi) && wi instanceof IDataRow) {
-				dataMap.add(((IDataRow)wi).getDataRow());		
+				dataMap.add(((IDataRow) wi).getDataRow());
 			}
 		}
-		
-		LOGGER.debug("Write "+dataMap.size()+" Workitems ("+type.getName()+") to '"+filename+"'");
-		
+
+		LOGGER.debug("Write " + dataMap.size() + " Workitems (" + type.getName() + ") to '" + filename + "'");
+
 		ExcelUtil.writeExcel(filename, dataMap, fields);
 	}
-	
+
 	/**
 	 * Gets the index reports.
 	 *
@@ -577,7 +577,7 @@ public final class Repository {
 	 * Gets the average allokation in teams.
 	 *
 	 * @param person the person
-	 * @param freq the freq
+	 * @param freq   the freq
 	 * @return the average allokation in teams
 	 */
 	public double getAverageAllokationInTeams(Person person, Freq freq) {
@@ -586,7 +586,8 @@ public final class Repository {
 		if (ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
 			for (Team team : foundTeams) {
 				WorkitemStatusParameter wsp = WorkitemStatusParameter.get(team.getStatus());
-				if ((wsp != WorkitemStatusParameter.PAUSED) ||(wsp != WorkitemStatusParameter.CLOSED) || (wsp != WorkitemStatusParameter.INACTIVE)) {
+				if ((wsp != WorkitemStatusParameter.PAUSED) || (wsp != WorkitemStatusParameter.CLOSED)
+						|| (wsp != WorkitemStatusParameter.INACTIVE)) {
 					sum += team.getAverageAllokation(person, freq);
 				}
 			}
@@ -598,7 +599,7 @@ public final class Repository {
 	 * Gets the average allokation in organisation.
 	 *
 	 * @param personIdentifier the person identifier
-	 * @param freq the freq
+	 * @param freq             the freq
 	 * @return the average allokation in organisation
 	 */
 	public double getAverageAllokationInOrganisation(String personIdentifier, Freq freq) {
@@ -610,7 +611,8 @@ public final class Repository {
 				String representation = role.getDataitem().getRepresentation(personIdentifier);
 				WorkitemStatusParameter status = WorkitemStatusParameter.get(representation);
 				if (status != null) {
-					if ((status == WorkitemStatusParameter.PAUSED) ||(status == WorkitemStatusParameter.CLOSED) || (status == WorkitemStatusParameter.INACTIVE)) {
+					if ((status == WorkitemStatusParameter.PAUSED) || (status == WorkitemStatusParameter.CLOSED)
+							|| (status == WorkitemStatusParameter.INACTIVE)) {
 						skip = true;
 					}
 				}
@@ -788,6 +790,20 @@ public final class Repository {
 		return null;
 	}
 
+	public List<String> getTeamPersonsWithRole(Role role) {
+		List<Team> teams = getTeamsWithRole(role);
+		List<String> persons = new ArrayList<String>();
+		for (Team team : teams) {
+			List<String> teamMembers = team.getTeamMembers(role);
+			for (String personIdentifier : teamMembers) {
+				if (!persons.contains(personIdentifier)) {
+					persons.add(personIdentifier);
+				}
+			}
+		}
+		return persons;
+	}
+
 	/**
 	 * Gets the teams with role.
 	 *
@@ -816,7 +832,7 @@ public final class Repository {
 	/**
 	 * Gets the teams with member.
 	 *
-	 * @param person the person
+	 * @param person   the person
 	 * @param teamList the team list
 	 * @return the teams with member
 	 */
@@ -1081,10 +1097,10 @@ public final class Repository {
 		for (Iterator<ISynchronizer> iterator = s.iterator(); iterator.hasNext();) {
 			ISynchronizer iSynchronizer = (ISynchronizer) iterator.next();
 			if (iSynchronizer instanceof IValidator) {
-				validators.add((IValidator) iSynchronizer);					
+				validators.add((IValidator) iSynchronizer);
 			}
 		}
-		
+
 		for (IWorkitem workitem : workitems) {
 			if (workitem instanceof IValidator) {
 				validators.add((IValidator) workitem);

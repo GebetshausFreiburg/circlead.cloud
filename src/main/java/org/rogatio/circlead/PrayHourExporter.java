@@ -3,14 +3,10 @@ package org.rogatio.circlead;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
@@ -26,16 +22,27 @@ import org.rogatio.circlead.util.CircleadRecurrenceRule;
 import org.rogatio.circlead.util.ExcelUtil;
 import org.rogatio.circlead.util.StringUtil;
 
+/**
+ * The Class PrayHourExporter.
+ */
 public class PrayHourExporter {
+	
+	/** The Constant LOGGER. */
 	final static Logger LOGGER = LogManager.getLogger(PrayHourExporter.class);
 
+	/** The workbook. */
 	final XSSFWorkbook workbook = new XSSFWorkbook();
+	
+	/** The headerstyle. */
 	final XSSFCellStyle HEADERSTYLE = workbook.createCellStyle();
 
+	/**
+	 * Instantiates a new pray hour exporter.
+	 */
 	public PrayHourExporter() {
 		HEADERSTYLE.setAlignment(org.apache.poi.ss.usermodel.HorizontalAlignment.CENTER);
 		HEADERSTYLE.setVerticalAlignment(org.apache.poi.ss.usermodel.VerticalAlignment.TOP);
-		ExcelUtil.addColorBackground(HEADERSTYLE, (byte) 60, (byte) 60, (byte) 60);
+		ExcelUtil.addColorBackground(HEADERSTYLE, (byte) 200, (byte) 200, (byte) 200);
 	
 		addSheet(PrayHourExporter.MODE_EXTERN);
 		addSheet(PrayHourExporter.MODE_INTERN);
@@ -44,11 +51,23 @@ public class PrayHourExporter {
 		
 	}
 
+	/** The mode intern. */
 	public static String MODE_INTERN = new String("Intern");
+	
+	/** The mode extern. */
 	public static String MODE_EXTERN = new String("Extern");
+	
+	/** The mode detail. */
 	public static String MODE_DETAIL = new String("Detailliert");
+	
+	/** The mode need. */
 	public static String MODE_NEED = new String("Bedarf");
 
+	/**
+	 * Adds the weekdays.
+	 *
+	 * @param sheet the sheet
+	 */
 	private void addWeekdays(XSSFSheet sheet) {
 		XSSFRow rowOfDays = sheet.createRow(0);
 
@@ -64,6 +83,11 @@ public class PrayHourExporter {
 		}
 	}
 
+	/**
+	 * Post processing.
+	 *
+	 * @param sheet the sheet
+	 */
 	private void postProcessing(XSSFSheet sheet) {
 		for (int i = 0; i <= 24; i++) {
 			XSSFRow row = sheet.getRow(i);
@@ -88,6 +112,11 @@ public class PrayHourExporter {
 		}
 	}
 
+	/**
+	 * Adds the dayhours.
+	 *
+	 * @param sheet the sheet
+	 */
 	private void addDayhours(XSSFSheet sheet) {
 		for (int i = 0; i < 24; i++) {
 			sheet.setColumnWidth(0, 7 * 256);
@@ -101,6 +130,11 @@ public class PrayHourExporter {
 		}
 	}
 
+	/**
+	 * Adds the sheet.
+	 *
+	 * @param mode the mode
+	 */
 	public void addSheet(String mode) {
 		String category = "Gebetsstunde";
 		XSSFSheet sheet = workbook.createSheet(mode);
@@ -149,11 +183,9 @@ public class PrayHourExporter {
 					cellStyle.setVerticalAlignment(org.apache.poi.ss.usermodel.VerticalAlignment.TOP);
 					cellStyle.setWrapText(true);
 
-					// ExcelUtil.addColorBackground(cellStyle, (byte) 255, (byte) 255, (byte) 255);
-
 					if (mode.equals(MODE_INTERN)) {
 						if (team.getTeamSize() < 2) {
-							ExcelUtil.addColorBackground(cellStyle, (byte) 168, (byte) 168, (byte) 168);
+							ExcelUtil.addColorBackground(cellStyle, (byte) 240, (byte) 240, (byte) 240);
 						}
 					}
 					if (mode.equals(MODE_EXTERN)) {
@@ -163,16 +195,12 @@ public class PrayHourExporter {
 						}
 					}
 					if (mode.equals(MODE_NEED)) {
-//						rts.append("\n(" + team.getTeamRedundance() + ")");
 						if (team.getTeamSize() < 2) {
 							ExcelUtil.addColorBackground(cellStyle, (byte) 255, (byte) 0, (byte) 0);
 						}
 						if (team.getTeamRedundance() < 1.0) {
 							ExcelUtil.addColorBackground(cellStyle, (byte) 255, (byte) 255, (byte) 0);
 						}
-
-//						ExcelUtil.addColorBackground(cellStyle, (byte) 253, (byte) 106, (byte) 2);
-
 					}
 					if (mode.equals(MODE_DETAIL)) {
 						XSSFFont small = workbook.createFont();
@@ -195,6 +223,11 @@ public class PrayHourExporter {
 		ExcelUtil.setPrintArea(workbook, sheet, 24, 7, true);
 	}
 
+	/**
+	 * Export.
+	 *
+	 * @param filename the filename
+	 */
 	public void export(String filename) {
 		try {
 			LOGGER.debug("Export PrayHours to '" + filename + ".xlsx'");

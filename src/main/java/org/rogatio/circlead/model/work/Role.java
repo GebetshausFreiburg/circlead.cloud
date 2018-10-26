@@ -461,7 +461,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 
 		boolean foundSomeRoleResponsible = false;
 		if (ObjectUtil.isListNotNullAndEmpty(this.getPersonIdentifiers())) {
-			renderer.addH2(element, ROLEPERSONSINORGANISATION.toString());
+			renderer.addH2(element, ROLEPERSONSINORGANISATION.toString()+" ("+this.getPersonIdentifiers().size()+")");
 			renderer.addPersonList(element, this.getPersonIdentifiers(), this);
 			foundSomeRoleResponsible = true;
 		}
@@ -470,7 +470,8 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
 			List<Team> foundTeams = Repository.getInstance().getTeamsWithRole(this);
 			if (ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
-				renderer.addH2(element, ROLEPERSONSINTEAM.toString());
+				renderer.addH2(element, ROLEPERSONSINTEAM.toString()+" ("+Repository.getInstance().getTeamPersonsWithRole(this).size()+")");
+				
 				Element ul = element.appendElement("ul");
 				for (Team team : foundTeams) {
 					Element li = ul.appendElement("li");
@@ -655,8 +656,8 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 						} else {
 							listElement.appendText(teamEntry.getRoleIdentifier());
 
-							if (teamEntry.hasRecurrenceRule(person.getFullname())) {
-								String rule = teamEntry.getRecurrenceRule(person.getFullname());
+							if (teamEntry.hasRecurrenceRule(p)) {
+								String rule = teamEntry.getRecurrenceRule(p);
 								listElement.append("&nbsp;<span style=\"color: rgb(192,192,192);\">"
 										+ rule.replace("R=", "").replace("RRULE=", "") + "</span>");
 							} else if (StringUtil.isNotNullAndNotEmpty(team.getRecurrenceRule())) {

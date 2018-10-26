@@ -210,8 +210,8 @@ public class Parser {
 	/**
 	 * Creates the team entry table.
 	 *
-	 * @param teamentries the teamentries
-	 * @param synchronizer the synchronizer
+	 * @param teamentries    the teamentries
+	 * @param synchronizer   the synchronizer
 	 * @param activatedLinks the activated links
 	 * @return the element
 	 */
@@ -418,9 +418,9 @@ public class Parser {
 	/**
 	 * Adds the parameter.
 	 *
-	 * @param name the name
+	 * @param name      the name
 	 * @param parameter the parameter
-	 * @param macro the macro
+	 * @param macro     the macro
 	 * @return the element
 	 */
 	private static Element addParameter(String name, String parameter, Element macro) {
@@ -432,10 +432,10 @@ public class Parser {
 	/**
 	 * Adds the chart macro.
 	 *
-	 * @param title the title
-	 * @param xLabel the x label
-	 * @param yLabel the y label
-	 * @param colors the colors
+	 * @param title   the title
+	 * @param xLabel  the x label
+	 * @param yLabel  the y label
+	 * @param colors  the colors
 	 * @param dataMap the data map
 	 * @return the element
 	 */
@@ -500,9 +500,9 @@ public class Parser {
 	/**
 	 * Adds the person list to table cell.
 	 *
-	 * @param tr the tr
+	 * @param tr                the tr
 	 * @param personIdentifiers the person identifiers
-	 * @param synchronizer the synchronizer
+	 * @param synchronizer      the synchronizer
 	 */
 	private static void addPersonListToTableCell(Element tr, List<String> personIdentifiers,
 			ISynchronizer synchronizer) {
@@ -622,8 +622,8 @@ public class Parser {
 
 			addDataPair(CONTACTS2.toString(), Parser.getContacts(d.getContacts()), table);
 			addDataPair(STATUS.toString(), Parser.getStatus(d.getStatus()), table);
-			addDataPair(FTE.toString(), ""+Math.round(d.getFullTimeEquivalent())+"%", table);
-			addDataPair(TEAMFRACTION.toString(), ""+Math.round(d.getTeamFraction())+"%", table);
+			addDataPair(FTE.toString(), "" + Math.round(d.getFullTimeEquivalent()) + "%", table);
+			addDataPair(TEAMFRACTION.toString(), "" + Math.round(d.getTeamFraction()) + "%", table);
 			addDataPair(DATA.toString(), Parser.getDataTable(d.getData()), table);
 		}
 
@@ -1000,6 +1000,7 @@ public class Parser {
 	 */
 	public static Element getStatus(String title) {
 
+		boolean inverted = false;
 		String color = "Red";
 		String name = UNKNOWN.toString();
 
@@ -1007,6 +1008,7 @@ public class Parser {
 		if (s != null) {
 			color = s.getColor();
 			name = s.getName();
+			inverted = s.isInvertedColor();
 		}
 
 		Element macro = new Element("ac:structured-macro");
@@ -1017,18 +1019,25 @@ public class Parser {
 		param.attr("ac:name", "colour").appendText(color);
 		param = macro.appendElement("ac:parameter");
 		param.attr("ac:name", "title").appendText(name);
+
+		if (inverted) {
+			param = macro.appendElement("ac:parameter");
+			param.attr("ac:name", "subtle").appendText("true");
+		}
+
 		return macro;
 	}
 
 	/**
 	 * Gets the status.
 	 *
-	 * @param title the title
+	 * @param title       the title
 	 * @param forcedColor the forced color
 	 * @return the status
 	 */
 	public static Element getStatus(String title, String forcedColor) {
 
+		boolean inverted = false;
 		String color = "Red";
 		String name = UNKNOWN.toString();
 
@@ -1036,6 +1045,7 @@ public class Parser {
 		if (s != null) {
 			color = s.getColor();
 			name = s.getName();
+			inverted = s.isInvertedColor();
 		}
 
 		color = forcedColor;
@@ -1048,6 +1058,12 @@ public class Parser {
 		param.attr("ac:name", "colour").appendText(color);
 		param = macro.appendElement("ac:parameter");
 		param.attr("ac:name", "title").appendText(name);
+		
+		if (inverted) {
+			param = macro.appendElement("ac:parameter");
+			param.attr("ac:name", "subtle").appendText("true");
+		}
+		
 		return macro;
 	}
 }

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.rogatio.circlead.model.Parameter;
-import org.rogatio.circlead.util.CircleadRecurrenceRule;
 import org.rogatio.circlead.util.StringUtil;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
