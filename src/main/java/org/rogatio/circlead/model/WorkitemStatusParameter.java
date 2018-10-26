@@ -18,7 +18,7 @@ import java.util.List;
  */
 public enum WorkitemStatusParameter {
 
-	/** Kennt das Thema nicht. */
+	/** Not knows the topic. Kennt das Thema nicht. */
 	UNSKILLED("Grey", true, "Unwissender", "Untrainiert", "Untrainierter", "Unskilled", "0%"),
 
 	/**

@@ -10,47 +10,44 @@ package org.rogatio.circlead.model;
 
 import org.rogatio.circlead.model.work.IWorkitem;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Enum WorkitemType is a little helper for building io.logic in the synchronizer. Could also be used by instanceof, but for a easier handling the enum is used
+ * The Enum WorkitemType is a little helper for building io.logic in the
+ * synchronizer. Could also be used by instanceof, but for a easier handling the
+ * enum is used
  */
 public enum WorkitemType {
 
-	/** The report. */
+	/** The report-workitem. Is similar to class.getSimpleName() */
 	REPORT("Report"),
-	/** The howto. */
+	/** The howto-workitem. Is similar to class.getSimpleName() */
 	HOWTO("HowTo"),
-	/** The activity. */
+	/** The activity-workitem. Is similar to class.getSimpleName() */
 	ACTIVITY("Activity"),
-	/** The role. */
+	/** The role-workitem. Is similar to class.getSimpleName() */
 	ROLE("Role"),
-	/** The rolegroup. */
-	ROLEGROUP("Rolegroup"),
-	TEAM("Team"),
-	/** The person. */
+	/** The rolegroup-workitem. Is similar to class.getSimpleName() */
+	ROLEGROUP("Rolegroup"), TEAM("Team"),
+	/** The person-workitem. Is similar to class.getSimpleName() */
 	PERSON("Person");
 
-	/** The text. */
+	/** The simple name of the workitem-class. */
 	private final String text;
 
 	/**
 	 * Instantiates a new workitem type.
 	 *
-	 * @param text
-	 *            the text
+	 * @param text the simple class-name
 	 */
 	WorkitemType(final String text) {
 		this.text = text;
 	}
 
 	/**
-	 * Checks if is type of.
+	 * Checks if object is type of workitem
 	 *
-	 * @param workitem
-	 *            the workitem
-	 * @param workitem2
-	 *            the workitem 2
-	 * @return true, if is type of
+	 * @param workitem  first workitem
+	 * @param workitem2 second workitem
+	 * @return true, if workitem ist type of enum-name
 	 */
 	public boolean isTypeOf(IWorkitem workitem, IWorkitem workitem2) {
 		boolean w1 = isTypeOf(workitem);
@@ -59,11 +56,10 @@ public enum WorkitemType {
 	}
 
 	/**
-	 * Checks if is type of.
+	 * Checks if workitem is type enum-name.
 	 *
-	 * @param workitem
-	 *            the workitem
-	 * @return true, if is type of
+	 * @param workitem the workitem
+	 * @return true, if workitem ist type of enum-name
 	 */
 	public boolean isTypeOf(IWorkitem workitem) {
 		if (workitem == null) {
@@ -84,7 +80,7 @@ public enum WorkitemType {
 	public String getName() {
 		return text;
 	}
-	
+
 	/**
 	 * Checks if is equals.
 	 *
@@ -94,7 +90,7 @@ public enum WorkitemType {
 	public boolean isEquals(String type) {
 		return text.equalsIgnoreCase(type);
 	}
-	
+
 	/**
 	 * Gets the lower name.
 	 *

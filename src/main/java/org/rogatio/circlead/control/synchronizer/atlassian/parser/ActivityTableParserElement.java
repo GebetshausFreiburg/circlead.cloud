@@ -21,12 +21,12 @@ import org.rogatio.circlead.model.data.ActivityDataitem;
 import org.rogatio.circlead.model.work.Activity;
 
 /**
- * The Class HeadTableParserElement.
+ * The Class ActivityTableParserElement parses the html-table of an activity
  */
 public class ActivityTableParserElement implements IParserElement {
 
 	final static Logger LOGGER = LogManager.getLogger(ActivityTableParserElement.class);
-	
+
 	/**
 	 * Instantiates a new head table parser element.
 	 *
@@ -49,14 +49,12 @@ public class ActivityTableParserElement implements IParserElement {
 	}
 
 	/**
-	 * Parses the.
+	 * Parses the html-activity-table
 	 *
 	 * @param text the text
 	 */
 	private void parse(Object text) {
 
-//		LOGGER.debug(text);
-		
 		if (text instanceof Element) {
 			Map<Integer, String> header = new HashMap<Integer, String>();
 
@@ -77,14 +75,14 @@ public class ActivityTableParserElement implements IParserElement {
 					columnCounter = 1;
 					for (Element td : row.getElementsByTag("td")) {
 						String key = header.get(columnCounter).trim();
-						
+
 						String value = td.text();
-						
-						if (value!=null) {
+
+						if (value != null) {
 							value = value.trim();
 						}
 						data.put(key, value);
-						
+
 						columnCounter++;
 					}
 

@@ -177,7 +177,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	}
 	
 	/**
-	 * Gets the aid.
+	 * Gets the id of activity (=aid).
 	 *
 	 * @return the aid
 	 */
@@ -213,7 +213,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	}
 	
 	/**
-	 * Sets the aid.
+	 * Sets the id of activity (aid).
 	 *
 	 * @param aid the new aid
 	 */
@@ -222,7 +222,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	}
 
 	/**
-	 * Sets the description.
+	 * Sets the description of the activity.
 	 *
 	 * @param description the new description
 	 */
@@ -294,7 +294,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	}
 
 	/**
-	 * Sets the subactivities.
+	 * Sets the subactivities from html-parser
 	 *
 	 * @param table the new subactivities
 	 */

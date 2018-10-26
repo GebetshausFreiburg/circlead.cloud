@@ -52,19 +52,19 @@ import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.IWorkitemRenderer;
 
 /**
- * The Class Role.
+ * The Class Role holds the core information of the role workitem.
  */
 public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidator, IDataRow {
 
 	/**
-	 * Instantiates a new role.
+	 * Instantiates a new emtpy role.
 	 */
 	public Role() {
 		this.dataitem = new RoleDataitem();
 	}
 
 	/**
-	 * Instantiates a new role.
+	 * Instantiates a new role from a RoleDataitem
 	 *
 	 * @param dataitem the dataitem
 	 */
@@ -109,7 +109,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Sets the person identifiers.
+	 * Sets the person identifiers from html-parser
 	 *
 	 * @param element the new person identifiers
 	 */
@@ -118,7 +118,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Sets the person identifiers.
+	 * Sets the person identifiers from single string. Splits the string in identifier-pieces
 	 *
 	 * @param persons the new person identifiers
 	 */
@@ -137,7 +137,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Sets the competences.
+	 * Sets the competences from list-html-parser
 	 *
 	 * @param element the new competences
 	 */
@@ -146,7 +146,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Sets the competences.
+	 * Sets the competences from single string. Splits the string in pieces
 	 *
 	 * @param competences the new competences
 	 */
@@ -156,7 +156,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Sets the competences.
+	 * Sets the competences from list
 	 *
 	 * @param competences the new competences
 	 */
@@ -165,7 +165,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Sets the guidelines.
+	 * Sets the guidelines from list-html-parser
 	 *
 	 * @param element the new guidelines
 	 */
@@ -174,7 +174,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Sets the guidelines.
+	 * Sets the guidelines from single string. Splits the string in pieces
 	 *
 	 * @param guidelines the new guidelines
 	 */
@@ -184,7 +184,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Sets the guidelines.
+	 * Sets the guidelines from list
 	 *
 	 * @param guidelines the new guidelines
 	 */
@@ -193,7 +193,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Sets the opportunities.
+	 * Sets the opportunities from list-html-parser
 	 *
 	 * @param element the new opportunities
 	 */
@@ -202,7 +202,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Sets the opportunities.
+	 * Sets the opportunities from single string. Splits the string in pieces
 	 *
 	 * @param opportunities the new opportunities
 	 */
@@ -212,7 +212,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Sets the opportunities.
+	 * Sets the opportunities from list
 	 *
 	 * @param opportunities the new opportunities
 	 */
@@ -221,7 +221,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Sets the responsibilities.
+	 * Sets the responsibilities from list-html-parser
 	 *
 	 * @param element the new responsibilities
 	 */
@@ -240,7 +240,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Sets the responsibilities.
+	 * Sets the responsibilities from single string. Splits the string in pieces
 	 *
 	 * @param responsibilities the new responsibilities
 	 */
@@ -259,7 +259,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Sets the responsibilities.
+	 * Sets the responsibilities from list
 	 *
 	 * @param responsibilities the new responsibilities
 	 */

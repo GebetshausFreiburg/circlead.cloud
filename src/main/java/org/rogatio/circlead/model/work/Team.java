@@ -212,7 +212,7 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Sets the team-entries from html-table-parser. Only add teamentry if
+	 * Sets the team-entries from html-table-parser. Only add team-entry if
 	 * roleodentifier is named
 	 *
 	 * @param table the new team table
@@ -305,6 +305,12 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		return sum;
 	}
 
+	/**
+	 * Gets the team members which take a named role.
+	 *
+	 * @param role the role
+	 * @return the team members
+	 */
 	public List<String> getTeamMembers(Role role) {
 		List<String> personIdentifiers = new ArrayList<String>();
 		List<TeamEntry> list = this.getTeamEntries();
@@ -389,7 +395,8 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Gets the teamrole match.
+	 * Gets the teamrole match. Calculates for every role if needed minimum ist
+	 * follfilled by persons which takes role
 	 *
 	 * @return the teamrole match
 	 */

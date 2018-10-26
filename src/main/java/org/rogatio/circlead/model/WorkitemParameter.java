@@ -14,23 +14,23 @@ import java.util.List;
 
 /**
  * The Enum WorkitemParameter allows rendering of different workitem-fields
- * which map al values to a defined set of parameters.
+ * which map all values to a defined set of parameters.
  */
 public enum WorkitemParameter {
 
-	/** The activity. */
+	/** The activity-parameter for a workitem*/
 	ACTIVITY(Parameter.ACTIVITY, "Aktivitäten", "Activity", "Activities", "Aufgaben"),
 
-	/** The howtos. */
+	/** The howtos-parameter for a workitem */
 	HOWTOS(Parameter.HOWTOS, "Arbeitsanweisungen", "Anleitungen", "Erläuterungen", "Knowledgebase"),
 
-	/** The teamroles. */
+	/** The teamroles-parameter for a workitem */
 	TEAMROLES(Parameter.TEAMROLES, "Teamroles", "Team"),
 	
-	/** The subactivity. */
+	/** The subactivity-parameter for a activity-workitem */
 	SUBACTIVITY(Parameter.SUBACTIVITIES, "Subactivities"),
 
-	/** The activityid. */
+	/** The activityid-parameter for a activity-workitem */
 	ACTIVITYID(Parameter.ACTIVITYID, "Activity-ID", "Aid", "Alternative Id"),
 
 	/** The description. */

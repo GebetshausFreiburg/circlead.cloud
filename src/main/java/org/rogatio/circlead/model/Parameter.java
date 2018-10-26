@@ -1,256 +1,257 @@
 package org.rogatio.circlead.model;
 
 /**
- * The Enum Parameter.
+ * The Enum Parameter. Holds german names in enum to avoid spelling error.
+ * Multilinguality not implemented.
  */
 public enum Parameter {
 
-	/** The abbreviation. */
+	/** The abbreviation of a workitem role and rolegroup */
 	ABBREVIATION("Abkürzung"),
-	
-	/** The title. */
+
+	/** The title of a workitem */
 	TITLE("Titel"),
-	
-	/** The bussiness. */
+
+	/** The name of a bussiness contact */
 	BUSSINESS("Geschäftlich"),
-	
-	/** The private. */
+
+	/** The name of a private contact */
 	PRIVATE("Privat"),
-	
-	/** The secondname. */
+
+	/** The second name of a person */
 	SECONDNAME("Zweitname"),
-	
-	/** The image. */
+
+	/** The image of a person */
 	IMAGE("Bild"),
-	
-	/** The abbreviation2. */
+
+	/** The short term of workitem. */
 	ABBREVIATION2("Kürzel"),
-	
-	/** The rolepersons. */
+
+	/** The persons which takes a role */
 	ROLEPERSONS("Rollenträger"),
-	
-	/** The rolepersonsinorganisation. */
+
+	/** The persons which take roles in organisation. */
 	ROLEPERSONSINORGANISATION("Rollenträger in Organisation"),
-	
-	/** The rolepersonsinteam. */
+
+	/** The persons which take roles in team. */
 	ROLEPERSONSINTEAM("Rollenträger im Team"),
-	
+
 	/** The tasks. */
 	TASKS("Aufgaben"),
-	
+
 	/** The id. */
 	ID("Id"),
-	
-	/** The unrelated. */
+
+	/** The status of unrelated role. */
 	UNRELATED("Unbesetzt"),
-	
-	/** The purpose. */
+
+	/** The purpose of a role. */
 	PURPOSE("Zweck / Kurzbeschreibung"),
-	
-	/** The purposeshort. */
+
+	/** The purpoe of a role (short). */
 	PURPOSESHORT("Zweck"),
-	
-	/** The childs. */
+
+	/** The childs of role and rolegroup */
 	CHILDS("Erben"),
-	
-	/** The version. */
+
+	/** The version of a workitem */
 	VERSION("Version"),
-	
-	/** The modified. */
+
+	/** The modified date of a workitem */
 	MODIFIED("Geändert"),
-	
-	/** The created. */
+
+	/** The created date of a workitem */
 	CREATED("Erstellt"),
-	
-	/** The contactperson. */
+
+	/** The contactperson of a rolegroup */
 	CONTACTPERSON("Ansprechpartner"),
-	
-	/** The activityid. */
+
+	/** The id of an activity. */
 	ACTIVITYID("AID"),
-	
-	/** The type. */
+
+	/** The type. Is used in contact-dataitem and team */
 	TYPE("Typ"),
-	
-	/** The subtype. */
+
+	/** The subtype. Is used in contact-dataitem and team */
 	SUBTYPE("Subtyp"),
-	
-	/** The activity. */
+
+	/** The activity name */
 	ACTIVITY("Aktivität"),
-	
-	/** The activities. */
+
+	/** The name of activities. */
 	ACTIVITIES("Aktivitäten"),
-	
-	/** The roles. */
+
+	/** The name of roles. */
 	ROLES("Rollen"),
-	
-	/** The rolesinteam. */
+
+	/** The name of roles in team. */
 	ROLESINTEAM("Rollen im Team"),
-	
-	/** The rolesinorganisation. */
+
+	/** The name of roles in organisation. */
 	ROLESINORGANISATION("Rollen in der Organisation"),
-	
+
 	/** The responsible. */
 	RESPONSIBLE("Durchführender"),
-	
+
 	/** The responsible2. */
 	RESPONSIBLE2("Verantwortlicher"),
-	
-	/** The parentactivity. */
+
+	/** The parent of an activity. */
 	PARENTACTIVITY("Übergeordnete Aktivität"),
-	
+
 	/** The result. */
 	RESULT("Erwartetes Ergebnis"),
-	
+
 	/** The description. */
 	DESCRIPTION("Beschreibung"),
-	
-	/** The recurrencerule. */
+
+	/** The recurrencerule for a team. */
 	RECURRENCERULE("Wiederholungsmuster"),
-	
+
 	/** The category. */
 	CATEGORY("Kategorie"),
-	
-	/** The startdate. */
+
+	/** The startdate of a team */
 	STARTDATE("Start"),
-	
-	/** The enddate. */
+
+	/** The enddate of a team */
 	ENDDATE("Ende"),
-	
-	/** The bpmn. */
+
+	/** The bpmn name of an activity */
 	BPMN("BPMN"),
-	
-	/** The firstname. */
+
+	/** The firstname of a person */
 	FIRSTNAME("Vorname"),
-	
-	/** The familyname. */
+
+	/** The familyname of a person */
 	FAMILYNAME("Nachname"),
-	
-	/** The successor. */
+
+	/** The successor of an activity */
 	SUCCESSOR("Nachfolger"),
-	
-	/** The rolegroup. */
+
+	/** The rolegroup of a role */
 	ROLEGROUP("Rollengruppe"),
-	
-	/** The role. */
+
+	/** The name of role. */
 	ROLE("Rolle"),
-	
-	/** The predecessor. */
+
+	/** The predecessor of a workitem */
 	PREDECESSOR("Vorgänger"),
-	
-	/** The accountable. */
+
+	/** The accountable in a activity or subactivity */
 	ACCOUNTABLE("Rechenschaftsgebender"),
-	
-	/** The supporter. */
+
+	/** The supporter in a activity or subactivity. */
 	SUPPORTER("Unterstützer"),
-	
-	/** The consultant. */
+
+	/** The consultant in a activity or subactivity. */
 	CONSULTANT("Berater"),
-	
-	/** The informed. */
+
+	/** The informed in a activity or subactivity. */
 	INFORMED("Informierte"),
-	
-	/** The teamfraction. */
+
+	/** The teamfraction of a person. */
 	TEAMFRACTION("Teamanteil"),
-	
-	/** The fte. */
+
+	/** The full-time-equivalent of a person. */
 	FTE("Vollzeitäquivalent"),
-	
-	/** The subactivities. */
+
+	/** The subactivities of an activity. */
 	SUBACTIVITIES("Teilaktivitäten"),
-	
-	/** The persons. */
+
+	/** The name of persons. */
 	PERSONS("Personen"),
-	
-	/** The teamroles. */
+
+	/** The name of teamroles. */
 	TEAMROLES("Teamrollen"),
-	
-	/** The howtos. */
+
+	/** The name of howtos. */
 	HOWTOS("HowTos"),
-	
-	/** The usedroles. */
+
+	/** The name of used roles. */
 	USEDROLES("Beteiligte Rollen"),
-	
-	/** The responsiblerole. */
+
+	/** The name of a responsible role. */
 	RESPONSIBLEROLE("Verantwortliche Rolle"),
-	
+
 	/** The persondata. */
 	PERSONDATA("Stammdaten"),
-	
+
 	/** The summary. */
 	SUMMARY("Zusammenfassung"),
-	
-	/** The contacts. */
+
+	/** The data of contacts */
 	CONTACTS("Kontaktdaten"),
-	
-	/** The contacts2. */
+
+	/** The contact. */
 	CONTACTS2("Kontakte"),
-	
+
 	/** The data. */
 	DATA("Daten"),
-	
+
 	/** The name. */
 	NAME("Name"),
-	
+
 	/** The responsibilities. */
 	RESPONSIBILITIES("Verantwortungen"),
-	
+
 	/** The responsibility. */
 	RESPONSIBILITY("Verantwortung"),
-	
+
 	/** The competencies. */
 	COMPETENCIES("Kompetenzen"),
-	
+
 	/** The opportunities. */
 	OPPORTUNITIES("Befugnisse"),
-	
+
 	/** The rules. */
 	RULES("Regeln"),
-	
+
 	/** The adress. */
 	ADRESS("Adresse"),
-	
+
 	/** The mail. */
 	MAIL("Mail"),
-	
+
 	/** The mobile. */
 	MOBILE("Mobil"),
-	
+
 	/** The unknown. */
 	UNKNOWN("Unknown"),
-	
+
 	/** The phone. */
 	PHONE("Festnetz"),
-	
-	/** The carryrolegroup. */
+
+	/** The rolegroup which is defined by role. */
 	CARRYROLEGROUP("Merkmalstragende Rollengruppe"),
-	
-	/** The brandrole. */
+
+	/** The roles which define a rolegroup. */
 	BRANDROLE("Merkmalsgebende Rolle"),
-	
+
 	/** The parent. */
 	PARENT("Vererber"),
-	
+
 	/** The synonyms. */
 	SYNONYMS("Synonyme"),
-	
+
 	/** The status. */
 	STATUS("Status"),
-	
-	/** The needed. */
+
+	/** The needed persons for a team. */
 	NEEDED("Mindestanzahl"),
-	
-	/** The level. */
+
+	/** The competence level of person for role. */
 	LEVEL("Mindestlevel"),
-	
+
 	/** The person. */
 	PERSON("Person"),
-	
+
 	/** The organisation. */
 	ORGANISATION("Organisation");
-	
+
 	/** The param. */
 	private final String param;
-	
+
 	/**
 	 * Instantiates a new parameter.
 	 *
@@ -259,13 +260,15 @@ public enum Parameter {
 	Parameter(final String param) {
 		this.param = param;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Enum#toString()
 	 */
 	@Override
 	public String toString() {
 		return param;
 	}
-	
+
 }

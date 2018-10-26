@@ -117,7 +117,7 @@ public class CircleadRecurrenceRule {
 	 * Sets the until date.
 	 *
 	 * @param year  the year
-	 * @param month the month
+	 * @param month the month of the year. January is 1, february is 2, ..., december is 12.
 	 * @param day   the day
 	 */
 	public void setUntilDateNonAllDay(int year, int month, int day) {
@@ -129,7 +129,7 @@ public class CircleadRecurrenceRule {
 	 * Sets the start date.
 	 *
 	 * @param year  the year
-	 * @param month the month
+	 * @param month the month of the year. January is 1, february is 2, ..., december is 12.
 	 * @param day   the day
 	 */
 	public void setStartDateNonAllDay(int year, int month, int day) {
