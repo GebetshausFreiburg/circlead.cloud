@@ -9,20 +9,22 @@
 package org.rogatio.circlead.control.synchronizer;
 
 /**
- * The Class SynchronizerResult.
+ * The Class SynchronizerResult. Allows qualified information if the
+ * synchronizer works. Not only holds request-codes. Contains also handeld
+ * content, response-message, ...
  */
 public class SynchronizerResult {
 
-	/** The code. */
+	/** The code of the response */
 	private int code;
 
-	/** The message. */
+	/** The message of the response (if available) */
 	private String message;
 
-	/** The source. */
+	/** The used source. Could be a filepath, rest-url, ... */
 	private String source;
 
-	/** The content. */
+	/** The content of the result of the synchronizer */
 	private String content;
 
 	/**

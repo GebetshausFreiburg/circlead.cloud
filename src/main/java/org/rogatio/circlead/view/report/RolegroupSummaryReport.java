@@ -11,7 +11,6 @@ package org.rogatio.circlead.view.report;
 import java.util.List;
 
 import org.jsoup.nodes.Element;
-import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.model.data.ContactDataitem;
 import org.rogatio.circlead.model.work.Person;
@@ -56,7 +55,7 @@ public class RolegroupSummaryReport extends DefaultReport {
 		tr.appendElement("th").attr("colspan", "1").appendText("Zugehörige Rollengruppen");
 		tr.appendElement("th").attr("colspan", "1").appendText("Ansprechpartner (Organisationsentwickler)");
 
-		List<Rolegroup> rolegroups = Repository.getInstance().getRolegroups();
+		List<Rolegroup> rolegroups = R.getRolegroups();
 		for (Rolegroup rolegroup : rolegroups) {
 			tr = tbody.appendElement("tr");
 			if (StringUtil.isNotNullAndNotEmpty(rolegroup.getTitle())) {
@@ -71,11 +70,11 @@ public class RolegroupSummaryReport extends DefaultReport {
 				tr.appendElement("td").attr("colspan", "1").appendText("-");		
 			}
 			
-			List<Role> roles = Repository.getInstance().getRoles(rolegroup.getTitle());
+			List<Role> roles = R.getRoles(rolegroup.getTitle());
 			if (ObjectUtil.isListNotNullAndEmpty(roles)) {
 				Element td = tr.appendElement("td").attr("colspan", "1");
 //				Element ul = td.appendElement("ul");
-//				List<Role> roles = Repository.getInstance().getRoles(this.getTitle());
+//				List<Role> roles = R.getRoles(this.getTitle());
 //				if (roles.size() > 0) {
 //					renderer.addH2(element, BRANDROLE.toString());
 					renderer.addRoleList(td, roles);
@@ -87,7 +86,7 @@ public class RolegroupSummaryReport extends DefaultReport {
 				tr.appendElement("td").attr("colspan", "1").appendText("-");		
 			}
 		
-			List<Rolegroup> rgs = Repository.getInstance().getRolegroupChildren(rolegroup.getTitle());
+			List<Rolegroup> rgs = R.getRolegroupChildren(rolegroup.getTitle());
 			if (ObjectUtil.isListNotNullAndEmpty(rgs)) {
 				Element td = tr.appendElement("td").attr("colspan", "1");
 				renderer.addRolegroupList(td, rgs);
@@ -97,7 +96,7 @@ public class RolegroupSummaryReport extends DefaultReport {
 			
 			String lead = rolegroup.getLeadIdentifier();
 			if (StringUtil.isNotNullAndNotEmpty(lead)) {
-				Person p = Repository.getInstance().getPerson(lead);
+				Person p = R.getPerson(lead);
 				
 				Element td = tr.appendElement("td");
 				
@@ -116,7 +115,7 @@ public class RolegroupSummaryReport extends DefaultReport {
 						ContactDataitem contact = null;
 						for (ContactDataitem con : c) {
 							String r = rolegroup.getResponsibleIdentifier();
-							Role role = Repository.getInstance().getRole(r);
+							Role role = R.getRole(r);
 							
 							if (role!=null) {
 								if (role.getOrganisationIdentifier().equals(con.getOrganisation())) {

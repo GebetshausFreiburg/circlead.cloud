@@ -80,34 +80,26 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class AtlassianSynchronizer extends DefaultSynchronizer {
 
-	/** The rolespage. */
+	/** Name of the page in space which holds the roles. */
 	private final String ROLESPAGE = "Roles";
 
-	/** The activitiespage. */
+	/** Name of the page in space which holds the activities. */
 	private final String ACTIVITIESPAGE = "Activities";
 
-	/** The rolegroupspage. */
+	/** Name of the page in space which holds the rolegroups. */
 	private final String ROLEGROUPSPAGE = "Rolegroups";
 
-	/** The personspage. */
+	/** Name of the page in space which holds the persons. */
 	private final String PERSONSPAGE = "Persons";
 
+	/** Name of the page in space which holds the teams. */
 	private final String TEAMSPAGE = "Teams";
 
 	/** The Constant LOGGER. */
 	private final static Logger LOGGER = LogManager.getLogger(AtlassianSynchronizer.class);
 
-	/** The circlead space. */
+	/** The name of the circlead space. */
 	private String circleadSpace = null;
-
-	/**
-	 * Instantiates a new atlassian synchronizer.
-	 *
-	 * @return the space key
-	 */
-//	public AtlassianSynchronizer() {
-
-//	}
 
 	/**
 	 * Gets the set key of circlead-space .
@@ -139,11 +131,13 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	 * @return the single acestor list
 	 */
 	private List<Ancestor> getSingleAcestorList(IWorkitem wi) {
-		// Check if parent-workitem could be found and load id via rest
+		/* Check if parent-workitem could be found and load id via rest */
 		String id = this.getAcestorId(wi.getType());
 		if (id != null) {
-			// if not found, then create one valid json-parent, called acestor-page in
-			// confluence
+			/*
+			 * if not found, then create one valid json-parent, called acestor-page in
+			 * confluence
+			 */
 			if (!id.equals("0")) {
 				List<Ancestor> list = new ArrayList<Ancestor>();
 				Ancestor a = new Ancestor();
@@ -182,15 +176,17 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	 */
 	@Override
 	public SynchronizerResult add(IReport report) throws SynchronizerException {
-		// Set actual used synchronizer to singleton. Is needed for correct finding and
-		// setting of id
+		/*
+		 * Set actual used synchronizer to singleton. Is needed for correct finding and
+		 * setting of id
+		 */
 		SynchronizerFactory.getInstance().setActual(this);
 
-		// Create confluence-page-object from report
+		/* Create confluence-page-object from report */
 		Page page = Parser.createPage(report, circleadSpace, this);
 
 		try {
-			// Create label for confluence-page
+			/* Create label for confluence-page */
 			Metadata m = Parser.getLabelMetadata(report);
 			page.setMetadata(m);
 
@@ -303,19 +299,11 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 			// Create valid json from POJO-Object
 			String data = mapper.writeValueAsString(page);
 
+			/* find id of workitem for this synchronizer */
 			String id = workitem.getId(this);
 
-//			if (id == null) {
-//				LOGGER.error("Workitem '" + workitem.getType() + "' with title '" + workitem.getTitle()
-//						+ "' has no valid id for synchonizer '" + this.getClass().getSimpleName() + "'");
-//				SynchronizerResult res = new SynchronizerResult();
-//				res.setMessage("Id could not be found for workitem '" + workitem.getTitle() + "' and synchonizer '"
-//						+ this.getClass().getSimpleName() + "'");
-//				return res;
-//			}
-
 			String uri = confluenceClient.getRestPrefix() + "content/" + id;
-			// Catch result from rest-interface writing confluence-page
+			/* Catch result from rest-interface writing confluence-page */
 			SynchronizerResult res = confluenceClient.put(uri, data);
 
 			LOGGER.debug(workitem.getTitle() + ": " + res.toString());
@@ -338,19 +326,23 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	 */
 	@Override
 	public SynchronizerResult update(IReport report) {
-		// Set actual used synchronizer to singleton. Is needed for correct finding and
-		// setting of id
+		/*
+		 * Set actual used synchronizer to singleton. Is needed for correct finding and
+		 * setting of id
+		 */
 		SynchronizerFactory.getInstance().setActual(this);
 
-		// Create Confluence-POJO-Object from report
+		/* Create Confluence-POJO-Object from report */
 		Page page = Parser.createPage(report, circleadSpace, this);
 
+		/* Only update report if it exists in target system */
 		Report repo = Repository.getInstance().getReport(report.getName());
 		if (repo != null) {
 
 			LOGGER.info("Update '" + URLCONFLUENCE + confluenceClient.getRestPrefix() + "content/" + repo.getId()
 					+ "' (" + report.getName() + ")");
 
+			/* Load version of existing report and increment +1 for update */
 			Integer version = 0;
 			try {
 				ObjectMapper omapper = new ObjectMapper();
@@ -363,6 +355,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 				e1.printStackTrace();
 			}
 
+			/* Build page for report content */
 			try {
 				ObjectMapper mapper = new ObjectMapper();
 				mapper.setSerializationInclusion(Include.NON_NULL);
@@ -400,10 +393,10 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	}
 
 	/**
-	 * Gets the acestor id.
+	 * Gets the acestor id of page.
 	 *
-	 * @param title the title
-	 * @param page  the page
+	 * @param title the title of the acestor page
+	 * @param page  the page object
 	 * @return the acestor id
 	 */
 	private String getAcestorId(String title, Page page) {
@@ -419,9 +412,9 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	private Map<String, String> acestorPages = new HashMap<String, String>();
 
 	/**
-	 * Delete versions.
+	 * Delete old page versions of an workitem
 	 *
-	 * @param type the type
+	 * @param type the type of the workitem
 	 */
 	public void deleteVersions(WorkitemType type) {
 		try {
@@ -435,10 +428,10 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	}
 
 	/**
-	 * Load.
+	 * Load all workitems of a given type.
 	 *
-	 * @param type the type
-	 * @return the list
+	 * @param type the type of the workitem
+	 * @return the list of workitems
 	 * @throws SynchronizerException the synchronizer exception
 	 */
 	private List<IWorkitem> load(WorkitemType type) throws SynchronizerException {
@@ -458,33 +451,43 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		return workitems;
 	}
 
-	/** The delete version counter. */
+	/**
+	 * The delete version counter. Is needed because deletion of old version pages
+	 * needs recursive method
+	 */
 	private int deleteVersionCounter = 0;
 
-	/** The delete version counter max. */
+	/**
+	 * The delete version counter max. Is needed because deletion of old version
+	 * pages needs recursive method
+	 */
 	private int deleteVersionCounterMax = 0;
 
 	/**
-	 * Delete versions.
+	 * Delete all versions of a page by given id
 	 *
 	 * @param pageId the page id
 	 * @return true, if successful
 	 */
 	public boolean deleteVersions(Integer pageId) {
-
+		/* Deletion is not possible via rest on dedicated server. Throw warning */
 		if (DEDICATEDSERVER) {
 			LOGGER.warn("REST-API for deleting page-versions on dedicated server NOT available");
 			return false;
 		}
 
+		/* Load all versions to delete */
 		List<Integer> x = getVersions(pageId);
 		x = x.subList(0, x.size() - 1);
 		if (x.size() > deleteVersionCounter) {
 			deleteVersionCounter = x.size();
 			deleteVersionCounterMax = x.size();
 		}
+
+		/* Start deletion */
 		for (Integer i : x) {
 			SynchronizerResult r = deleteVersion(pageId, i);
+			/* If deletion is skipped, the start new */
 			if (r.getCode() == 400) {
 				LOGGER.debug("Restart recursive deleting versions of page '" + pageId + "' because of code 400");
 				deleteVersions(pageId);
@@ -497,14 +500,14 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	}
 
 	/**
-	 * Delete version.
+	 * Delete version of a page.
 	 *
 	 * @param pageId  the page id
 	 * @param version the version
 	 * @return the synchronizer result
 	 */
 	public SynchronizerResult deleteVersion(Integer pageId, Integer version) {
-
+		/* Deletion is not possible via rest on dedicated server. Throw warning */
 		if (DEDICATEDSERVER) {
 			LOGGER.warn("REST-API for deleting versions on dedicated server NOT available");
 			return null;
@@ -514,13 +517,13 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	}
 
 	/**
-	 * Gets the versions.
+	 * Gets the versions of a page with given id.
 	 *
 	 * @param pageId the page id
 	 * @return the versions
 	 */
 	public List<Integer> getVersions(Integer pageId) {
-
+		/* Deletion is not possible via rest on dedicated server. Throw warning*/
 		if (DEDICATEDSERVER) {
 			LOGGER.warn("REST-API for deleting versions on dedicated server NOT available");
 			return null;
@@ -555,15 +558,17 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	}
 
 	/**
-	 * Gets the acestor id.
+	 * Loads the acestor page-id for the page as workitem-representation
 	 *
-	 * @param type the type
+	 * @param type the type of a workitem as string
 	 * @return the acestor id
 	 */
 	public String getAcestorId(String type) {
 
+		/* Look for id which is loaded on repository initialisation*/
 		String id = acestorPages.get(type.toLowerCase());
 
+		/* If acestor not found (lazy load), then look for it online*/
 		if (id == null) {
 			if (REPORT.isEquals(type)) {
 				SynchronizerResult page = confluenceClient.search("type=\"page\" and title=\"Reports\"");

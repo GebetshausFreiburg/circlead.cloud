@@ -15,22 +15,26 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A factory for holding Synchronizer objects. Is solved as singleton-class, so it can be used from the whole application.
- * Must be initialized before reading or saving data from repository.
+ * A factory for holding Synchronizer objects. Is solved as singleton-class, so
+ * it can be used from the whole application. Must be initialized before reading
+ * or saving data from repository.
  */
 public final class SynchronizerFactory {
 
-	/** The instance. */
+	/** The singelton-instance of the factory. */
 	private static SynchronizerFactory instance;
 
-	/** The synchronizers. */
+	/** The synchronizers in the factory. */
 	public List<ISynchronizer> synchronizers = new ArrayList<ISynchronizer>();
-	
-	/** The synchronizer map. */
+
+	/**
+	 * The synchronizer map holds a redable representation and the synchronizer in a
+	 * map.
+	 */
 	public Map<String, ISynchronizer> synchronizerMap = new HashMap<String, ISynchronizer>();
 
 	/**
-	 * Gets the synchronizers.
+	 * Get all synchronizers in the factory.
 	 *
 	 * @return the synchronizers
 	 */
@@ -39,10 +43,11 @@ public final class SynchronizerFactory {
 	}
 
 	/**
-	 * Gets the synchronizer by pattern.
+	 * Gets the synchronizer by id pattern. Uses {@link #getIdPattern()}. Works only
+	 * when synchronizers have all different id-patterns.
 	 *
-	 * @param id the id
-	 * @return the synchronizer by pattern
+	 * @param id the id of a workitem
+	 * @return the synchronizer which could handle the id as valid (by pattern)
 	 */
 	public ISynchronizer getSynchronizerByPattern(String id) {
 		for (ISynchronizer synchronizer : synchronizers) {
@@ -54,20 +59,25 @@ public final class SynchronizerFactory {
 		return null;
 	}
 
-	/** The actual identifier. */
+	/**
+	 * The actual identifier which is used in application.
+	 */
 	private String actualIdentifier;
 
 	/**
-	 * Sets the actual.
+	 * Sets the actual synchronizer. Should be set if synchronizer switches in
+	 * application to avoid exception by handling workitem-synchronization with
+	 * wrong synchronizer
 	 *
-	 * @param synchronizer the new actual
+	 * @param synchronizer the new actual synchonizer
 	 */
 	public void setActual(ISynchronizer synchronizer) {
 		this.setActual(synchronizer.toString());
 	}
 
 	/**
-	 * Gets the actual.
+	 * Get the actual identifier which is used in application. Changes if
+	 * synchronizer switches in application.
 	 *
 	 * @return the actual
 	 */
@@ -76,7 +86,9 @@ public final class SynchronizerFactory {
 	}
 
 	/**
-	 * Sets the actual.
+	 * Sets the actual synchronizer. Should be set if synchronizer switches in
+	 * application to avoid exception by handling workitem-synchronization with
+	 * wrong synchronizer
 	 *
 	 * @param actualIdentifier the new actual
 	 */
@@ -91,7 +103,7 @@ public final class SynchronizerFactory {
 	}
 
 	/**
-	 * Adds the synchronizer.
+	 * Adds a synchronizer to the factory.
 	 *
 	 * @param synchronizer the synchronizer
 	 */
@@ -102,12 +114,17 @@ public final class SynchronizerFactory {
 		}
 	}
 
+	/**
+	 * Gets the synchronizers as collection
+	 *
+	 * @return the synchronizer
+	 */
 	public Collection<ISynchronizer> getSynchronizer() {
 		return synchronizerMap.values();
 	}
-	
+
 	/**
-	 * Gets the synchronizer.
+	 * Gets the synchronizer by name. 
 	 *
 	 * @param synchronizerName the synchronizer name
 	 * @return the synchronizer
@@ -116,7 +133,7 @@ public final class SynchronizerFactory {
 		return synchronizerMap.get(synchronizerName);
 	}
 
-	// static block initialization for exception handling
+	/** static block initialization for exception handling */
 	static {
 		try {
 			instance = new SynchronizerFactory();

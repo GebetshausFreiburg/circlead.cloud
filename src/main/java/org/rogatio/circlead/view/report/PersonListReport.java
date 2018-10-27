@@ -9,19 +9,19 @@
 package org.rogatio.circlead.view.report;
 
 import org.jsoup.nodes.Element;
-import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
+import org.rogatio.circlead.model.Parameter;
+import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.data.ContactDataitem;
 import org.rogatio.circlead.model.work.Person;
+import org.rogatio.circlead.util.StringUtil;
+import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
 /**
  * The Class PersonListReport.
  */
 public class PersonListReport extends DefaultReport {
 
-	/**
-	 * Instantiates a new rework report.
-	 */
 	public PersonListReport() {
 		this.setName("PersonList Report");
 	}
@@ -29,44 +29,55 @@ public class PersonListReport extends DefaultReport {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.rogatio.circlead.view.DefaultReport#render(org.rogatio.circlead.control.synchronizer.ISynchronizer)
+	 * @see
+	 * org.rogatio.circlead.view.DefaultReport#render(org.rogatio.circlead.control.
+	 * synchronizer.ISynchronizer)
 	 */
 	@Override
 	public Element render(ISynchronizer synchronizer) {
-		// ISynchronizerRenderer renderer = synchronizer.getRenderer();
+		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 		Element element = new Element("p");
 
 		Element table = element.appendElement("div").appendElement("table");
 		Element tr = table.appendElement("tr");
-		tr.appendElement("th").appendText("Kürzel");
-		tr.appendElement("th").appendText("Vorname");
-		tr.appendElement("th").appendText("Nachname");
-		tr.appendElement("th").appendText("Adresse");
-		tr.appendElement("th").appendText("Mail");
-		tr.appendElement("th").appendText("Mobil");
-		tr.appendElement("th").appendText("Festnetz");
-		tr.appendElement("th").appendText("Status");
+		tr.appendElement("th").appendText(Parameter.ABBREVIATION2.toString());
+		tr.appendElement("th").appendText(Parameter.FIRSTNAME.toString());
+		tr.appendElement("th").appendText(Parameter.FAMILYNAME.toString());
+		tr.appendElement("th").appendText(Parameter.ADRESS.toString());
+		tr.appendElement("th").appendText(Parameter.MAIL.toString());
+		tr.appendElement("th").appendText(Parameter.MOBILE.toString());
+		tr.appendElement("th").appendText(Parameter.PHONE.toString());
 
-		for (Person person : Repository.getInstance().getPersons()) {
-			String a = person.getDataValue("Kürzel");
-			tr = table.appendElement("tr");
-			if (a != null) {
-				tr.appendElement("td").appendText(a);
-			} else {
-				tr.appendElement("td").appendText("-");
-			}
-			tr.appendElement("td").appendText(person.getNames());
-			tr.appendElement("td").appendText(person.getFamilyname());
+		for (Person person : R.getPersons()) {
 
-			ContactDataitem contact = person.getFirstPrivateContact();
-			if (contact != null) {
-				tr.appendElement("td").appendText("" + contact.getAddress());
-				tr.appendElement("td").appendText("" + contact.getMail());
-				tr.appendElement("td").appendText("" + contact.getMobile());
-				tr.appendElement("td").appendText("" + contact.getPhone());
+			if (!person.getStatus().toUpperCase().equals(WorkitemStatusParameter.INACTIVE.getName().toUpperCase())) {
+				String a = person.getDataValue(Parameter.ABBREVIATION2.toString());
+				tr = table.appendElement("tr");
+				if (a != null) {
+					tr.appendElement("td").appendText(a);
+				} else {
+					tr.appendElement("td").appendText("-");
+				}
+
+				tr.appendElement("td").appendText(person.getNames());
+				tr.appendElement("td").appendText(person.getFamilyname());
+
+				ContactDataitem contact = person.getFirstPrivateContact();
+				if (contact != null) {
+					tr.appendElement("td").appendText("" + contact.getAddress());
+					tr.appendElement("td").appendText("" + contact.getMail());
+					if (StringUtil.isNotNullAndNotEmpty(contact.getMobile())) {
+						tr.appendElement("td").appendText("" + contact.getMobile());
+					} else {
+						tr.appendElement("td").appendText("-");
+					}
+					if (StringUtil.isNotNullAndNotEmpty(contact.getPhone())) {
+						tr.appendElement("td").appendText("" + contact.getPhone());
+					} else {
+						tr.appendElement("td").appendText("-");
+					}
+				}
 			}
-			tr.appendElement("td").appendText("" + person.getStatus());
-			
 		}
 
 		return element;

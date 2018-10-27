@@ -9,7 +9,7 @@
 package org.rogatio.circlead.control.validator;
 
 /**
- * The Class ValidationMessage.
+ * The Class ValidationMessage. Is a validation logger for consitent data in and between workitems
  */
 public class ValidationMessage {
 
@@ -17,7 +17,7 @@ public class ValidationMessage {
 	private Object validationObject;
 
 	/**
-	 * The Enum Type.
+	 * The Enum Type. Could be INFO, ERROR, WARNING and DEBUG
 	 */
 	public enum Type {
 		/** The info. */
@@ -30,16 +30,16 @@ public class ValidationMessage {
 		DEBUG
 	};
 
-	/** The type. */
+	/** The type validation type of message */
 	private Type type;
 
-	/** The cause. */
+	/** The cause of the validation-incident */
 	private String cause;
 
-	/** The message. */
+	/** The message of the validation */
 	private String message;
 
-	/** The solution. */
+	/** The possible solution of the message. Is optional.*/
 	private String solution;
 
 	/*
@@ -117,7 +117,7 @@ public class ValidationMessage {
 	}
 
 	/**
-	 * Gets the cause.
+	 * Gets the cause of the message
 	 *
 	 * @return the cause
 	 */
@@ -135,7 +135,7 @@ public class ValidationMessage {
 	}
 
 	/**
-	 * Gets the solution.
+	 * Gets the solution of the message
 	 *
 	 * @return the solution
 	 */
@@ -154,7 +154,7 @@ public class ValidationMessage {
 	}
 
 	/**
-	 * Debug.
+	 * Sets debug message
 	 *
 	 * @param message
 	 *            the message
@@ -167,7 +167,7 @@ public class ValidationMessage {
 	}
 
 	/**
-	 * Info.
+	 * Sets info message
 	 *
 	 * @param message
 	 *            the message
@@ -189,7 +189,7 @@ public class ValidationMessage {
 	}
 
 	/**
-	 * Warning.
+	 * Sets Warning-Message
 	 *
 	 * @param cause
 	 *            the cause
@@ -224,7 +224,7 @@ public class ValidationMessage {
 	}
 
 	/**
-	 * Error.
+	 * Sets Error-Message
 	 *
 	 * @param cause
 	 *            the cause

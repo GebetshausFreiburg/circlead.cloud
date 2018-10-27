@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jsoup.nodes.Element;
-import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
 import org.rogatio.circlead.model.work.Role;
@@ -56,7 +55,7 @@ public class RolegroupReport extends DefaultReport {
 
 		renderer.addH3(element, "Rollentragende Personen in Rollengruppe");
 		List<String> persons = new ArrayList<String>();
-		List<Role> roles = Repository.getInstance().getRoles(rolegroup.getTitle());
+		List<Role> roles = R.getRoles(rolegroup.getTitle());
 		if (roles.size() > 0) {
 			for (Role role : roles) {
 				List<String> pIds = role.getPersonIdentifiers();
@@ -74,7 +73,7 @@ public class RolegroupReport extends DefaultReport {
 
 		element.append("<p style=\"page-break-before: always\">");
 
-		roles = Repository.getInstance().getRoles(rolegroup.getTitle());
+		roles = R.getRoles(rolegroup.getTitle());
 		if (roles.size() > 0) {
 			for (Role role : roles) {
 				renderer.addH2(element, role.getTitle());

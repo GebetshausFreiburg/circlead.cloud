@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Vector;
 
 import org.rogatio.circlead.control.Comparators;
+import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.model.data.IDataitem;
 
@@ -22,6 +23,8 @@ import org.rogatio.circlead.model.data.IDataitem;
  */
 public class DefaultWorkitem implements IWorkitem, Comparable<DefaultWorkitem> {
 
+	protected final Repository R = Repository.getInstance();
+	
 	/**
 	 * Instantiates a new default workitem.
 	 */

@@ -21,8 +21,10 @@ import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.util.DropboxUtil;
 import org.rogatio.circlead.view.report.OverviewReport;
 import org.rogatio.circlead.view.report.PersonListReport;
+import org.rogatio.circlead.view.report.PersonListReportDetails;
 import org.rogatio.circlead.view.report.ReworkReport;
 import org.rogatio.circlead.view.report.RoleHolderReport;
+import org.rogatio.circlead.view.report.RolegroupReport;
 import org.rogatio.circlead.view.report.RolegroupSummaryReport;
 import org.rogatio.circlead.view.report.TeamCategegoryInternalReport;
 import org.rogatio.circlead.view.report.TeamCategoryReport;
@@ -31,18 +33,19 @@ import org.rogatio.circlead.view.report.ValidationReport;
 import com.dropbox.core.v2.DbxTeamClientV2;
 
 /**
- * Synchronize-Starter.
+ * Start-Class for Synchronizing Systems. Merge of workitems is not ready
+ * implemented yet, so FileSynchronizer-Datastorage is deleted on every runtime.
+ * Atlassian is main-database and FileSynchronizer is only Json-Workitem-Storage
+ * as actual "copy" of Atlassian-Storage
  */
 public class SyncCirclead {
-	// TODO RecurrenceRule for person in team
-	// TODO Allokation in CRR with until-date
 	// TODO Comment for person in team
 	// TODO Validation role status vs. person-holder status (i.e. paused, closed)
 	// TODO Validation "empty" (<10 chars) text in role
-	// TODO FileSynchronizer-Image-Missing-Validator, Wrong-Image-Size (User)
 	// TODO Atlassian User-Check (for Image-Usage or User-Link)
 	// TODO Velocity als Render-Changer nutzen
 	// TODO Activity-Process-Builder (yWorks) erzeugen
+	// TODO Add Index-File-Creator to find all roles, persons, ... (not needed for Atlassian, but for File-Synchronizer)
 
 	/** The Constant REPORTS. */
 	public static final boolean REPORTS = true;
@@ -81,7 +84,7 @@ public class SyncCirclead {
 		Repository repository = Repository.getInstance();
 
 		/*
-		 * Add both syncronizers. One for atlassian-confluence for space 'CIRCLEAD' and
+		 * Add both synchronizers. One for atlassian-confluence for space 'CIRCLEAD' and
 		 * one for the Filesystem in folder 'data'
 		 */
 		FileSynchronizer fsynchronizer = new FileSynchronizer("data");
@@ -136,11 +139,14 @@ public class SyncCirclead {
 			 * repository.getRolegroups(); for (Rolegroup rolegroup : rolegroups) {
 			 * repository.addReport(new RolegroupReport(rolegroup)); } }
 			 */
+			repository.addReport(new RolegroupReport(Repository.getInstance().getRolegroup("Gebetstunden")));
+			
 			repository.addReport(new RoleHolderReport());
 			repository.addReport(new OverviewReport());
 			repository.addReport(new ValidationReport());
 			repository.addReport(new ReworkReport());
 			repository.addReport(new PersonListReport());
+			repository.addReport(new PersonListReportDetails());
 			repository.addReport(new RolegroupSummaryReport());
 			repository.addReport(new TeamCategoryReport("Gebetsstunde"));
 			repository.addReport(new TeamCategegoryInternalReport("Gebetsstunde"));
@@ -157,10 +163,11 @@ public class SyncCirclead {
 
 		PrayHourExporter phe = new PrayHourExporter();
 		phe.export("Gebetsstundenübersicht");
-		
+
 		DbxTeamClientV2 dbxClient = DropboxUtil.getTeamClient("gebetshaus.credentials");
-		DropboxUtil.uploadFileToTeamFolder(dbxClient, new File("exports/Gebetsstundenübersicht.xlsx"), "/06_GBH_BO_Gebetstundenorga/Gebetsstundenübersicht.xlsx", "Matthias Wegner");
-		
+		DropboxUtil.uploadFileToTeamFolder(dbxClient, new File("exports/Gebetsstundenübersicht.xlsx"),
+				"/06_GBH_BO_Gebetstundenorga/Gebetsstundenübersicht.xlsx", "Matthias Wegner");
+
 	}
 
 }

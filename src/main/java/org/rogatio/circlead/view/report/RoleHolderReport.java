@@ -9,11 +9,9 @@
 package org.rogatio.circlead.view.report;
 
 import java.util.ArrayList;
-
 import java.util.List;
 
 import org.jsoup.nodes.Element;
-import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer;
 import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
@@ -52,7 +50,7 @@ public class RoleHolderReport extends DefaultReport {
 		renderer.addStatus(element, WorkitemStatusParameter.UNASSIGNED.toString());
 
 		List<Role> foundUnrelatedRoles = new ArrayList<Role>();
-		List<Role> roles = Repository.getInstance().getRoles();
+		List<Role> roles = R.getRoles();
 		for (Role role : roles) {
 			boolean found = false;
 			// Role-Holder in Organisation
@@ -61,7 +59,7 @@ public class RoleHolderReport extends DefaultReport {
 			}
 			
 			// Role-Holder in Teams
-			List<Team> foundTeams = Repository.getInstance().getTeamsWithRole(role);
+			List<Team> foundTeams = R.getTeamsWithRole(role);
 			if (!ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
 				found = true;
 			}
@@ -101,11 +99,11 @@ public class RoleHolderReport extends DefaultReport {
 		renderer.addStatus(element, wis.toString());
 		renderer.addStatus(element, wiStatus.toString());
 		Element ul = element.appendElement("ul");
-		List<Role> roles = Repository.getInstance().getRoles();
+		List<Role> roles = R.getRoles();
 		for (Role role : roles) {
 			if (ObjectUtil.isListNotNullAndEmpty(role.getPersonIdentifiers())) {
 				for (String personIdentifier : role.getPersonIdentifiers()) {
-					Person person = Repository.getInstance().getPerson(personIdentifier);
+					Person person = R.getPerson(personIdentifier);
 					if (person != null) {
 						if (role.getDataitem().hasRepresentation(personIdentifier)) {
 							String representation = role.getDataitem().getRepresentation(personIdentifier);
@@ -143,11 +141,11 @@ public class RoleHolderReport extends DefaultReport {
 		renderer.addH2(element, title);
 		renderer.addStatus(element, wiStatus.toString());
 		Element ul = element.appendElement("ul");
-		List<Role> roles = Repository.getInstance().getRoles();
+		List<Role> roles = R.getRoles();
 		for (Role role : roles) {
 			if (ObjectUtil.isListNotNullAndEmpty(role.getPersonIdentifiers())) {
 				for (String personIdentifier : role.getPersonIdentifiers()) {
-					Person person = Repository.getInstance().getPerson(personIdentifier);
+					Person person = R.getPerson(personIdentifier);
 					if (person != null) {
 						if (role.getDataitem().hasRepresentation(personIdentifier)) {
 							String representation = role.getDataitem().getRepresentation(personIdentifier);

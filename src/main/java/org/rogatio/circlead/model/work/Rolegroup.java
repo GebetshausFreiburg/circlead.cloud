@@ -185,7 +185,7 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 		Element element = new Element("p");
 
 		if (StringUtil.isNotNullAndNotEmpty(this.getResponsibleIdentifier())) {
-			Role role = Repository.getInstance().getRole(this.getResponsibleIdentifier());
+			Role role = R.getRole(this.getResponsibleIdentifier());
 			if (role != null) { 
 				renderer.addRoleItem(element, RESPONSIBLEROLE.toString(), this.getResponsibleIdentifier());
 
@@ -205,13 +205,13 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 		renderer.addH2(element, SUMMARY.toString());
 		renderer.addItem(element, this.getSummary());
 
-		List<Role> roles = Repository.getInstance().getRoles(this.getTitle());
+		List<Role> roles = R.getRoles(this.getTitle());
 		if (roles.size() > 0) {
 			renderer.addH2(element, BRANDROLE.toString());
 			renderer.addRoleList(element, roles);
 		}
 
-		List<Rolegroup> childRolegroups = Repository.getInstance().getRolegroupChildren(this.getTitle());
+		List<Rolegroup> childRolegroups = R.getRolegroupChildren(this.getTitle());
 		if (childRolegroups != null) {
 			if (childRolegroups.size() > 0) {
 				renderer.addH2(element, CHILDS.toString());
@@ -236,7 +236,7 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 			m.warning("No responsible role added", "Rolegroup '" + this.getTitle() + "' has no named responsible role");
 			messages.add(m);
 		} else {
-			Role rg = Repository.getInstance().getRole(this.getResponsibleIdentifier());
+			Role rg = R.getRole(this.getResponsibleIdentifier());
 			if (rg == null) {
 				ValidationMessage m = new ValidationMessage(this);
 				m.warning("Responsible role not found",
@@ -251,7 +251,7 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 			messages.add(m);
 		}*/
 
-		List<Role> roles = Repository.getInstance().getRoles(this.getTitle());
+		List<Role> roles = R.getRoles(this.getTitle());
 		if (roles.size() == 0) {
 			ValidationMessage m = new ValidationMessage(this);
 			m.warning("No role contained", "Rolegroup '" + this.getTitle() + "' is not added to any role");
@@ -265,7 +265,7 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 		}
 
 		if (StringUtil.isNotNullAndNotEmpty(this.getResponsibleIdentifier())) {
-			Role role = Repository.getInstance().getRole(this.getResponsibleIdentifier());
+			Role role = R.getRole(this.getResponsibleIdentifier());
 			if (role != null) {
 				List<String> personIdentifiers = role.getPersonIdentifiers();
 				if (StringUtil.isNotNullAndNotEmpty(this.getLeadIdentifier())) {

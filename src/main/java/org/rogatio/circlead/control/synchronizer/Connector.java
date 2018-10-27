@@ -26,17 +26,17 @@ import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.report.IReport;
 
 /**
- * The Class Connector.
+ * The Class Connector is used to bind all set synchronizers to the repository
  */
 public class Connector {
 
 	/** The Constant logger. */
 	final static Logger LOGGER = LogManager.getLogger(Connector.class);
-	
+
 	public Collection<ISynchronizer> getSynchronizer() {
-		return 	SynchronizerFactory.getInstance().getSynchronizer();
+		return SynchronizerFactory.getInstance().getSynchronizer();
 	}
-	
+
 	/**
 	 * Gets the synchronizer.
 	 *
@@ -44,9 +44,9 @@ public class Connector {
 	 * @return the synchronizer
 	 */
 	public ISynchronizer getSynchronizer(String synchronizerName) {
-		return 	SynchronizerFactory.getInstance().getSynchronizer(synchronizerName);
+		return SynchronizerFactory.getInstance().getSynchronizer(synchronizerName);
 	}
-	
+
 	/**
 	 * Adds the synchronizer.
 	 *
@@ -102,7 +102,7 @@ public class Connector {
 	}
 
 	/**
-	 * Load.
+	 * Load workitems of given type
 	 *
 	 * @param type the type
 	 * @return the list
@@ -119,6 +119,8 @@ public class Connector {
 				} else {
 					int idx = workitems.indexOf(wi);
 					IWorkitem r = workitems.get(idx);
+					
+					/* Merge-method ist not finally implemented Not used.*/
 					@SuppressWarnings("unused")
 					IWorkitem merged = merge(r, wi);
 				}
@@ -128,14 +130,15 @@ public class Connector {
 	}
 
 	/**
-	 * Merge.
+	 * Merge two workitems to a single workitem. Workitem with newer modified date
+	 * overwrites other workitem. Method is lazy programmed. Method not merge all
+	 * value and ist not finally tested. Be carefull.
 	 *
-	 * @param item the item
-	 * @param otherItem the other item
-	 * @return the i workitem
+	 * @param item      the first item
+	 * @param otherItem the second item
+	 * @return the merged workitem
 	 */
 	public IWorkitem merge(IWorkitem item, IWorkitem otherItem) {
-
 		Date itemCreated = item.getCreated();
 		Date itemModified = item.getModified();
 		Date otherItemCreated = otherItem.getCreated();
@@ -160,10 +163,6 @@ public class Connector {
 		String jsonOtherItem = otherItem.toString();
 
 		if (!jsonItem.equals(jsonOtherItem)) {
-//			System.out.println("Not Equals");
-//			System.out.println(jsonItem);
-//			System.out.println(jsonOtherItem);
-
 			item.setCreated(itemCreated);
 			otherItem.setCreated(otherItemCreated);
 			item.setModified(itemModified);
@@ -227,7 +226,6 @@ public class Connector {
 							base.setModified(data.getModified());
 							base.setSummary(data.getSummary());
 							base.setLeadIdentifier(data.getLeadIdentifier());
-							// base.setRoleIdentifiers(base.getRoleIdentifiers());
 
 							if (StringUtil.isNotNullAndNotEmpty(data.getStatus())) {
 								base.setStatus(data.getStatus());
@@ -243,7 +241,6 @@ public class Connector {
 							return base;
 						}
 						if (WorkitemType.PERSON.isTypeOf(item, otherItem)) {
-							// logger.fatal("Merge for Person NOT implemented yet.");
 							Person base = null;
 							Person data = null;
 
@@ -281,7 +278,7 @@ public class Connector {
 	}
 
 	/**
-	 * Adds the.
+	 * Adds workitem to synchronized systems
 	 *
 	 * @param workitem the workitem
 	 * @return the list
@@ -298,9 +295,9 @@ public class Connector {
 		}
 		return results;
 	}
-	
+
 	/**
-	 * Adds the.
+	 * Adds report to synchronizes systems
 	 *
 	 * @param report the report
 	 * @return the list
@@ -319,7 +316,7 @@ public class Connector {
 	}
 
 	/**
-	 * Update.
+	 * Update workitem to synchronized system
 	 *
 	 * @param workitem the workitem
 	 * @return the list
@@ -328,9 +325,12 @@ public class Connector {
 		List<SynchronizerResult> results = new ArrayList<SynchronizerResult>();
 
 		List<ISynchronizer> synchronizers = SynchronizerFactory.getInstance().getSynchronizers();
-	
-		// It is necessary to add a id to filesynchronizer if it has none. The id must be set before the atlassian-synhronizer writes the update,
-		// so the correlated file is set with the right uuid
+
+		/*
+		 * It is necessary to add a id to filesynchronizer if it has none. The id must
+		 * be set before the atlassian-synhronizer writes the update, so the correlated
+		 * file is set with the right uuid
+		 */
 		for (ISynchronizer synchronizer : synchronizers) {
 			if (synchronizer.toString().equals("FileSynchronizer")) {
 				if (workitem.getId(synchronizer) == null) {
@@ -338,7 +338,7 @@ public class Connector {
 				}
 			}
 		}
-		
+
 		for (ISynchronizer synchronizer : synchronizers) {
 			try {
 				results.add(synchronizer.update(workitem));
@@ -348,7 +348,7 @@ public class Connector {
 		}
 		return results;
 	}
-	
+
 	/**
 	 * Update.
 	 *
@@ -360,7 +360,7 @@ public class Connector {
 
 		List<ISynchronizer> synchronizers = SynchronizerFactory.getInstance().getSynchronizers();
 		for (ISynchronizer synchronizer : synchronizers) {
-			try { 
+			try {
 				results.add(synchronizer.update(report));
 			} catch (SynchronizerException e) {
 				LOGGER.error(e);
@@ -370,7 +370,7 @@ public class Connector {
 	}
 
 	/**
-	 * Delete.
+	 * Delete workitem in every synchronized system
 	 *
 	 * @param workitem the workitem
 	 * @return the list
@@ -390,7 +390,9 @@ public class Connector {
 	}
 
 	/**
-	 * Gets the.
+	 * Gets the workitem with given id. Every id must be an entity in all
+	 * synchronizers. If id are the same in synchronizers, the this method must be
+	 * overwritten
 	 *
 	 * @param indexId the index id
 	 * @return the i workitem
@@ -410,7 +412,7 @@ public class Connector {
 	}
 
 	/**
-	 * Load index.
+	 * Load index of workitemtype in all synchronizes systems
 	 *
 	 * @param workitemType the workitem type
 	 * @return the list

@@ -430,7 +430,7 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			if (ObjectUtil.isListNotNullAndEmpty(teamEntry.getPersons())) {
 
 				for (String identifier : teamEntry.getPersons()) {
-					Person p = Repository.getInstance().getPerson(identifier);
+					Person p = R.getPerson(identifier);
 					if (p == null) {
 						ValidationMessage m = new ValidationMessage(this);
 						m.warning("Person not idenfied",

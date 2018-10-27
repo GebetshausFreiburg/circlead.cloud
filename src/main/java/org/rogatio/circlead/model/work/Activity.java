@@ -419,7 +419,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 			renderer.addItem(element, ACTIVITYID.toString(), this.getAid());
 		}
 
-		Activity a = Repository.getInstance().getActivityWithSubactivity(this.getTitle());
+		Activity a = R.getActivityWithSubactivity(this.getTitle());
 		if (a != null) {
 			renderer.addActivityItem(element, PARENTACTIVITY.toString(), a.getTitle());
 		}
@@ -437,19 +437,19 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 			renderer.addRoleItem(element, ACCOUNTABLE.toString(), "-");
 		}
 
-		List<Role> roles = Repository.getInstance().getRoles(this.getSupplierIdentifiers());
+		List<Role> roles = R.getRoles(this.getSupplierIdentifiers());
 		if (ObjectUtil.isListNotNullAndEmpty(roles)) {
 			renderer.addItem(element, SUPPORTER.toString()+":", "");
 			renderer.addRoleList(element, roles);
 		}
 
-		roles = Repository.getInstance().getRoles(this.getConsultantIdentifiers());
+		roles = R.getRoles(this.getConsultantIdentifiers());
 		if (ObjectUtil.isListNotNullAndEmpty(roles)) {
 			renderer.addItem(element, CONSULTANT.toString()+":", "");
 			renderer.addRoleList(element, roles);
 		}
 
-		roles = Repository.getInstance().getRoles(this.getInformedIdentifiers());
+		roles = R.getRoles(this.getInformedIdentifiers());
 		if (ObjectUtil.isListNotNullAndEmpty(roles)) {
 			renderer.addItem(element, INFORMED.toString()+":", "");
 			renderer.addRoleList(element, roles);
@@ -470,7 +470,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 
 			/*
 			 * for (ActivityDataitem subactivity : getSubactivities()) { Activity a =
-			 * Repository.getInstance().getActivity(subactivity.getTitle()); if (a != null)
+			 * R.getActivity(subactivity.getTitle()); if (a != null)
 			 * { Elements es = table.getElementsContainingText(subactivity.getTitle());
 			 * System.out.println(es); Element e = es.get(0); e.text("");
 			 * renderer.addActivityItem(e, null, subactivity.getTitle()); } }
@@ -479,7 +479,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 			table.appendTo(element);
 		}
 
-		List<HowTo> howtos = Repository.getInstance().getIndexHowTos();
+		List<HowTo> howtos = R.getIndexHowTos();
 		if (this.getHowTos() != null) {
 			for (String ht : this.getHowTos()) {
 				for (HowTo howTo : howtos) {
@@ -513,7 +513,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 
 		if (ObjectUtil.isListNotNullAndEmpty(this.getSubactivities())) {
 			for (ActivityDataitem activity : this.getSubactivities()) {
-				Activity a = Repository.getInstance().getActivity(activity.getTitle());
+				Activity a = R.getActivity(activity.getTitle());
 				if (a != null) {
 					String actR = a.getResponsibleIdentifier();
 					String subR = activity.getResponsible();
@@ -547,11 +547,6 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 				}
 			}
 		}
-
-//		Activity parentActivity = Repository.getInstance().getActivityWithSubactivity(this.getTitle());
-//		if (parentActivity != null) {
-//			x
-//		}
 
 		return messages;
 	}

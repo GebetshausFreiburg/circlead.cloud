@@ -98,10 +98,10 @@ public final class Repository {
 	}
 
 	/**
-	 * Gets the rolegroups.
+	 * Gets the rolegroups with defined WorkitemStatusParameter.
 	 *
-	 * @param status the status
-	 * @return the rolegroups
+	 * @param status the status of workitems
+	 * @return the rolegroups which have the status
 	 */
 	public List<Rolegroup> getRolegroups(WorkitemStatusParameter status) {
 		List<Rolegroup> rolegroups = new ArrayList<Rolegroup>();
@@ -117,9 +117,9 @@ public final class Repository {
 	}
 
 	/**
-	 * Checks if is role name.
+	 * Checks if name is rolename.
 	 *
-	 * @param roleName the role name
+	 * @param roleName the name to check
 	 * @return true, if is role name
 	 */
 	public boolean isRoleName(String roleName) {
@@ -132,10 +132,11 @@ public final class Repository {
 	}
 
 	/**
-	 * Gets the subactivities with responsible.
+	 * Gets the subactivities with responsible role.
 	 *
 	 * @param roleTitle the role title
-	 * @return the subactivities with responsible
+	 * @return the subactivities which have responsible role. Map which uses
+	 *         activity as key and found subactivities as valueF
 	 */
 	public TreeMap<Activity, List<ActivityDataitem>> getSubactivitiesWithResponsible(String roleTitle) {
 		TreeMap<Activity, List<ActivityDataitem>> map = new TreeMap<Activity, List<ActivityDataitem>>();
@@ -150,9 +151,9 @@ public final class Repository {
 	}
 
 	/**
-	 * Gets the role names.
+	 * Gets the names of all roles.
 	 *
-	 * @return the role names
+	 * @return the list of role names
 	 */
 	public List<String> getRoleNames() {
 		List<Role> roles = this.getRoles();
@@ -164,7 +165,7 @@ public final class Repository {
 	}
 
 	/**
-	 * Adds the synchronizer.
+	 * Adds a synchronizer to the Connector.
 	 *
 	 * @param synchronizer the synchronizer
 	 */
@@ -180,7 +181,7 @@ public final class Repository {
 	}
 
 	/**
-	 * Gets the workitems.
+	 * Gets the list of workitems in repository.
 	 *
 	 * @return the workitems
 	 */
@@ -188,7 +189,7 @@ public final class Repository {
 		return workitems;
 	}
 
-	/** The workitems. */
+	/** The list of all loaded or added workitems. */
 	private List<IWorkitem> workitems = new ArrayList<IWorkitem>();
 
 	/**
@@ -205,7 +206,7 @@ public final class Repository {
 	}
 
 	/**
-	 * Gets the connector.
+	 * Gets the connector of the repository.
 	 *
 	 * @return the connector
 	 */
@@ -214,9 +215,9 @@ public final class Repository {
 	}
 
 	/**
-	 * Load rolegroups.
+	 * Load rolegroup-workitems from synchronized system with Connector.
 	 *
-	 * @return the list
+	 * @return the list of rolegroups
 	 */
 	public List<Rolegroup> loadRolegroups() {
 		List<IWorkitem> rolegroups = connector.load(WorkitemType.ROLEGROUP);
@@ -225,7 +226,7 @@ public final class Repository {
 	}
 
 	/**
-	 * Load roles.
+	 * Load role-workitems from synchronized system with Connector.
 	 *
 	 * @return the list
 	 */
@@ -236,9 +237,9 @@ public final class Repository {
 	}
 
 	/**
-	 * Load teams.
+	 * Load team-workitems from synchronized system with Connector.
 	 *
-	 * @return the list
+	 * @return the list of teams
 	 */
 	public List<Team> loadTeams() {
 		List<IWorkitem> teams = connector.load(WorkitemType.TEAM);
@@ -247,9 +248,9 @@ public final class Repository {
 	}
 
 	/**
-	 * Load activities.
+	 * Load activities from synchronized system with Connector.
 	 *
-	 * @return the list
+	 * @return the list of activities
 	 */
 	public List<Activity> loadActivities() {
 		List<IWorkitem> activities = connector.load(WorkitemType.ACTIVITY);
@@ -258,9 +259,9 @@ public final class Repository {
 	}
 
 	/**
-	 * Load persons.
+	 * Load persons from synchronized system with Connector.
 	 *
-	 * @return the list
+	 * @return the list of persons
 	 */
 	public List<Person> loadPersons() {
 		List<IWorkitem> persons = connector.load(WorkitemType.PERSON);
@@ -268,10 +269,16 @@ public final class Repository {
 		return ObjectUtil.castList(Person.class, persons);
 	}
 
-	/** The index reports. */
+	/**
+	 * The index of all loaded reports. Is a json-representation of the metadata of
+	 * the howtos
+	 */
 	private List<String> indexReports = new ArrayList<String>();
 
-	/** The index howtos. */
+	/**
+	 * The index of all loaded howtos. Is a json-representation of the metatdata of
+	 * the reports
+	 */
 	private List<String> indexHowtos = new ArrayList<String>();
 
 	/**
@@ -299,6 +306,13 @@ public final class Repository {
 		return howtos;
 	}
 
+	/**
+	 * Write excel.
+	 *
+	 * @param filename the filename
+	 * @param type     the type
+	 * @param fields   the fields
+	 */
 	public void writeExcel(String filename, WorkitemType type, List<Parameter> fields) {
 		List<IWorkitem> list = getWorkitems();
 		List<Map<Parameter, Object>> dataMap = new ArrayList<Map<Parameter, Object>>();
@@ -506,7 +520,8 @@ public final class Repository {
 	}
 
 	/**
-	 * Gets the person.
+	 * Gets the person with given identifier. Identifier could be id and fullname of
+	 * person
 	 *
 	 * @param identifier the identifier
 	 * @return the person
@@ -603,7 +618,7 @@ public final class Repository {
 	 * @return the average allokation in organisation
 	 */
 	public double getAverageAllokationInOrganisation(String personIdentifier, Freq freq) {
-		List<Role> orgRoles = Repository.getInstance().getRolesWithPerson(personIdentifier);
+		List<Role> orgRoles = Repository.getInstance().getOrganisationalRolesWithPerson(personIdentifier);
 		double sumR = 0;
 		for (Role role : orgRoles) {
 			boolean skip = false;
@@ -677,9 +692,9 @@ public final class Repository {
 	}
 
 	/**
-	 * Gets the rolegroup.
+	 * Gets the rolegroup with given identifier. Identifier could be id and title.
 	 *
-	 * @param identifier the identifier
+	 * @param identifier the identifier of the rolegroup
 	 * @return the rolegroup
 	 */
 	public Rolegroup getRolegroup(String identifier) {
@@ -700,12 +715,13 @@ public final class Repository {
 	}
 
 	/**
-	 * Checks for unique role identity.
+	 * Checks for unique role abbreviation. The id is depended from synchronized
+	 * system and not a usefull entity.
 	 *
-	 * @param r the r
-	 * @return true, if successful
+	 * @param r the role which is checked for unique abbreviation
+	 * @return true, if role has unique abbreviation
 	 */
-	public boolean hasUniqueRoleIdentity(Role r) {
+	public boolean hasUniqueRoleAbbreviation(Role r) {
 
 		String abr = null;
 
@@ -733,10 +749,44 @@ public final class Repository {
 	}
 
 	/**
-	 * Gets the roles.
+	 * Checks for unique role title. The id is depended from synchronized system and
+	 * not a usefull entity.
 	 *
-	 * @param roleIdentifiers the role identifiers
-	 * @return the roles
+	 * @param r the role which is checked for unique title
+	 * @return true, if role has unique title
+	 */
+	public boolean hasUniqueRoleTitle(Role r) {
+
+		String title = null;
+
+		if (r == null) {
+			return false;
+		} else {
+			if (!r.hasTitle()) {
+				return false;
+			} else {
+				title = r.getTitle();
+			}
+		}
+
+		int counter = 0;
+
+		for (Role role : this.getRoles()) {
+			if (role.hasTitle()) {
+				if (role.getTitle().equals(title)) {
+					counter++;
+				}
+			}
+		}
+
+		return counter == 1;
+	}
+
+	/**
+	 * Gets the roles of a list of identifiers.
+	 *
+	 * @param roleIdentifiers the role identifiers list
+	 * @return the roles which are found by identifiers
 	 */
 	public List<Role> getRoles(List<String> roleIdentifiers) {
 		List<Role> foundRoles = new ArrayList<Role>();
@@ -753,9 +803,10 @@ public final class Repository {
 	}
 
 	/**
-	 * Gets the role.
+	 * Gets the role by role-identifier.
 	 *
-	 * @param identifier the identifier
+	 * @param identifier the identifier of the role. Could be id, abbreviation,
+	 *                   title or synonym
 	 * @return the role
 	 */
 	public Role getRole(String identifier) {
@@ -790,6 +841,12 @@ public final class Repository {
 		return null;
 	}
 
+	/**
+	 * Gets the team persons with role.
+	 *
+	 * @param role the role
+	 * @return the team persons with role
+	 */
 	public List<String> getTeamPersonsWithRole(Role role) {
 		List<Team> teams = getTeamsWithRole(role);
 		List<String> persons = new ArrayList<String>();
@@ -805,10 +862,10 @@ public final class Repository {
 	}
 
 	/**
-	 * Gets the teams with role.
+	 * Gets the teams with role in team.
 	 *
-	 * @param role the role
-	 * @return the teams with role
+	 * @param role the role which should be in team
+	 * @return the teams with role in team
 	 */
 	public List<Team> getTeamsWithRole(Role role) {
 		List<Team> list = new ArrayList<Team>();
@@ -830,11 +887,11 @@ public final class Repository {
 	}
 
 	/**
-	 * Gets the teams with member.
+	 * Find all teams which have named person in team of given team-list.
 	 *
-	 * @param person   the person
-	 * @param teamList the team list
-	 * @return the teams with member
+	 * @param person   the person which should be in team
+	 * @param teamList the team list which should be queried
+	 * @return the teams with person in team
 	 */
 	public List<Team> getTeamsWithMember(Person person, List<Team> teamList) {
 		List<Team> list = new ArrayList<Team>();
@@ -857,10 +914,49 @@ public final class Repository {
 		return list;
 	}
 
+	public ArrayList<Role> getRolesWithPerson(Person person) {
+		ArrayList<Role> found = getOrganisationalRolesWithPerson(person);
+		ArrayList<Role> found2 = getTeamRolesWithPerson(person);
+		for (Role role : found2) {
+			if (!found.contains(role)) {
+				found.add(role);
+			}
+		}
+		return found;
+	}
+
 	/**
-	 * Gets the teams with member.
+	 * Gets the team roles.
 	 *
 	 * @param person the person
+	 * @return the team roles
+	 */
+	public ArrayList<Role> getTeamRolesWithPerson(Person person) {
+		List<Team> teams = getTeamsWithMember(person);
+		ArrayList<Role> foundRoles = new ArrayList<Role>();
+
+		for (Team team : teams) {
+			List<TeamEntry> entries = team.getTeamEntries();
+			for (TeamEntry entry : entries) {
+				if (entry.containsPerson(person)) {
+					Role r = getRole(entry.getRoleIdentifier());
+					if (r != null) {
+						if (!foundRoles.contains(r)) {
+							foundRoles.add(r);
+						}
+					}
+				}
+			}
+
+		}
+
+		return foundRoles;
+	}
+
+	/**
+	 * Gets the teams with the person in team.
+	 *
+	 * @param person the person which should be in the team
 	 * @return the teams with member
 	 */
 	public List<Team> getTeamsWithMember(Person person) {
@@ -868,9 +964,9 @@ public final class Repository {
 	}
 
 	/**
-	 * Gets the team.
+	 * Gets the team with given identifier.
 	 *
-	 * @param identifier the identifier
+	 * @param identifier the identifier of a team
 	 * @return the team
 	 */
 	public Team getTeam(String identifier) {
@@ -927,9 +1023,9 @@ public final class Repository {
 	}
 
 	/**
-	 * Gets the activity.
+	 * Gets the activity with given identifier.
 	 *
-	 * @param identifier the identifier
+	 * @param identifier the identifier of an activity
 	 * @return the activity
 	 */
 	public Activity getActivity(String identifier) {
@@ -955,9 +1051,9 @@ public final class Repository {
 	}
 
 	/**
-	 * Gets the report.
+	 * Gets the report with given identifier.
 	 *
-	 * @param identifier the identifier
+	 * @param identifier the identifier of a report
 	 * @return the report
 	 */
 	public Report getReport(String identifier) {
@@ -976,9 +1072,9 @@ public final class Repository {
 	}
 
 	/**
-	 * Gets the how to.
+	 * Gets the how to of given identifier.
 	 *
-	 * @param identifier the identifier
+	 * @param identifier the identifier of an howto
 	 * @return the how to
 	 */
 	public HowTo getHowTo(String identifier) {
@@ -997,10 +1093,10 @@ public final class Repository {
 	}
 
 	/**
-	 * Gets the role children.
+	 * Gets the role children of a role.
 	 *
-	 * @param roleIdentifier the role identifier
-	 * @return the role children
+	 * @param roleIdentifier the role identifier of the parent role
+	 * @return the role children which have given parent
 	 */
 	public List<Role> getRoleChildren(String roleIdentifier) {
 		List<Role> childRoles = new ArrayList<Role>();
@@ -1086,7 +1182,8 @@ public final class Repository {
 	}
 
 	/**
-	 * Validate.
+	 * Validate all instances of IValidator. If available all synchronizers and
+	 * workitems
 	 *
 	 * @return the list
 	 */
@@ -1149,13 +1246,17 @@ public final class Repository {
 
 	}
 
+	public ArrayList<Role> getOrganisationalRolesWithPerson(Person person) {
+		return getOrganisationalRolesWithPerson(person.getFullname());
+	}
+
 	/**
-	 * Gets the roles with person.
+	 * Gets the organisational (not team) roles with are taken by person.
 	 *
-	 * @param person the person
-	 * @return the roles with person
+	 * @param person the personIdentifier which should be identify taken roles
+	 * @return the roles with person who holds a role
 	 */
-	public ArrayList<Role> getRolesWithPerson(String person) {
+	public ArrayList<Role> getOrganisationalRolesWithPerson(String person) {
 		ArrayList<Role> foundRoles = new ArrayList<Role>();
 		for (Role role : getRoles()) {
 			List<String> persons = role.getPersonIdentifiers();

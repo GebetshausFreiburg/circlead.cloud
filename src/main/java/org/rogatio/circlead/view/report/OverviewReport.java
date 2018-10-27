@@ -11,7 +11,6 @@ package org.rogatio.circlead.view.report;
 import java.util.List;
 
 import org.jsoup.nodes.Element;
-import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer;
 import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
@@ -51,12 +50,12 @@ public class OverviewReport extends DefaultReport {
 		if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
 			element.append("<p style=\"page-break-before: always\">");
 
-			if (Repository.getInstance().getRolegroups().size() > 0) {
-				List<Rolegroup> rolegroups = Repository.getInstance().getRolegroups();
+			if (R.getRolegroups().size() > 0) {
+				List<Rolegroup> rolegroups = R.getRolegroups();
 				for (Rolegroup rolegroup : rolegroups) {
 					Element h1 = element.appendElement("h1");
 					if (rolegroup.getParentIdentifier() != null) {
-						List<Rolegroup> childRolegroups = Repository.getInstance()
+						List<Rolegroup> childRolegroups = R
 								.getRolegroupChildren(rolegroup.getTitle());
 						if (ObjectUtil.isListNotNullAndEmpty(childRolegroups)) {
 							h1.append("<img src=\"images\\groupparent.png\" width=\"32px\">");
@@ -73,7 +72,7 @@ public class OverviewReport extends DefaultReport {
 					rolegroup.render(synchronizer).appendTo(element);
 					element.append("<p style=\"page-break-before: always\">");
 
-					List<Role> roles = Repository.getInstance().getRoles(rolegroup.getTitle());
+					List<Role> roles = R.getRoles(rolegroup.getTitle());
 					if (roles.size() > 0) {
 						for (Role role : roles) {
 							Element h2 = element.appendElement("h2");

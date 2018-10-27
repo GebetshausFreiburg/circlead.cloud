@@ -13,14 +13,12 @@ import java.util.List;
 
 import org.dmfs.rfc5545.Weekday;
 import org.jsoup.nodes.Element;
-import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer;
 import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.CircleadRecurrenceRule;
 import org.rogatio.circlead.util.StringUtil;
-import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
 /**
  * The Class TeamCategoryReport.
@@ -61,7 +59,7 @@ public class TeamCategoryReport extends DefaultReport {
 	 */
 	@Override
 	public Element render(ISynchronizer synchronizer) {
-		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
+//		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 		Element element = new Element("p");
 
 		if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
@@ -136,7 +134,7 @@ public class TeamCategoryReport extends DefaultReport {
 	 * @return the int
 	 */
 	private int setHour(Weekday weekday, int hour, Element ul) {
-		List<Team> teams = Repository.getInstance().getTeamsWithCategory(category);
+		List<Team> teams = R.getTeamsWithCategory(category);
 		boolean found = false;
 		int durrationTime = 0;
 		for (Team team : teams) {

@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jsoup.nodes.Element;
-import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.work.IWorkitem;
@@ -44,19 +43,19 @@ public class ReworkReport extends DefaultReport {
 		Element element = new Element("p");
 
 		List<Rolegroup> rolegroups = new ArrayList<Rolegroup>();
-		rolegroups.addAll(Repository.getInstance().getRolegroups(WorkitemStatusParameter.DRAFT));
-		rolegroups.addAll(Repository.getInstance().getRolegroups(WorkitemStatusParameter.CRITICAL));
-		rolegroups.addAll(Repository.getInstance().getRolegroups(WorkitemStatusParameter.INPROGRESS));
-		rolegroups.addAll(Repository.getInstance().getRolegroups(WorkitemStatusParameter.TEMPORARY));
+		rolegroups.addAll(R.getRolegroups(WorkitemStatusParameter.DRAFT));
+		rolegroups.addAll(R.getRolegroups(WorkitemStatusParameter.CRITICAL));
+		rolegroups.addAll(R.getRolegroups(WorkitemStatusParameter.INPROGRESS));
+		rolegroups.addAll(R.getRolegroups(WorkitemStatusParameter.TEMPORARY));
 		renderer.addWorkitemTable(element, ObjectUtil.castList(IWorkitem.class, rolegroups));
 		
 		element.appendElement("p");
 		
 		List<Role> roles = new ArrayList<Role>();
-		roles.addAll(Repository.getInstance().getRoles(WorkitemStatusParameter.DRAFT));
-		roles.addAll(Repository.getInstance().getRoles(WorkitemStatusParameter.CRITICAL));
-		roles.addAll(Repository.getInstance().getRoles(WorkitemStatusParameter.INPROGRESS));
-		roles.addAll(Repository.getInstance().getRoles(WorkitemStatusParameter.TEMPORARY));
+		roles.addAll(R.getRoles(WorkitemStatusParameter.DRAFT));
+		roles.addAll(R.getRoles(WorkitemStatusParameter.CRITICAL));
+		roles.addAll(R.getRoles(WorkitemStatusParameter.INPROGRESS));
+		roles.addAll(R.getRoles(WorkitemStatusParameter.TEMPORARY));
 		renderer.addWorkitemTable(element, ObjectUtil.castList(IWorkitem.class, roles));
 		
 		return element;

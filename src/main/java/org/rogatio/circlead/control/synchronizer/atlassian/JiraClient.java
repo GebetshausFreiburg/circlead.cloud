@@ -46,11 +46,11 @@ public class JiraClient extends HttpClient {
 		this.password = password;
 
 		if (server) {
-			// Set rest-prefix if atlassian-dedicated-server
+			/* Set rest-prefix if atlassian-dedicated-server */
 			restPrefix = "rest/api/2/";
 			LOGGER.info("JiraClient ist set to dedicated server");
 		} else {
-			// Set rest-prefix if atlassian-cloud-server
+			/* Set rest-prefix if atlassian-cloud-server */
 			restPrefix = "rest/api/3/";
 			LOGGER.info("JiraClient ist set to cloud server");
 		}

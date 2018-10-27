@@ -134,7 +134,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		double divider = (fte / 100.0) * ((100.0 - tf) / 100.0);
 
 		// System.out.println("do"+divider);
-		double alloc = Repository.getInstance().getAverageAllokationInOrganisation(this.getFullname(), Freq.WEEKLY);
+		double alloc = R.getAverageAllokationInOrganisation(this.getFullname(), Freq.WEEKLY);
 
 		// alloc = 10;
 
@@ -162,7 +162,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 
 		// System.out.println("dt"+divider);
 
-		double teamAllocation = Repository.getInstance().getAverageAllokationInTeams(this, Freq.WEEKLY);
+		double teamAllocation = R.getAverageAllokationInTeams(this, Freq.WEEKLY);
 
 		// teamAllocation = 10;
 
@@ -360,7 +360,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	 */
 	public Map<String, List<Timeslice>> getOrganisationalTimeslices(Freq freq, boolean optimize) {
 		LinkedHashMap<String, List<Timeslice>> map = new LinkedHashMap<String, List<Timeslice>>();
-		List<Role> orgRoles = Repository.getInstance().getRolesWithPerson(this.getFullname());
+		List<Role> orgRoles = R.getOrganisationalRolesWithPerson(this.getFullname());
 		for (Role role : orgRoles) {
 			String rule = role.getRecurrenceRule(this.getFullname());
 			if (StringUtil.isNotNullAndNotEmpty(rule)) {
@@ -405,7 +405,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	public Map<String, List<Timeslice>> getTeamTimeslices(Freq freq) {
 		Map<String, List<Timeslice>> map = new LinkedHashMap<String, List<Timeslice>>();
 
-		List<Team> foundTeams = Repository.getInstance().getTeamsWithMember(this);
+		List<Team> foundTeams = R.getTeamsWithMember(this);
 		for (Team team : foundTeams) {
 			List<Timeslice> ts = team.getAllokationSlices(this, freq);
 			map.put(team.getTitle(), ts);
@@ -435,8 +435,14 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		}
 
 		renderer.addH2(element, "Plankapazität");
-		renderer.addItem(element, Parameter.FTE.toString(), Math.round(this.getFullTimeEquivalent()) + "%");
-		renderer.addItem(element, Parameter.TEAMFRACTION.toString(), Math.round(this.getTeamFraction()) + "%");
+		long fte = Math.round(this.getFullTimeEquivalent());
+		long tf = Math.round(this.getTeamFraction());
+		if (fte != 0) {
+			renderer.addItem(element, Parameter.FTE.toString(), fte + "%");
+		}
+		if (tf != 0) {
+			renderer.addItem(element, Parameter.TEAMFRACTION.toString(), tf + "%");
+		}
 
 		renderer.addH2(element, CONTACTS.toString());
 
@@ -453,7 +459,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 			}
 		}
 
-		double sumR = Repository.getInstance().getAverageAllokationInOrganisation(this.getFullname(), Freq.WEEKLY);
+		double sumR = R.getAverageAllokationInOrganisation(this.getFullname(), Freq.WEEKLY);
 
 		double ow = this.getOrganisationalWorkload();
 		String orgWorkload = "";
@@ -468,12 +474,12 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 
 		renderer.addH2(element, ROLESINORGANISATION.toString() + add);
 
-		List<Role> orgRoles = Repository.getInstance().getRolesWithPerson(this.getFullname());
+		List<Role> orgRoles = R.getOrganisationalRolesWithPerson(this.getFullname());
 		renderer.addRoleList(element, orgRoles, this);
 
-		List<Team> foundTeams = Repository.getInstance().getTeamsWithMember(this);
+		List<Team> foundTeams = R.getTeamsWithMember(this);
 		if (ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
-			double sum = Repository.getInstance().getAverageAllokationInTeams(this, Freq.WEEKLY);
+			double sum = R.getAverageAllokationInTeams(this, Freq.WEEKLY);
 
 			double tw = this.getTeamWorkload();
 			String teamWorkload = "";
@@ -553,6 +559,12 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		}
 	}
 
+	public double getAverageAllokation(Freq freq) {
+		double orgAlloc = R.getAverageAllokationInOrganisation(this.getFullname(), freq);
+		double teamAlloc = R.getAverageAllokationInTeams(this, freq);
+		return orgAlloc + teamAlloc;
+	}
+
 	/**
 	 * Adds the team entry.
 	 *
@@ -563,7 +575,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	 */
 	private void addTeamEntry(Element listElement, Team team, TeamEntry teamEntry,
 			ISynchronizerRendererEngine renderer) {
-		Role role = Repository.getInstance().getRole(teamEntry.getRoleIdentifier());
+		Role role = R.getRole(teamEntry.getRoleIdentifier());
 
 		if (teamEntry.getRoleIdentifier() != null) {
 			if (role != null) {
@@ -641,14 +653,14 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	public List<ValidationMessage> validate() {
 		List<ValidationMessage> messages = new ArrayList<ValidationMessage>();
 
-		ArrayList<Role> roles = Repository.getInstance().getRolesWithPerson(this.getFullname());
+		ArrayList<Role> roles = R.getOrganisationalRolesWithPerson(this.getFullname());
 		if (roles.size() == 0) {
 			ValidationMessage m = new ValidationMessage(this);
 			m.error("Person has no role", "Person '" + this.getFullname() + "' has no related role");
 			messages.add(m);
 		}
 
-		List<Team> foundTeams = Repository.getInstance().getTeamsWithMember(this);
+		List<Team> foundTeams = R.getTeamsWithMember(this);
 		if (!ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
 			ValidationMessage m = new ValidationMessage(this);
 			m.warning("Person has no team-role", "Person '" + this.getFullname() + "' has no related team-role");

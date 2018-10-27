@@ -55,7 +55,7 @@ import org.rogatio.circlead.view.IWorkitemRenderer;
  * The Class Role holds the core information of the role workitem.
  */
 public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidator, IDataRow {
-
+	
 	/**
 	 * Instantiates a new emtpy role.
 	 */
@@ -451,7 +451,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		renderer.addRoleItem(element, PARENT.toString(), this.getParentIdentifier());
 		renderer.addItem(element, SYNONYMS.toString(), this.getSynonyms());
 
-		List<Role> childRoles = Repository.getInstance().getRoleChildren(this.getTitle());
+		List<Role> childRoles = R.getRoleChildren(this.getTitle());
 		if (childRoles != null) {
 			if (childRoles.size() > 0) {
 				renderer.addH2(element, CHILDS.toString());
@@ -468,9 +468,9 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 
 		// Only show teamroles in atlassian, not in files because print is to big
 		if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
-			List<Team> foundTeams = Repository.getInstance().getTeamsWithRole(this);
+			List<Team> foundTeams = R.getTeamsWithRole(this);
 			if (ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
-				renderer.addH2(element, ROLEPERSONSINTEAM.toString()+" ("+Repository.getInstance().getTeamPersonsWithRole(this).size()+")");
+				renderer.addH2(element, ROLEPERSONSINTEAM.toString()+" ("+R.getTeamPersonsWithRole(this).size()+")");
 				
 				Element ul = element.appendElement("ul");
 				for (Team team : foundTeams) {
@@ -529,7 +529,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		}
 
 		/*
-		 * List<Activity> a = Repository.getInstance().getActivities(this.getTitle());
+		 * List<Activity> a = R.getActivities(this.getTitle());
 		 * 
 		 * if (ObjectUtil.isListNotNullAndEmpty(this.getActivities())) { if
 		 * (ObjectUtil.isListNotNullAndEmpty(a)) { List<String> alist = new
@@ -542,10 +542,10 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		 * this.getActivities()); } }
 		 */
 
-		TreeMap<Activity, List<ActivityDataitem>> map = Repository.getInstance()
+		TreeMap<Activity, List<ActivityDataitem>> map = R
 				.getSubactivitiesWithResponsible(this.getTitle());
 
-		List<Activity> globalActivities = Repository.getInstance().getActivities(this.getTitle());
+		List<Activity> globalActivities = R.getActivities(this.getTitle());
 		List<Activity> ga = new ArrayList<Activity>();
 		for (Activity activity : globalActivities) {
 			if (!containsActivityInSubactivities(activity)) {
@@ -565,7 +565,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		}
 
 		/*
-		 * List<Activity> allA = Repository.getInstance().getActivities(); for (Activity
+		 * List<Activity> allA = R.getActivities(); for (Activity
 		 * activity : allA) { List<ActivityDataitem> ac =
 		 * activity.getSubactivitiesWithResponsible(this.getTitle()); if
 		 * (ObjectUtil.isListNotNullAndEmpty(ac)) { renderer.addSubActivityList(element,
@@ -604,7 +604,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	 * @return true, if successful
 	 */
 	private boolean containsActivityInSubactivities(Activity a) {
-		TreeMap<Activity, List<ActivityDataitem>> map = Repository.getInstance()
+		TreeMap<Activity, List<ActivityDataitem>> map = R
 				.getSubactivitiesWithResponsible(this.getTitle());
 
 		for (Activity activity : map.keySet()) {
@@ -639,7 +639,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 				for (String p : pi) {
 					Element listElement = ulElement.appendElement("li");
 
-					Person person = Repository.getInstance().getPerson(p);
+					Person person = R.getPerson(p);
 
 					if (teamEntry.getRoleIdentifier() != null) {
 						if (person != null) {
@@ -684,8 +684,8 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	 * @return the activities not global
 	 */
 	private List<String> getActivitiesNotGlobal() {
-		List<Activity> a = Repository.getInstance().getActivities(this.getTitle());
-		TreeMap<Activity, List<ActivityDataitem>> map = Repository.getInstance()
+		List<Activity> a = R.getActivities(this.getTitle());
+		TreeMap<Activity, List<ActivityDataitem>> map = R
 				.getSubactivitiesWithResponsible(this.getTitle());
 
 		List<String> alist = new ArrayList<String>();
@@ -740,7 +740,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			ISynchronizerRendererEngine renderer) {
 		if (parentIdentifier != null) {
 			if (!parentIdentifier.equals(this.getTitle())) {
-				Role p = Repository.getInstance().getRole(parentIdentifier);
+				Role p = R.getRole(parentIdentifier);
 				if (p != null) {
 					if (ObjectUtil.isListNotNullAndEmpty(p.getCompetences())) {
 						renderer.addRoleItem(element, "Implizit von", p.getTitle());
@@ -770,6 +770,18 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		return this.getDataitem().getPurpose();
 	}
 
+	/**
+	 * Checks for title.
+	 *
+	 * @return true, if successful
+	 */
+	public boolean hasTitle() {
+		if (this.getDataitem().getTitle() != null) {
+			return true;
+		}
+		return false;
+	}
+	
 	/**
 	 * Checks for abbreviation.
 	 *
@@ -815,15 +827,27 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	public List<ValidationMessage> validate() {
 		List<ValidationMessage> messages = new ArrayList<ValidationMessage>();
 
+		if (!this.hasTitle()) {
+			ValidationMessage m = new ValidationMessage(this);
+			m.warning("No title added", "Role '" + this.getId() + "' has no title");
+			messages.add(m);
+		}
+		
 		if (!this.hasAbbreviation()) {
 			ValidationMessage m = new ValidationMessage(this);
 			m.warning("No abbreviation added", "Role '" + this.getTitle() + "' has no abbreviation");
 			messages.add(m);
 		}
 
-		if (!Repository.getInstance().hasUniqueRoleIdentity(this)) {
+		if (!R.hasUniqueRoleAbbreviation(this)) {
 			ValidationMessage m = new ValidationMessage(this);
 			m.error("No unique abbreviation", "Role '" + this.getTitle() + "' has no unique abbreviation");
+			messages.add(m);
+		}
+		
+		if (!R.hasUniqueRoleTitle(this)) {
+			ValidationMessage m = new ValidationMessage(this);
+			m.error("No unique title", "Role '" + this.getId() + "' has no unique title");
 			messages.add(m);
 		}
 
@@ -841,7 +865,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 
 		if (ObjectUtil.isListNotNullAndEmpty(this.getPersonIdentifiers())) {
 			for (String identifier : getPersonIdentifiers()) {
-				Person person = Repository.getInstance().getPerson(identifier);
+				Person person = R.getPerson(identifier);
 				if (person == null) {
 					ValidationMessage m = new ValidationMessage(this);
 					m.warning("Person not found",
@@ -868,7 +892,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			m.error("Rolegroup not set", "Rolegroup in role '" + this.getTitle() + "' not set.");
 			messages.add(m);
 		} else {
-			Rolegroup rg = Repository.getInstance().getRolegroup(this.getRolegroupIdentifier());
+			Rolegroup rg = R.getRolegroup(this.getRolegroupIdentifier());
 			if (rg == null) {
 				ValidationMessage m = new ValidationMessage(this);
 				m.error("Rolegroup not found", "Rolegroup '" + this.getRolegroupIdentifier() + "' in role '"
@@ -883,7 +907,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		}
 
 		boolean foundChildren = false;
-		List<Role> childRoles = Repository.getInstance().getRoleChildren(this.getTitle());
+		List<Role> childRoles = R.getRoleChildren(this.getTitle());
 		if (childRoles != null) {
 			if (childRoles.size() > 0) {
 				foundChildren = true;

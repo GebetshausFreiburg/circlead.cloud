@@ -11,7 +11,6 @@ package org.rogatio.circlead.view.report;
 import java.util.List;
 
 import org.jsoup.nodes.Element;
-import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.validator.ValidationMessage;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
@@ -36,7 +35,7 @@ public class ValidationReport extends DefaultReport {
 		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 		Element element = new Element("p");
 
-		List<ValidationMessage> messages = Repository.getInstance().validate();
+		List<ValidationMessage> messages = R.validate();
 		
 		renderer.addValidationList(element, messages);
 

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.rogatio.circlead.model.Parameter;
+import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.util.StringUtil;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -94,6 +95,15 @@ public class TeamEntry {
 		this.needed = needed;
 	}
 
+	@JsonIgnore
+	public boolean containsPerson(Person person) {
+		List<String> p = this.getPersons();
+		if (p.contains(person.getFullname())) {
+			return true;
+		}
+		return false;
+	}
+	
 	/**
 	 * Gets the level.
 	 *
