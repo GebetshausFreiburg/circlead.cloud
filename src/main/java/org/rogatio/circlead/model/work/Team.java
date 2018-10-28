@@ -24,7 +24,7 @@ import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
-import org.rogatio.circlead.control.synchronizer.atlassian.parser.TeamTableParserElement;
+import org.rogatio.circlead.control.synchronizer.atlassian.parser.HeaderTableParserElement;
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
 import org.rogatio.circlead.model.data.IDataitem;
@@ -217,7 +217,7 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	 *
 	 * @param table the new team table
 	 */
-	public void setTeamTable(TeamTableParserElement table) {
+	public void setTeamTable(HeaderTableParserElement table) {
 		List<Map<String, String>> dataList = table.getDataList();
 		if (dataList.size() > 0) {
 			List<TeamEntry> teams = new ArrayList<TeamEntry>();

@@ -98,7 +98,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	public void setRolegroupIdentifier(String rolegroup) {
 		this.getDataitem().setRolegroup(rolegroup);
 	}
-
+	
 	/**
 	 * Gets the abbreviation.
 	 *

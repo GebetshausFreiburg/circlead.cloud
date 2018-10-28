@@ -38,7 +38,10 @@ public class DefaultDataitem implements IDataitem {
 	@JsonIgnore
 	final static Logger LOGGER = LogManager.getLogger(DefaultDataitem.class);
 
-	/** The temp id is not really used. Only needed for initial datamigration to new version of circlead. */
+	/**
+	 * The temp id is not really used. Only needed for initial datamigration to new
+	 * version of circlead.
+	 */
 	@JsonIgnore
 	@Deprecated
 	protected String tempId;
@@ -56,8 +59,7 @@ public class DefaultDataitem implements IDataitem {
 	/**
 	 * Sets the temp id.
 	 *
-	 * @param tempId
-	 *            the new temp id
+	 * @param tempId the new temp id
 	 */
 	@JsonProperty("id")
 	protected void setTempId(String tempId) {
@@ -98,11 +100,11 @@ public class DefaultDataitem implements IDataitem {
 	}
 
 	/**
-	 * Sets the uid. Is a important concept, because for every synchronizer (aka datainterface) is is possible to use a unique id.
-	 * But if an interface or end-system needs a given id the dataitem (or workitem) must not be different
+	 * Sets the uid. Is a important concept, because for every synchronizer (aka
+	 * datainterface) is is possible to use a unique id. But if an interface or
+	 * end-system needs a given id the dataitem (or workitem) must not be different
 	 *
-	 * @param uid
-	 *            the new uid
+	 * @param uid the new uid
 	 */
 	@JsonProperty("uid")
 	public void setUid(String uid) {
@@ -179,7 +181,9 @@ public class DefaultDataitem implements IDataitem {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.rogatio.circlead.model.data.IDataitem#getId(org.rogatio.circlead.control.synchronizer.ISynchronizer)
+	 * @see
+	 * org.rogatio.circlead.model.data.IDataitem#getId(org.rogatio.circlead.control.
+	 * synchronizer.ISynchronizer)
 	 */
 	@JsonIgnore
 	public String getId(ISynchronizer synchronizer) {
@@ -206,7 +210,8 @@ public class DefaultDataitem implements IDataitem {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.rogatio.circlead.model.data.IDataitem#setId(java.lang.String, org.rogatio.circlead.control.synchronizer.ISynchronizer)
+	 * @see org.rogatio.circlead.model.data.IDataitem#setId(java.lang.String,
+	 * org.rogatio.circlead.control.synchronizer.ISynchronizer)
 	 */
 	@JsonIgnore
 	public void setId(String id, ISynchronizer synchronizer) {
@@ -248,8 +253,7 @@ public class DefaultDataitem implements IDataitem {
 	/**
 	 * Sets the status.
 	 *
-	 * @param status
-	 *            the new status
+	 * @param status the new status
 	 */
 	public void setStatus(String status) {
 		this.status = status;
@@ -267,8 +271,7 @@ public class DefaultDataitem implements IDataitem {
 	/**
 	 * Sets the created.
 	 *
-	 * @param created
-	 *            the new created
+	 * @param created the new created
 	 */
 	public void setCreated(Date created) {
 		this.created = created;
@@ -286,8 +289,7 @@ public class DefaultDataitem implements IDataitem {
 	/**
 	 * Sets the modified.
 	 *
-	 * @param modified
-	 *            the new modified
+	 * @param modified the new modified
 	 */
 	public void setModified(Date modified) {
 		this.modified = modified;
@@ -305,11 +307,12 @@ public class DefaultDataitem implements IDataitem {
 	/**
 	 * Sets the title.
 	 *
-	 * @param title
-	 *            the new title
+	 * @param title the new title
 	 */
 	public void setTitle(String title) {
-		this.title = title.trim();
+		if (title != null) {
+			this.title = title.trim();
+		}
 	}
 
 	/*
@@ -378,7 +381,8 @@ public class DefaultDataitem implements IDataitem {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.rogatio.circlead.model.data.IDataitem#removeId(org.rogatio.circlead.control.synchronizer.ISynchronizer)
+	 * @see org.rogatio.circlead.model.data.IDataitem#removeId(org.rogatio.circlead.
+	 * control.synchronizer.ISynchronizer)
 	 */
 	@Override
 	public void removeId(ISynchronizer synchronizer) {

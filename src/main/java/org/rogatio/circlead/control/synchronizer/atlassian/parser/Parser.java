@@ -9,6 +9,8 @@
 package org.rogatio.circlead.control.synchronizer.atlassian.parser;
 
 import static org.rogatio.circlead.model.Parameter.ABBREVIATION;
+import static org.rogatio.circlead.model.Parameter.PARENT;
+import static org.rogatio.circlead.model.Parameter.COMPETENCE;
 import static org.rogatio.circlead.model.Parameter.ABBREVIATION2;
 import static org.rogatio.circlead.model.Parameter.ACTIVITIES;
 import static org.rogatio.circlead.model.Parameter.ACTIVITY;
@@ -50,6 +52,7 @@ import static org.rogatio.circlead.model.Parameter.ROLEGROUP;
 import static org.rogatio.circlead.model.Parameter.RULES;
 import static org.rogatio.circlead.model.Parameter.STARTDATE;
 import static org.rogatio.circlead.model.Parameter.STATUS;
+import static org.rogatio.circlead.model.Parameter.COMPETENCETREE;
 import static org.rogatio.circlead.model.Parameter.SUBACTIVITIES;
 import static org.rogatio.circlead.model.Parameter.SUBTYPE;
 import static org.rogatio.circlead.model.Parameter.SUCCESSOR;
@@ -82,6 +85,7 @@ import org.rogatio.circlead.control.synchronizer.atlassian.search.Results;
 import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.data.ActivityDataitem;
+import org.rogatio.circlead.model.data.CompetenceDataitem;
 import org.rogatio.circlead.model.data.ContactDataitem;
 import org.rogatio.circlead.model.data.PersonDataitem;
 import org.rogatio.circlead.model.data.RoleDataitem;
@@ -90,6 +94,7 @@ import org.rogatio.circlead.model.data.TeamDataitem;
 import org.rogatio.circlead.model.data.TeamEntry;
 import org.rogatio.circlead.model.data.Timeslice;
 import org.rogatio.circlead.model.work.Activity;
+import org.rogatio.circlead.model.work.Competence;
 import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
@@ -279,6 +284,50 @@ public class Parser {
 				} else {
 					addPersonListToTableCell(tr, entry.getPersons(), synchronizer);
 				}
+			} else {
+				tr.appendElement("td").attr("colspan", "1").appendText("");
+			}
+		}
+
+		return table;
+	}
+
+	public static Element createCompetenceTable(List<CompetenceDataitem> competencies, ISynchronizer synchronizer,
+			boolean activatedLinks) {
+
+		if (!ObjectUtil.isListNotNullAndEmpty(competencies)) {
+			Element e = new Element("p");
+			return e.appendText("-");
+		}
+
+		Element table = new Element("table");
+		table.attr("class", "wrapped");
+		Element tbody = table.appendElement("tbody");
+
+		Element tr = tbody.appendElement("tr");
+		tr.appendElement("th").attr("colspan", "1").appendText(COMPETENCE.toString());
+		tr.appendElement("th").attr("colspan", "1").appendText(PARENT.toString());
+		tr.appendElement("th").attr("colspan", "1").appendText(DESCRIPTION.toString());
+
+		for (CompetenceDataitem c : competencies) {
+			tr = tbody.appendElement("tr");
+			if (StringUtil.isNotNullAndNotEmpty(c.getTitle())) {
+				Element td = tr.appendElement("td").attr("colspan", "1");
+				td.attr("colspan", "1").appendText(c.getTitle());
+			} else {
+				tr.appendElement("td").attr("colspan", "1").appendText("");
+			}
+
+			if (StringUtil.isNotNullAndNotEmpty(c.getParent())) {
+				Element td = tr.appendElement("td").attr("colspan", "1");
+				td.attr("colspan", "1").appendText(c.getParent());
+			} else {
+				tr.appendElement("td").attr("colspan", "1").appendText("");
+			}
+			
+			if (StringUtil.isNotNullAndNotEmpty(c.getDescription())) {
+				Element td = tr.appendElement("td").attr("colspan", "1");
+				td.attr("colspan", "1").appendText(c.getDescription());
 			} else {
 				tr.appendElement("td").attr("colspan", "1").appendText("");
 			}
@@ -539,6 +588,16 @@ public class Parser {
 	 */
 	private static Element createDataTable(IWorkitem workitem, ISynchronizer synchronizer) {
 		Element table = new Element("table");
+
+		if (workitem instanceof Competence) {
+			Competence w = (Competence) workitem;
+			CompetenceDataitem d = w.getDataitem();
+			addDataPair(ID.toString(), d.getIds(), table);
+//			addDataPair(DESCRIPTION.toString(), d.getDescription(), table);
+			addDataPair(COMPETENCETREE.toString(), Parser.createCompetenceTable(d.getCompetencies(), synchronizer, false),
+					table);
+			addDataPair(STATUS.toString(), Parser.getStatus(d.getStatus()), table);
+		}
 
 		if (workitem instanceof Team) {
 			Team w = (Team) workitem;
@@ -1058,12 +1117,12 @@ public class Parser {
 		param.attr("ac:name", "colour").appendText(color);
 		param = macro.appendElement("ac:parameter");
 		param.attr("ac:name", "title").appendText(name);
-		
+
 		if (inverted) {
 			param = macro.appendElement("ac:parameter");
 			param.attr("ac:name", "subtle").appendText("true");
 		}
-		
+
 		return macro;
 	}
 }

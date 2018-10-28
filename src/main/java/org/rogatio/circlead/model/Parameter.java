@@ -11,6 +11,8 @@ public enum Parameter {
 
 	/** The title of a workitem */
 	TITLE("Titel"),
+	
+	ROOT("Wurzel"),
 
 	/** The name of a bussiness contact */
 	BUSSINESS("Geschäftlich"),
@@ -101,7 +103,7 @@ public enum Parameter {
 
 	/** The result. */
 	RESULT("Erwartetes Ergebnis"),
-
+	
 	/** The description. */
 	DESCRIPTION("Beschreibung"),
 
@@ -205,7 +207,11 @@ public enum Parameter {
 	RESPONSIBILITY("Verantwortung"),
 
 	/** The competencies. */
+	COMPETENCETREE("Kompetenzbaum"),
+	
 	COMPETENCIES("Kompetenzen"),
+	
+	COMPETENCE("Kompetenz"),
 
 	/** The opportunities. */
 	OPPORTUNITIES("Befugnisse"),

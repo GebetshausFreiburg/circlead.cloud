@@ -30,11 +30,13 @@ import org.rogatio.circlead.model.Parameter;
 import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.data.ActivityDataitem;
+import org.rogatio.circlead.model.data.CompetenceDataitem;
 import org.rogatio.circlead.model.data.HowTo;
 import org.rogatio.circlead.model.data.IDataRow;
 import org.rogatio.circlead.model.data.Report;
 import org.rogatio.circlead.model.data.TeamEntry;
 import org.rogatio.circlead.model.work.Activity;
+import org.rogatio.circlead.model.work.Competence;
 import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
@@ -236,6 +238,12 @@ public final class Repository {
 		return ObjectUtil.castList(Role.class, roles);
 	}
 
+	public List<Competence> loadCompetencies() {
+		List<IWorkitem> competencies = connector.load(WorkitemType.COMPETENCE);
+		this.addItems(competencies);
+		return ObjectUtil.castList(Competence.class, competencies);
+	}
+	
 	/**
 	 * Load team-workitems from synchronized system with Connector.
 	 *
@@ -500,7 +508,11 @@ public final class Repository {
 
 		return activities;
 	}
-
+	
+	public List<Competence> getCompetencies() {
+		return this.getRootCompetence().getCompetencies();
+	}
+	
 	/**
 	 * Gets the roles.
 	 *
@@ -1092,6 +1104,51 @@ public final class Repository {
 		return null;
 	}
 
+	public Competence getRootCompetence() {
+		for (IWorkitem workitem : workitems) {
+			if (WorkitemType.COMPETENCE.isTypeOf(workitem)) {
+				return (Competence) workitem;
+			}
+		}
+		return null;
+	}
+
+	public List<Rolegroup> getRootRolegroups() {
+		List<Rolegroup> rootRoles = new ArrayList<Rolegroup>();
+		for (Rolegroup role : this.getRolegroups()) {
+			if (role.getParentIdentifier() == null) {
+				rootRoles.add(role);
+			}
+		}
+		return rootRoles;
+	}
+	
+	public List<Role> getRootRoles() {
+		List<Role> rootRoles = new ArrayList<Role>();
+		for (Role role : this.getRoles()) {
+			if (role.getParentIdentifier() == null) {
+				rootRoles.add(role);
+			}
+		}
+		return rootRoles;
+	}
+
+	/*public List<String> getCompetencesFromRoles() {
+		List<String> c = new ArrayList<String>();
+		for (Role role : this.getRoles()) {
+			List<String> s = role.getCompetences();
+			if (ObjectUtil.isListNotNullAndEmpty(s)) {
+				for (String string : c) {
+					if (!c.contains(string)) {
+						c.add(string);
+					}
+				}
+			}
+		}
+		Collections.sort(c);
+		return c;
+	}*/
+	
 	/**
 	 * Gets the role children of a role.
 	 *
@@ -1128,7 +1185,7 @@ public final class Repository {
 	public void writeIndex() {
 		this.getConnector().writeIndex();
 	}
-	
+
 	/**
 	 * Update reports.
 	 *
@@ -1161,6 +1218,18 @@ public final class Repository {
 	 */
 	public List<IReport> getReports() {
 		return reports;
+	}
+
+	public List<Competence> getCompetenceChildren(String competence) {
+		List<Competence> childs = new ArrayList<Competence>();
+
+		Competence c = this.getRootCompetence();
+
+		if (c != null) {
+			return c.getChildren(competence);
+		}
+
+		return childs;
 	}
 
 	/**

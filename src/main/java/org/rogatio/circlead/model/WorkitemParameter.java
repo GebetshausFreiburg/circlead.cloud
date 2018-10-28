@@ -33,6 +33,8 @@ public enum WorkitemParameter {
 	/** The activityid-parameter for a activity-workitem */
 	ACTIVITYID(Parameter.ACTIVITYID, "Activity-ID", "Aid", "Alternative Id"),
 
+	COMPETENCETREE(Parameter.COMPETENCETREE, "Kompetenzbaum", "Competency-Tree"),
+	
 	/** The description. */
 	DESCRIPTION(Parameter.DESCRIPTION, "Description", "Beschreibung"),
 	
@@ -142,7 +144,7 @@ public enum WorkitemParameter {
 	ROLEGROUP(Parameter.ROLEGROUP, "Rollengruppe", "Funktionsbereich", "Rolegroup"),
 
 	/** The competences. */
-	COMPETENCES(Parameter.COMPETENCIES, "Kompetenzen", "Fähigkeiten", "Kompetenz"),
+	COMPETENCIES(Parameter.COMPETENCIES, "Kompetenzen", "Fähigkeiten", "Kompetenz"),
 
 	/** The persons. */
 	PERSONS(Parameter.PERSONS, "Personen", "Rollenträger", "Person"),

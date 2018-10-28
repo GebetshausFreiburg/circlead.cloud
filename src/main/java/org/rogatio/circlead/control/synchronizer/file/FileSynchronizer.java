@@ -35,12 +35,14 @@ import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.data.ActivityDataitem;
+import org.rogatio.circlead.model.data.CompetenceDataitem;
 import org.rogatio.circlead.model.data.HowTo;
 import org.rogatio.circlead.model.data.PersonDataitem;
 import org.rogatio.circlead.model.data.RoleDataitem;
 import org.rogatio.circlead.model.data.RolegroupDataitem;
 import org.rogatio.circlead.model.data.TeamDataitem;
 import org.rogatio.circlead.model.work.Activity;
+import org.rogatio.circlead.model.work.Competence;
 import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
@@ -84,7 +86,8 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#getIdPattern()
+	 * @see
+	 * org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#getIdPattern()
 	 */
 	@Override
 	public String getIdPattern() {
@@ -94,8 +97,7 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 	/**
 	 * Instantiates a new file synchronizer.
 	 *
-	 * @param dataDirectory
-	 *            the data directory
+	 * @param dataDirectory the data directory
 	 */
 	public FileSynchronizer(String dataDirectory) {
 		setDataDirectory(dataDirectory);
@@ -104,8 +106,7 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 	/**
 	 * Sets the data directory.
 	 *
-	 * @param dataDirectory
-	 *            the new data directory
+	 * @param dataDirectory the new data directory
 	 */
 	public void setDataDirectory(String dataDirectory) {
 		this.dataDirectory = dataDirectory;
@@ -114,16 +115,22 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#update(org.rogatio.circlead.model.work.IWorkitem)
+	 * @see
+	 * org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#update(org.
+	 * rogatio.circlead.model.work.IWorkitem)
 	 */
 	@Override
 	public SynchronizerResult update(IWorkitem workitem) {
 		SynchronizerFactory.getInstance().setActual(this);
 		return add(workitem);
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#update(org.rogatio.circlead.view.IReport)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#update(org.
+	 * rogatio.circlead.view.IReport)
 	 */
 	@Override
 	public SynchronizerResult update(IReport report) {
@@ -134,7 +141,9 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#add(org.rogatio.circlead.model.work.IWorkitem)
+	 * @see
+	 * org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#add(org.rogatio
+	 * .circlead.model.work.IWorkitem)
 	 */
 	@Override
 	public SynchronizerResult add(IWorkitem workitem) {
@@ -152,8 +161,10 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 			writeWorkitemData(workitem, "rolegroups");
 		} else if (WorkitemType.PERSON.isTypeOf(workitem)) {
 			writeWorkitemData(workitem, "persons");
-		}  else if (WorkitemType.TEAM.isTypeOf(workitem)) {
+		} else if (WorkitemType.TEAM.isTypeOf(workitem)) {
 			writeWorkitemData(workitem, "teams");
+		} else if (WorkitemType.COMPETENCE.isTypeOf(workitem)) {
+			writeWorkitemData(workitem, "competencies");
 		}
 
 		writeWorkitemRendered(workitem);
@@ -164,9 +175,13 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 
 		return res;
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#add(org.rogatio.circlead.view.IReport)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#add(org.rogatio
+	 * .circlead.view.IReport)
 	 */
 	@Override
 	public SynchronizerResult add(IReport report) {
@@ -202,7 +217,7 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 		}
 		try {
 			FileUtil.deleteRecursive(new File(dataDirectory + File.separatorChar + "activities"));
-		} catch (Exception e) { 
+		} catch (Exception e) {
 			LOGGER.warn("No directory '" + dataDirectory + File.separatorChar + "activities" + "' found to delete.");
 		}
 		try {
@@ -215,16 +230,19 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 		} catch (Exception e) {
 			LOGGER.warn("No directory '" + dataDirectory + File.separatorChar + "teams" + "' found to delete.");
 		}
+		try {
+			FileUtil.deleteRecursive(new File(dataDirectory + File.separatorChar + "competencies"));
+		} catch (Exception e) {
+			LOGGER.warn("No directory '" + dataDirectory + File.separatorChar + "competencies" + "' found to delete.");
+		}
 
 	}
 
 	/**
 	 * Write workitem data.
 	 *
-	 * @param workitem
-	 *            the workitem
-	 * @param folder
-	 *            the folder
+	 * @param workitem the workitem
+	 * @param folder   the folder
 	 * @return the string
 	 */
 	private String writeWorkitemData(IWorkitem workitem, String folder) {
@@ -237,7 +255,8 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 		try {
 			File dir = new File(dataDirectory + File.separatorChar + folder);
 			dir.mkdirs();
-			File f = new File(dir.toString() + File.separatorChar + "" + workitem.getId(this) + "." + workitem.getType().toLowerCase() + ".json");
+			File f = new File(dir.toString() + File.separatorChar + "" + workitem.getId(this) + "."
+					+ workitem.getType().toLowerCase() + ".json");
 			if (f.exists()) {
 				f.delete();
 			}
@@ -258,6 +277,9 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 			} else if (workitem instanceof Team) {
 				Team team = (Team) workitem;
 				mapper.writeValue(f, team.getDataitem());
+			} else if (workitem instanceof Competence) {
+				Competence competence = (Competence) workitem;
+				mapper.writeValue(f, competence.getDataitem());
 			}
 
 			result = "" + f + "";
@@ -290,7 +312,7 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 				for (String h : report.getHead()) {
 					head.append(h);
 				}
-			} 
+			}
 			head.append("<meta charset=\"utf-8\">");
 			Element body = html.appendElement("body");
 
@@ -300,9 +322,9 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 
 			try {
 				String f = "reports/" + filename + ".html";
-				
+
 				LOGGER.info("Write/Update file '" + f + "'");
-				
+
 				File ff = new File("reports");
 				ff.mkdirs();
 				Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"));
@@ -316,12 +338,11 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 			}
 		}
 	}
-	
+
 	/**
 	 * Write workitem rendered.
 	 *
-	 * @param workitem
-	 *            the workitem
+	 * @param workitem the workitem
 	 */
 	private void writeWorkitemRendered(IWorkitem workitem) {
 		if (workitem instanceof IWorkitemRenderer) {
@@ -358,7 +379,9 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#loadIndex(org.rogatio.circlead.model.WorkitemType)
+	 * @see
+	 * org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#loadIndex(org.
+	 * rogatio.circlead.model.WorkitemType)
 	 */
 	public List<String> loadIndex(WorkitemType workitemType) {
 		SynchronizerFactory.getInstance().setActual(this);
@@ -407,6 +430,8 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 			fileIndex = readFolder("persons");
 		} else if (WorkitemType.TEAM == workitemType) {
 			fileIndex = readFolder("teams");
+		} else if (WorkitemType.COMPETENCE == workitemType) {
+			fileIndex = readFolder("competencies");
 		}
 
 		return fileIndex;
@@ -415,8 +440,7 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 	/**
 	 * Read folder.
 	 *
-	 * @param folder
-	 *            the folder
+	 * @param folder the folder
 	 * @return the list
 	 */
 	private List<String> readFolder(String folder) {
@@ -437,7 +461,9 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#get(java.lang.String)
+	 * @see
+	 * org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#get(java.lang.
+	 * String)
 	 */
 	@Override
 	public IWorkitem get(String filename) throws SynchronizerException {
@@ -447,7 +473,8 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 		Date modified = new Date(file.lastModified());
 
 		if (!file.exists()) {
-			throw new SynchronizerException("Item with id '" + filename + "' could not be loaded with File Synchronizer.");
+			throw new SynchronizerException(
+					"Item with id '" + filename + "' could not be loaded with File Synchronizer.");
 		}
 
 		ObjectMapper mapper = new ObjectMapper();
@@ -473,6 +500,9 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 				} else if (filename.endsWith(".team.json")) {
 					TeamDataitem data = mapper.readValue(file, TeamDataitem.class);
 					item = new Team(data);
+				} else if (filename.endsWith(".competence.json")) {
+					CompetenceDataitem data = mapper.readValue(file, CompetenceDataitem.class);
+					item = new Competence(data);
 				}
 			}
 
@@ -481,11 +511,14 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 			return item;
 
 		} catch (JsonParseException e) {
-			throw new SynchronizerException("Error (JsonParse) loading role '" + file + "'. " + e.getMessage(), e.getCause());
+			throw new SynchronizerException("Error (JsonParse) loading role '" + file + "'. " + e.getMessage(),
+					e.getCause());
 		} catch (JsonMappingException e) {
-			throw new SynchronizerException("Error (JsonMapping) loading role '" + file + "'. " + e.getMessage(), e.getCause());
+			throw new SynchronizerException("Error (JsonMapping) loading role '" + file + "'. " + e.getMessage(),
+					e.getCause());
 		} catch (IOException e) {
-			throw new SynchronizerException("Error (IOException) loading role '" + file + "'. " + e.getMessage(), e.getCause());
+			throw new SynchronizerException("Error (IOException) loading role '" + file + "'. " + e.getMessage(),
+					e.getCause());
 		}
 
 	}
@@ -493,46 +526,45 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 	/**
 	 * Sets the workitem id.
 	 *
-	 * @param filename
-	 *            the filename
-	 * @param wi
-	 *            the wi
-	 * @throws SynchronizerException
-	 *             the synchronizer exception
+	 * @param filename the filename
+	 * @param wi       the wi
+	 * @throws SynchronizerException the synchronizer exception
 	 */
 	private void setWorkitemId(String filename, IWorkitem wi) throws SynchronizerException {
 		String i[] = filename.split("/");
 		for (String ii : i) {
-			if (ii.matches("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}." + wi.getType().toLowerCase() + ".json$")) {
+			if (ii.matches("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}." + wi.getType().toLowerCase()
+					+ ".json$")) {
 				wi.setId(ii.replace("." + wi.getType().toLowerCase() + ".json", ""), this);
 			}
 		}
 
 		if (!filename.contains(wi.getId(this))) {
-			throw new SynchronizerException(
-					"Error loading " + wi.getType().toLowerCase() + " '" + filename + "'. Id '" + wi.getId(this) + "' is not similar to filename-uid.");
+			throw new SynchronizerException("Error loading " + wi.getType().toLowerCase() + " '" + filename + "'. Id '"
+					+ wi.getId(this) + "' is not similar to filename-uid.");
 		}
 	}
 
 	/**
 	 * Creates the file.
 	 *
-	 * @param workitem
-	 *            the workitem
-	 * @param folder
-	 *            the folder
+	 * @param workitem the workitem
+	 * @param folder   the folder
 	 * @return the file
 	 */
 	private File createFile(IWorkitem workitem, String folder) {
 		File dir = new File(dataDirectory + File.separatorChar + folder);
-		File f = new File(dir.toString() + File.separatorChar + "" + workitem.getId(this) + "." + workitem.getType().toLowerCase() + ".json");
+		File f = new File(dir.toString() + File.separatorChar + "" + workitem.getId(this) + "."
+				+ workitem.getType().toLowerCase() + ".json");
 		return f;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#delete(org.rogatio.circlead.model.work.IWorkitem)
+	 * @see
+	 * org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#delete(org.
+	 * rogatio.circlead.model.work.IWorkitem)
 	 */
 	@Override
 	public String delete(IWorkitem workitem) throws SynchronizerException {
@@ -549,6 +581,8 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 			f = createFile(workitem, "persons");
 		} else if (WorkitemType.TEAM.isTypeOf(workitem)) {
 			f = createFile(workitem, "teams");
+		} else if (WorkitemType.COMPETENCE.isTypeOf(workitem)) {
+			f = createFile(workitem, "competencies");
 		}
 		if (f != null) {
 			if (f.exists()) {
@@ -560,8 +594,11 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 		return "NIO";
 	}
 
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#getRenderer()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#getRenderer()
 	 */
 	@Override
 	public ISynchronizerRendererEngine getRenderer() {
@@ -572,50 +609,88 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 	public List<ValidationMessage> validate() {
 		List<ValidationMessage> messages = new ArrayList<ValidationMessage>();
 
-		String bpmnFiles[] = {"end-event-escalation.png", "start-event-none.png", "user-task.png", "start-event-non-interrupting-multiple.png", "intermediate-event-catch-escalation.png", "intermediate-event-throw-escalation.png", "lasso-tool.png", "lane-divide-two.png", "conditional-flow.png", "intermediate-event-catch-signal.png", "gateway-none.png", "start-event-signal.png", "lane-insert-above.png", "gateway-parallel.png", "intermediate-event-catch-link.png", "start-event-parallel-multiple.png", "end-event-signal.png", "end-event-compensation.png", "compensation-marker.png", "participant.png", "parallel-mi-marker.png", "start-event-non-interrupting-parallel-multiple.png", "intermediate-event-catch-non-interrupting-parallel-multiple.png", "lane-insert-below.png", "task-none.png", "intermediate-event-catch-multiple.png", "start-event-escalation.png", "gateway-or.png", "subprocess-expanded.png", "start-event-compensation.png", "data-store.png", "intermediate-event-catch-non-interrupting-message.png", "end-event-error.png", "start-event-non-interrupting-message.png", "task.png", "end-event-terminate.png", "intermediate-event-catch-cancel.png", "start-event-non-interrupting-condition.png", "end-event-message.png", "intermediate-event-catch-error.png", "transaction.png", "ad-hoc-marker.png", "gateway-complex.png", "default-flow.png", "start-event-non-interrupting-escalation.png", "screw-wrench.png", "intermediate-event-catch-non-interrupting-signal.png", "lane.png", "event-subprocess-expanded.png", "end-event-none.png", "subprocess.png", "call-activity.png", "intermediate-event-catch-non-interrupting-timer.png", "intermediate-event-throw-signal.png", "lane-divide-three.png", "sequential-mi-marker.png", "intermediate-event-catch-non-interrupting-multiple.png", "end-event-cancel.png", "receive-task.png", "send-task.png", "connection.png", "subprocess-collapsed.png", "start-event-error.png", "start-event-multiple.png", "service-task.png", "gateway-eventbased.png", "intermediate-event-throw-multiple.png", "trash.png", "intermediate-event-throw-compensation.png", "intermediate-event-catch-condition.png", "intermediate-event-catch-message.png", "gateway-xor.png", "script-task.png", "start-event-non-interrupting-timer.png", "intermediate-event-catch-non-interrupting-condition.png", "intermediate-event-catch-parallel-multiple.png", "start-event-condition.png", "intermediate-event-catch-non-interrupting-escalation.png", "data-object.png", "intermediate-event-catch-compensation.png", "start-event-non-interrupting-signal.png", "start-event-message.png", "manual-task.png", "data-input.png", "sub-process-marker.png", "connection-multi.png", "intermediate-event-throw-message.png", "hand-tool.png", "text-annotation.png", "data-output.png", "loop-marker.png", "start-event-timer.png", "business-rule-task.png", "intermediate-event-throw-link.png", "intermediate-event-catch-timer.png", "intermediate-event-none.png", "end-event-multiple.png", "space-tool.png", "end-event-link.png"};
+		String bpmnFiles[] = { "end-event-escalation.png", "start-event-none.png", "user-task.png",
+				"start-event-non-interrupting-multiple.png", "intermediate-event-catch-escalation.png",
+				"intermediate-event-throw-escalation.png", "lasso-tool.png", "lane-divide-two.png",
+				"conditional-flow.png", "intermediate-event-catch-signal.png", "gateway-none.png",
+				"start-event-signal.png", "lane-insert-above.png", "gateway-parallel.png",
+				"intermediate-event-catch-link.png", "start-event-parallel-multiple.png", "end-event-signal.png",
+				"end-event-compensation.png", "compensation-marker.png", "participant.png", "parallel-mi-marker.png",
+				"start-event-non-interrupting-parallel-multiple.png",
+				"intermediate-event-catch-non-interrupting-parallel-multiple.png", "lane-insert-below.png",
+				"task-none.png", "intermediate-event-catch-multiple.png", "start-event-escalation.png",
+				"gateway-or.png", "subprocess-expanded.png", "start-event-compensation.png", "data-store.png",
+				"intermediate-event-catch-non-interrupting-message.png", "end-event-error.png",
+				"start-event-non-interrupting-message.png", "task.png", "end-event-terminate.png",
+				"intermediate-event-catch-cancel.png", "start-event-non-interrupting-condition.png",
+				"end-event-message.png", "intermediate-event-catch-error.png", "transaction.png", "ad-hoc-marker.png",
+				"gateway-complex.png", "default-flow.png", "start-event-non-interrupting-escalation.png",
+				"screw-wrench.png", "intermediate-event-catch-non-interrupting-signal.png", "lane.png",
+				"event-subprocess-expanded.png", "end-event-none.png", "subprocess.png", "call-activity.png",
+				"intermediate-event-catch-non-interrupting-timer.png", "intermediate-event-throw-signal.png",
+				"lane-divide-three.png", "sequential-mi-marker.png",
+				"intermediate-event-catch-non-interrupting-multiple.png", "end-event-cancel.png", "receive-task.png",
+				"send-task.png", "connection.png", "subprocess-collapsed.png", "start-event-error.png",
+				"start-event-multiple.png", "service-task.png", "gateway-eventbased.png",
+				"intermediate-event-throw-multiple.png", "trash.png", "intermediate-event-throw-compensation.png",
+				"intermediate-event-catch-condition.png", "intermediate-event-catch-message.png", "gateway-xor.png",
+				"script-task.png", "start-event-non-interrupting-timer.png",
+				"intermediate-event-catch-non-interrupting-condition.png",
+				"intermediate-event-catch-parallel-multiple.png", "start-event-condition.png",
+				"intermediate-event-catch-non-interrupting-escalation.png", "data-object.png",
+				"intermediate-event-catch-compensation.png", "start-event-non-interrupting-signal.png",
+				"start-event-message.png", "manual-task.png", "data-input.png", "sub-process-marker.png",
+				"connection-multi.png", "intermediate-event-throw-message.png", "hand-tool.png", "text-annotation.png",
+				"data-output.png", "loop-marker.png", "start-event-timer.png", "business-rule-task.png",
+				"intermediate-event-throw-link.png", "intermediate-event-catch-timer.png",
+				"intermediate-event-none.png", "end-event-multiple.png", "space-tool.png", "end-event-link.png" };
 		for (String file : bpmnFiles) {
-			Path p = Paths.get("data"+File.separatorChar+"images"+File.separatorChar+"bpmn"+File.separatorChar+file);
-			if(!Files.exists(p)) {
+			Path p = Paths.get(
+					"data" + File.separatorChar + "images" + File.separatorChar + "bpmn" + File.separatorChar + file);
+			if (!Files.exists(p)) {
 				ValidationMessage m = new ValidationMessage(this);
-				m.error("File missing", "File '"+p.toString()+"' is missing for usage in FileSynchronizer (BPMN-Display)");
+				m.error("File missing",
+						"File '" + p.toString() + "' is missing for usage in FileSynchronizer (BPMN-Display)");
 				messages.add(m);
 			}
 		}
-		
-		String reportImageFiles[] = {"child.png","group.png","groupchild.png","groupparent.png","groupwithrole.png","parent.png","role.png"};
+
+		String reportImageFiles[] = { "child.png", "group.png", "groupchild.png", "groupparent.png",
+				"groupwithrole.png", "parent.png", "role.png" };
 		for (String file : reportImageFiles) {
-			Path p = Paths.get("reports"+File.separatorChar+"images"+File.separatorChar+file);
-			if(!Files.exists(p)) {
+			Path p = Paths.get("reports" + File.separatorChar + "images" + File.separatorChar + file);
+			if (!Files.exists(p)) {
 				ValidationMessage m = new ValidationMessage(this);
-				m.error("File missing", "File '"+p.toString()+"' is missing for usage in FileSynchronizer (Reports)");
+				m.error("File missing",
+						"File '" + p.toString() + "' is missing for usage in FileSynchronizer (Reports)");
 				messages.add(m);
 			}
 		}
-	
-		Path p = Paths.get("reports"+File.separatorChar+"styles.css");
-		if(!Files.exists(p)) {
+
+		Path p = Paths.get("reports" + File.separatorChar + "styles.css");
+		if (!Files.exists(p)) {
 			ValidationMessage m = new ValidationMessage(this);
-			m.error("File missing", "File '"+p.toString()+"' is missing for usage in FileSynchronizer (Reports)");
+			m.error("File missing", "File '" + p.toString() + "' is missing for usage in FileSynchronizer (Reports)");
 			messages.add(m);
 		}
-		
-		p = Paths.get("reports"+File.separatorChar+"stylesCategoryReport.css");
-		if(!Files.exists(p)) {
+
+		p = Paths.get("reports" + File.separatorChar + "stylesCategoryReport.css");
+		if (!Files.exists(p)) {
 			ValidationMessage m = new ValidationMessage(this);
-			m.error("File missing", "File '"+p.toString()+"' is missing for usage in FileSynchronizer (Reports)");
+			m.error("File missing", "File '" + p.toString() + "' is missing for usage in FileSynchronizer (Reports)");
 			messages.add(m);
 		}
-		
-		p = Paths.get("web"+File.separatorChar+"styles.css");
-		if(!Files.exists(p)) {
+
+		p = Paths.get("web" + File.separatorChar + "styles.css");
+		if (!Files.exists(p)) {
 			ValidationMessage m = new ValidationMessage(this);
-			m.error("File missing", "File '"+p.toString()+"' is missing for usage in FileSynchronizer (Websites)");
+			m.error("File missing", "File '" + p.toString() + "' is missing for usage in FileSynchronizer (Websites)");
 			messages.add(m);
 		}
-		
+
 		return messages;
 	}
-	
+
 	@Override
 	public void writeIndex() {
 		LOGGER.info("Write Index");

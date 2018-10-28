@@ -26,7 +26,9 @@ public enum WorkitemType {
 	/** The role-workitem. Is similar to class.getSimpleName() */
 	ROLE("Role"),
 	/** The rolegroup-workitem. Is similar to class.getSimpleName() */
-	ROLEGROUP("Rolegroup"), TEAM("Team"),
+	ROLEGROUP("Rolegroup"),
+	COMPETENCE("Competence"),
+	TEAM("Team"),
 	/** The person-workitem. Is similar to class.getSimpleName() */
 	PERSON("Person");
 

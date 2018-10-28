@@ -19,14 +19,14 @@ import org.jsoup.select.Elements;
 /**
  * The Class HeadTableParserElement.
  */
-public class TeamTableParserElement implements IParserElement {
+public class HeaderTableParserElement implements IParserElement {
 
 	/**
 	 * Instantiates a new head table parser element.
 	 *
 	 * @param text the text
 	 */
-	public TeamTableParserElement(Object text) {
+	public HeaderTableParserElement(Object text) {
 		parse(text);
 	}
 

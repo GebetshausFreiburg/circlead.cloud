@@ -13,11 +13,13 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
 import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer;
 import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.model.WorkitemType;
+import org.rogatio.circlead.model.work.Competence;
 import org.rogatio.circlead.util.DropboxUtil;
 import org.rogatio.circlead.view.report.OverviewReport;
 import org.rogatio.circlead.view.report.PersonListReport;
@@ -66,6 +68,8 @@ public class SyncCirclead {
 	public static final boolean ACTIVITIES = true;
 
 	public static final boolean TEAMS = true;
+	
+	public static final boolean COMPETENCIES = true;
 
 	public static final boolean WRITE_UPDATE = true;
 
@@ -114,6 +118,10 @@ public class SyncCirclead {
 		if (TEAMS) {
 			repository.loadTeams();
 		}
+		
+		if (COMPETENCIES) {
+			repository.loadCompetencies();
+		}
 
 		/* Loads the index of howtos and reports from both interfaces */
 		if (HOWTOS) {
@@ -131,7 +139,7 @@ public class SyncCirclead {
 		if (WRITE_UPDATE) {
 			results = repository.updateWorkitems();
 		}
-
+		
 		if (REPORTS) {
 			/* Add report-handler */
 			/*
@@ -158,7 +166,7 @@ public class SyncCirclead {
 		}
 		
 		repository.writeIndex();
-		
+	
 		repository.writeExcel("Mitarbeiterliste", WorkitemType.PERSON, null);
 		repository.writeExcel("Rollen", WorkitemType.ROLE, null);
 		repository.writeExcel("Rollengruppen", WorkitemType.ROLEGROUP, null);
@@ -169,7 +177,7 @@ public class SyncCirclead {
 		DbxTeamClientV2 dbxClient = DropboxUtil.getTeamClient("gebetshaus.credentials");
 		DropboxUtil.uploadFileToTeamFolder(dbxClient, new File("exports/Gebetsstundenübersicht.xlsx"),
 				"/06_GBH_BO_Gebetstundenorga/Gebetsstundenübersicht.xlsx", "Matthias Wegner");
-
+		
 	}
 
 }

@@ -14,6 +14,7 @@ import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.URLCO
 import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.USER;
 import static org.rogatio.circlead.model.WorkitemType.ACTIVITY;
 import static org.rogatio.circlead.model.WorkitemType.HOWTO;
+import static org.rogatio.circlead.model.WorkitemType.COMPETENCE;
 import static org.rogatio.circlead.model.WorkitemType.PERSON;
 import static org.rogatio.circlead.model.WorkitemType.REPORT;
 import static org.rogatio.circlead.model.WorkitemType.TEAM;
@@ -50,7 +51,7 @@ import org.rogatio.circlead.control.synchronizer.atlassian.parser.ListParserElem
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.PairTableParserElement;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.StatusParserElement;
-import org.rogatio.circlead.control.synchronizer.atlassian.parser.TeamTableParserElement;
+import org.rogatio.circlead.control.synchronizer.atlassian.parser.HeaderTableParserElement;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.TextParserElement;
 import org.rogatio.circlead.control.synchronizer.atlassian.search.Result;
 import org.rogatio.circlead.control.synchronizer.atlassian.search.Results;
@@ -59,6 +60,7 @@ import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.data.HowTo;
 import org.rogatio.circlead.model.data.Report;
 import org.rogatio.circlead.model.work.Activity;
+import org.rogatio.circlead.model.work.Competence;
 import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
@@ -94,6 +96,8 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 
 	/** Name of the page in space which holds the teams. */
 	private final String TEAMSPAGE = "Teams";
+	
+	private final String COMPETENCIESPAGE = "Competencies";
 
 	/** The Constant LOGGER. */
 	private final static Logger LOGGER = LogManager.getLogger(AtlassianSynchronizer.class);
@@ -157,6 +161,10 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 				}
 				if (wi instanceof Team) {
 					a.setTitle(TEAMSPAGE);
+				}
+				
+				if (wi instanceof Competence) {
+					a.setTitle(COMPETENCIESPAGE);
 				}
 
 				a.setType("page");
@@ -436,6 +444,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	 */
 	private List<IWorkitem> load(WorkitemType type) throws SynchronizerException {
 		List<String> list = loadIndex(type);
+		
 		List<IWorkitem> workitems = new ArrayList<IWorkitem>();
 
 		for (String index : list) {
@@ -594,6 +603,10 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 				SynchronizerResult page = confluenceClient.search("type=\"page\" and title=\"Teams\"");
 				id = "" + Parser.getIdFromResult(page.getContent());
 			}
+			if (COMPETENCE.isEquals(type)) {
+				SynchronizerResult page = confluenceClient.search("type=\"page\" and title=\"Competencies\"");
+				id = "" + Parser.getIdFromResult(page.getContent());
+			}
 		}
 
 		return id;
@@ -682,6 +695,10 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 					type = TEAM.getLowerName();
 					acestorId = getAcestorId(TEAMSPAGE, p);
 				}
+				if (COMPETENCE.isEquals(label)) {
+					type = COMPETENCE.getLowerName();
+					acestorId = getAcestorId(COMPETENCIESPAGE, p);
+				}
 				acestorPages.put(type, acestorId);
 			}
 
@@ -719,8 +736,10 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 								parserElement = new PairTableParserElement(unparsedValue);
 							} else if (WorkitemParameter.ACTIVITY.has(key)) {
 								parserElement = new ListParserElement(unparsedValue);
+							} else if (WorkitemParameter.COMPETENCETREE.has(key)) {
+								parserElement = new HeaderTableParserElement(unparsedValue);
 							} else if (WorkitemParameter.TEAMROLES.has(key)) {
-								parserElement = new TeamTableParserElement(unparsedValue);
+								parserElement = new HeaderTableParserElement(unparsedValue);
 							} else if (WorkitemParameter.SUBACTIVITY.has(key)) {
 								parserElement = new ActivityTableParserElement(unparsedValue);
 							} else if (WorkitemParameter.IMAGE.has(key)) {
@@ -731,7 +750,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 								parserElement = new ListParserElement(unparsedValue);
 							} else if (WorkitemParameter.GUIDELINES.has(key)) {
 								parserElement = new ListParserElement(unparsedValue);
-							} else if (WorkitemParameter.COMPETENCES.has(key)) {
+							} else if (WorkitemParameter.COMPETENCIES.has(key)) {
 								parserElement = new ListParserElement(unparsedValue);
 							} else if (WorkitemParameter.PERSONS.has(key)) {
 								parserElement = new ListParserElement(unparsedValue);
@@ -777,6 +796,35 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	private IWorkitem setData(Map<String, IParserElement> pairs, String type, String indexId) {
 		Vector<String> keys = new Vector<String>(pairs.keySet());
 
+		if (COMPETENCE.isEquals(type)) {
+			Competence competence = new Competence();
+
+			for (String key : keys) {
+				IParserElement value = pairs.get(key);
+				if (WorkitemParameter.ID.has(key)) {
+					competence.getDataitem().setUid(value.toString());
+				} else if (WorkitemParameter.CREATED.has(key)) {
+					competence.setCreated(value.toString());
+				} else if (WorkitemParameter.MODIFIED.has(key)) {
+					competence.setModified(value.toString());
+				} else if (WorkitemParameter.COMPETENCETREE.has(key)) {
+					competence.setCompetenceTable((HeaderTableParserElement) value);
+				} else if (WorkitemParameter.DESCRIPTION.has(key)) {
+					competence.setDescription(value.toString());
+				} else if (WorkitemParameter.VERSION.has(key)) {
+					competence.setVersion(value.toString());
+				} else if (WorkitemParameter.STATUS.has(key)) {
+					competence.setStatus(value.toString());
+				} else {
+					LOGGER.debug("Value from parser not set: key=" + key + ", value=" + pairs.get(key));
+				}
+			}
+
+			competence.setId(indexId, this);
+
+			return competence;
+		}
+		
 		if (TEAM.isEquals(type)) {
 			Team team = new Team();
 
@@ -803,7 +851,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 				} else if (WorkitemParameter.SUBTYPE.has(key)) {
 					team.setTeamSubtype(value.toString());
 				} else if (WorkitemParameter.TEAMROLES.has(key)) {
-					team.setTeamTable((TeamTableParserElement) value);
+					team.setTeamTable((HeaderTableParserElement) value);
 				} else if (WorkitemParameter.VERSION.has(key)) {
 					team.setVersion(value.toString());
 				} else if (WorkitemParameter.STATUS.has(key)) {
@@ -985,7 +1033,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 					role.setOpportunities((ListParserElement) value);
 				} else if (WorkitemParameter.GUIDELINES.has(key)) {
 					role.setGuidelines((ListParserElement) value);
-				} else if (WorkitemParameter.COMPETENCES.has(key)) {
+				} else if (WorkitemParameter.COMPETENCIES.has(key)) {
 					role.setCompetences((ListParserElement) value);
 				} else if (WorkitemParameter.PERSONS.has(key)) {
 					role.setPersonIdentifiers((ListParserElement) value);
