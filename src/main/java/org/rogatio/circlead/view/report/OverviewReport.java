@@ -29,6 +29,7 @@ public class OverviewReport extends DefaultReport {
 	 */
 	public OverviewReport() {
 		this.setName("Overview Report");
+		this.setDescription("Druckvorlage aller Rollengruppen und Rollen (mit Seitenumbruch nach jedem Workitem)");
 	}
 
 	/*

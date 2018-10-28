@@ -52,6 +52,8 @@ import org.rogatio.circlead.view.FileRendererEngine;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.IWorkitemRenderer;
 import org.rogatio.circlead.view.report.IReport;
+import org.rogatio.circlead.view.report.IndexCirclead;
+import org.rogatio.circlead.view.report.IndexWorkitems;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -612,5 +614,18 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 		}
 		
 		return messages;
+	}
+	
+	@Override
+	public void writeIndex() {
+		LOGGER.info("Write Index");
+		writeReportRendered(new IndexCirclead());
+		writeReportRendered(new IndexWorkitems(WorkitemType.ROLE));
+		writeReportRendered(new IndexWorkitems(WorkitemType.ROLEGROUP));
+		writeReportRendered(new IndexWorkitems(WorkitemType.PERSON));
+		writeReportRendered(new IndexWorkitems(WorkitemType.ACTIVITY));
+		writeReportRendered(new IndexWorkitems(WorkitemType.TEAM));
+		writeReportRendered(new IndexWorkitems(WorkitemType.REPORT));
+		writeReportRendered(new IndexWorkitems(WorkitemType.HOWTO));
 	}
 }

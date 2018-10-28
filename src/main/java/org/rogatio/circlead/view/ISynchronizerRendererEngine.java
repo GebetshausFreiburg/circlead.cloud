@@ -15,11 +15,14 @@ import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.validator.ValidationMessage;
 import org.rogatio.circlead.model.data.ActivityDataitem;
+import org.rogatio.circlead.model.data.HowTo;
 import org.rogatio.circlead.model.work.Activity;
 import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
+import org.rogatio.circlead.model.work.Team;
+import org.rogatio.circlead.view.report.IReport;
 
 /**
  * The Interface ISynchronizerRenderer.
@@ -49,6 +52,14 @@ public interface ISynchronizerRendererEngine {
 	 */
 	public void addRolegroupList(Element element, List<Rolegroup> list);
 
+	public void addTeamList(Element element, List<Team> list);
+	
+	public void addPersonList(Element element, List<Person> list);
+
+	public void addReportList(Element element, List<IReport> list);
+
+	public void addHowToList(Element element, List<HowTo> list);
+	
 	/**
 	 * Adds the role list.
 	 *

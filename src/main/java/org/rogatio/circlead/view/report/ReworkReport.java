@@ -30,12 +30,15 @@ public class ReworkReport extends DefaultReport {
 	 */
 	public ReworkReport() {
 		this.setName("Rework Report");
+		this.setDescription("Anzeige aller Workitems (Rollen und Rollengruppen) die nicht Aktiv sind");
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.rogatio.circlead.view.DefaultReport#render(org.rogatio.circlead.control.synchronizer.ISynchronizer)
+	 * @see
+	 * org.rogatio.circlead.view.DefaultReport#render(org.rogatio.circlead.control.
+	 * synchronizer.ISynchronizer)
 	 */
 	@Override
 	public Element render(ISynchronizer synchronizer) {
@@ -48,16 +51,16 @@ public class ReworkReport extends DefaultReport {
 		rolegroups.addAll(R.getRolegroups(WorkitemStatusParameter.INPROGRESS));
 		rolegroups.addAll(R.getRolegroups(WorkitemStatusParameter.TEMPORARY));
 		renderer.addWorkitemTable(element, ObjectUtil.castList(IWorkitem.class, rolegroups));
-		
+
 		element.appendElement("p");
-		
+
 		List<Role> roles = new ArrayList<Role>();
 		roles.addAll(R.getRoles(WorkitemStatusParameter.DRAFT));
 		roles.addAll(R.getRoles(WorkitemStatusParameter.CRITICAL));
 		roles.addAll(R.getRoles(WorkitemStatusParameter.INPROGRESS));
 		roles.addAll(R.getRoles(WorkitemStatusParameter.TEMPORARY));
 		renderer.addWorkitemTable(element, ObjectUtil.castList(IWorkitem.class, roles));
-		
+
 		return element;
 	}
 

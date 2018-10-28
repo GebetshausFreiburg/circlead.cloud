@@ -24,6 +24,7 @@ public class PersonListReport extends DefaultReport {
 
 	public PersonListReport() {
 		this.setName("PersonList Report");
+		this.setDescription("Mitarbeiterliste)");
 	}
 
 	/*

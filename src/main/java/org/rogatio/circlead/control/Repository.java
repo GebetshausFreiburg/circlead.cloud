@@ -1125,6 +1125,10 @@ public final class Repository {
 		}
 	}
 
+	public void writeIndex() {
+		this.getConnector().writeIndex();
+	}
+	
 	/**
 	 * Update reports.
 	 *

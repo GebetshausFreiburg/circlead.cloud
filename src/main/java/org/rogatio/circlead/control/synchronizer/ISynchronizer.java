@@ -28,6 +28,8 @@ public interface ISynchronizer {
 	 */
 	public List<String> loadIndex(WorkitemType workitemType);
 	
+	public void writeIndex();
+	
 	/**
 	 * Gets the workitem of named id
 	 *

@@ -119,8 +119,8 @@ public class Connector {
 				} else {
 					int idx = workitems.indexOf(wi);
 					IWorkitem r = workitems.get(idx);
-					
-					/* Merge-method ist not finally implemented Not used.*/
+
+					/* Merge-method ist not finally implemented Not used. */
 					@SuppressWarnings("unused")
 					IWorkitem merged = merge(r, wi);
 				}
@@ -347,6 +347,13 @@ public class Connector {
 			}
 		}
 		return results;
+	}
+
+	public void writeIndex() {
+		List<ISynchronizer> synchronizers = SynchronizerFactory.getInstance().getSynchronizers();
+		for (ISynchronizer synchronizer : synchronizers) {
+			synchronizer.writeIndex();
+		}
 	}
 
 	/**

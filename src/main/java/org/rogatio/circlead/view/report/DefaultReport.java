@@ -21,16 +21,30 @@ import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 public class DefaultReport implements IReport {
 
 	protected final Repository R = Repository.getInstance();
-	
+
 	/** The name. */
 	private String name = null;
 
-	/* (non-Javadoc)
+	/** The description. */
+	private String description = null;
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.view.IReport#getName()
 	 */
 	@Override
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * Sets the description.
+	 *
+	 * @param description the new description
+	 */
+	protected void setDescription(String description) {
+		this.description = description;
 	}
 
 	/**
@@ -42,8 +56,11 @@ public class DefaultReport implements IReport {
 		this.name = name;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.view.IWorkitemRenderer#render(org.rogatio.circlead.control.synchronizer.ISynchronizer)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.rogatio.circlead.view.IWorkitemRenderer#render(org.rogatio.circlead.
+	 * control.synchronizer.ISynchronizer)
 	 */
 	@Override
 	public Element render(ISynchronizer synchronizer) {
@@ -55,6 +72,11 @@ public class DefaultReport implements IReport {
 		List<String> head = new ArrayList<String>();
 		head.add("<link rel=\"stylesheet\" href=\"styles.css\">");
 		return head;
+	}
+
+	@Override
+	public String getDescription() {
+		return description;
 	}
 
 }

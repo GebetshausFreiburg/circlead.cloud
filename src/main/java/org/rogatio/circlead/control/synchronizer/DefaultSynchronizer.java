@@ -137,4 +137,8 @@ public class DefaultSynchronizer implements ISynchronizer {
 		return null;
 	}
 
+	@Override
+	public void writeIndex() {
+	}
+
 }

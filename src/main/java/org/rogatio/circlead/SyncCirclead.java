@@ -123,7 +123,7 @@ public class SyncCirclead {
 		if (REPORTS) {
 			repository.loadIndexReports();
 		}
-
+		
 		/*
 		 * Re-Render loaded data back to set interfaces. Update pages in confluence and
 		 * writes html-pages to local folder 'web'
@@ -156,7 +156,9 @@ public class SyncCirclead {
 			repository.addReports();
 			results = repository.updateReports();
 		}
-
+		
+		repository.writeIndex();
+		
 		repository.writeExcel("Mitarbeiterliste", WorkitemType.PERSON, null);
 		repository.writeExcel("Rollen", WorkitemType.ROLE, null);
 		repository.writeExcel("Rollengruppen", WorkitemType.ROLEGROUP, null);

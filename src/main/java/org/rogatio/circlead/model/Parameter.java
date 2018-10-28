@@ -161,7 +161,13 @@ public enum Parameter {
 
 	/** The name of persons. */
 	PERSONS("Personen"),
-
+	
+	ROLEGROUPS("Rollengruppen"),
+	
+	TEAMS("Teams"),
+	
+	REPORTS("Reports"),
+	
 	/** The name of teamroles. */
 	TEAMROLES("Teamrollen"),
 

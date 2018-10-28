@@ -26,6 +26,8 @@ import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.ObjectUtil;
+import org.rogatio.circlead.util.StringUtil;
+import org.rogatio.circlead.view.report.IReport;
 
 /**
  * The Class RenderUtil.
@@ -73,8 +75,12 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addWorkitemTable(org.jsoup.nodes.Element, java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.rogatio.circlead.view.ISynchronizerRendererEngine#addWorkitemTable(org.
+	 * jsoup.nodes.Element, java.util.List)
 	 */
 	public void addWorkitemTable(Element element, List<IWorkitem> workitem) {
 		if (ObjectUtil.isListNotNullAndEmpty(workitem)) {
@@ -117,8 +123,14 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addSubActivityList(org.jsoup.nodes.Element, java.util.List, org.rogatio.circlead.model.work.Activity, org.rogatio.circlead.model.work.Role)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.rogatio.circlead.view.ISynchronizerRendererEngine#addSubActivityList(org.
+	 * jsoup.nodes.Element, java.util.List,
+	 * org.rogatio.circlead.model.work.Activity,
+	 * org.rogatio.circlead.model.work.Role)
 	 */
 	public void addSubActivityList(Element element, List<ActivityDataitem> list, Activity activity, Role role) {
 		List<Activity> a = Repository.getInstance().getActivities(role.getTitle());
@@ -212,7 +224,7 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 					}
 					if (role.getDataitem().hasSkill(person.getFullname())) {
 						String skill = role.getDataitem().getSkill(person.getFullname());
-						WorkitemStatusParameter status = WorkitemStatusParameter.get(skill+"%");
+						WorkitemStatusParameter status = WorkitemStatusParameter.get(skill + "%");
 						if (status != null) {
 							li.append("&nbsp;").appendElement("div").attr("id", "status" + status.getColor())
 									.appendText(status.getName());
@@ -220,14 +232,15 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 					}
 					if (role.getDataitem().hasRecurrenceRule(person.getFullname())) {
 						String rule = role.getDataitem().getRecurrenceRule(person.getFullname());
-						li.append("&nbsp;<span style=\"color: rgb(192,192,192);\">"+rule.replace("R=", "").replace("RRULE=", "")+"</span>");
-						
+						li.append("&nbsp;<span style=\"color: rgb(192,192,192);\">"
+								+ rule.replace("R=", "").replace("RRULE=", "") + "</span>");
+
 //						li.append("&nbsp;");
 //						li.appendText(rule);
 					}
 					if (role.getDataitem().hasComment(person.getFullname())) {
 						String comment = role.getDataitem().getComment(person.getFullname());
-						li.append("&nbsp;|&nbsp;<span style=\"color: rgb(192,192,192);\">"+comment+"</span>");
+						li.append("&nbsp;|&nbsp;<span style=\"color: rgb(192,192,192);\">" + comment + "</span>");
 					}
 				}
 			}
@@ -297,7 +310,7 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 				String skill = role.getDataitem().getSkill(identifier);
 //				li.append("&nbsp;");
 //				li.appendText("" + skill + "%");
-				WorkitemStatusParameter status = WorkitemStatusParameter.get(skill+"%");
+				WorkitemStatusParameter status = WorkitemStatusParameter.get(skill + "%");
 				if (status != null) {
 					li.append("&nbsp;").appendElement("div").attr("id", "status" + status.getColor())
 							.appendText(status.getName());
@@ -305,14 +318,15 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 			}
 			if (role.getDataitem().hasRecurrenceRule(identifier)) {
 				String rule = role.getDataitem().getRecurrenceRule(identifier);
-				li.append("&nbsp;<span style=\"color: rgb(192,192,192);\">"+rule.replace("R=", "").replace("RRULE=", "")+"</span>");
-				
+				li.append("&nbsp;<span style=\"color: rgb(192,192,192);\">"
+						+ rule.replace("R=", "").replace("RRULE=", "") + "</span>");
+
 //				li.append("&nbsp;");
 //				li.appendText(rule);
 			}
 			if (role.getDataitem().hasComment(identifier)) {
 				String comment = role.getDataitem().getComment(identifier);
-				li.append("&nbsp;|&nbsp;<span style=\"color: rgb(192,192,192);\">"+comment+"</span>");
+				li.append("&nbsp;|&nbsp;<span style=\"color: rgb(192,192,192);\">" + comment + "</span>");
 			}
 		}
 
@@ -375,7 +389,7 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 				String skill = role.getDataitem().getSkill(identifier);
 //				li.append("&nbsp;");
 //				li.appendText("" + skill + "%");
-				WorkitemStatusParameter status = WorkitemStatusParameter.get(skill+"%");
+				WorkitemStatusParameter status = WorkitemStatusParameter.get(skill + "%");
 				if (status != null) {
 					li.append("&nbsp;").appendElement("div").attr("id", "status" + status.getColor())
 							.appendText(status.getName());
@@ -383,14 +397,15 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 			}
 			if (role.getDataitem().hasRecurrenceRule(identifier)) {
 				String rule = role.getDataitem().getRecurrenceRule(identifier);
-				li.append("&nbsp;<span style=\"color: rgb(192,192,192);\">"+rule.replace("R=", "").replace("RRULE=", "")+"</span>");
-				
+				li.append("&nbsp;<span style=\"color: rgb(192,192,192);\">"
+						+ rule.replace("R=", "").replace("RRULE=", "") + "</span>");
+
 //				li.append("&nbsp;");
 //				li.appendText(rule);
 			}
 			if (role.getDataitem().hasComment(identifier)) {
 				String comment = role.getDataitem().getComment(identifier);
-				li.append("&nbsp;|&nbsp;<span style=\"color: rgb(192,192,192);\">"+comment+"</span>");
+				li.append("&nbsp;|&nbsp;<span style=\"color: rgb(192,192,192);\">" + comment + "</span>");
 			}
 		}
 
@@ -491,8 +506,12 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addActivityItem(org.jsoup.nodes.Element, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.rogatio.circlead.view.ISynchronizerRendererEngine#addActivityItem(org.
+	 * jsoup.nodes.Element, java.lang.String, java.lang.String)
 	 */
 	public void addActivityItem(Element element, String description, String content) {
 		Activity r = Repository.getInstance().getActivity(content);
@@ -541,8 +560,12 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addTeamItem(org.jsoup.nodes.Element, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.rogatio.circlead.view.ISynchronizerRendererEngine#addTeamItem(org.jsoup.
+	 * nodes.Element, java.lang.String, java.lang.String)
 	 */
 	public void addTeamItem(Element element, String description, String content) {
 		Team r = Repository.getInstance().getTeam(content);
@@ -563,9 +586,13 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 			div.appendText("-");
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addPersonItem(org.jsoup.nodes.Element, java.lang.String, java.lang.String)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.rogatio.circlead.view.ISynchronizerRendererEngine#addPersonItem(org.jsoup
+	 * .nodes.Element, java.lang.String, java.lang.String)
 	 */
 	public void addPersonItem(Element element, String description, String content) {
 		Person r = Repository.getInstance().getPerson(content);
@@ -587,7 +614,6 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		}
 	}
 
-	
 	/**
 	 * Adds the rolegroup item.
 	 *
@@ -673,6 +699,67 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		Element table = element.appendElement("div").appendElement("table");
 		for (ValidationMessage vm : list) {
 			addDataPair(vm.getType().name(), vm.getMessage(), table);
+		}
+	}
+
+	@Override
+	public void addTeamList(Element element, List<Team> list) {
+		if (list != null) {
+			if (list.size() > 0) {
+				Element ul = element.appendElement("div").appendElement("ul");
+				for (Team team : list) {
+					Element li = ul.appendElement("li");
+					li.appendElement("a").attr("href", "../web/" + team.getId(synchronizer) + ".html")
+							.appendText(team.getTitle());
+				}
+			}
+		}
+	}
+
+	@Override
+	public void addPersonList(Element element, List<Person> list) {
+		if (list != null) {
+			if (list.size() > 0) {
+				Element ul = element.appendElement("div").appendElement("ul");
+				for (Person person : list) {
+					Element li = ul.appendElement("li");
+					li.appendElement("a").attr("href", "../web/" + person.getId(synchronizer) + ".html")
+							.appendText(person.getTitle());
+				}
+			}
+		}
+	}
+
+	@Override
+	public void addReportList(Element element, List<IReport> list) {
+		if (list != null) {
+			if (list.size() > 0) {
+				Element ul = element.appendElement("div").appendElement("ul");
+				for (IReport report : list) {
+					Element li = ul.appendElement("li");
+					li.appendElement("a").attr("href", "../web/" + report.getName() + ".html")
+							.appendText(report.getName());
+					if (StringUtil.isNotNullAndNotEmpty(report.getDescription())) {
+						li.appendText(report.getDescription());
+					}
+				}
+			}
+		}
+	}
+
+	@Override
+	public void addHowToList(Element element, List<HowTo> list) {
+		if (list != null) {
+			if (list.size() > 0) {
+				Element ul = element.appendElement("div").appendElement("ul");
+				for (HowTo howto : list) {
+					if (this.getSynchronizer().getClass().getSimpleName().equals(howto.getSynchronizer())) {
+						Element li = ul.appendElement("li");
+						li.appendElement("a").attr("href", "../web/" + howto.getTitle() + ".html")
+								.appendText(howto.getTitle());
+					}
+				}
+			}
 		}
 	}
 }

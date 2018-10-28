@@ -24,6 +24,7 @@ public class PersonListReportDetails extends DefaultReport {
 
 	public PersonListReportDetails() {
 		this.setName("PersonList Report Details");
+		this.setDescription("Detaillierte Mitarbeiterliste (inkl. Auslastung und Rollenanzahl))");
 	}
 
 	/*

@@ -28,6 +28,7 @@ import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.ObjectUtil;
+import org.rogatio.circlead.view.report.IReport;
 
 /**
  * The Class Atlassian Renderer allows rendering from object-data to html for
@@ -145,7 +146,7 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 			}
 		}
 	}
-
+	
 	/**
 	 * Adds the role list.
 	 *
@@ -708,5 +709,53 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 			addDataPair(vm.getType().name(), vm.getMessage(), table);
 		}
 
+	}
+
+	@Override
+	public void addTeamList(Element element, List<Team> list) {
+		if (ObjectUtil.isListNotNullAndEmpty(list)) {
+			Element ul = element.appendElement("div").appendElement("ul");
+			for (Team team : list) {
+				Element li = ul.appendElement("li");
+				li.appendElement("ac:link").append(
+						"<ri:page ri:content-title=\"" + team.getTitle() + "\" ri:version-at-save=\"1\" />");
+			}
+		}
+	}
+
+	@Override
+	public void addPersonList(Element element, List<Person> list) {
+		if (ObjectUtil.isListNotNullAndEmpty(list)) {
+			Element ul = element.appendElement("div").appendElement("ul");
+			for (Person person : list) {
+				Element li = ul.appendElement("li");
+				li.appendElement("ac:link").append(
+						"<ri:page ri:content-title=\"" + person.getTitle() + "\" ri:version-at-save=\"1\" />");
+			}
+		}
+	}
+
+	@Override
+	public void addReportList(Element element, List<IReport> list) {
+		if (ObjectUtil.isListNotNullAndEmpty(list)) {
+			Element ul = element.appendElement("div").appendElement("ul");
+			for (IReport report : list) {
+				Element li = ul.appendElement("li");
+				li.appendElement("ac:link").append(
+						"<ri:page ri:content-title=\"" + report.getName() + "\" ri:version-at-save=\"1\" />");
+			}
+		}
+	}
+
+	@Override
+	public void addHowToList(Element element, List<HowTo> list) {
+		if (ObjectUtil.isListNotNullAndEmpty(list)) {
+			Element ul = element.appendElement("div").appendElement("ul");
+			for (HowTo howto : list) {
+				Element li = ul.appendElement("li");
+				li.appendElement("ac:link").append(
+						"<ri:page ri:content-title=\"" + howto.getTitle() + "\" ri:version-at-save=\"1\" />");
+			}
+		}
 	}
 }
