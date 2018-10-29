@@ -36,6 +36,7 @@ public class PersonListReport extends DefaultReport {
 	 */
 	@Override
 	public Element render(ISynchronizer synchronizer) {
+		@SuppressWarnings("unused")
 		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 		Element element = new Element("p");
 

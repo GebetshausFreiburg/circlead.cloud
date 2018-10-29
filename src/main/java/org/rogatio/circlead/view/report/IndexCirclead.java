@@ -8,17 +8,12 @@
  */
 package org.rogatio.circlead.view.report;
 
-import java.util.List;
-
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer;
 import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.model.Parameter;
 import org.rogatio.circlead.model.WorkitemType;
-import org.rogatio.circlead.model.work.Role;
-import org.rogatio.circlead.model.work.Rolegroup;
-import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
 public class IndexCirclead extends DefaultReport {
@@ -37,6 +32,7 @@ public class IndexCirclead extends DefaultReport {
 	 */
 	@Override
 	public Element render(ISynchronizer synchronizer) {
+		@SuppressWarnings("unused")
 		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 		Element element = new Element("p");
 

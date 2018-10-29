@@ -30,7 +30,6 @@ import org.rogatio.circlead.model.Parameter;
 import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.data.ActivityDataitem;
-import org.rogatio.circlead.model.data.CompetenceDataitem;
 import org.rogatio.circlead.model.data.HowTo;
 import org.rogatio.circlead.model.data.IDataRow;
 import org.rogatio.circlead.model.data.Report;
@@ -238,6 +237,11 @@ public final class Repository {
 		return ObjectUtil.castList(Role.class, roles);
 	}
 
+	/**
+	 * Load competencies.
+	 *
+	 * @return the list
+	 */
 	public List<Competence> loadCompetencies() {
 		List<IWorkitem> competencies = connector.load(WorkitemType.COMPETENCE);
 		this.addItems(competencies);
@@ -509,6 +513,11 @@ public final class Repository {
 		return activities;
 	}
 	
+	/**
+	 * Gets the competencies.
+	 *
+	 * @return the competencies
+	 */
 	public List<Competence> getCompetencies() {
 		return this.getRootCompetence().getCompetencies();
 	}
@@ -926,6 +935,12 @@ public final class Repository {
 		return list;
 	}
 
+	/**
+	 * Gets the roles with person.
+	 *
+	 * @param person the person
+	 * @return the roles with person
+	 */
 	public ArrayList<Role> getRolesWithPerson(Person person) {
 		ArrayList<Role> found = getOrganisationalRolesWithPerson(person);
 		ArrayList<Role> found2 = getTeamRolesWithPerson(person);
@@ -1104,6 +1119,11 @@ public final class Repository {
 		return null;
 	}
 
+	/**
+	 * Gets the root competence.
+	 *
+	 * @return the root competence
+	 */
 	public Competence getRootCompetence() {
 		for (IWorkitem workitem : workitems) {
 			if (WorkitemType.COMPETENCE.isTypeOf(workitem)) {
@@ -1113,6 +1133,11 @@ public final class Repository {
 		return null;
 	}
 
+	/**
+	 * Gets the root rolegroups.
+	 *
+	 * @return the root rolegroups
+	 */
 	public List<Rolegroup> getRootRolegroups() {
 		List<Rolegroup> rootRoles = new ArrayList<Rolegroup>();
 		for (Rolegroup role : this.getRolegroups()) {
@@ -1123,6 +1148,11 @@ public final class Repository {
 		return rootRoles;
 	}
 	
+	/**
+	 * Gets the root roles.
+	 *
+	 * @return the root roles
+	 */
 	public List<Role> getRootRoles() {
 		List<Role> rootRoles = new ArrayList<Role>();
 		for (Role role : this.getRoles()) {
@@ -1133,21 +1163,43 @@ public final class Repository {
 		return rootRoles;
 	}
 
-	/*public List<String> getCompetencesFromRoles() {
-		List<String> c = new ArrayList<String>();
+	/**
+	 * Gets the competences from roles.
+	 *
+	 * @return the competences from roles
+	 */
+	public Map<String, List<Role>> getCompetencesFromRoles() {
+		List<String> competencies = new ArrayList<String>();
 		for (Role role : this.getRoles()) {
-			List<String> s = role.getCompetences();
-			if (ObjectUtil.isListNotNullAndEmpty(s)) {
-				for (String string : c) {
-					if (!c.contains(string)) {
-						c.add(string);
+			List<String> temp = role.getCompetences();
+			if (ObjectUtil.isListNotNullAndEmpty(temp)) {
+				for (String c : temp) {
+					if (!competencies.contains(c)) {
+						competencies.add(c);
 					}
 				}
 			}
 		}
-		Collections.sort(c);
-		return c;
-	}*/
+		Collections.sort(competencies);
+		Map<String, List<Role>> map = new TreeMap<String, List<Role>>();
+		for (String competence : competencies) {
+			List<Role> foundRoles = findRolesWithCompetence(competence);
+			map.put(competence, foundRoles);
+		}
+		return map;
+	}
+	
+	public List<Role> findRolesWithCompetence(String competence) {
+		List<Role> foundRoles = new ArrayList<Role>();
+		for (Role r : this.getRoles()) {
+			if (r.getCompetences()!=null) {
+				if (r.getCompetences().contains(competence)) {
+					foundRoles.add(r);
+				}
+			}
+		}
+		return foundRoles;
+	}
 	
 	/**
 	 * Gets the role children of a role.
@@ -1182,6 +1234,9 @@ public final class Repository {
 		}
 	}
 
+	/**
+	 * Write index.
+	 */
 	public void writeIndex() {
 		this.getConnector().writeIndex();
 	}
@@ -1210,6 +1265,14 @@ public final class Repository {
 	public void addReport(IReport report) {
 		reports.add(report);
 	}
+	
+	public void addReports(List<IReport> reports) {
+		if (reports!=null) {
+			for (IReport iReport : reports) {
+				reports.add(iReport);		
+			}
+		}
+	}
 
 	/**
 	 * Gets the reports.
@@ -1220,6 +1283,12 @@ public final class Repository {
 		return reports;
 	}
 
+	/**
+	 * Gets the competence children.
+	 *
+	 * @param competence the competence
+	 * @return the competence children
+	 */
 	public List<Competence> getCompetenceChildren(String competence) {
 		List<Competence> childs = new ArrayList<Competence>();
 
@@ -1319,6 +1388,12 @@ public final class Repository {
 
 	}
 
+	/**
+	 * Gets the organisational roles with person.
+	 *
+	 * @param person the person
+	 * @return the organisational roles with person
+	 */
 	public ArrayList<Role> getOrganisationalRolesWithPerson(Person person) {
 		return getOrganisationalRolesWithPerson(person.getFullname());
 	}

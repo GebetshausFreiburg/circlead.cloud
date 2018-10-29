@@ -30,15 +30,22 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.rogatio.circlead.control.Repository;
-import org.rogatio.circlead.model.data.CompetenceDataitem;
 import org.rogatio.circlead.model.work.Competence;
 import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.ColorPalette;
 
+/**
+ * The Class WorkitemTree.
+ */
 public class WorkitemTree {
 
+	/**
+	 * Instantiates a new workitem tree.
+	 *
+	 * @param type the type
+	 */
 	public WorkitemTree(WorkitemType type) {
 		if (type == WorkitemType.ROLE) {
 			createRoleTree();
@@ -51,6 +58,9 @@ public class WorkitemTree {
 		}
 	}
 
+	/**
+	 * Creates the competence tree.
+	 */
 	private void createCompetenceTree() {
 		TreeNode root = new TreeNode(Parameter.ROOT.toString());
 		setRoot(root);
@@ -67,6 +77,9 @@ public class WorkitemTree {
 		}
 	}
 
+	/**
+	 * Creates the rolegroup tree.
+	 */
 	private void createRolegroupTree() {
 		TreeNode root = new TreeNode(Parameter.ROOT.toString());
 		setRoot(root);
@@ -82,6 +95,9 @@ public class WorkitemTree {
 		}
 	}
 
+	/**
+	 * Creates the role tree.
+	 */
 	private void createRoleTree() {
 		TreeNode root = new TreeNode(Parameter.ROOT.toString());
 		setRoot(root);
@@ -118,10 +134,23 @@ public class WorkitemTree {
 		this.root = root;
 	}
 
+	/**
+	 * Gets the tree node.
+	 *
+	 * @param workitem the workitem
+	 * @return the tree node
+	 */
 	public TreeNode getTreeNode(IWorkitem workitem) {
 		return getTreeNode(workitem, root);
 	}
 
+	/**
+	 * Gets the tree node.
+	 *
+	 * @param workitem the workitem
+	 * @param node the node
+	 * @return the tree node
+	 */
 	public TreeNode getTreeNode(IWorkitem workitem, TreeNode node) {
 		List<TreeNode> children = node.getChildren();
 
@@ -141,6 +170,9 @@ public class WorkitemTree {
 		return null;
 	}
 
+	/**
+	 * Creates the leaf color map.
+	 */
 	private void createLeafColorMap() {
 		List<IWorkitem> leafs = new ArrayList<IWorkitem>();
 		getTreeLeafs(root, leafs);
@@ -155,6 +187,11 @@ public class WorkitemTree {
 		}
 	}
 
+	/**
+	 * Creates the trunk color map.
+	 *
+	 * @param wi the wi
+	 */
 	private void createTrunkColorMap(IWorkitem wi) {
 		TreeNode leafNode = getTreeNode(wi);
 		if (leafNode != null) {
@@ -195,6 +232,13 @@ public class WorkitemTree {
 		}
 	}
 
+	/**
+	 * Gets the tree leafs.
+	 *
+	 * @param treeNode the tree node
+	 * @param leafs the leafs
+	 * @return the tree leafs
+	 */
 	public void getTreeLeafs(TreeNode treeNode, List<IWorkitem> leafs) {
 		if (treeNode.getChildCount() > 0) {
 			for (TreeNode subTreeNode : treeNode.getChildren()) {
@@ -205,6 +249,12 @@ public class WorkitemTree {
 		}
 	}
 
+	/**
+	 * Adds the child node competence.
+	 *
+	 * @param parent the parent
+	 * @param competence the competence
+	 */
 	private void addChildNodeCompetence(TreeNode parent, Competence competence) {
 		TreeNode node = new TreeNode(competence, parent);
 		List<Competence> children = Repository.getInstance().getCompetenceChildren(competence.getTitle());
@@ -215,6 +265,12 @@ public class WorkitemTree {
 		}
 	}
 
+	/**
+	 * Adds the child node rolegroup.
+	 *
+	 * @param parent the parent
+	 * @param rolegroup the rolegroup
+	 */
 	private void addChildNodeRolegroup(TreeNode parent, Rolegroup rolegroup) {
 		TreeNode node = new TreeNode(rolegroup, parent);
 		List<Rolegroup> children = Repository.getInstance().getRolegroupChildren(rolegroup.getTitle());
@@ -223,6 +279,12 @@ public class WorkitemTree {
 		}
 	}
 
+	/**
+	 * Adds the child node role.
+	 *
+	 * @param parent the parent
+	 * @param role the role
+	 */
 	private void addChildNodeRole(TreeNode parent, Role role) {
 		TreeNode node = new TreeNode(role, parent);
 		List<Role> children = Repository.getInstance().getRoleChildren(role.getTitle());
@@ -231,12 +293,22 @@ public class WorkitemTree {
 		}
 	}
 
+	/** The Constant LOGGER. */
 	final static Logger LOGGER = LogManager.getLogger(WorkitemTree.class);
 
+	/**
+	 * Prints the tree.
+	 */
 	public void printTree() {
 		printNode("", root);
 	}
 
+	/**
+	 * Prints the node.
+	 *
+	 * @param spacer the spacer
+	 * @param node the node
+	 */
 	private void printNode(String spacer, TreeNode node) {
 		LOGGER.info(
 				spacer + "<font color=\"" + node.getHtmlColor() + "\">" + node.getWorkitem().getTitle() + "</font>");

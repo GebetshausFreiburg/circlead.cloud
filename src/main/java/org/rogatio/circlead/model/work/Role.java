@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.jsoup.nodes.Element;
-import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.ListParserElement;
@@ -629,6 +628,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	 * @param renderer  the renderer
 	 * @return true, if successful
 	 */
+	@SuppressWarnings("unused")
 	@Deprecated
 	private boolean addTeamPerson(Element ulElement, Team team, TeamEntry teamEntry,
 			ISynchronizerRendererEngine renderer) {

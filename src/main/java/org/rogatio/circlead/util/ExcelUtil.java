@@ -48,6 +48,7 @@ public class ExcelUtil {
 	 * @return the XSSF cell style
 	 */
 	public static XSSFCellStyle addColorBackground(XSSFCellStyle style, byte r, byte g, byte b) {
+		@SuppressWarnings("deprecation")
 		XSSFColor color = new XSSFColor();
 		color.setRGB(new byte[] { r, g, b });
 		style.setFillForegroundColor(color);
@@ -84,7 +85,7 @@ public class ExcelUtil {
 		for (Parameter p : headerRow) {
 			XSSFCell cell = row.createCell(headerRow.indexOf(p));
 			XSSFCellStyle HEADERSTYLE = workbook.createCellStyle();
-			HEADERSTYLE.setAlignment(org.apache.poi.ss.usermodel.HorizontalAlignment.CENTER.LEFT);
+			HEADERSTYLE.setAlignment(org.apache.poi.ss.usermodel.HorizontalAlignment.LEFT);
 			HEADERSTYLE.setVerticalAlignment(org.apache.poi.ss.usermodel.VerticalAlignment.TOP);
 			ExcelUtil.addColorBackground(HEADERSTYLE, (byte) 60, (byte) 60, (byte) 60);
 			cell.setCellStyle(HEADERSTYLE);
