@@ -8,6 +8,8 @@
  */
 package org.rogatio.circlead.model.work;
 
+import static org.rogatio.circlead.model.Parameter.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -75,6 +77,17 @@ public class Competence extends DefaultWorkitem implements IWorkitemRenderer, IV
 	private Map<CompetenceDataitem, Competence> map = new HashMap<CompetenceDataitem, Competence>();
 
 	public List<Competence> getCompetencies() {
+
+		if (map.size() == 0) {
+			// Sets mapping-table to have Entities of class-type Competence. Needs to be forced to filled here in
+			//CompetenceDataitems are set by Json-ObjectMapper
+			for (CompetenceDataitem competenceDataitem : this.getDataitem().getCompetencies()) {
+				if (competenceDataitem != null) {
+					map.put(competenceDataitem, new Competence(competenceDataitem));
+				}
+			}
+		}
+
 		List<Competence> c = new ArrayList<Competence>();
 		for (CompetenceDataitem cd : this.getDataitem().getCompetencies()) {
 			c.add(map.get(cd));
@@ -85,7 +98,9 @@ public class Competence extends DefaultWorkitem implements IWorkitemRenderer, IV
 	public void setCompetencies(List<CompetenceDataitem> competencies) {
 
 		for (CompetenceDataitem competenceDataitem : competencies) {
-			map.put(competenceDataitem, new Competence(competenceDataitem));
+			if (competenceDataitem != null) {
+				map.put(competenceDataitem, new Competence(competenceDataitem));
+			}
 		}
 
 		this.getDataitem().setCompetencies(competencies);
@@ -114,8 +129,11 @@ public class Competence extends DefaultWorkitem implements IWorkitemRenderer, IV
 	public List<Competence> getRootCompetencies() {
 		List<Competence> roots = new ArrayList<Competence>();
 		for (Competence c : this.getCompetencies()) {
-			if (!StringUtil.isNotNullAndNotEmpty(c.getParent())) {
-				roots.add(c);
+			System.out.println(c.getTitle() + ": " + c.getParent());
+			if (c != null) {
+				if (!StringUtil.isNotNullAndNotEmpty(c.getParent())) {
+					roots.add(c);
+				}
 			}
 		}
 		return roots;
@@ -145,32 +163,71 @@ public class Competence extends DefaultWorkitem implements IWorkitemRenderer, IV
 
 	@Override
 	public Element render(ISynchronizer synchronizer) {
+		@SuppressWarnings("unused")
 		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 		Element element = new Element("p");
 
 		WorkitemTree tree = new WorkitemTree(WorkitemType.COMPETENCE);
 
-		Element ul = element.appendElement("ul");
+		System.out.println(getRootCompetencies().size());
 
-		showNodes("", tree.getRoot(), ul);
+		Element table = new Element("table");
+		table.attr("class", "wrapped");
+		Element tbody = table.appendElement("tbody");
 
-//		for (CompetenceDataitem c : this.getCompetencies()) {
-//			ul.appendElement("li");
-//		}
-//		<span style="color: rgb(0,255,0);">sdsdsds</span>
+		Element tr = tbody.appendElement("tr");
+		tr.appendElement("th").attr("colspan", "1").appendText(COMPETENCE.toString());
+		tr.appendElement("th").attr("colspan", "1").appendText(ROLES.toString());
+		tr.appendElement("th").attr("colspan", "1").appendText(DESCRIPTION.toString());
+
+		tree.printTree();
+
+		showNodes("", tree.getRoot(), tbody, renderer);
+
+		table.appendTo(element);
 
 		return element;
 	}
 
-	private void showNodes(String spacer, TreeNode node, Element e) {
-//		System.out.println(node);
-		e.appendElement("li")
-				.append(spacer + "<span style=\"color: rgb(" + node.getColor().getRed() + ","
-						+ node.getColor().getGreen() + "," + node.getColor().getBlue() + ");\">"
-						+ node.getWorkitem().getTitle() + "</span>");
-		if (node.getChildCount() > 0) {
-			for (TreeNode n : node.getChildren()) {
-				showNodes(spacer + "&nbsp;&nbsp;", n, e);
+	private void showNodes(String spacer, TreeNode node, Element tbody, ISynchronizerRendererEngine renderer) {
+
+		if (node.getWorkitem() instanceof Competence) {
+			Competence c = (Competence) node.getWorkitem();
+
+			Element tr = tbody.appendElement("tr");
+			Element td = tr.appendElement("td").attr("colspan", "1");
+			
+			Element t = new Element("table").attr("style", "border:none;");
+			Element tre = t.appendElement("tr");
+			tre.appendElement("td").attr("style", "white-space:nowrap;").attr("style", "border:none;").append(spacer);
+			
+			tre.appendElement("td").attr("style", "border:none;").append("<span style=\"color: rgb(" + node.getColor().getRed() + "," + node.getColor().getGreen()
+					+ "," + node.getColor().getBlue() + ");\">" + node.getWorkitem().getTitle() + "</span>");
+
+			t.appendTo(td);
+			
+			List<Role> roles = R.findRolesWithCompetence(c.getTitle());
+			td = tr.appendElement("td").attr("colspan", "1");
+			renderer.addRoleList(td, roles);
+
+			if (node.getChildCount() > 0) {
+				for (TreeNode n : node.getChildren()) {
+					showNodes(spacer + "&nbsp;&nbsp;", n, tbody, renderer);
+				}
+			}
+			
+			td = tr.appendElement("td").attr("colspan", "1");
+			if (c.getDescription() != null) {
+				td.appendText(c.getDescription());
+			} else {
+				td.appendText("-");
+			}
+		
+		} else {
+			if (node.getChildCount() > 0) {
+				for (TreeNode n : node.getChildren()) {
+					showNodes(spacer + "&nbsp;&nbsp;", n, tbody, renderer);
+				}
 			}
 		}
 	}

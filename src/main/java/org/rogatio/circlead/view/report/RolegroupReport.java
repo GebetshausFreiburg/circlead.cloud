@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jsoup.nodes.Element;
+import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
 import org.rogatio.circlead.model.work.Role;
@@ -20,7 +21,8 @@ import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
 /**
- * The Class RolegroupReport shows for every rolegroup the included data with all coresponding roles. Pagebreak is included after every item.
+ * The Class RolegroupReport shows for every rolegroup the included data with
+ * all coresponding roles. Pagebreak is included after every item.
  */
 public class RolegroupReport extends DefaultReport {
 
@@ -28,10 +30,34 @@ public class RolegroupReport extends DefaultReport {
 	private Rolegroup rolegroup;
 
 	/**
+	 * Creates the reports.
+	 *
+	 * @return the list
+	 */
+	public static List<IReport> createReports() {
+		List<IReport> reports = new ArrayList<IReport>();
+		Repository repository = Repository.getInstance();
+		if (repository.getRolegroups().size() > 0) {
+			List<Rolegroup> rolegroups = repository.getRolegroups();
+			for (Rolegroup rolegroup : rolegroups) {
+				reports.add(new RolegroupReport(rolegroup));
+			}
+		}
+		return reports;
+	}
+
+	public RolegroupReport(String rolegroupIdentifier) {
+		Rolegroup rolegroup = Repository.getInstance().getRolegroup(rolegroupIdentifier);
+		if (rolegroup != null) {
+			this.setName("Report '" + rolegroup.getTitle() + "'");
+			this.rolegroup = rolegroup;
+		}
+	}
+
+	/**
 	 * Instantiates a new rolegroup report.
 	 *
-	 * @param rolegroup
-	 *            the rolegroup
+	 * @param rolegroup the rolegroup
 	 */
 	public RolegroupReport(Rolegroup rolegroup) {
 		this.setName("Report '" + rolegroup.getTitle() + "'");
@@ -41,7 +67,9 @@ public class RolegroupReport extends DefaultReport {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.rogatio.circlead.view.DefaultReport#render(org.rogatio.circlead.control.synchronizer.ISynchronizer)
+	 * @see
+	 * org.rogatio.circlead.view.DefaultReport#render(org.rogatio.circlead.control.
+	 * synchronizer.ISynchronizer)
 	 */
 	@Override
 	public Element render(ISynchronizer synchronizer) {
@@ -62,12 +90,12 @@ public class RolegroupReport extends DefaultReport {
 				for (String p : pIds) {
 					if (!persons.contains(p)) {
 						persons.add(p);
-					}	
+					}
 				}
 			}
 		}
 		renderer.addList(element, persons);
-		
+
 		renderer.addH3(element, "Vorgänge zur Rollengruppe");
 		addJiraMacro(element, rolegroup);
 
@@ -83,7 +111,7 @@ public class RolegroupReport extends DefaultReport {
 
 				renderer.addH3(element, "Vorgänge zur Rolle");
 				addJiraMacro(element, role);
-				
+
 				element.append("<p style=\"page-break-before: always\">");
 			}
 		}
@@ -94,7 +122,7 @@ public class RolegroupReport extends DefaultReport {
 	/**
 	 * Adds the jira macro.
 	 *
-	 * @param element the element
+	 * @param element   the element
 	 * @param rolegroup the rolegroup
 	 */
 	private void addJiraMacro(Element element, Rolegroup rolegroup) {
@@ -107,16 +135,16 @@ public class RolegroupReport extends DefaultReport {
 		jqlQueryString.append("Rolegroup:" + rolegroup.getTitle().replace(" ", ""));
 
 		if (ObjectUtil.isListNotNullAndEmpty(rolegroup.getSynonyms())) {
-			
+
 			List<String> rgList = new ArrayList<String>();
 			for (String s : rolegroup.getSynonyms()) {
 				rgList.add(s.replace(" ", ""));
 			}
-			
+
 			jqlQueryString.append(", ");
-			jqlQueryString.append("Rollengruppe:"+String.join(", Rollengruppe:", rgList));
+			jqlQueryString.append("Rollengruppe:" + String.join(", Rollengruppe:", rgList));
 			jqlQueryString.append(", ");
-			jqlQueryString.append("Rolegroup:"+String.join(", Rolegroup", rgList));
+			jqlQueryString.append("Rolegroup:" + String.join(", Rolegroup", rgList));
 		}
 
 		jqlQueryString.append(") order by created DESC");
@@ -129,7 +157,7 @@ public class RolegroupReport extends DefaultReport {
 	 * Adds the jira macro.
 	 *
 	 * @param element the element
-	 * @param role the role
+	 * @param role    the role
 	 */
 	private void addJiraMacro(Element element, Role role) {
 		String columns = "key,summary,type,created,updated,due,assignee,reporter,priority,status,resolution";
@@ -141,16 +169,16 @@ public class RolegroupReport extends DefaultReport {
 		jqlQueryString.append("Role:" + role.getTitle().replace(" ", ""));
 
 		if (ObjectUtil.isListNotNullAndEmpty(role.getSynonyms())) {
-			
+
 			List<String> rgList = new ArrayList<String>();
 			for (String s : role.getSynonyms()) {
 				rgList.add(s.replace(" ", ""));
 			}
-			
+
 			jqlQueryString.append(", ");
-			jqlQueryString.append("Role:"+String.join(", Role:", rgList));
+			jqlQueryString.append("Role:" + String.join(", Role:", rgList));
 			jqlQueryString.append(", ");
-			jqlQueryString.append("Rolle:"+String.join(", Rolle:", rgList));
+			jqlQueryString.append("Rolle:" + String.join(", Rolle:", rgList));
 		}
 
 		jqlQueryString.append(") order by created DESC");

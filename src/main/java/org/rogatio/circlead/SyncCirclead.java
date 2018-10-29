@@ -13,13 +13,11 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
 import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer;
 import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.model.WorkitemType;
-import org.rogatio.circlead.model.work.Competence;
 import org.rogatio.circlead.util.DropboxUtil;
 import org.rogatio.circlead.view.report.OverviewReport;
 import org.rogatio.circlead.view.report.PersonListReport;
@@ -47,7 +45,8 @@ public class SyncCirclead {
 	// TODO Atlassian User-Check (for Image-Usage or User-Link)
 	// TODO Velocity als Render-Changer nutzen
 	// TODO Activity-Process-Builder (yWorks) erzeugen
-	// TODO Add Index-File-Creator to find all roles, persons, ... (not needed for Atlassian, but for File-Synchronizer)
+	// TODO Add Index-File-Creator to find all roles, persons, ... (not needed for
+	// Atlassian, but for File-Synchronizer)
 
 	/** The Constant REPORTS. */
 	public static final boolean REPORTS = true;
@@ -68,7 +67,9 @@ public class SyncCirclead {
 	public static final boolean ACTIVITIES = true;
 
 	public static final boolean TEAMS = true;
-	
+
+	public static final boolean EXPORT = true;
+
 	public static final boolean COMPETENCIES = true;
 
 	public static final boolean WRITE_UPDATE = true;
@@ -118,7 +119,7 @@ public class SyncCirclead {
 		if (TEAMS) {
 			repository.loadTeams();
 		}
-		
+
 		if (COMPETENCIES) {
 			repository.loadCompetencies();
 		}
@@ -131,7 +132,7 @@ public class SyncCirclead {
 		if (REPORTS) {
 			repository.loadIndexReports();
 		}
-		
+
 		/*
 		 * Re-Render loaded data back to set interfaces. Update pages in confluence and
 		 * writes html-pages to local folder 'web'
@@ -139,16 +140,11 @@ public class SyncCirclead {
 		if (WRITE_UPDATE) {
 			results = repository.updateWorkitems();
 		}
-		
+
+		/* Add report-handler */
 		if (REPORTS) {
-			/* Add report-handler */
-			/*
-			 * if (repository.getRolegroups().size() > 0) { List<Rolegroup> rolegroups =
-			 * repository.getRolegroups(); for (Rolegroup rolegroup : rolegroups) {
-			 * repository.addReport(new RolegroupReport(rolegroup)); } }
-			 */
-			repository.addReport(new RolegroupReport(Repository.getInstance().getRolegroup("Gebetstunden")));
-			
+			// repository.addReports(RolegroupReport.createReports());
+			repository.addReport(new RolegroupReport("Gebetstunden"));
 			repository.addReport(new RoleHolderReport());
 			repository.addReport(new OverviewReport());
 			repository.addReport(new ValidationReport());
@@ -164,20 +160,21 @@ public class SyncCirclead {
 			repository.addReports();
 			results = repository.updateReports();
 		}
-		
+
 		repository.writeIndex();
-	
-		repository.writeExcel("Mitarbeiterliste", WorkitemType.PERSON, null);
-		repository.writeExcel("Rollen", WorkitemType.ROLE, null);
-		repository.writeExcel("Rollengruppen", WorkitemType.ROLEGROUP, null);
 
-		PrayHourExporter phe = new PrayHourExporter();
-		phe.export("Gebetsstundenübersicht");
+		if (EXPORT) {
+			repository.writeExcel("Mitarbeiterliste", WorkitemType.PERSON, null);
+			repository.writeExcel("Rollen", WorkitemType.ROLE, null);
+			repository.writeExcel("Rollengruppen", WorkitemType.ROLEGROUP, null);
 
-		DbxTeamClientV2 dbxClient = DropboxUtil.getTeamClient("gebetshaus.credentials");
-		DropboxUtil.uploadFileToTeamFolder(dbxClient, new File("exports/Gebetsstundenübersicht.xlsx"),
-				"/06_GBH_BO_Gebetstundenorga/Gebetsstundenübersicht.xlsx", "Matthias Wegner");
-		
+			PrayHourExporter phe = new PrayHourExporter();
+			phe.export("Gebetsstundenübersicht");
+
+			DbxTeamClientV2 dbxClient = DropboxUtil.getTeamClient("gebetshaus.credentials");
+			DropboxUtil.uploadFileToTeamFolder(dbxClient, new File("exports/Gebetsstundenübersicht.xlsx"),
+					"/06_GBH_BO_Gebetstundenorga/Gebetsstundenübersicht.xlsx", "Matthias Wegner");
+		}
 	}
 
 }

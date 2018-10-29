@@ -12,9 +12,6 @@ import java.util.List;
 
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
-import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer;
-import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
-import org.rogatio.circlead.model.Parameter;
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.data.HowTo;
 import org.rogatio.circlead.model.work.Activity;
@@ -22,7 +19,6 @@ import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.model.work.Team;
-import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
 public class IndexWorkitems extends DefaultReport {
