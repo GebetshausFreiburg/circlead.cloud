@@ -112,7 +112,7 @@ public class Connector {
 		List<String> list = loadIndex(type);
 		for (String index : list) {
 			IWorkitem wi = null;
-			wi = get(index);
+			wi = get(index); 
 			if (wi != null) {
 				if (!workitems.contains(wi)) {
 					workitems.add(wi);
@@ -412,7 +412,7 @@ public class Connector {
 				wi = synchronizer.get(indexId);
 				return wi;
 			} catch (SynchronizerException e) {
-				LOGGER.trace(e);
+				LOGGER.error(e);
 			}
 		}
 		return null;

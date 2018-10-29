@@ -130,6 +130,7 @@ public class TeamEntry {
 	 *
 	 * @return the persons
 	 */
+	@JsonIgnore
 	public List<String> getPersons() {
 		return personIdentifiers;
 	}
@@ -209,12 +210,17 @@ public class TeamEntry {
 			recurrenceRules.put(personFullname, value);
 		}
 	}
+	
+	public void setPersonIdentifiers(List<String> personIdentifiers) {
+		this.personIdentifiers = personIdentifiers;
+	}
 
 	/**
 	 * Sets the person identifiers.
 	 *
 	 * @param personIdentifiers the new person identifiers
 	 */
+	@JsonIgnore
 	public void setPersonIdentifiers(String personIdentifiers) {
 
 		List<String> list = new ArrayList<String>();

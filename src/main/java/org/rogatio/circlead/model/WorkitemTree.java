@@ -48,7 +48,7 @@ public class WorkitemTree {
 	 */
 	public WorkitemTree(WorkitemType type) {
 		if (type == WorkitemType.ROLE) {
-			createRoleTree();
+			createRoleTree(); 
 		}
 		if (type == WorkitemType.ROLEGROUP) {
 			createRolegroupTree();
@@ -143,7 +143,30 @@ public class WorkitemTree {
 	public TreeNode getTreeNode(IWorkitem workitem) {
 		return getTreeNode(workitem, root);
 	}
+	
+	public TreeNode getTreeNode(String workitemTitle) {
+		return getTreeNode(workitemTitle, root);
+	}
 
+	public TreeNode getTreeNode(String workitemTitle, TreeNode node) {
+		List<TreeNode> children = node.getChildren();
+
+		if (node.getWorkitem().getTitle().equals(workitemTitle)) {
+			return node;
+		}
+
+		if (children.size() > 0) {
+			for (TreeNode treeNode : children) {
+				TreeNode x = getTreeNode(workitemTitle, treeNode);
+				if (x != null) {
+					return x;
+				}
+			}
+		}
+
+		return null;
+	}
+	
 	/**
 	 * Gets the tree node.
 	 *

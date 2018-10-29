@@ -637,6 +637,12 @@ public class ColorPalette {
 		return rainbowColors.indexOf(color);
 	}
 
+	public static long getColorOrderIndex(Color color, int size) {
+		double colorindex = (double) ColorPalette.getOrderIndex(color) / (double) 65536.0;
+		long idx = Math.round(((double) size) * colorindex);
+		return idx;
+	}
+
 	/** The Constant SCALEFACTOR. */
 	public static final double SCALEFACTOR = 1.25;
 }

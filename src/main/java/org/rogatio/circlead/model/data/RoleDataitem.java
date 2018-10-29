@@ -467,7 +467,7 @@ public class RoleDataitem extends DefaultDataitem {
 	@JsonIgnore
 	public String getRepresentation(String personIdentifier) {
 		if (representations.containsKey(personIdentifier)) {
-			return representations.get(personIdentifier);
+			return representations.get(personIdentifier); 
 		}
 		return "";
 	}

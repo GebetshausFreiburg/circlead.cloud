@@ -8,6 +8,7 @@
  */
 package org.rogatio.circlead.control;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,10 +17,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dmfs.rfc5545.recur.Freq;
+import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.synchronizer.Connector;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
@@ -27,9 +30,12 @@ import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
 import org.rogatio.circlead.control.validator.ValidationMessage.Type;
 import org.rogatio.circlead.model.Parameter;
+import org.rogatio.circlead.model.TreeNode;
 import org.rogatio.circlead.model.WorkitemStatusParameter;
+import org.rogatio.circlead.model.WorkitemTree;
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.data.ActivityDataitem;
+import org.rogatio.circlead.model.data.CompetenceDataitem;
 import org.rogatio.circlead.model.data.HowTo;
 import org.rogatio.circlead.model.data.IDataRow;
 import org.rogatio.circlead.model.data.Report;
@@ -42,6 +48,7 @@ import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.CircleadRecurrenceRule;
+import org.rogatio.circlead.util.ColorPalette;
 import org.rogatio.circlead.util.ExcelUtil;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
@@ -151,6 +158,85 @@ public final class Repository {
 		return map;
 	}
 
+	public List<Role> getRolesWithCompetence(Person person, String competence) {
+		List<Role> found = new ArrayList<Role>();
+		ArrayList<Role> roles = this.getRolesWithPerson(person);
+		String skill = "";
+		for (Role role : roles) {
+			List<String> temp = role.getCompetences();
+			if (ObjectUtil.isListNotNullAndEmpty(temp)) {
+				for (String c : temp) {
+					if (competence.equals(c)) {
+						found.add(role);
+					}
+				}
+			}
+		}
+
+		return found;
+	}
+
+	public int getSkillOfPersonCompetence(Person person, String competence) {
+		ArrayList<Role> roles = this.getRolesWithPerson(person);
+		String skill = "";
+		for (Role role : roles) {
+			List<String> temp = role.getCompetences();
+			if (ObjectUtil.isListNotNullAndEmpty(temp)) {
+				for (String c : temp) {
+					if (competence.equals(c)) {
+						skill = role.getDataitem().getSkill(person.getFullname());
+					}
+				}
+			}
+		}
+
+		int i = 0;
+
+		try {
+			i = Integer.parseInt(skill);
+		} catch (Exception e) {
+
+		}
+
+		return i;
+	}
+
+	public List<Role> getParentRoles(Role role) {
+		List<Role> parents = new ArrayList<Role>();
+		getParentRoles(role, parents);
+		return parents;
+	}
+
+	public void getParentRoles(Role role, List<Role> parents) {
+		if (role.getParentIdentifier() != null) {
+			if (!role.getParentIdentifier().equals(role.getTitle())) {
+				Role p = getRole(role.getParentIdentifier());
+				parents.add(0, p);
+				if (p != null) {
+					getParentRoles(p, parents);
+				}
+			}
+		}
+	}
+
+	public List<String> getCompetenciesOfPerson(Person person) {
+		List<String> list = new ArrayList<String>();
+
+		ArrayList<Role> roles = this.getRolesWithPerson(person);
+		for (Role role : roles) {
+			List<String> temp = role.getCompetences();
+			if (ObjectUtil.isListNotNullAndEmpty(temp)) {
+				for (String c : temp) {
+					if (!list.contains(c)) {
+						list.add(c);
+					}
+				}
+			}
+		}
+
+		return list;
+	}
+
 	/**
 	 * Gets the names of all roles.
 	 *
@@ -163,6 +249,27 @@ public final class Repository {
 			roleNames.add(role.getTitle());
 		}
 		return roleNames;
+	}
+
+	public void addOrphanedRoleCompetenciesToRootCompetence() {
+		Map<String, List<Role>> competencies = getCompetencesFromRoles();
+		for (String competence : competencies.keySet()) {
+
+			Competence rc = getRootCompetence();
+			if (!rc.containsCompetence(competence)) {
+				CompetenceDataitem cd = new CompetenceDataitem();
+				cd.setTitle(competence);
+
+				StringBuilder sb = new StringBuilder();
+				for (Role r : competencies.get(competence)) {
+					sb.append(r.getTitle() + ", ");
+				}
+
+				cd.setDescription(sb.toString());
+				rc.addCompetence(cd);
+			}
+
+		}
 	}
 
 	/**
@@ -247,7 +354,7 @@ public final class Repository {
 		this.addItems(competencies);
 		return ObjectUtil.castList(Competence.class, competencies);
 	}
-	
+
 	/**
 	 * Load team-workitems from synchronized system with Connector.
 	 *
@@ -487,6 +594,7 @@ public final class Repository {
 	public List<Person> getPersons() {
 		List<Person> persons = new ArrayList<Person>();
 		for (IWorkitem workitem : workitems) {
+//			System.out.println(workitem.getType());
 			if (WorkitemType.PERSON.isTypeOf(workitem)) {
 				persons.add((Person) workitem);
 			}
@@ -512,7 +620,7 @@ public final class Repository {
 
 		return activities;
 	}
-	
+
 	/**
 	 * Gets the competencies.
 	 *
@@ -521,7 +629,7 @@ public final class Repository {
 	public List<Competence> getCompetencies() {
 		return this.getRootCompetence().getCompetencies();
 	}
-	
+
 	/**
 	 * Gets the roles.
 	 *
@@ -1147,7 +1255,7 @@ public final class Repository {
 		}
 		return rootRoles;
 	}
-	
+
 	/**
 	 * Gets the root roles.
 	 *
@@ -1188,11 +1296,11 @@ public final class Repository {
 		}
 		return map;
 	}
-	
+
 	public List<Role> findRolesWithCompetence(String competence) {
 		List<Role> foundRoles = new ArrayList<Role>();
 		for (Role r : this.getRoles()) {
-			if (r.getCompetences()!=null) {
+			if (r.getCompetences() != null) {
 				if (r.getCompetences().contains(competence)) {
 					foundRoles.add(r);
 				}
@@ -1200,7 +1308,7 @@ public final class Repository {
 		}
 		return foundRoles;
 	}
-	
+
 	/**
 	 * Gets the role children of a role.
 	 *
@@ -1265,11 +1373,11 @@ public final class Repository {
 	public void addReport(IReport report) {
 		reports.add(report);
 	}
-	
+
 	public void addReports(List<IReport> reports) {
-		if (reports!=null) {
+		if (reports != null) {
 			for (IReport iReport : reports) {
-				reports.add(iReport);		
+				reports.add(iReport);
 			}
 		}
 	}
@@ -1395,6 +1503,9 @@ public final class Repository {
 	 * @return the organisational roles with person
 	 */
 	public ArrayList<Role> getOrganisationalRolesWithPerson(Person person) {
+		if (person == null) {
+			return null;
+		}
 		return getOrganisationalRolesWithPerson(person.getFullname());
 	}
 

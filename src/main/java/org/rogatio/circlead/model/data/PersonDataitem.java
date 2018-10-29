@@ -182,6 +182,10 @@ public class PersonDataitem extends DefaultDataitem {
 	public Map<String, String> getData() {
 		return data;
 	}
+	
+	public void setData(Map<String, String> data) {
+		this.data = data;
+	}
 
 	/**
 	 * Sets the data.
@@ -189,11 +193,12 @@ public class PersonDataitem extends DefaultDataitem {
 	 * @param data
 	 *            the data
 	 */
+	@JsonIgnore
 	public void setData(List<Map<String, String>> data) {
 		this.data = new HashMap<String, String>();
 
 		for (Map<String, String> map : data) {
-			for (String key : map.keySet()) {
+			for (String key : map.keySet()) { 
 				this.data.put(key, map.get(key));
 			}
 		}

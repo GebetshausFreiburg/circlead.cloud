@@ -13,12 +13,14 @@ import java.util.ArrayList;
 import org.dmfs.rfc5545.recur.Freq;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
+import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.model.Parameter;
 import org.rogatio.circlead.model.data.ContactDataitem;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
+import org.rogatio.circlead.view.SvgBuilder;
 
 public class PersonListReportDetails extends DefaultReport {
 
@@ -43,6 +45,9 @@ public class PersonListReportDetails extends DefaultReport {
 		Element tr = table.appendElement("tr");
 		tr.appendElement("th").appendText(Parameter.ABBREVIATION2.toString());
 		tr.appendElement("th").appendText("Name");
+		if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
+			tr.appendElement("th").attr("width", "68px").appendText("DNA");
+		}
 		tr.appendElement("th").appendText(Parameter.ADRESS.toString());
 		tr.appendElement("th").appendText(Parameter.MAIL.toString());
 		tr.appendElement("th").appendText(Parameter.MOBILE.toString());
@@ -63,6 +68,10 @@ public class PersonListReportDetails extends DefaultReport {
 
 			renderer.addPersonItem(tr.appendElement("td"), null, person.getFullname());
 
+			if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
+				tr.appendElement("td").append(SvgBuilder.createPersonDnaProfile(person, 64).toString());
+			}
+			
 			ContactDataitem contact = person.getFirstPrivateContact();
 			if (contact != null) {
 				tr.appendElement("td").appendText("" + contact.getAddress());

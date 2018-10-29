@@ -50,6 +50,7 @@ public class Competence extends DefaultWorkitem implements IWorkitemRenderer, IV
 	 */
 	public Competence(IDataitem dataitem) {
 		super(dataitem);
+		postProcess();
 	}
 
 	/**
@@ -107,23 +108,28 @@ public class Competence extends DefaultWorkitem implements IWorkitemRenderer, IV
 				}
 			}
 			setCompetencies(competencies);
+			postProcess();
 		}
 
 	}
 
+	public boolean containsCompetence(String competence) {
+		for (CompetenceDataitem c : map.keySet()) {
+			if (c.getTitle().equals(competence)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/** The map. */
 	private Map<CompetenceDataitem, Competence> map = new HashMap<CompetenceDataitem, Competence>();
-
-	/**
-	 * Gets the competencies.
-	 *
-	 * @return the competencies
-	 */
-	public List<Competence> getCompetencies() {
-
+	
+	private void postProcess() {
 		if (map.size() == 0) {
-			// Sets mapping-table to have Entities of class-type Competence. Needs to be forced to filled here in
-			//CompetenceDataitems are set by Json-ObjectMapper
+			// Sets mapping-table to have Entities of class-type Competence. Needs to be
+			// forced to filled here in
+			// CompetenceDataitems are set by Json-ObjectMapper
 			for (CompetenceDataitem competenceDataitem : this.getDataitem().getCompetencies()) {
 				if (competenceDataitem != null) {
 					map.put(competenceDataitem, new Competence(competenceDataitem));
@@ -131,11 +137,24 @@ public class Competence extends DefaultWorkitem implements IWorkitemRenderer, IV
 			}
 		}
 
+	}
+
+	/**
+	 * Gets the competencies.
+	 *
+	 * @return the competencies
+	 */
+	public List<Competence> getCompetencies() {
 		List<Competence> c = new ArrayList<Competence>();
 		for (CompetenceDataitem cd : this.getDataitem().getCompetencies()) {
 			c.add(map.get(cd));
 		}
 		return c;
+	}
+
+	public void addCompetence(CompetenceDataitem competence) {
+		map.put(competence, new Competence(competence));
+		this.getDataitem().getCompetencies().add(competence);
 	}
 
 	/**
@@ -144,13 +163,6 @@ public class Competence extends DefaultWorkitem implements IWorkitemRenderer, IV
 	 * @param competencies the new competencies
 	 */
 	public void setCompetencies(List<CompetenceDataitem> competencies) {
-
-		for (CompetenceDataitem competenceDataitem : competencies) {
-			if (competenceDataitem != null) {
-				map.put(competenceDataitem, new Competence(competenceDataitem));
-			}
-		}
-
 		this.getDataitem().setCompetencies(competencies);
 	}
 
@@ -182,7 +194,7 @@ public class Competence extends DefaultWorkitem implements IWorkitemRenderer, IV
 	public List<Competence> getRootCompetencies() {
 		List<Competence> roots = new ArrayList<Competence>();
 		for (Competence c : this.getCompetencies()) {
-			System.out.println(c.getTitle() + ": " + c.getParent());
+//			System.out.println(c.getTitle() + ": " + c.getParent());
 			if (c != null) {
 				if (!StringUtil.isNotNullAndNotEmpty(c.getParent())) {
 					roots.add(c);
@@ -192,7 +204,9 @@ public class Competence extends DefaultWorkitem implements IWorkitemRenderer, IV
 		return roots;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.control.validator.IValidator#validate()
 	 */
 	@Override
@@ -223,16 +237,17 @@ public class Competence extends DefaultWorkitem implements IWorkitemRenderer, IV
 		return c;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.view.IWorkitemRenderer#render(org.rogatio.circlead.control.synchronizer.ISynchronizer)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.rogatio.circlead.view.IWorkitemRenderer#render(org.rogatio.circlead.
+	 * control.synchronizer.ISynchronizer)
 	 */
 	@Override
 	public Element render(ISynchronizer synchronizer) {
 		@SuppressWarnings("unused")
 		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 		Element element = new Element("p");
-
-		WorkitemTree tree = new WorkitemTree(WorkitemType.COMPETENCE);
 
 		System.out.println(getRootCompetencies().size());
 
@@ -245,7 +260,7 @@ public class Competence extends DefaultWorkitem implements IWorkitemRenderer, IV
 		tr.appendElement("th").attr("colspan", "1").appendText(ROLES.toString());
 		tr.appendElement("th").attr("colspan", "1").appendText(DESCRIPTION.toString());
 
-		tree.printTree();
+		WorkitemTree tree = new WorkitemTree(WorkitemType.COMPETENCE);
 
 		showNodes("", tree.getRoot(), tbody, renderer);
 
@@ -257,9 +272,9 @@ public class Competence extends DefaultWorkitem implements IWorkitemRenderer, IV
 	/**
 	 * Show nodes.
 	 *
-	 * @param spacer the spacer
-	 * @param node the node
-	 * @param tbody the tbody
+	 * @param spacer   the spacer
+	 * @param node     the node
+	 * @param tbody    the tbody
 	 * @param renderer the renderer
 	 */
 	private void showNodes(String spacer, TreeNode node, Element tbody, ISynchronizerRendererEngine renderer) {
@@ -269,16 +284,17 @@ public class Competence extends DefaultWorkitem implements IWorkitemRenderer, IV
 
 			Element tr = tbody.appendElement("tr");
 			Element td = tr.appendElement("td").attr("colspan", "1");
-			
+
 			Element t = new Element("table").attr("style", "border:none;");
 			Element tre = t.appendElement("tr");
 			tre.appendElement("td").attr("style", "white-space:nowrap;").attr("style", "border:none;").append(spacer);
-			
-			tre.appendElement("td").attr("style", "border:none;").append("<span style=\"color: rgb(" + node.getColor().getRed() + "," + node.getColor().getGreen()
-					+ "," + node.getColor().getBlue() + ");\">" + node.getWorkitem().getTitle() + "</span>");
+
+			tre.appendElement("td").attr("style", "border:none;")
+					.append("<span style=\"color: rgb(" + node.getColor().getRed() + "," + node.getColor().getGreen()
+							+ "," + node.getColor().getBlue() + ");\">" + node.getWorkitem().getTitle() + "</span>");
 
 			t.appendTo(td);
-			
+
 			List<Role> roles = R.findRolesWithCompetence(c.getTitle());
 			td = tr.appendElement("td").attr("colspan", "1");
 			renderer.addRoleList(td, roles);
@@ -288,14 +304,14 @@ public class Competence extends DefaultWorkitem implements IWorkitemRenderer, IV
 					showNodes(spacer + "&nbsp;&nbsp;", n, tbody, renderer);
 				}
 			}
-			
+
 			td = tr.appendElement("td").attr("colspan", "1");
 			if (c.getDescription() != null) {
 				td.appendText(c.getDescription());
 			} else {
 				td.appendText("-");
 			}
-		
+
 		} else {
 			if (node.getChildCount() > 0) {
 				for (TreeNode n : node.getChildren()) {

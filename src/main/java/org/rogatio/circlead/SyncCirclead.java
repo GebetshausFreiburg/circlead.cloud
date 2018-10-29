@@ -10,6 +10,7 @@ package org.rogatio.circlead;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,6 +19,9 @@ import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
 import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer;
 import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.model.WorkitemType;
+import org.rogatio.circlead.model.data.CompetenceDataitem;
+import org.rogatio.circlead.model.work.Competence;
+import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.util.DropboxUtil;
 import org.rogatio.circlead.view.report.OverviewReport;
 import org.rogatio.circlead.view.report.PersonListReport;
@@ -131,6 +135,10 @@ public class SyncCirclead {
 
 		if (REPORTS) {
 			repository.loadIndexReports();
+		}
+
+		if (COMPETENCIES) {
+			repository.addOrphanedRoleCompetenciesToRootCompetence();
 		}
 
 		/*

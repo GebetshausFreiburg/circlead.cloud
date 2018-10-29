@@ -488,21 +488,27 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 				if (filename.endsWith(".role.json")) {
 					RoleDataitem data = mapper.readValue(file, RoleDataitem.class);
 					item = new Role(data);
-				} else if (filename.endsWith(".activity.json")) {
+				}
+				if (filename.endsWith(".activity.json")) {
 					ActivityDataitem data = mapper.readValue(file, ActivityDataitem.class);
 					item = new Activity(data);
-				} else if (filename.endsWith(".rolegroup.json")) {
+				}
+				if (filename.endsWith(".rolegroup.json")) {
 					RolegroupDataitem data = mapper.readValue(file, RolegroupDataitem.class);
 					item = new Rolegroup(data);
-				} else if (filename.endsWith(".person.json")) {
+				}
+				if (filename.endsWith(".person.json")) {
 					PersonDataitem data = mapper.readValue(file, PersonDataitem.class);
 					item = new Person(data);
-				} else if (filename.endsWith(".team.json")) {
+				}
+				if (filename.endsWith(".team.json")) {
 					TeamDataitem data = mapper.readValue(file, TeamDataitem.class);
 					item = new Team(data);
-				} else if (filename.endsWith(".competence.json")) {
+				}
+				if (filename.endsWith(".competence.json")) {
 					CompetenceDataitem data = mapper.readValue(file, CompetenceDataitem.class);
-					item = new Competence(data);
+					Competence c = new Competence(data);
+					item = c;
 				}
 			}
 
