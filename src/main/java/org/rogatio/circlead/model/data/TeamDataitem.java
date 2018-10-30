@@ -65,15 +65,6 @@ public class TeamDataitem extends DefaultDataitem {
 	}
 
 	/**
-	 * Gets the team entries.
-	 *
-	 * @return the team entries
-	 */
-	public List<TeamEntry> getTeamEntries() {
-		return teams;
-	}
-
-	/**
 	 * Sets the team entries.
 	 *
 	 * @param teams the new team entries

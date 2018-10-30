@@ -68,7 +68,7 @@ public class PersonDataitem extends DefaultDataitem {
 			this.setFamilyname(parts[2]);
 		}
 
-	}
+	} 
 
 	/*
 	 * (non-Javadoc)

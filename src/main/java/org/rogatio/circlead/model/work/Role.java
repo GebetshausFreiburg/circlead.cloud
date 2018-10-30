@@ -49,12 +49,13 @@ import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.IWorkitemRenderer;
+import org.rogatio.circlead.view.SvgBuilder;
 
 /**
  * The Class Role holds the core information of the role workitem.
  */
 public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidator, IDataRow {
-	
+
 	/**
 	 * Instantiates a new emtpy role.
 	 */
@@ -97,7 +98,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	public void setRolegroupIdentifier(String rolegroup) {
 		this.getDataitem().setRolegroup(rolegroup);
 	}
-	
+
 	/**
 	 * Gets the abbreviation.
 	 *
@@ -117,7 +118,8 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Sets the person identifiers from single string. Splits the string in identifier-pieces
+	 * Sets the person identifiers from single string. Splits the string in
+	 * identifier-pieces
 	 *
 	 * @param persons the new person identifiers
 	 */
@@ -460,7 +462,8 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 
 		boolean foundSomeRoleResponsible = false;
 		if (ObjectUtil.isListNotNullAndEmpty(this.getPersonIdentifiers())) {
-			renderer.addH2(element, ROLEPERSONSINORGANISATION.toString()+" ("+this.getPersonIdentifiers().size()+")");
+			renderer.addH2(element,
+					ROLEPERSONSINORGANISATION.toString() + " (" + this.getPersonIdentifiers().size() + ")");
 			renderer.addPersonList(element, this.getPersonIdentifiers(), this);
 			foundSomeRoleResponsible = true;
 		}
@@ -469,8 +472,9 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
 			List<Team> foundTeams = R.getTeamsWithRole(this);
 			if (ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
-				renderer.addH2(element, ROLEPERSONSINTEAM.toString()+" ("+R.getTeamPersonsWithRole(this).size()+")");
-				
+				renderer.addH2(element,
+						ROLEPERSONSINTEAM.toString() + " (" + R.getTeamPersonsWithRole(this).size() + ")");
+
 				Element ul = element.appendElement("ul");
 				for (Team team : foundTeams) {
 					Element li = ul.appendElement("li");
@@ -541,8 +545,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		 * this.getActivities()); } }
 		 */
 
-		TreeMap<Activity, List<ActivityDataitem>> map = R
-				.getSubactivitiesWithResponsible(this.getTitle());
+		TreeMap<Activity, List<ActivityDataitem>> map = R.getSubactivitiesWithResponsible(this.getTitle());
 
 		List<Activity> globalActivities = R.getActivities(this.getTitle());
 		List<Activity> ga = new ArrayList<Activity>();
@@ -564,8 +567,8 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		}
 
 		/*
-		 * List<Activity> allA = R.getActivities(); for (Activity
-		 * activity : allA) { List<ActivityDataitem> ac =
+		 * List<Activity> allA = R.getActivities(); for (Activity activity : allA) {
+		 * List<ActivityDataitem> ac =
 		 * activity.getSubactivitiesWithResponsible(this.getTitle()); if
 		 * (ObjectUtil.isListNotNullAndEmpty(ac)) { renderer.addSubActivityList(element,
 		 * ac, activity); } }
@@ -576,10 +579,12 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			renderer.addList(element, this.getResponsibilities());
 		}
 
+		renderer.addH2(element, COMPETENCIES.toString());
+		if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
+			element.append(SvgBuilder.createRoleDnaProfile(this, 512).toString());
+		}
 		if (ObjectUtil.isListNotNullAndEmpty(this.getCompetences())) {
-			renderer.addH2(element, COMPETENCIES.toString());
 			renderer.addList(element, this.getCompetences());
-
 			renderImplicitCompetence(this.getParentIdentifier(), element, renderer);
 		}
 
@@ -596,6 +601,58 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		return element;
 	}
 
+	public double getRedundanceTeam() {
+		double val = 0;
+		List<Team> teams = R.getTeamsWithRole(this);
+		for (Team team : teams) {
+			List<TeamEntry> entries = team.getTeamEntries();
+			for (TeamEntry entry : entries) {
+				if (entry.getRoleIdentifier().equals(this.getTitle())) {
+					int skillValue = 0;
+					try {
+						// System.out.println(entry.getLevel());
+						skillValue = Integer.parseInt(entry.getLevel());
+					} catch (Exception e) {
+						skillValue = 0;
+					}
+					// System.out.println(skillValue);
+					val += ((double) skillValue) * entry.getPersonIdentifiers().size();
+					// System.out.println(val);
+				}
+			}
+
+		}
+
+		return val / (double) 100.0;
+	}
+
+	public double getRedundance() {
+		return Math.max(this.getRedundanceOrganisation(), this.getRedundanceTeam());
+	}
+
+	public double getRedundanceOrganisation() {
+
+		double value = 0;
+
+		List<String> pi = this.getPersonIdentifiers();
+		for (String personIdentifier : pi) {
+			String representation = this.getDataitem().getRepresentation(personIdentifier);
+			WorkitemStatusParameter status = WorkitemStatusParameter.get(representation);
+			String skill = this.getDataitem().getSkill(personIdentifier);
+			int skillValue = 0;
+			try {
+				skillValue = Integer.parseInt(skill);
+			} catch (Exception e) {
+				skillValue = 0;
+			}
+			if ((status == WorkitemStatusParameter.TEMPORARY) || (status == WorkitemStatusParameter.ACTIVE)) {
+				value += (skillValue);
+			}
+		}
+
+		return (value) / 100.0;
+	}
+
 	/**
 	 * Contains activity in subactivities.
 	 *
@@ -603,8 +660,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	 * @return true, if successful
 	 */
 	private boolean containsActivityInSubactivities(Activity a) {
-		TreeMap<Activity, List<ActivityDataitem>> map = R
-				.getSubactivitiesWithResponsible(this.getTitle());
+		TreeMap<Activity, List<ActivityDataitem>> map = R.getSubactivitiesWithResponsible(this.getTitle());
 
 		for (Activity activity : map.keySet()) {
 			List<ActivityDataitem> subactivities = map.get(activity);
@@ -685,8 +741,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	 */
 	private List<String> getActivitiesNotGlobal() {
 		List<Activity> a = R.getActivities(this.getTitle());
-		TreeMap<Activity, List<ActivityDataitem>> map = R
-				.getSubactivitiesWithResponsible(this.getTitle());
+		TreeMap<Activity, List<ActivityDataitem>> map = R.getSubactivitiesWithResponsible(this.getTitle());
 
 		List<String> alist = new ArrayList<String>();
 
@@ -781,7 +836,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Checks for abbreviation.
 	 *
@@ -832,7 +887,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			m.warning("No title added", "Role '" + this.getId() + "' has no title");
 			messages.add(m);
 		}
-		
+
 		if (!this.hasAbbreviation()) {
 			ValidationMessage m = new ValidationMessage(this);
 			m.warning("No abbreviation added", "Role '" + this.getTitle() + "' has no abbreviation");
@@ -844,7 +899,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			m.error("No unique abbreviation", "Role '" + this.getTitle() + "' has no unique abbreviation");
 			messages.add(m);
 		}
-		
+
 		if (!R.hasUniqueRoleTitle(this)) {
 			ValidationMessage m = new ValidationMessage(this);
 			m.error("No unique title", "Role '" + this.getId() + "' has no unique title");

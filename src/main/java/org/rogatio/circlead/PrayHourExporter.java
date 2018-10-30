@@ -198,7 +198,7 @@ public class PrayHourExporter {
 						if (team.getTeamSize() < 2) {
 							ExcelUtil.addColorBackground(cellStyle, (byte) 255, (byte) 0, (byte) 0);
 						}
-						if (team.getTeamRedundance() < 1.0) {
+						if (team.getRedundance() < 1.0) {
 							ExcelUtil.addColorBackground(cellStyle, (byte) 255, (byte) 255, (byte) 0);
 						}
 					}

@@ -110,7 +110,7 @@ public class TeamCategegoryInternalReport extends DefaultReport {
 								} else {
 									renderer.addStatus(p, "Extern");
 								}
-								if (team.getTeamRedundance() < 1.0) {
+								if (team.getRedundance() < 1.0) {
 									p = td.appendElement("p");
 									renderer.addStatus(p, "Unterbesetzt");
 								}

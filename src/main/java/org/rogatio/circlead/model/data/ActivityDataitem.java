@@ -62,7 +62,7 @@ public class ActivityDataitem extends DefaultDataitem {
 	@JsonSchemaDescription("Consultant role")
 	private List<String> consultant = new ArrayList<String>();
 
-	/** The informed. */
+	/** The informed. */ 
 	@JsonSchemaTitle("Informed")
 	@JsonSchemaDescription("Informed role")
 	private List<String> informed = new ArrayList<String>();

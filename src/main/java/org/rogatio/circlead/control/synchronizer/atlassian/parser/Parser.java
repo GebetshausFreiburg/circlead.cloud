@@ -592,7 +592,7 @@ public class Parser {
 		if (workitem instanceof Competence) {
 			Competence w = (Competence) workitem;
 			CompetenceDataitem d = w.getDataitem();
-			addDataPair(ID.toString(), d.getIds(), table);
+			addDataPair(ID.toString(), d.getIds(), table); 
 //			addDataPair(DESCRIPTION.toString(), d.getDescription(), table);
 			addDataPair(COMPETENCETREE.toString(), Parser.createCompetenceTable(d.getCompetencies(), synchronizer, false),
 					table);
@@ -604,7 +604,7 @@ public class Parser {
 			TeamDataitem d = w.getDataitem();
 			addDataPair(ID.toString(), d.getIds(), table);
 			addDataPair(DESCRIPTION.toString(), d.getDescription(), table);
-			addDataPair(TEAMROLES.toString(), Parser.createTeamEntryTable(d.getTeamEntries(), synchronizer, false),
+			addDataPair(TEAMROLES.toString(), Parser.createTeamEntryTable(d.getTeams(), synchronizer, false),
 					table);
 			addDataPair(RECURRENCERULE.toString(), d.getRecurrenceRule(), table);
 			addDataPair(CATEGORY.toString(), d.getCategory(), table);

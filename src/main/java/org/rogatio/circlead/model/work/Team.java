@@ -246,7 +246,7 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	 * @return the team entries
 	 */
 	public List<TeamEntry> getTeamEntries() {
-		return this.getDataitem().getTeamEntries();
+		return this.getDataitem().getTeams();
 	}
 
 	/*
@@ -285,7 +285,7 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	 *
 	 * @return the team redundance
 	 */
-	public double getTeamRedundance() {
+	public double getRedundance() {
 		double sum = 0;
 		List<TeamEntry> list = this.getTeamEntries();
 		if (ObjectUtil.isListNotNullAndEmpty(list)) {
@@ -378,7 +378,7 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		}
 
 		renderer.addItem(element, "Mitglieder", this.getTeamSize() + "");
-		renderer.addItem(element, "Stabilität", ((int) (this.getTeamRedundance() * 100)) + "%");
+		renderer.addItem(element, "Stabilität", ((int) (this.getRedundance() * 100)) + "%");
 
 		if (StringUtil.isNotNullAndNotEmpty(this.getDescription())) {
 			renderer.addH2(element, DESCRIPTION.toString());
@@ -388,6 +388,13 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		if (ObjectUtil.isListNotNullAndEmpty(this.getTeamEntries())) {
 			Element table = Parser.createTeamEntryTable(this.getTeamEntries(), synchronizer, true);
 			table.appendTo(element);
+		}
+
+		if (this.getCategory() != null) {
+			if (this.getCategory().equals("Gebetsstunde")) {
+				String mail = "gebetstundenorga@gebetshaus-freiburg.de";
+				element.appendText("Bitte melde Änderungen im Team oder der Gebetsstunde an '"+mail+"'.");
+			}
 		}
 
 		return element;

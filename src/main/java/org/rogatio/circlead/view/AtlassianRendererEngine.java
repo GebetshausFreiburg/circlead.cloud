@@ -161,7 +161,7 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 				li.appendElement("ac:link")
 						.append("<ri:page ri:content-title=\"" + role.getTitle() + "\" ri:version-at-save=\"1\" />");
 			}
-		}
+		} 
 	}
 
 	/**

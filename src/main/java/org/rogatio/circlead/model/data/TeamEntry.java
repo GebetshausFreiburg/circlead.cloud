@@ -10,6 +10,7 @@ import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.util.StringUtil;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * The Class TeamEntry.
@@ -18,14 +19,15 @@ public class TeamEntry {
 
 	/** The role identifier. */
 	private String roleIdentifier;
-	
+
 	/** The needed. */
 	private int needed;
-	
+
 	/** The level. */
 	private String level;
-	
+
 	/** The person identifiers. */
+	 @JsonProperty("persons")
 	private List<String> personIdentifiers;
 
 	/**
@@ -103,7 +105,7 @@ public class TeamEntry {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Gets the level.
 	 *
@@ -140,26 +142,30 @@ public class TeamEntry {
 	 *
 	 * @return the person identifiers
 	 */
+	 @JsonProperty("persons")
 	public List<String> getPersonIdentifiers() {
 		List<String> list = new ArrayList<String>();
 
-		for (String person : this.personIdentifiers) {
-			StringBuilder sb = new StringBuilder();
+		if (this.personIdentifiers != null) {
 
-			sb.append(person);
+			for (String person : this.personIdentifiers) {
+				StringBuilder sb = new StringBuilder();
 
-			if (this.hasRecurrenceRule(person)) {
-				sb.append(" [");
-				sb.append(this.getRecurrenceRule(person));
-				sb.append("]");
+				sb.append(person); 
+
+				if (this.hasRecurrenceRule(person)) {
+					sb.append(" [");
+					sb.append(this.getRecurrenceRule(person));
+					sb.append("]");
+				}
+
+				list.add(sb.toString());
 			}
-
-			list.add(sb.toString());
 		}
 
 		return list;
 	}
-	
+
 	/**
 	 * Gets the recurrence rule.
 	 *
@@ -201,7 +207,7 @@ public class TeamEntry {
 	 * Sets the recurrence rule match.
 	 *
 	 * @param personFullname the person fullname
-	 * @param value the value
+	 * @param value          the value
 	 */
 	@JsonIgnore
 	private void setRecurrenceRuleMatch(String personFullname, String value) {
@@ -210,7 +216,8 @@ public class TeamEntry {
 			recurrenceRules.put(personFullname, value);
 		}
 	}
-	
+
+	 @JsonProperty("persons")
 	public void setPersonIdentifiers(List<String> personIdentifiers) {
 		this.personIdentifiers = personIdentifiers;
 	}

@@ -76,8 +76,10 @@ public enum WorkitemStatusParameter {
 	CRITICAL("Red", "Unklar", "Undefined", "Kritisch", "Critical", "Widersprüchlich"),
 
 	/** The unassigned. */
-	UNASSIGNED("Red", "Unbesetzt", "Unassigned"),
-
+	UNASSIGNED("Red", "Unbesetzt", "Unassigned"), 
+	OVERASSIGNED("Green", "Mehrfachbesetzung"),
+	ASSIGNED("Yellow", "Einfachbesetzung"), 
+	
 	/** The draft. */
 	DRAFT("Blue", "Entwurf", "Draft");
 

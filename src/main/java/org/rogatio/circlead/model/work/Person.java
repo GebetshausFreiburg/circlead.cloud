@@ -42,6 +42,7 @@ import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.IWorkitemRenderer;
+import org.rogatio.circlead.view.SvgBuilder;
 
 /**
  * The Class Person.
@@ -433,9 +434,15 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 			}
 		}
 
-		renderer.addH2(element, "Plankapazität");
+		if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
+			element.append(SvgBuilder.createPersonDnaProfile(this, 512).toString());
+		}
+
 		long fte = Math.round(this.getFullTimeEquivalent());
 		long tf = Math.round(this.getTeamFraction());
+		if ((fte != 0) || (tf != 0)) {
+			renderer.addH2(element, "Plankapazität");
+		}
 		if (fte != 0) {
 			renderer.addItem(element, Parameter.FTE.toString(), fte + "%");
 		}
