@@ -12,7 +12,6 @@ import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
-import org.rogatio.circlead.util.ColorPalette;
 import org.rogatio.circlead.util.ObjectUtil;
 
 /**

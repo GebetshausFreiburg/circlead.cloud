@@ -34,7 +34,7 @@ import org.rogatio.circlead.model.work.Competence;
 import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
-import org.rogatio.circlead.util.ColorPalette;
+import org.rogatio.circlead.view.ColorPalette;
 
 /**
  * The Class WorkitemTree.

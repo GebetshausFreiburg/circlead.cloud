@@ -13,11 +13,11 @@ import java.util.List;
 
 import org.dmfs.rfc5545.Weekday;
 import org.jsoup.nodes.Element;
+import org.rogatio.circlead.control.CircleadRecurrenceRule;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer;
 import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.model.work.Team;
-import org.rogatio.circlead.util.CircleadRecurrenceRule;
 import org.rogatio.circlead.util.StringUtil;
 
 /**

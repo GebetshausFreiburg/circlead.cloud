@@ -42,7 +42,6 @@ import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.model.work.Team;
-import org.rogatio.circlead.util.CircleadRecurrenceRule;
 import org.rogatio.circlead.util.ExcelUtil;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;

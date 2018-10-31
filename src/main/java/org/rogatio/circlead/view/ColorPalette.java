@@ -21,7 +21,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.rogatio.circlead.util;
+package org.rogatio.circlead.view;
 
 /*******************************************************************************
  * Copyright (c) 2010 Haifeng Li
@@ -45,6 +45,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.rogatio.circlead.util.ObjectUtil;
 
 /**
  * Color palette generator.

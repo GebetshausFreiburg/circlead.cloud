@@ -1,4 +1,4 @@
-package org.rogatio.circlead.util;
+package org.rogatio.circlead.control;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -23,6 +23,8 @@ import org.dmfs.rfc5545.recur.RecurrenceRule;
 import org.dmfs.rfc5545.recur.RecurrenceRule.Part;
 import org.dmfs.rfc5545.recur.RecurrenceRuleIterator;
 import org.rogatio.circlead.model.data.Timeslice;
+import org.rogatio.circlead.util.ObjectUtil;
+import org.rogatio.circlead.util.StringUtil;
 
 /**
  * The Class CircleadRecurrenceRule.

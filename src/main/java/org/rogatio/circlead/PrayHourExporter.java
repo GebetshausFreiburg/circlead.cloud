@@ -16,9 +16,9 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.dmfs.rfc5545.Weekday;
+import org.rogatio.circlead.control.CircleadRecurrenceRule;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.model.work.Team;
-import org.rogatio.circlead.util.CircleadRecurrenceRule;
 import org.rogatio.circlead.util.ExcelUtil;
 import org.rogatio.circlead.util.StringUtil;
 

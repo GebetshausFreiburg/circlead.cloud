@@ -22,6 +22,7 @@ import java.util.Vector;
 
 import org.dmfs.rfc5545.recur.Freq;
 import org.jsoup.nodes.Element;
+import org.rogatio.circlead.control.CircleadRecurrenceRule;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.PairTableParserElement;
@@ -37,7 +38,6 @@ import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.PersonDataitem;
 import org.rogatio.circlead.model.data.TeamEntry;
 import org.rogatio.circlead.model.data.Timeslice;
-import org.rogatio.circlead.util.CircleadRecurrenceRule;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
