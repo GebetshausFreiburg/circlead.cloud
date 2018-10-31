@@ -21,10 +21,19 @@ import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
+/**
+ * The Class IndexWorkitems.
+ */
 public class IndexWorkitems extends DefaultReport {
 
+	/** The type. */
 	private WorkitemType type;
 
+	/**
+	 * Instantiates a new index workitems.
+	 *
+	 * @param type the type
+	 */
 	public IndexWorkitems(WorkitemType type) {
 		this.type = type;
 		this.setName("Index " + type.getName());

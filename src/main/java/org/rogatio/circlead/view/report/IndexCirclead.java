@@ -16,8 +16,14 @@ import org.rogatio.circlead.model.Parameter;
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
+/**
+ * The Class IndexCirclead.
+ */
 public class IndexCirclead extends DefaultReport {
 
+	/**
+	 * Instantiates a new index circlead.
+	 */
 	public IndexCirclead() {
 		this.setName("Index Circlead");
 		this.setDescription("Übersicht Circlead-Inhalte");

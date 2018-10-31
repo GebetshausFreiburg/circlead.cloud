@@ -15,8 +15,17 @@ import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.util.ColorPalette;
 import org.rogatio.circlead.util.ObjectUtil;
 
+/**
+ * The Class SvgBuilder.
+ */
 public class SvgBuilder {
 
+	/**
+	 * Creates the svg element.
+	 *
+	 * @param size the size
+	 * @return the element
+	 */
 	private static Element createSvgElement(int size) {
 		Element element = new Element("svg");
 		element.attr("id", UUID.randomUUID().toString());
@@ -30,6 +39,13 @@ public class SvgBuilder {
 		return element;
 	}
 
+	/**
+	 * Creates the person dna profile.
+	 *
+	 * @param person the person
+	 * @param size the size
+	 * @return the element
+	 */
 	public static Element createPersonDnaProfile(Person person, int size) {
 		WorkitemTree tree = new WorkitemTree(WorkitemType.COMPETENCE);
 		List<String> competencies = Repository.getInstance().getCompetenciesOfPerson(person);
@@ -55,6 +71,13 @@ public class SvgBuilder {
 		return element;
 	}
 
+	/**
+	 * Creates the role dna profile.
+	 *
+	 * @param role the role
+	 * @param size the size
+	 * @return the element
+	 */
 	public static Element createRoleDnaProfile(Role role, int size) {
 		WorkitemTree tree = new WorkitemTree(WorkitemType.COMPETENCE);
 		List<String> competencies = role.getCompetences();
@@ -75,6 +98,15 @@ public class SvgBuilder {
 		return element;
 	}
 
+	/**
+	 * Adds the svg person implicit competence.
+	 *
+	 * @param person the person
+	 * @param competence the competence
+	 * @param size the size
+	 * @param element the element
+	 * @param tree the tree
+	 */
 	private static void addSvgPersonImplicitCompetence(Person person, String competence, int size, Element element,
 			WorkitemTree tree) {
 		Integer skill = Repository.getInstance().getSkillOfPersonCompetence(person, competence);
@@ -103,6 +135,15 @@ public class SvgBuilder {
 		}
 	}
 
+	/**
+	 * Adds the svg implicit competence.
+	 *
+	 * @param rx the rx
+	 * @param competence the competence
+	 * @param size the size
+	 * @param element the element
+	 * @param tree the tree
+	 */
 	private static void addSvgImplicitCompetence(IWorkitem rx, String competence, int size, Element element, WorkitemTree tree) {
 
 		double opacity = 1.0;
@@ -129,6 +170,14 @@ public class SvgBuilder {
 		}
 	}
 
+	/**
+	 * Adds the svg competence.
+	 *
+	 * @param competence the competence
+	 * @param size the size
+	 * @param element the element
+	 * @param tree the tree
+	 */
 	private static void addSvgCompetence(String competence, int size, Element element, WorkitemTree tree) {
 
 		double opacity = 1.0;
@@ -148,6 +197,15 @@ public class SvgBuilder {
 		}
 	}
 
+	/**
+	 * Adds the svg person competence.
+	 *
+	 * @param person the person
+	 * @param competence the competence
+	 * @param size the size
+	 * @param element the element
+	 * @param tree the tree
+	 */
 	private static void addSvgPersonCompetence(Person person, String competence, int size, Element element,
 			WorkitemTree tree) {
 		Integer skill = Repository.getInstance().getSkillOfPersonCompetence(person, competence);

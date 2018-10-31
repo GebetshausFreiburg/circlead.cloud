@@ -20,8 +20,19 @@ import org.rogatio.circlead.util.ExcelUtil;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
 
+/**
+ * The Class PrayHourImporter.
+ */
 public class PrayHourImporter {
 
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 * @throws EncryptedDocumentException the encrypted document exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws InvalidFormatException the invalid format exception
+	 */
 	public static void main(String[] args) throws EncryptedDocumentException, IOException, InvalidFormatException {
 
 		boolean DRY = true;

@@ -22,8 +22,14 @@ import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.SvgBuilder;
 
+/**
+ * The Class PersonListReportDetails.
+ */
 public class PersonListReportDetails extends DefaultReport {
 
+	/**
+	 * Instantiates a new person list report details.
+	 */
 	public PersonListReportDetails() {
 		this.setName("PersonList Report Details");
 		this.setDescription("Detaillierte Mitarbeiterliste (inkl. Auslastung und Rollenanzahl))");

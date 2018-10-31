@@ -17,8 +17,14 @@ import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.SvgBuilder;
 
+/**
+ * The Class RoleListReportDetails.
+ */
 public class RoleListReportDetails extends DefaultReport {
 
+	/**
+	 * Instantiates a new role list report details.
+	 */
 	public RoleListReportDetails() {
 		this.setName("RoleList Report Details");
 		this.setDescription("Detaillierte Rollenliste");

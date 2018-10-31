@@ -390,10 +390,11 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			table.appendTo(element);
 		}
 
-		if (this.getCategory() != null) {
+		if (this.getCategory() != null) { 
 			if (this.getCategory().equals("Gebetsstunde")) {
+				renderer.addH3(element, " ");
 				String mail = "gebetstundenorga@gebetshaus-freiburg.de";
-				element.appendText("Bitte melde Änderungen im Team oder der Gebetsstunde an '"+mail+"'.");
+				element.appendText("Bitte melde Änderungen im Team oder der Gebetsstunde an "+mail+".");
 			}
 		}
 
