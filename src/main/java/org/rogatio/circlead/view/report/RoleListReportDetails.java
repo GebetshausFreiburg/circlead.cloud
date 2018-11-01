@@ -62,7 +62,11 @@ public class RoleListReportDetails extends DefaultReport {
 			}
 
 			if (role.getRedundance() == 0.0) {
-				renderer.addStatus(tr.appendElement("td"), WorkitemStatusParameter.UNASSIGNED.getName());
+				if (!role.isSituational()) {
+					renderer.addStatus(tr.appendElement("td"), WorkitemStatusParameter.UNASSIGNED.getName());
+				} else {
+					renderer.addStatus(tr.appendElement("td"), WorkitemStatusParameter.SITUATIONAL.getName());
+				}
 			} else if (role.getRedundance() < 2.0) {
 				renderer.addStatus(tr.appendElement("td"), WorkitemStatusParameter.ASSIGNED.getName());
 			} else if (role.getRedundance() >= 2.0) {

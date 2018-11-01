@@ -9,6 +9,7 @@
 package org.rogatio.circlead.model.work;
 
 import static org.rogatio.circlead.model.Parameter.ABBREVIATION;
+import static org.rogatio.circlead.model.Parameter.SITUATIONAL;
 import static org.rogatio.circlead.model.Parameter.CARRYROLEGROUP;
 import static org.rogatio.circlead.model.Parameter.CHILDS;
 import static org.rogatio.circlead.model.Parameter.COMPETENCIES;
@@ -64,7 +65,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Instantiates a new role from a RoleDataitem
+	 * Instantiates a new role from a RoleDataitem.
 	 *
 	 * @param dataitem the dataitem
 	 */
@@ -109,7 +110,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Sets the person identifiers from html-parser
+	 * Sets the person identifiers from html-parser.
 	 *
 	 * @param element the new person identifiers
 	 */
@@ -138,7 +139,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Sets the competences from list-html-parser
+	 * Sets the competences from list-html-parser.
 	 *
 	 * @param element the new competences
 	 */
@@ -157,7 +158,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Sets the competences from list
+	 * Sets the competences from list.
 	 *
 	 * @param competences the new competences
 	 */
@@ -166,7 +167,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Sets the guidelines from list-html-parser
+	 * Sets the guidelines from list-html-parser.
 	 *
 	 * @param element the new guidelines
 	 */
@@ -185,7 +186,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Sets the guidelines from list
+	 * Sets the guidelines from list.
 	 *
 	 * @param guidelines the new guidelines
 	 */
@@ -194,7 +195,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Sets the opportunities from list-html-parser
+	 * Sets the opportunities from list-html-parser.
 	 *
 	 * @param element the new opportunities
 	 */
@@ -213,7 +214,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Sets the opportunities from list
+	 * Sets the opportunities from list.
 	 *
 	 * @param opportunities the new opportunities
 	 */
@@ -222,7 +223,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Sets the responsibilities from list-html-parser
+	 * Sets the responsibilities from list-html-parser.
 	 *
 	 * @param element the new responsibilities
 	 */
@@ -260,7 +261,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Sets the responsibilities from list
+	 * Sets the responsibilities from list.
 	 *
 	 * @param responsibilities the new responsibilities
 	 */
@@ -320,6 +321,24 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	 */
 	public List<String> getGuidelines() {
 		return this.getDataitem().getGuidelines();
+	}
+
+	/**
+	 * Checks if is situational.
+	 *
+	 * @return true, if is situational
+	 */
+	public boolean isSituational() {
+		return this.getDataitem().getSituational();
+	}
+
+	/**
+	 * Sets the situational.
+	 *
+	 * @param situational the new situational
+	 */
+	public void setSituational(boolean situational) {
+		this.getDataitem().setSituational(situational);
 	}
 
 	/**
@@ -515,8 +534,14 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		}
 
 		if (!foundSomeRoleResponsible) {
-			renderer.addH2(element, ROLEPERSONS.toString());
-			renderer.addStatus(element, UNRELATED.toString());
+
+			if (this.isSituational()) {
+				renderer.addH2(element, ROLEPERSONS.toString());
+				renderer.addStatus(element, SITUATIONAL.toString());
+			} else {
+				renderer.addH2(element, ROLEPERSONS.toString());
+				renderer.addStatus(element, UNRELATED.toString());
+			}
 		}
 
 		if (StringUtil.isNotNullAndNotEmpty(this.getPurpose())) {
@@ -601,6 +626,11 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		return element;
 	}
 
+	/**
+	 * Gets the redundance team.
+	 *
+	 * @return the redundance team
+	 */
 	public double getRedundanceTeam() {
 		double val = 0;
 		List<Team> teams = R.getTeamsWithRole(this);
@@ -626,10 +656,20 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		return val / (double) 100.0;
 	}
 
+	/**
+	 * Gets the redundance.
+	 *
+	 * @return the redundance
+	 */
 	public double getRedundance() {
 		return Math.max(this.getRedundanceOrganisation(), this.getRedundanceTeam());
 	}
 
+	/**
+	 * Gets the redundance organisation.
+	 *
+	 * @return the redundance organisation
+	 */
 	public double getRedundanceOrganisation() {
 
 		double value = 0;

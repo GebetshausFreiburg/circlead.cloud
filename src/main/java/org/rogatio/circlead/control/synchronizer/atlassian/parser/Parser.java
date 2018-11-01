@@ -324,7 +324,7 @@ public class Parser {
 			} else {
 				tr.appendElement("td").attr("colspan", "1").appendText("");
 			}
-			
+
 			if (StringUtil.isNotNullAndNotEmpty(c.getDescription())) {
 				Element td = tr.appendElement("td").attr("colspan", "1");
 				td.attr("colspan", "1").appendText(c.getDescription());
@@ -592,10 +592,9 @@ public class Parser {
 		if (workitem instanceof Competence) {
 			Competence w = (Competence) workitem;
 			CompetenceDataitem d = w.getDataitem();
-			addDataPair(ID.toString(), d.getIds(), table); 
-//			addDataPair(DESCRIPTION.toString(), d.getDescription(), table);
-			addDataPair(COMPETENCETREE.toString(), Parser.createCompetenceTable(d.getCompetencies(), synchronizer, false),
-					table);
+			addDataPair(ID.toString(), d.getIds(), table);
+			addDataPair(COMPETENCETREE.toString(),
+					Parser.createCompetenceTable(d.getCompetencies(), synchronizer, false), table);
 			addDataPair(STATUS.toString(), Parser.getStatus(d.getStatus()), table);
 		}
 
@@ -604,8 +603,7 @@ public class Parser {
 			TeamDataitem d = w.getDataitem();
 			addDataPair(ID.toString(), d.getIds(), table);
 			addDataPair(DESCRIPTION.toString(), d.getDescription(), table);
-			addDataPair(TEAMROLES.toString(), Parser.createTeamEntryTable(d.getTeams(), synchronizer, false),
-					table);
+			addDataPair(TEAMROLES.toString(), Parser.createTeamEntryTable(d.getTeams(), synchronizer, false), table);
 			addDataPair(RECURRENCERULE.toString(), d.getRecurrenceRule(), table);
 			addDataPair(CATEGORY.toString(), d.getCategory(), table);
 			addDataPair(TYPE.toString(), d.getType(), table);
@@ -626,7 +624,15 @@ public class Parser {
 			addDataPair(STATUS.toString(), Parser.getStatus(d.getStatus()), table);
 			addDataPair(ORGANISATION.toString(), w.getOrganisationIdentifier(), table);
 			addCommaList(SYNONYMS.toString(), d.getSynonyms(), table);
-			addBulletList(PERSONS.toString(), d.getPersons(), table);
+
+			if (d.getSituational()) {
+//				List<String> p = new ArrayList<String>();
+//				p.add("Situative Besetzung");
+				addDataPair(PERSONS.toString(), "Situative Besetzung", table);
+			} else {
+				addBulletList(PERSONS.toString(), d.getPersons(), table);
+			}
+			
 			addBulletList(ACTIVITIES.toString(), d.getActivities(), table);
 			addBulletList(RESPONSIBILITY.toString(), d.getResponsibilities(), table);
 			addBulletList(OPPORTUNITIES.toString(), d.getOpportunities(), table);

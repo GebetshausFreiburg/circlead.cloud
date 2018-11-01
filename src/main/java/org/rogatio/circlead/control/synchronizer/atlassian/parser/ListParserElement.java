@@ -15,6 +15,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
 
 /**
@@ -34,6 +35,17 @@ public class ListParserElement implements IParserElement {
 		parse(text);
 	}
 
+	public boolean isSituational() {
+		if (ObjectUtil.isListNotNullAndEmpty(list)) {
+			if (list.size()==1) {
+				if (list.get(0).equalsIgnoreCase("Situativ")||list.get(0).equalsIgnoreCase("Situative Besetzung")||list.get(0).equalsIgnoreCase("Situativ Besetzt")) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
 	/**
 	 * Gets the list.
 	 *

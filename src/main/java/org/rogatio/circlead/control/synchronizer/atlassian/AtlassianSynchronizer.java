@@ -96,7 +96,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 
 	/** Name of the page in space which holds the teams. */
 	private final String TEAMSPAGE = "Teams";
-	
+
 	private final String COMPETENCIESPAGE = "Competencies";
 
 	/** The Constant LOGGER. */
@@ -162,7 +162,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 				if (wi instanceof Team) {
 					a.setTitle(TEAMSPAGE);
 				}
-				
+
 				if (wi instanceof Competence) {
 					a.setTitle(COMPETENCIESPAGE);
 				}
@@ -444,7 +444,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	 */
 	private List<IWorkitem> load(WorkitemType type) throws SynchronizerException {
 		List<String> list = loadIndex(type);
-		
+
 		List<IWorkitem> workitems = new ArrayList<IWorkitem>();
 
 		for (String index : list) {
@@ -532,7 +532,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	 * @return the versions
 	 */
 	public List<Integer> getVersions(Integer pageId) {
-		/* Deletion is not possible via rest on dedicated server. Throw warning*/
+		/* Deletion is not possible via rest on dedicated server. Throw warning */
 		if (DEDICATEDSERVER) {
 			LOGGER.warn("REST-API for deleting versions on dedicated server NOT available");
 			return null;
@@ -574,10 +574,10 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	 */
 	public String getAcestorId(String type) {
 
-		/* Look for id which is loaded on repository initialisation*/
+		/* Look for id which is loaded on repository initialisation */
 		String id = acestorPages.get(type.toLowerCase());
 
-		/* If acestor not found (lazy load), then look for it online*/
+		/* If acestor not found (lazy load), then look for it online */
 		if (id == null) {
 			if (REPORT.isEquals(type)) {
 				SynchronizerResult page = confluenceClient.search("type=\"page\" and title=\"Reports\"");
@@ -824,7 +824,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 
 			return competence;
 		}
-		
+
 		if (TEAM.isEquals(type)) {
 			Team team = new Team();
 
@@ -1036,7 +1036,12 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 				} else if (WorkitemParameter.COMPETENCIES.has(key)) {
 					role.setCompetences((ListParserElement) value);
 				} else if (WorkitemParameter.PERSONS.has(key)) {
-					role.setPersonIdentifiers((ListParserElement) value);
+					ListParserElement plist = (ListParserElement) value;
+					if (plist.isSituational()) {
+						role.setSituational(true);
+					} else {
+						role.setPersonIdentifiers(plist);
+					}
 				} else {
 					LOGGER.debug("Value from parser not set: key=" + key + ", value=" + pairs.get(key));
 				}

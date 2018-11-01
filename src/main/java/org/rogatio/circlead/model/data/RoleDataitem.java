@@ -82,6 +82,27 @@ public class RoleDataitem extends DefaultDataitem {
 	@JsonSchemaDescription("List of responsibilities. Identifiers allowed. Could have as prefix [skill,status], where skill=0,25,50,75,100 and status=active,inactive,teporary,fallback")
 	private List<String> persons = new ArrayList<String>();
 
+	/** The situational. */
+	private boolean situational = false;
+	
+	/**
+	 * Checks if is situational.
+	 *
+	 * @return true, if is situational
+	 */
+	public boolean getSituational() {
+		return this.situational;
+	}
+	
+	/**
+	 * Sets the situational.
+	 *
+	 * @param situational the new situational
+	 */
+	public void setSituational(boolean situational) {
+		this.situational = situational;
+	}
+	
 	/**
 	 * Instantiates a new role data.
 	 */

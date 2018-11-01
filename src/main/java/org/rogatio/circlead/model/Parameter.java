@@ -46,6 +46,8 @@ public enum Parameter {
 
 	/** The status of unrelated role. */
 	UNRELATED("Unbesetzt"),
+	
+	SITUATIONAL("Situativ"),
 
 	/** The purpose of a role. */
 	PURPOSE("Zweck / Kurzbeschreibung"),

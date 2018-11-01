@@ -352,8 +352,8 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 			doc.charset(Charset.forName("UTF-8"));
 			Element html = doc.appendElement("html");
 			Element head = html.appendElement("head");
-			head.append("<link rel=\"stylesheet\" href=\"styles.css\">");
-			head.append("<meta charset=\"utf-8\">");
+			head.append("<link rel=\"stylesheet\" href=\"styles.css\"/>");
+			head.append("<meta charset=\"utf-8\"/>");
 			Element body = html.appendElement("body");
 
 			body.appendElement("H1").appendText(workitem.getTitle());

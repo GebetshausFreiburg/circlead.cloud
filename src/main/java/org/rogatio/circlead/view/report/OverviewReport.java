@@ -59,12 +59,12 @@ public class OverviewReport extends DefaultReport {
 						List<Rolegroup> childRolegroups = R
 								.getRolegroupChildren(rolegroup.getTitle());
 						if (ObjectUtil.isListNotNullAndEmpty(childRolegroups)) {
-							h1.append("<img src=\"images\\groupparent.png\" width=\"32px\">");
+							h1.append("<img src=\"images\\groupparent.png\" width=\"32px\"/>");
 						} else {
-							h1.append("<img src=\"images\\group.png\" width=\"32px\">");
+							h1.append("<img src=\"images\\group.png\" width=\"32px\"/>");
 						}
 					} else {
-						h1.append("<img src=\"images\\groupchild.png\" width=\"32px\">");
+						h1.append("<img src=\"images\\groupchild.png\" width=\"32px\"/>");
 					}
 					// renderer.addH1(element, rolegroup.getTitle());
 					h1.appendText(rolegroup.getTitle());
@@ -77,7 +77,7 @@ public class OverviewReport extends DefaultReport {
 					if (roles.size() > 0) {
 						for (Role role : roles) {
 							Element h2 = element.appendElement("h2");
-							h2.append("<img src=\"images\\role.png\" width=\"32px\">");
+							h2.append("<img src=\"images\\role.png\" width=\"32px\"/>");
 							h2.appendText(role.getTitle());
 							renderer.addStatus(element, role.getStatus());
 							role.render(synchronizer).appendTo(element);

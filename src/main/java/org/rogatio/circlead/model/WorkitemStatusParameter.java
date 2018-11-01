@@ -21,6 +21,9 @@ public enum WorkitemStatusParameter {
 	/** Not knows the topic. Kennt das Thema nicht. */
 	UNSKILLED("Grey", true, "Unwissender", "Untrainiert", "Untrainierter", "Unskilled", "0%"),
 
+	/** The situational status. Allows a role to be empty and no role-carrier is needed */
+	SITUATIONAL("Green", "Situative Besetzung", "Situational", "Situativ", "Situative", "Situative Teilnehmer", "Situativ Besetzt"),
+	
 	/**
 	 * Kann die Aufgabenstellung nachvollziehen, aber noch nicht in allen Teilen
 	 * umsetzen.
@@ -77,7 +80,11 @@ public enum WorkitemStatusParameter {
 
 	/** The unassigned. */
 	UNASSIGNED("Red", "Unbesetzt", "Unassigned"), 
+	
+	/** The overassigned. */
 	OVERASSIGNED("Green", "Mehrfachbesetzung"),
+	
+	/** The assigned. */
 	ASSIGNED("Yellow", "Einfachbesetzung"), 
 	
 	/** The draft. */
@@ -92,12 +99,26 @@ public enum WorkitemStatusParameter {
 	/** The aliases. */
 	private final List<String> aliases = new ArrayList<String>();
 
+	/** The inverted color. */
 	private final boolean invertedColor;
 
+	/**
+	 * Checks if is inverted color.
+	 *
+	 * @return true, if is inverted color
+	 */
 	public boolean isInvertedColor() {
 		return invertedColor;
 	}
 
+	/**
+	 * Instantiates a new workitem status parameter.
+	 *
+	 * @param color the color
+	 * @param invertedColor the inverted color
+	 * @param name the name
+	 * @param aliases the aliases
+	 */
 	private WorkitemStatusParameter(String color, boolean invertedColor, String name, String... aliases) {
 		this.color = color;
 		this.name = name;
