@@ -454,6 +454,19 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		return this.getDataitem().getRecurrenceRule(personIdentifier);
 	}
 
+	/**
+	 * Gets the recurrence rule.
+	 *
+	 * @param person the person
+	 * @return the recurrence rule
+	 */
+	public String getRecurrenceRule(Person person) {
+		if (person == null) {
+			return null;
+		}
+		return this.getDataitem().getRecurrenceRule(person.getFullname());
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

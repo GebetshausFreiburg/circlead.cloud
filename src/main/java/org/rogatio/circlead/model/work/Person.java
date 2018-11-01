@@ -241,6 +241,24 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	public String getSecondname() {
 		return this.getDataitem().getSecondname();
 	}
+	
+	/**
+	 * Takes role.
+	 *
+	 * @param roleIdentifier the role identifier
+	 * @return true, if successful
+	 */
+	public boolean takesRole(String roleIdentifier) {
+		List<Role> roles = R.getRolesWithPerson(this);
+		if (ObjectUtil.isListNotNullAndEmpty(roles)) {
+			for (Role r : roles) {
+				if (r.getTitle().equalsIgnoreCase(roleIdentifier)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * Gets the fullname.
@@ -534,6 +552,12 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		return element;
 	}
 
+	/**
+	 * Adds the ressource chart.
+	 *
+	 * @param synchronizer the synchronizer
+	 * @param element the element
+	 */
 	private void addRessourceChart(ISynchronizer synchronizer, Element element) {
 		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 
@@ -565,6 +589,12 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		}
 	}
 
+	/**
+	 * Gets the average allokation.
+	 *
+	 * @param freq the freq
+	 * @return the average allokation
+	 */
 	public double getAverageAllokation(Freq freq) {
 		double orgAlloc = R.getAverageAllokationInOrganisation(this.getFullname(), freq);
 		double teamAlloc = R.getAverageAllokationInTeams(this, freq);

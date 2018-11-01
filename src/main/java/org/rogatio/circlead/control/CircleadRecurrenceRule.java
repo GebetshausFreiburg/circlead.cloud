@@ -33,10 +33,7 @@ import org.rogatio.circlead.util.StringUtil;
  */
 public class CircleadRecurrenceRule {
 
-	/**
-	 * The Constant WEEKDAYS contains the enum Weekday as ordered list, beginning on
-	 * monday
-	 */
+	/** The Constant WEEKDAYS contains the enum Weekday as ordered list, beginning on monday. */
 	final static public List<Weekday> WEEKDAYS = new ArrayList<Weekday>();
 
 	/** The Constant DAYOFWEEK2WEEKDAY maps 1 to monday, 2 to tuesday, .... */
@@ -48,7 +45,7 @@ public class CircleadRecurrenceRule {
 	 */
 	final static public Map<Weekday, Integer> WEEKDAY2DAYOFWEEK = new HashMap<Weekday, Integer>();
 
-	/** The Constant WEEKDAYS2GERMAN map enum weekday to german name of weekday */
+	/**  The Constant WEEKDAYS2GERMAN map enum weekday to german name of weekday. */
 	final static public Map<Weekday, String> WEEKDAYS2GERMAN = new HashMap<Weekday, String>();
 
 	static {
@@ -116,10 +113,37 @@ public class CircleadRecurrenceRule {
 	}
 
 	/**
+	 * Gets the readable rule.
+	 *
+	 * @return the readable rule
+	 */
+	public String getReadableRule() {
+		Weekday wkst = this.recurrenceRule.getWeekStart();
+
+		StringBuilder sb = new StringBuilder();
+
+		String dayname = WEEKDAYS2GERMAN.get(wkst);
+		sb.append(dayname + ", ");
+
+		List<Integer> x = this.recurrenceRule.getByPart(Part.BYHOUR);
+		if (x != null) {
+			int hour = x.get(0);
+			sb.append(hour + " Uhr, ");
+		}
+
+		if (durationunit != null) {
+			sb.append("Dauer " + duration + "h");
+		}
+
+		return sb.toString();
+	}
+
+	/**
 	 * Sets the until date.
 	 *
 	 * @param year  the year
-	 * @param month the month of the year. January is 1, february is 2, ..., december is 12.
+	 * @param month the month of the year. January is 1, february is 2, ...,
+	 *              december is 12.
 	 * @param day   the day
 	 */
 	public void setUntilDateNonAllDay(int year, int month, int day) {
@@ -131,7 +155,8 @@ public class CircleadRecurrenceRule {
 	 * Sets the start date.
 	 *
 	 * @param year  the year
-	 * @param month the month of the year. January is 1, february is 2, ..., december is 12.
+	 * @param month the month of the year. January is 1, february is 2, ...,
+	 *              december is 12.
 	 * @param day   the day
 	 */
 	public void setStartDateNonAllDay(int year, int month, int day) {
@@ -387,10 +412,10 @@ public class CircleadRecurrenceRule {
 		for (Event event : events) {
 			if (event.getStartDate().after(start.getTime()) && event.getStartDate().before(end.getTime())) {
 //			if () {
-				
+
 //			}
 				sum += this.duration * allokationUnit;
-			
+
 			}
 		}
 
@@ -1000,10 +1025,20 @@ public class CircleadRecurrenceRule {
 		return getEvent(this.getStartDate());
 	}
 
+	/**
+	 * Sets the start date non all day.
+	 *
+	 * @param startDate the new start date non all day
+	 */
 	public void setStartDateNonAllDay(DateTime startDate) {
 		this.startDate = startDate;
 	}
 
+	/**
+	 * Sets the until date.
+	 *
+	 * @param untilDate the new until date
+	 */
 	public void setUntilDate(String untilDate) {
 		if (startDate == null) {
 			DateTime u = DateTime.parse(defaultTimeZone, untilDate);
@@ -1014,11 +1049,21 @@ public class CircleadRecurrenceRule {
 
 	}
 
+	/**
+	 * Sets the until date all day.
+	 *
+	 * @param untilDate the new until date all day
+	 */
 	public void setUntilDateAllDay(String untilDate) {
 		DateTime u = DateTime.parse(untilDate);
 		recurrenceRule.setUntil(u);
 	}
 
+	/**
+	 * Sets the start date.
+	 *
+	 * @param startDate the new start date
+	 */
 	public void setStartDate(String startDate) {
 		setStartDateAllDay(startDate);
 	}
@@ -1041,7 +1086,7 @@ public class CircleadRecurrenceRule {
 	 * @return the start date
 	 */
 	public DateTime getStartDate() {
-		//Look for first date in recurrent rule
+		// Look for first date in recurrent rule
 		List<DateTime> list = getStartDateList(1);
 		// if valid, then return
 		if (list.size() == 1) {
@@ -1050,7 +1095,12 @@ public class CircleadRecurrenceRule {
 		// if something went wrong, return null
 		return null;
 	}
-	
+
+	/**
+	 * Gets the until date.
+	 *
+	 * @return the until date
+	 */
 	public DateTime getUntilDate() {
 		return recurrenceRule.getUntil();
 	}

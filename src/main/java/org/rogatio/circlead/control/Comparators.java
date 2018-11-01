@@ -11,6 +11,7 @@ package org.rogatio.circlead.control;
 import java.util.Comparator;
 
 import org.rogatio.circlead.model.work.DefaultWorkitem;
+import org.rogatio.circlead.model.work.Role;
 
 /**
  * Comparators for workitems
@@ -30,6 +31,14 @@ public class Comparators {
 		@Override
 		public int compare(DefaultWorkitem o1, DefaultWorkitem o2) {
 			return o1.getStatus().compareTo(o2.getStatus());
+		}
+	};
+	
+	/** Sorts roles by redundance */
+	public final static Comparator<Role> REDUNDANCE = new Comparator<Role>() {
+		@Override
+		public int compare(Role o1, Role o2) {
+			return ((Double)o2.getRedundance()).compareTo(((Double)o1.getRedundance()));
 		}
 	};
 

@@ -626,8 +626,6 @@ public class Parser {
 			addCommaList(SYNONYMS.toString(), d.getSynonyms(), table);
 
 			if (d.getSituational()) {
-//				List<String> p = new ArrayList<String>();
-//				p.add("Situative Besetzung");
 				addDataPair(PERSONS.toString(), "Situative Besetzung", table);
 			} else {
 				addBulletList(PERSONS.toString(), d.getPersons(), table);

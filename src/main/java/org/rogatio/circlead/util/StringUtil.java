@@ -8,6 +8,8 @@
  */
 package org.rogatio.circlead.util;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.text.DateFormat;
 
 import java.text.ParseException;
@@ -19,6 +21,16 @@ import java.util.Locale;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
+import org.rogatio.circlead.control.Repository;
+import org.rogatio.circlead.model.work.Activity;
+import org.rogatio.circlead.model.work.IWorkitem;
+import org.rogatio.circlead.model.work.Person;
+import org.rogatio.circlead.model.work.Role;
+import org.rogatio.circlead.model.work.Rolegroup;
+import org.rogatio.circlead.model.work.Team;
 
 /**
  * The Class StringUtil is a simple helper for text-parsing.
@@ -88,21 +100,29 @@ public class StringUtil {
 		return s.substring(0, 1).toUpperCase() + s.substring(1, s.length());
 	}
 
+	/**
+	 * Adds the space.
+	 *
+	 * @param string the string
+	 * @param space  the space
+	 * @param fill   the fill
+	 * @return the string
+	 */
 	public static String addSpace(String string, int space, char fill) {
-		 
-        int spacer = 0;
-        StringBuffer sb = new StringBuffer();
- 
-        if (space > string.length())
-            spacer = space - string.length();
- 
-        for (int i = 0; i < spacer; i++) {
-            sb.append(fill);
-        }
- 
-        return sb.append(string).toString();
-    }
-	
+
+		int spacer = 0;
+		StringBuffer sb = new StringBuffer();
+
+		if (space > string.length())
+			spacer = space - string.length();
+
+		for (int i = 0; i < spacer; i++) {
+			sb.append(fill);
+		}
+
+		return sb.append(string).toString();
+	}
+
 	/**
 	 * Checks if string is not null and not empty.
 	 *
@@ -182,6 +202,66 @@ public class StringUtil {
 	public static String fromDate(Date date, String f) {
 		DateFormat format = new SimpleDateFormat(f, Locale.GERMANY);
 		return format.format(date);
+	}
+
+	/**
+	 * Merge from template.
+	 *
+	 * @param templateFile the template file
+	 * @return the string
+	 */
+	public static String mergeFromTemplate(String templateFile) {
+		return mergeFromTemplate(templateFile, null);
+	}
+	
+	/**
+	 * Merge from template.
+	 *
+	 * @param templateFile the template file
+	 * @param workitem the workitem
+	 * @return the string
+	 */
+	public static String mergeFromTemplate(String templateFile, IWorkitem workitem) {
+		StringWriter writer = new StringWriter();
+		try {
+			VelocityEngine velocityEngine = new VelocityEngine();
+			velocityEngine.init();
+
+			Template t = velocityEngine.getTemplate(templateFile);
+
+			VelocityContext context = new VelocityContext();
+			context.put("repository", Repository.getInstance());
+			context.put("objectUtil", new ObjectUtil());
+			context.put("stringUtil", new StringUtil());
+			if (workitem!=null) {
+				context.put("workitem", workitem);
+				if (workitem instanceof Person) {
+					context.put("person", workitem);
+				}
+				if (workitem instanceof Role) {
+					context.put("role", workitem);
+				}
+				if (workitem instanceof Rolegroup) {
+					context.put("rolegroup", workitem);
+				}
+				if (workitem instanceof Team) {
+					context.put("team", workitem);
+				}
+				if (workitem instanceof Activity) {
+					context.put("activity", workitem);
+				}
+			}
+			
+			t.merge(context, writer);
+
+			return writer.toString();
+		} finally {
+			try {
+				writer.close();
+			} catch (IOException e) {
+				throw new AssertionError("StringWriter#close() should not throw IOException", e);
+			}
+		}
 	}
 
 }

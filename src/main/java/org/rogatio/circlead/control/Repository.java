@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -151,6 +152,13 @@ public final class Repository {
 		return map;
 	}
 
+	/**
+	 * Gets the roles with competence.
+	 *
+	 * @param person the person
+	 * @param competence the competence
+	 * @return the roles with competence
+	 */
 	public List<Role> getRolesWithCompetence(Person person, String competence) {
 		List<Role> found = new ArrayList<Role>();
 		ArrayList<Role> roles = this.getRolesWithPerson(person);
@@ -168,6 +176,13 @@ public final class Repository {
 		return found;
 	}
 
+	/**
+	 * Gets the skill of person competence.
+	 *
+	 * @param person the person
+	 * @param competence the competence
+	 * @return the skill of person competence
+	 */
 	public int getSkillOfPersonCompetence(Person person, String competence) {
 		ArrayList<Role> roles = this.getRolesWithPerson(person);
 		String skill = "";
@@ -193,12 +208,25 @@ public final class Repository {
 		return i;
 	}
 
+	/**
+	 * Gets the parent roles.
+	 *
+	 * @param role the role
+	 * @return the parent roles
+	 */
 	public List<Role> getParentRoles(Role role) {
 		List<Role> parents = new ArrayList<Role>();
 		getParentRoles(role, parents);
 		return parents;
 	}
 
+	/**
+	 * Gets the parent roles.
+	 *
+	 * @param role the role
+	 * @param parents the parents
+	 * @return the parent roles
+	 */
 	public void getParentRoles(Role role, List<Role> parents) {
 		if (role.getParentIdentifier() != null) {
 			if (!role.getParentIdentifier().equals(role.getTitle())) {
@@ -211,6 +239,12 @@ public final class Repository {
 		}
 	}
 
+	/**
+	 * Gets the competencies of person.
+	 *
+	 * @param person the person
+	 * @return the competencies of person
+	 */
 	public List<String> getCompetenciesOfPerson(Person person) {
 		List<String> list = new ArrayList<String>();
 
@@ -243,6 +277,9 @@ public final class Repository {
 		return roleNames;
 	}
 
+	/**
+	 * Adds the orphaned role competencies to root competence.
+	 */
 	public void addOrphanedRoleCompetenciesToRootCompetence() {
 		Map<String, List<Role>> competencies = getCompetencesFromRoles();
 		for (String competence : competencies.keySet()) {
@@ -1079,7 +1116,7 @@ public final class Repository {
 
 		return foundRoles;
 	}
-
+	
 	/**
 	 * Gets the teams with the person in team.
 	 *
@@ -1262,6 +1299,25 @@ public final class Repository {
 		}
 		return rootRoles;
 	}
+	
+	/**
+	 * Gets the root roles.
+	 *
+	 * @param comparator the comparator
+	 * @return the root roles
+	 */
+	public List<Role> getRootRoles(Comparator<Role> comparator) {
+		List<Role> rootRoles = new ArrayList<Role>();
+		for (Role role : this.getRoles()) {
+			if (role.getParentIdentifier() == null) {
+				rootRoles.add(role);
+			}
+		}
+		
+		Collections.sort(rootRoles, comparator);
+		
+		return rootRoles;
+	}
 
 	/**
 	 * Gets the competences from roles.
@@ -1289,6 +1345,12 @@ public final class Repository {
 		return map;
 	}
 
+	/**
+	 * Find roles with competence.
+	 *
+	 * @param competence the competence
+	 * @return the list
+	 */
 	public List<Role> findRolesWithCompetence(String competence) {
 		List<Role> foundRoles = new ArrayList<Role>();
 		for (Role r : this.getRoles()) {
@@ -1322,6 +1384,33 @@ public final class Repository {
 
 		}
 
+		return childRoles;
+	}
+	
+	/**
+	 * Gets the role children.
+	 *
+	 * @param roleIdentifier the role identifier
+	 * @param comparator the comparator
+	 * @return the role children
+	 */
+	public List<Role> getRoleChildren(String roleIdentifier, Comparator<Role> comparator) {
+		List<Role> childRoles = new ArrayList<Role>();
+
+		if (roleIdentifier == null) {
+			return null;
+		}
+
+		for (Role role : this.getRoles()) {
+
+			if (roleIdentifier.equalsIgnoreCase(role.getParentIdentifier())) {
+				childRoles.add(role);
+			}
+
+		}
+
+		Collections.sort(childRoles, comparator);
+		
 		return childRoles;
 	}
 
@@ -1366,6 +1455,11 @@ public final class Repository {
 		reports.add(report);
 	}
 
+	/**
+	 * Adds the reports.
+	 *
+	 * @param reports the reports
+	 */
 	public void addReports(List<IReport> reports) {
 		if (reports != null) {
 			for (IReport iReport : reports) {

@@ -325,6 +325,38 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		}
 		return personIdentifiers;
 	}
+	
+	/**
+	 * Gets the readable rule.
+	 *
+	 * @return the readable rule
+	 */
+	public String getReadableRule() {
+		CircleadRecurrenceRule crr = new CircleadRecurrenceRule(this.getRecurrenceRule());
+		return crr.getReadableRule();
+	}
+
+	/**
+	 * Gets the roles.
+	 *
+	 * @param person the person
+	 * @return the roles
+	 */
+	public List<String> getRoles(Person person) {
+		List<String> roles = new ArrayList<String>();
+		List<TeamEntry> list = this.getTeamEntries();
+		for (TeamEntry teamEntry : list) {
+			List<String> p = teamEntry.getPersons();
+			for (String pi : p) {
+				if (person.getFullname().equalsIgnoreCase(pi)) {
+					if (!roles.contains(teamEntry.getRoleIdentifier())) {
+						roles.add(teamEntry.getRoleIdentifier());
+					}
+				}
+			}
+		}
+		return roles;
+	}
 
 	/**
 	 * Count the number of team members.
@@ -345,6 +377,12 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		return personIdentifiers;
 	}
 
+	/**
+	 * Render.
+	 *
+	 * @param synchronizer the synchronizer
+	 * @return the element
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -390,11 +428,11 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			table.appendTo(element);
 		}
 
-		if (this.getCategory() != null) { 
+		if (this.getCategory() != null) {
 			if (this.getCategory().equals("Gebetsstunde")) {
 				renderer.addH3(element, " ");
 				String mail = "gebetstundenorga@gebetshaus-freiburg.de";
-				element.appendText("Bitte melde Änderungen im Team oder der Gebetsstunde an "+mail+".");
+				element.appendText("Bitte melde Änderungen im Team oder der Gebetsstunde an " + mail + ".");
 			}
 		}
 
@@ -423,6 +461,11 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		return map;
 	}
 
+	/**
+	 * Validate.
+	 *
+	 * @return the list
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 

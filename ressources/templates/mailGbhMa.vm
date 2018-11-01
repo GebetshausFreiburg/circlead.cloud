@@ -1,0 +1,64 @@
+>>> Diese Nachricht wurde elektronisch erstellt <<<
+
+Liebe/r ${person.getFirstname()},
+
+wir haben im Gebetshaus Freiburg das System für die Gebetstundenorganisation gewechselt.
+Um einem Datenverlust vorzubeugen möchten wir dich bitten deine Daten zu prüfen.
+
+ ========================
+| KONTAKTDATEN           |
+ ========================
+
+Name:     $!{person.getFullname()}
+Adresse:  $!{person.getFirstPrivateContact().getAddress()}
+Mail:     $!{person.getFirstPrivateContact().getMail()}
+Mobil:    $!{person.getFirstPrivateContact().getMobile()}
+Festnetz: $!{person.getFirstPrivateContact().getPhone()}
+
+ ========================
+| ROLLEN IN GEBETSTUNDEN |
+ ========================
+
+#foreach( $team in ${repository.getTeamsWithMember($person)} )
+  #if($team.getCategory()=="Gebetsstunde")
+   #if($team.getTeamSubtype())
+ - Gebetstunde '$team.getTeamType() ($!{team.getTeamSubtype()})' am $team.getReadableRule() in den Rollen $team.getRoles($person)
+   #else
+ - Gebetstunde '$team.getTeamType()' am $team.getReadableRule() in den Rollen $team.getRoles($person)
+   #end
+  #end
+#end
+
+Bitte bestätige oder korrigiere diese Angaben mit einer Mail an gebetstundenorga@gebetshaus-freiburg.de
+
+Gib dabei gerne an welche der folgenden Rolle du konkret einnimmst (Mehrfachnennung möglich):
+
+- TL: Teamleiter
+- S2: Begleitender Sänger
+- TM: Gebetsstundenmitglied
+- MB: Musikbegleiter
+- BIR: Beter im Raum
+- P247: 24/7-Pionier
+- LPL: Lobpreisleiter
+- MPV: Mischpult- und Raumverantwortlicher
+- GL: Gebetstundenleiter
+- S1: Leitender Sänger
+
+Genaue Beschreibungen zu diesen Rollen findest du in der Mitarbeitermappe des Mitarbeiteraumes oder unter https://gebetshausfreiburg.atlassian.net/wiki/.
+
+#if ($person.takesRole("Stamm-Mitarbeiter"))
+ ========================
+| ROLLEN IN ORGANISATION |
+ ========================
+Als Stamm-Mitarbeiter haben wir folgende Rollen von dir dokumentiert:
+
+#foreach( $role in ${repository.getOrganisationalRolesWithPerson($person)} )
+ - $role.getAbbreviation(): $role.getTitle() #if($role.getRecurrenceRule($person))($!{role.getRecurrenceRule($person)})#end
+
+#end
+
+In der Klammer haben wir (wenn vorhanden) geschätzt was deine Aufwände pro Rolle sind.
+Bitte korrigiere diese indem du pro Rolle angibst wieviel Stunden pro Tag (d), Woche (w), Monat (m), Quartal (q) oder Jahr (y) du benötigst für die Ausübung der Rolle.
+
+Bitte sende Korrekturen deiner Rollen in der Organisation an matthias.wegner@gebetshaus-freiburg.de
+#end
