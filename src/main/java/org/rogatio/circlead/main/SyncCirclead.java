@@ -6,7 +6,7 @@
  * @since 01.07.2018
  * 
  */
-package org.rogatio.circlead;
+package org.rogatio.circlead.main;
 
 import java.io.File;
 import java.util.List;

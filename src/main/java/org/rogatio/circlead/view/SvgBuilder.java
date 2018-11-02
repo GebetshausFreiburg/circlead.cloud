@@ -6,8 +6,6 @@ import java.util.UUID;
 
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.Repository;
-import org.rogatio.circlead.model.TreeNode;
-import org.rogatio.circlead.model.WorkitemTree;
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;

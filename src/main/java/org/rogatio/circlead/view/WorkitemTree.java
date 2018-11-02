@@ -21,7 +21,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.rogatio.circlead.model;
+package org.rogatio.circlead.view;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -30,11 +30,12 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.rogatio.circlead.control.Repository;
+import org.rogatio.circlead.model.Parameter;
+import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.work.Competence;
 import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
-import org.rogatio.circlead.view.ColorPalette;
 
 /**
  * The Class WorkitemTree.

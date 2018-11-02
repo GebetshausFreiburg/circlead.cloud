@@ -1,4 +1,4 @@
-package org.rogatio.circlead.model;
+package org.rogatio.circlead.view;
 
 import java.awt.Color;
 import java.util.ArrayList;

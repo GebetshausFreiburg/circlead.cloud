@@ -21,14 +21,14 @@ import org.rogatio.circlead.control.synchronizer.atlassian.parser.HeaderTablePar
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
 import org.rogatio.circlead.model.Parameter;
-import org.rogatio.circlead.model.TreeNode;
-import org.rogatio.circlead.model.WorkitemTree;
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.data.CompetenceDataitem;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.IWorkitemRenderer;
+import org.rogatio.circlead.view.TreeNode;
+import org.rogatio.circlead.view.WorkitemTree;
 
 /**
  * The Class Competence.

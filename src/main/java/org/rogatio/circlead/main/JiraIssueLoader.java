@@ -1,4 +1,4 @@
-package org.rogatio.circlead;
+package org.rogatio.circlead.main;
 
 import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.DEDICATEDSERVER;
 import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.PASSWORD;

@@ -133,10 +133,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 
 		double divider = (fte / 100.0) * ((100.0 - tf) / 100.0);
 
-		// System.out.println("do"+divider);
 		double alloc = R.getAverageAllokationInOrganisation(this.getFullname(), Freq.WEEKLY);
-
-		// alloc = 10;
 
 		return 100 * alloc / (divider * 40.0);
 	}

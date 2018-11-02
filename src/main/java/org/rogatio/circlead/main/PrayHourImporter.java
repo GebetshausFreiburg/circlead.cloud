@@ -1,4 +1,4 @@
-package org.rogatio.circlead;
+package org.rogatio.circlead.main;
 
 import java.io.IOException;
 import java.util.ArrayList;

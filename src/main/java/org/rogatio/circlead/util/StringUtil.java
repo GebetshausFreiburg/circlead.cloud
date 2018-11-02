@@ -41,7 +41,7 @@ public class StringUtil {
 	final static Logger LOGGER = LogManager.getLogger(StringUtil.class);
 
 	/**
-	 * Default java-method to join comma-separated string to list od strings.
+	 * Join comma-separated string to list of strings.
 	 *
 	 * @param list the list
 	 * @return the string
@@ -205,7 +205,7 @@ public class StringUtil {
 	}
 
 	/**
-	 * Merge from template.
+	 * Merge data with velocity template.
 	 *
 	 * @param templateFile the template file
 	 * @return the string
@@ -215,7 +215,7 @@ public class StringUtil {
 	}
 	
 	/**
-	 * Merge from template.
+	 * Merge data with velocity template.
 	 *
 	 * @param templateFile the template file
 	 * @param workitem the workitem
