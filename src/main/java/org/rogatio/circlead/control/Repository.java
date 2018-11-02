@@ -54,13 +54,13 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * The Class Repository is a sigleton-representation of all loaded and handled
+ * The Class Repository is a singleton-representation of all loaded and handled
  * data while runtime. This is the real core of the circlead-application.
  */
 public final class Repository {
 
 	/** The Constant logger. */
-	final static Logger LOGGER = LogManager.getLogger(Repository.class);
+	private final static Logger LOGGER = LogManager.getLogger(Repository.class);
 
 	/**
 	 * Gets the single instance of Repository.

@@ -23,6 +23,7 @@ import org.rogatio.circlead.model.data.IDataitem;
  */
 public class DefaultWorkitem implements IWorkitem, Comparable<DefaultWorkitem> {
 
+	/** The Singleton-Repository. */
 	protected final Repository R = Repository.getInstance();
 	
 	/**

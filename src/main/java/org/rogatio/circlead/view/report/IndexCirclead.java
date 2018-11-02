@@ -26,7 +26,7 @@ public class IndexCirclead extends DefaultReport {
 	 */
 	public IndexCirclead() {
 		this.setName("Index Circlead");
-		this.setDescription("Übersicht Circlead-Inhalte");
+		this.setDescription("Übersicht Circlead-Inhalte (Table of Content)");
 	}
 
 	/*

@@ -25,7 +25,7 @@ public class PersonDataitem extends DefaultDataitem {
 
 	/** The secondname. */
 	private String secondname;
-	
+
 	/** The avatar. */
 	private String avatar;
 
@@ -40,15 +40,16 @@ public class PersonDataitem extends DefaultDataitem {
 
 	/** The full time equivalent. */
 	private double fullTimeEquivalent;
-	
+
 	/** The team fraction. */
 	private double teamFraction;
-	
+
 	/**
-	 * Sets the fullname.
+	 * Sets the fullname of a person. Splits name in three parts by whitespace.
+	 * First part is firstname, second part is secondname, third part is familyname.
+	 * Other parts are ignored.
 	 *
-	 * @param fullname
-	 *            the new fullname
+	 * @param fullname the new fullname
 	 */
 	public void setFullname(String fullname) {
 		if (fullname == null) {
@@ -68,12 +69,13 @@ public class PersonDataitem extends DefaultDataitem {
 			this.setFamilyname(parts[2]);
 		}
 
-	} 
+	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.rogatio.circlead.model.data.DefaultDataitem#setTitle(java.lang.String)
+	 * @see
+	 * org.rogatio.circlead.model.data.DefaultDataitem#setTitle(java.lang.String)
 	 */
 	@Override
 	public void setTitle(String title) {
@@ -92,8 +94,7 @@ public class PersonDataitem extends DefaultDataitem {
 	/**
 	 * Sets the firstname.
 	 *
-	 * @param firstname
-	 *            the new firstname
+	 * @param firstname the new firstname
 	 */
 	public void setFirstname(String firstname) {
 		this.firstname = firstname;
@@ -107,7 +108,7 @@ public class PersonDataitem extends DefaultDataitem {
 	public String getSecondname() {
 		return secondname;
 	}
-	
+
 	/**
 	 * Gets the avatar.
 	 *
@@ -129,8 +130,7 @@ public class PersonDataitem extends DefaultDataitem {
 	/**
 	 * Sets the secondname.
 	 *
-	 * @param secondname
-	 *            the new secondname
+	 * @param secondname the new secondname
 	 */
 	public void setSecondname(String secondname) {
 		this.secondname = secondname;
@@ -148,8 +148,7 @@ public class PersonDataitem extends DefaultDataitem {
 	/**
 	 * Sets the familyname.
 	 *
-	 * @param familyname
-	 *            the new familyname
+	 * @param familyname the new familyname
 	 */
 	public void setFamilyname(String familyname) {
 		this.familyname = familyname;
@@ -167,8 +166,7 @@ public class PersonDataitem extends DefaultDataitem {
 	/**
 	 * Sets the contacts.
 	 *
-	 * @param contacts
-	 *            the new contacts
+	 * @param contacts the new contacts
 	 */
 	public void setContacts(List<ContactDataitem> contacts) {
 		this.contacts = contacts;
@@ -182,7 +180,7 @@ public class PersonDataitem extends DefaultDataitem {
 	public Map<String, String> getData() {
 		return data;
 	}
-	
+
 	public void setData(Map<String, String> data) {
 		this.data = data;
 	}
@@ -190,15 +188,14 @@ public class PersonDataitem extends DefaultDataitem {
 	/**
 	 * Sets the data.
 	 *
-	 * @param data
-	 *            the data
+	 * @param data the data
 	 */
 	@JsonIgnore
 	public void setData(List<Map<String, String>> data) {
 		this.data = new HashMap<String, String>();
 
 		for (Map<String, String> map : data) {
-			for (String key : map.keySet()) { 
+			for (String key : map.keySet()) {
 				this.data.put(key, map.get(key));
 			}
 		}
@@ -269,5 +266,5 @@ public class PersonDataitem extends DefaultDataitem {
 	public void setTeamFraction(double teamFraction) {
 		this.teamFraction = teamFraction;
 	}
-	
+
 }

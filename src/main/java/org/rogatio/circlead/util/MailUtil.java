@@ -18,15 +18,34 @@ import javax.mail.internet.MimeMultipart;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * The Class MailUtil allows to send a mail with or without attachment
+ */
 public class MailUtil {
 
+	/** The Constant LOGGER. */
 	final static Logger LOGGER = LogManager.getLogger(MailUtil.class);
 	
+	/** The host. */
 	private String host = "";
+	
+	/** The port. */
 	private int port = 0;
+	
+	/** The username. */
 	private String username = "";
+	
+	/** The password. */
 	private String password = "";
 
+	/**
+	 * Instantiates a new mail util.
+	 *
+	 * @param host the host
+	 * @param port the port
+	 * @param username the username
+	 * @param password the password
+	 */
 	public MailUtil(String host, int port, String username, String password) {
 		
 		this.host = host;
@@ -35,6 +54,15 @@ public class MailUtil {
 		this.password = password;
 	}
 
+	/**
+	 * Send mail.
+	 *
+	 * @param from the from
+	 * @param to the to
+	 * @param subject the subject
+	 * @param msg the msg
+	 * @param attachment the attachment
+	 */
 	public void sendMail(String from, String to, String subject, String msg, File attachment) {
 
 		Properties prop = new Properties();

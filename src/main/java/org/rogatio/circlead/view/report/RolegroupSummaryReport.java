@@ -30,6 +30,7 @@ public class RolegroupSummaryReport extends DefaultReport {
 	 */
 	public RolegroupSummaryReport() {
 		this.setName("Rolegroup-Summary Report");
+		this.setDescription("Tabellarische Übersicht aller Rollengruppen mit der Auflistung aller enthaltenen Rollen");
 	}
 
 	/*

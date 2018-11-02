@@ -27,7 +27,7 @@ public class RoleListReportDetails extends DefaultReport {
 	 */
 	public RoleListReportDetails() {
 		this.setName("RoleList Report Details");
-		this.setDescription("Detaillierte Rollenliste");
+		this.setDescription("Detaillierte Liste aller Rollen die den Status und die Besetzung ausweist.");
 	}
 
 	/*

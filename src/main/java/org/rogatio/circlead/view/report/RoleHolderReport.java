@@ -32,6 +32,7 @@ public class RoleHolderReport extends DefaultReport {
 	 */
 	public RoleHolderReport() {
 		this.setName("RoleHolder Report");
+		this.setDescription("Bericht über den Status der Rollenträger, wenn diese in der Organisation noch nicht ausgeprägt sind.");
 	}
 
 	/*

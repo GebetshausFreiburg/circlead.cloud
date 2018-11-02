@@ -31,7 +31,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.rogatio.circlead.model.Parameter;
 
 /**
- * The Class ExcelUtil.
+ * The Class ExcelUtil allows writing Data to Microsoft-Excel
  */
 public class ExcelUtil {
 

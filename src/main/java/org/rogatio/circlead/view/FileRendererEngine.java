@@ -740,7 +740,7 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 					li.appendElement("a").attr("href", "../web/" + report.getName() + ".html")
 							.appendText(report.getName());
 					if (StringUtil.isNotNullAndNotEmpty(report.getDescription())) {
-						li.appendText(report.getDescription());
+						li.appendText(": "+report.getDescription());
 					}
 				}
 			}

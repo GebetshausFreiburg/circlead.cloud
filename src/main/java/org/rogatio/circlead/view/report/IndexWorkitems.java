@@ -37,6 +37,7 @@ public class IndexWorkitems extends DefaultReport {
 	public IndexWorkitems(WorkitemType type) {
 		this.type = type;
 		this.setName("Index " + type.getName());
+		this.setDescription("Inhaltsverzeichnis von '"+type.getName()+"'");
 	}
 
 	/*

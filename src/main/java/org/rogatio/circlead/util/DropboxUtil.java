@@ -25,7 +25,7 @@ import com.dropbox.core.v2.team.TeamMemberInfo;
 import com.dropbox.core.v2.users.FullAccount;
 
 /**
- * The Class DropboxUtil.
+ * The Class DropboxUtil allows to upload data and files to Dropbox.
  */
 public class DropboxUtil {
 
@@ -33,7 +33,7 @@ public class DropboxUtil {
 	final static Logger LOGGER = LogManager.getLogger(DropboxUtil.class);
 
 	/**
-	 * Gets the client.
+	 * Load and authenticate dropbox-client by authentification file <pre>*.credentials</pre> in classpath
 	 *
 	 * @param authFile the auth file
 	 * @return the client
@@ -74,8 +74,7 @@ public class DropboxUtil {
 	}
 
 	/**
-	 * Gets the team client.
-	 *
+     * Load and authenticate dropbox-client by authentification file <pre>*.credentials</pre> in classpath *
 	 * @param authFile the auth file
 	 * @return the team client
 	 */
@@ -113,10 +112,10 @@ public class DropboxUtil {
 	}
 
 	/**
-	 * Prints the progress.
+	 * Prints the upload-progress in bytes to logger
 	 *
-	 * @param uploaded the uploaded
-	 * @param size the size
+	 * @param uploaded the uploaded bytes from a file
+	 * @param size the byte-size of a file
 	 */
 	private static void printProgress(long uploaded, long size) {
 		LOGGER.info("Uploaded "+uploaded+" / "+size+" bytes ("+100 * (uploaded / (double) size)+"%)" );

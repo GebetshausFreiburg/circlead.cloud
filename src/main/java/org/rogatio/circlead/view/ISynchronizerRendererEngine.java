@@ -25,7 +25,8 @@ import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.view.report.IReport;
 
 /**
- * The Interface ISynchronizerRenderer.
+ * The Interface ISynchronizerRenderer allows rendering of content in dependency
+ * of the target system of the synchronizer.
  */
 public interface ISynchronizerRendererEngine {
 
@@ -40,7 +41,7 @@ public interface ISynchronizerRendererEngine {
 	 * Adds the activity list.
 	 *
 	 * @param element the element
-	 * @param list the list
+	 * @param list    the list
 	 */
 	public void addActivityList(Element element, List<Activity> list);
 
@@ -48,23 +49,23 @@ public interface ISynchronizerRendererEngine {
 	 * Adds the rolegroup list.
 	 *
 	 * @param element the element
-	 * @param list the list
+	 * @param list    the list
 	 */
 	public void addRolegroupList(Element element, List<Rolegroup> list);
 
 	public void addTeamList(Element element, List<Team> list);
-	
+
 	public void addPersonList(Element element, List<Person> list);
 
 	public void addReportList(Element element, List<IReport> list);
 
 	public void addHowToList(Element element, List<HowTo> list);
-	
+
 	/**
 	 * Adds the role list.
 	 *
 	 * @param element the element
-	 * @param list the list
+	 * @param list    the list
 	 */
 	public void addRoleList(Element element, List<Role> list);
 
@@ -72,43 +73,43 @@ public interface ISynchronizerRendererEngine {
 	 * Adds the role list.
 	 *
 	 * @param element the element
-	 * @param list the list
-	 * @param person the person
+	 * @param list    the list
+	 * @param person  the person
 	 */
 	public void addRoleList(Element element, List<Role> list, Person person);
 
 	/**
 	 * Adds the status.
 	 *
-	 * @param element the element
+	 * @param element     the element
 	 * @param statusValue the status value
 	 */
 	public void addStatus(Element element, String statusValue);
-	
+
 	/**
 	 * Adds the how to item.
 	 *
-	 * @param element the element
+	 * @param element     the element
 	 * @param description the description
-	 * @param content the content
+	 * @param content     the content
 	 */
 	public void addHowToItem(Element element, String description, String content);
-	
+
 	/**
 	 * Adds the sub activity list.
 	 *
-	 * @param element the element
-	 * @param list the list
+	 * @param element  the element
+	 * @param list     the list
 	 * @param activity the activity
-	 * @param role the role
+	 * @param role     the role
 	 */
 	public void addSubActivityList(Element element, List<ActivityDataitem> list, Activity activity, Role role);
-	
+
 	/**
 	 * Adds the table.
 	 *
 	 * @param element the element
-	 * @param map the map
+	 * @param map     the map
 	 */
 	public void addTable(Element element, Map<String, String> map);
 
@@ -116,17 +117,17 @@ public interface ISynchronizerRendererEngine {
 	 * Adds the person list.
 	 *
 	 * @param element the element
-	 * @param list the list
-	 * @param role the role
+	 * @param list    the list
+	 * @param role    the role
 	 */
 	public void addPersonList(Element element, List<String> list, Role role);
 
 	/**
 	 * Adds the person list.
 	 *
-	 * @param element the element
-	 * @param list the list
-	 * @param role the role
+	 * @param element    the element
+	 * @param list       the list
+	 * @param role       the role
 	 * @param leadPerson the lead person
 	 */
 	public void addPersonList(Element element, List<String> list, Role role, String leadPerson);
@@ -134,8 +135,8 @@ public interface ISynchronizerRendererEngine {
 	/**
 	 * Adds the list.
 	 *
-	 * @param element the element
-	 * @param list the list
+	 * @param element           the element
+	 * @param list              the list
 	 * @param underlinedElement the underlined element
 	 */
 	public void addList(Element element, List<String> list, String underlinedElement);
@@ -144,86 +145,86 @@ public interface ISynchronizerRendererEngine {
 	 * Adds the validation list.
 	 *
 	 * @param element the element
-	 * @param list the list
+	 * @param list    the list
 	 */
 	public void addValidationList(Element element, List<ValidationMessage> list);
-	
+
 	/**
 	 * Adds the list.
 	 *
 	 * @param element the element
-	 * @param list the list
+	 * @param list    the list
 	 */
 	public void addList(Element element, List<String> list);
 
 	/**
 	 * Adds the item.
 	 *
-	 * @param element the element
+	 * @param element     the element
 	 * @param description the description
 	 */
 	public void addItem(Element element, String description);
-	
+
 	/**
 	 * Adds the item.
 	 *
-	 * @param element the element
+	 * @param element     the element
 	 * @param description the description
-	 * @param list the list
+	 * @param list        the list
 	 */
 	public void addItem(Element element, String description, List<String> list);
 
 	/**
 	 * Adds the activity item.
 	 *
-	 * @param element the element
+	 * @param element     the element
 	 * @param description the description
-	 * @param content the content
+	 * @param content     the content
 	 */
 	public void addActivityItem(Element element, String description, String content);
-	
+
 	/**
 	 * Adds the role item.
 	 *
-	 * @param element the element
+	 * @param element     the element
 	 * @param description the description
-	 * @param content the content
+	 * @param content     the content
 	 */
 	public void addRoleItem(Element element, String description, String content);
 
 	/**
 	 * Adds the person item.
 	 *
-	 * @param element the element
+	 * @param element     the element
 	 * @param description the description
-	 * @param content the content
+	 * @param content     the content
 	 */
 	public void addPersonItem(Element element, String description, String content);
 
 	/**
 	 * Adds the team item.
 	 *
-	 * @param element the element
+	 * @param element     the element
 	 * @param description the description
-	 * @param content the content
+	 * @param content     the content
 	 */
 	public void addTeamItem(Element element, String description, String content);
-	
+
 	/**
 	 * Adds the rolegroup item.
 	 *
-	 * @param element the element
+	 * @param element     the element
 	 * @param description the description
-	 * @param content the content
+	 * @param content     the content
 	 */
 	public void addRolegroupItem(Element element, String description, String content);
 
 	/**
 	 * Adds the item.
 	 *
-	 * @param element the element
+	 * @param element     the element
 	 * @param description the description
-	 * @param content the content
+	 * @param content     the content
 	 */
 	public void addItem(Element element, String description, String content);
 
@@ -231,7 +232,7 @@ public interface ISynchronizerRendererEngine {
 	 * Adds the H 1.
 	 *
 	 * @param element the element
-	 * @param header the header
+	 * @param header  the header
 	 */
 	public void addH1(Element element, String header);
 
@@ -239,7 +240,7 @@ public interface ISynchronizerRendererEngine {
 	 * Adds the H 2.
 	 *
 	 * @param element the element
-	 * @param header the header
+	 * @param header  the header
 	 */
 	public void addH2(Element element, String header);
 
@@ -247,14 +248,14 @@ public interface ISynchronizerRendererEngine {
 	 * Adds the H 3.
 	 *
 	 * @param element the element
-	 * @param header the header
+	 * @param header  the header
 	 */
 	public void addH3(Element element, String header);
-	
+
 	/**
 	 * Adds the workitem table.
 	 *
-	 * @param element the element
+	 * @param element  the element
 	 * @param workitem the workitem
 	 */
 	public void addWorkitemTable(Element element, List<IWorkitem> workitem);
