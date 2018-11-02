@@ -27,6 +27,7 @@ import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
 import org.rogatio.circlead.model.Parameter;
+import org.rogatio.circlead.model.data.CompetenceDataitem;
 import org.rogatio.circlead.model.data.IDataRow;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.RolegroupDataitem;
@@ -36,7 +37,7 @@ import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.IWorkitemRenderer;
 
 /**
- * The Class Rolegroup.
+ * The Class Rolegroup is the working item for a Rolegroup
  */
 public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IValidator, IDataRow {
 
@@ -51,10 +52,15 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 	 * Instantiates a new rolegroup.
 	 *
 	 * @param dataitem
-	 *            the dataitem
+	 *            the dataitem of the rolegroup of class  
+	 * {@link org.rogatio.circlead.model.data.RolegroupDataitem}
 	 */
 	public Rolegroup(IDataitem dataitem) {
 		super(dataitem);
+		
+		if (!(dataitem instanceof RolegroupDataitem)) {
+			throw new IllegalArgumentException("IDataitem must be of type RolegroupDataitem");
+		}
 	}
 
 	/**

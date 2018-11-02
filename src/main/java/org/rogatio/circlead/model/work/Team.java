@@ -27,6 +27,7 @@ import org.rogatio.circlead.control.synchronizer.atlassian.parser.HeaderTablePar
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
+import org.rogatio.circlead.model.data.CompetenceDataitem;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.TeamDataitem;
 import org.rogatio.circlead.model.data.TeamEntry;
@@ -37,7 +38,7 @@ import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.IWorkitemRenderer;
 
 /**
- * The Class Team.
+ * The Class Team is the working item for a Team
  */
 public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidator {
 
@@ -51,10 +52,15 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	/**
 	 * Instantiates a new team.
 	 *
-	 * @param dataitem the dataitem
+	 * @param dataitem the dataitem of the team of class
+	 *                 {@link org.rogatio.circlead.model.data.TeamDataitem}
 	 */
 	public Team(IDataitem dataitem) {
 		super(dataitem);
+
+		if (!(dataitem instanceof TeamDataitem)) {
+			throw new IllegalArgumentException("IDataitem must be of type TeamDataitem");
+		}
 	}
 
 	/**
@@ -325,7 +331,7 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		}
 		return personIdentifiers;
 	}
-	
+
 	/**
 	 * Gets the readable rule.
 	 *

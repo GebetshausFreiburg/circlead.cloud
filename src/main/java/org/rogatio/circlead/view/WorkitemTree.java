@@ -38,7 +38,8 @@ import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 
 /**
- * The Class WorkitemTree.
+ * The Class WorkitemTree renders the phylogenetic tree of roles. Creates valid
+ * links to roles and displays the purpose of the role if it is set.
  */
 public class WorkitemTree {
 
@@ -49,7 +50,7 @@ public class WorkitemTree {
 	 */
 	public WorkitemTree(WorkitemType type) {
 		if (type == WorkitemType.ROLE) {
-			createRoleTree(); 
+			createRoleTree();
 		}
 		if (type == WorkitemType.ROLEGROUP) {
 			createRolegroupTree();
@@ -144,7 +145,7 @@ public class WorkitemTree {
 	public TreeNode getTreeNode(IWorkitem workitem) {
 		return getTreeNode(workitem, root);
 	}
-	
+
 	public TreeNode getTreeNode(String workitemTitle) {
 		return getTreeNode(workitemTitle, root);
 	}
@@ -167,12 +168,12 @@ public class WorkitemTree {
 
 		return null;
 	}
-	
+
 	/**
 	 * Gets the tree node.
 	 *
 	 * @param workitem the workitem
-	 * @param node the node
+	 * @param node     the node
 	 * @return the tree node
 	 */
 	public TreeNode getTreeNode(IWorkitem workitem, TreeNode node) {
@@ -260,7 +261,7 @@ public class WorkitemTree {
 	 * Gets the tree leafs.
 	 *
 	 * @param treeNode the tree node
-	 * @param leafs the leafs
+	 * @param leafs    the leafs
 	 * @return the tree leafs
 	 */
 	public void getTreeLeafs(TreeNode treeNode, List<IWorkitem> leafs) {
@@ -276,7 +277,7 @@ public class WorkitemTree {
 	/**
 	 * Adds the child node competence.
 	 *
-	 * @param parent the parent
+	 * @param parent     the parent
 	 * @param competence the competence
 	 */
 	private void addChildNodeCompetence(TreeNode parent, Competence competence) {
@@ -292,7 +293,7 @@ public class WorkitemTree {
 	/**
 	 * Adds the child node rolegroup.
 	 *
-	 * @param parent the parent
+	 * @param parent    the parent
 	 * @param rolegroup the rolegroup
 	 */
 	private void addChildNodeRolegroup(TreeNode parent, Rolegroup rolegroup) {
@@ -307,7 +308,7 @@ public class WorkitemTree {
 	 * Adds the child node role.
 	 *
 	 * @param parent the parent
-	 * @param role the role
+	 * @param role   the role
 	 */
 	private void addChildNodeRole(TreeNode parent, Role role) {
 		TreeNode node = new TreeNode(role, parent);
@@ -331,7 +332,7 @@ public class WorkitemTree {
 	 * Prints the node.
 	 *
 	 * @param spacer the spacer
-	 * @param node the node
+	 * @param node   the node
 	 */
 	private void printNode(String spacer, TreeNode node) {
 		LOGGER.info(

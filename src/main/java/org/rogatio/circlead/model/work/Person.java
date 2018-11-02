@@ -32,6 +32,7 @@ import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
 import org.rogatio.circlead.model.Parameter;
 import org.rogatio.circlead.model.WorkitemStatusParameter;
+import org.rogatio.circlead.model.data.CompetenceDataitem;
 import org.rogatio.circlead.model.data.ContactDataitem;
 import org.rogatio.circlead.model.data.IDataRow;
 import org.rogatio.circlead.model.data.IDataitem;
@@ -45,7 +46,7 @@ import org.rogatio.circlead.view.IWorkitemRenderer;
 import org.rogatio.circlead.view.SvgBuilder;
 
 /**
- * The Class Person.
+ * The Class Person is the working item for a person
  */
 public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValidator, IDataRow {
 
@@ -59,10 +60,15 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	/**
 	 * Instantiates a new person.
 	 *
-	 * @param dataitem the dataitem
+	 * @param dataitem the dataitem of the person of class
+	 *                 {@link org.rogatio.circlead.model.data.PersonDataitem}
 	 */
 	public Person(IDataitem dataitem) {
 		super(dataitem);
+
+		if (!(dataitem instanceof PersonDataitem)) {
+			throw new IllegalArgumentException("IDataitem must be of type PersonDataitem");
+		}
 	}
 
 	/**
@@ -100,9 +106,9 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	}
 
 	/**
-	 * Sets the avatar.
+	 * Sets the image-filename of the avatar from a person.
 	 *
-	 * @param avatar the new avatar
+	 * @param avatar the new filename for the avatar
 	 */
 	public void setAvatar(String avatar) {
 		this.getDataitem().setAvatar(avatar);
@@ -118,7 +124,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	}
 
 	/**
-	 * Gets the organisational workload.
+	 * Gets the organisational workload of the person
 	 *
 	 * @return the organisational workload
 	 */
@@ -139,7 +145,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	}
 
 	/**
-	 * Gets the team workload.
+	 * Gets the team workload of a person
 	 *
 	 * @return the team workload
 	 */
@@ -176,7 +182,8 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	}
 
 	/**
-	 * Sets the team fraction.
+	 * Sets the team fraction. Percentage which defines the team-time-equivalent
+	 * from the full-time-equivalent.
 	 *
 	 * @param tf the new team fraction
 	 */
@@ -190,7 +197,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	}
 
 	/**
-	 * Sets the full time equivalent.
+	 * Sets the full time equivalent of a person in percent. 100% mean 40h/week.
 	 *
 	 * @param fte the new full time equivalent
 	 */
@@ -222,7 +229,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	}
 
 	/**
-	 * Gets the firstname.
+	 * Gets the firstname of a person
 	 *
 	 * @return the firstname
 	 */
@@ -231,19 +238,19 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	}
 
 	/**
-	 * Gets the secondname.
+	 * Gets the secondname of a person
 	 *
 	 * @return the secondname
 	 */
 	public String getSecondname() {
 		return this.getDataitem().getSecondname();
 	}
-	
+
 	/**
-	 * Takes role.
+	 * Checks if person takes a specific role defined by roleIdentifier
 	 *
 	 * @param roleIdentifier the role identifier
-	 * @return true, if successful
+	 * @return true, if person takes role
 	 */
 	public boolean takesRole(String roleIdentifier) {
 		List<Role> roles = R.getRolesWithPerson(this);
@@ -258,7 +265,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	}
 
 	/**
-	 * Gets the fullname.
+	 * Gets the fullname of a person
 	 *
 	 * @return the fullname
 	 */
@@ -267,7 +274,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	}
 
 	/**
-	 * Sets the fullname.
+	 * Sets the fullname of a person
 	 *
 	 * @param name the new fullname
 	 */
@@ -553,7 +560,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	 * Adds the ressource chart.
 	 *
 	 * @param synchronizer the synchronizer
-	 * @param element the element
+	 * @param element      the element
 	 */
 	private void addRessourceChart(ISynchronizer synchronizer, Element element) {
 		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();

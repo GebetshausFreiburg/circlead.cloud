@@ -51,6 +51,7 @@ public class RolegroupReport extends DefaultReport {
 		if (rolegroup != null) {
 			this.setName("Report '" + rolegroup.getTitle() + "'");
 			this.rolegroup = rolegroup;
+			this.setDescription("(Druckfähige) Zusammenfassung der Rollengruppe '"+rolegroupIdentifier+"' mit allen enthaltenen Rollen"); 
 		}
 	}
 

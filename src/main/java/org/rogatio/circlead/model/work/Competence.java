@@ -15,11 +15,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.HeaderTableParserElement;
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
+import org.rogatio.circlead.main.SyncCirclead;
 import org.rogatio.circlead.model.Parameter;
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.data.CompetenceDataitem;
@@ -31,7 +34,9 @@ import org.rogatio.circlead.view.TreeNode;
 import org.rogatio.circlead.view.WorkitemTree;
 
 /**
- * The Class Competence.
+ * The Class Competence is a special workitem, because Circlead should contain
+ * only one (Root)-Competence in {@link org.rogatio.circlead.control.Repository}
+ * and all other Competencies should be nested child representations.
  */
 public class Competence extends DefaultWorkitem implements IWorkitemRenderer, IValidator {
 
@@ -45,42 +50,49 @@ public class Competence extends DefaultWorkitem implements IWorkitemRenderer, IV
 	/**
 	 * Instantiates a new competence.
 	 *
-	 * @param dataitem the dataitem
+	 * @param dataitem the dataitem of the competence of class
+	 *                 {@link org.rogatio.circlead.model.data.CompetenceDataitem}
 	 */
 	public Competence(IDataitem dataitem) {
 		super(dataitem);
+
+		if (!(dataitem instanceof CompetenceDataitem)) {
+			throw new IllegalArgumentException("IDataitem must be of type CompetenceDataitem");
+		}
+
 		postProcess();
 	}
 
 	/**
-	 * Gets the parent.
+	 * Gets the competenceIdentifier of the parent.
 	 *
-	 * @return the parent
+	 * @return the parent of the competence. Is null if competence is root.
 	 */
 	public String getParent() {
 		return this.getDataitem().getParent();
 	}
 
 	/**
-	 * Sets the parent.
+	 * Sets the parentIdentifier of a competence.
 	 *
-	 * @param parent the new parent
+	 * @param parent the competenceIdentifier as parent
 	 */
 	public void setParent(String parent) {
 		this.getDataitem().setParent(parent);
 	}
 
 	/**
-	 * Gets the description.
+	 * Gets the description of the competence. Defines the details of the
+	 * competence.
 	 *
-	 * @return the description
+	 * @return the description of the competence
 	 */
 	public String getDescription() {
 		return this.getDataitem().getDescription();
 	}
 
 	/**
-	 * Sets the description.
+	 * Sets the description of the competence.
 	 *
 	 * @param description the new description
 	 */
@@ -89,9 +101,9 @@ public class Competence extends DefaultWorkitem implements IWorkitemRenderer, IV
 	}
 
 	/**
-	 * Sets the competence table.
+	 * Sets the competence form parsed html-table.
 	 *
-	 * @param table the new competence table
+	 * @param table the parsed html-table
 	 */
 	public void setCompetenceTable(HeaderTableParserElement table) {
 		List<Map<String, String>> dataList = table.getDataList();
@@ -112,6 +124,13 @@ public class Competence extends DefaultWorkitem implements IWorkitemRenderer, IV
 
 	}
 
+	/**
+	 * Check if root competence contains a competence named by identifier in
+	 * competence-tree
+	 *
+	 * @param competence the competenceIdentifier of the searched competence
+	 * @return true, if successful found competence in tree
+	 */
 	public boolean containsCompetence(String competence) {
 		for (CompetenceDataitem c : map.keySet()) {
 			if (c.getTitle().equals(competence)) {
@@ -121,9 +140,12 @@ public class Competence extends DefaultWorkitem implements IWorkitemRenderer, IV
 		return false;
 	}
 
-	/** The map. */
+	/** Map CompetenceDataitem to correlated Competence-Workitem */
 	private Map<CompetenceDataitem, Competence> map = new HashMap<CompetenceDataitem, Competence>();
-	
+
+	/**
+	 * Post process to map all CompetenceDataitem's to the correlated Competence-Workitem.
+	 */
 	private void postProcess() {
 		if (map.size() == 0) {
 			// Sets mapping-table to have Entities of class-type Competence. Needs to be
@@ -139,7 +161,7 @@ public class Competence extends DefaultWorkitem implements IWorkitemRenderer, IV
 	}
 
 	/**
-	 * Gets the competencies.
+	 * Gets the competencies
 	 *
 	 * @return the competencies
 	 */
@@ -151,6 +173,11 @@ public class Competence extends DefaultWorkitem implements IWorkitemRenderer, IV
 		return c;
 	}
 
+	/**
+	 * Adds the competence.
+	 *
+	 * @param competence the competence
+	 */
 	public void addCompetence(CompetenceDataitem competence) {
 		map.put(competence, new Competence(competence));
 		this.getDataitem().getCompetencies().add(competence);
@@ -193,7 +220,6 @@ public class Competence extends DefaultWorkitem implements IWorkitemRenderer, IV
 	public List<Competence> getRootCompetencies() {
 		List<Competence> roots = new ArrayList<Competence>();
 		for (Competence c : this.getCompetencies()) {
-//			System.out.println(c.getTitle() + ": " + c.getParent());
 			if (c != null) {
 				if (!StringUtil.isNotNullAndNotEmpty(c.getParent())) {
 					roots.add(c);
@@ -215,10 +241,10 @@ public class Competence extends DefaultWorkitem implements IWorkitemRenderer, IV
 	}
 
 	/**
-	 * Gets the children.
+	 * Gets the child competences
 	 *
-	 * @param competence the competence
-	 * @return the children
+	 * @param competence the competenceIdentifier
+	 * @return the children of the competence with named competenceIdentifier
 	 */
 	public List<Competence> getChildren(String competence) {
 		List<Competence> c = new ArrayList<Competence>();
@@ -247,8 +273,6 @@ public class Competence extends DefaultWorkitem implements IWorkitemRenderer, IV
 		@SuppressWarnings("unused")
 		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 		Element element = new Element("p");
-
-		System.out.println(getRootCompetencies().size());
 
 		Element table = new Element("table");
 		table.attr("class", "wrapped");

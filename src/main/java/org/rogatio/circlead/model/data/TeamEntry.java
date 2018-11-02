@@ -12,22 +12,24 @@ import org.rogatio.circlead.util.StringUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+// TODO: Auto-generated Javadoc
 /**
- * The Class TeamEntry.
+ * The Class TeamEntry is a subclass of the
+ * {@link org.rogatio.circlead.model.data.TeamDataitem}.
  */
 public class TeamEntry {
 
-	/** The role identifier. */
+	/** The identifier of the role which is needed in the team. */
 	private String roleIdentifier;
 
-	/** The needed. */
+	/** The amount of needed persons to carry the role. */
 	private int needed;
 
-	/** The level. */
+	/** The minimum skill level which is needed to fullfill the teamrole. */
 	private String level;
 
 	/** The person identifiers. */
-	 @JsonProperty("persons")
+	@JsonProperty("persons")
 	private List<String> personIdentifiers;
 
 	/**
@@ -49,7 +51,7 @@ public class TeamEntry {
 	}
 
 	/**
-	 * Gets the role identifier.
+	 * Gets the identifier of the role.
 	 *
 	 * @return the role identifier
 	 */
@@ -58,7 +60,8 @@ public class TeamEntry {
 	}
 
 	/**
-	 * Sets the role identifier.
+	 * Sets the identifier of the team-role. Is mandatory for a TeamEntry. If
+	 * roleIdentifier is not set, the TeamRole is invalid.
 	 *
 	 * @param roleIdentifier the new role identifier
 	 */
@@ -67,7 +70,7 @@ public class TeamEntry {
 	}
 
 	/**
-	 * Gets the needed.
+	 * Gets the amount of needed persons which take the team-role.
 	 *
 	 * @return the needed
 	 */
@@ -76,7 +79,8 @@ public class TeamEntry {
 	}
 
 	/**
-	 * Sets the needed.
+	 * Sets the amount of needed persons to take the team-role. If string of needed
+	 * representation could not be parsed, the needed is set to 0.
 	 *
 	 * @param needed the new needed
 	 */
@@ -89,7 +93,7 @@ public class TeamEntry {
 	}
 
 	/**
-	 * Sets the needed.
+	 * Sets the amount of needed persons to take the team-role.
 	 *
 	 * @param needed the new needed
 	 */
@@ -97,6 +101,12 @@ public class TeamEntry {
 		this.needed = needed;
 	}
 
+	/**
+	 * Contains person.
+	 *
+	 * @param person the person
+	 * @return true, if successful
+	 */
 	@JsonIgnore
 	public boolean containsPerson(Person person) {
 		List<String> p = this.getPersons();
@@ -107,7 +117,7 @@ public class TeamEntry {
 	}
 
 	/**
-	 * Gets the level.
+	 * Gets the minimum skill-level which is needed to fullfill the team-role.
 	 *
 	 * @return the level
 	 */
@@ -116,7 +126,7 @@ public class TeamEntry {
 	}
 
 	/**
-	 * Sets the level.
+	 * Sets the minimum skill-level between 0-100 percent skill.
 	 *
 	 * @param level the new level
 	 */
@@ -128,9 +138,11 @@ public class TeamEntry {
 	}
 
 	/**
-	 * Gets the persons.
+	 * Gets the persons which hold the team-role as string-representation of
+	 * personIdentifiers. Is a calculated list and not part of the
+	 * json-data-representation inside the TeamDataitem.
 	 *
-	 * @return the persons
+	 * @return the personIdentifiers which hold the role
 	 */
 	@JsonIgnore
 	public List<String> getPersons() {
@@ -138,11 +150,39 @@ public class TeamEntry {
 	}
 
 	/**
-	 * Gets the person identifiers.
+	 * Gets the personIdentifiers of all persons which take the team-role of the
+	 * entry. If a personal recurrence-rule exists for a person it must follow the
+	 * syntax
+	 * 
+	 * *
+	 * 
+	 * <pre>
+	 * personIdentifier [Rx=...]
+	 * </pre>
 	 *
-	 * @return the person identifiers
+	 * <ul>
+	 * <li>
+	 * 
+	 * <pre>
+	 * personIdentifier
+	 * </pre>
+	 * 
+	 * Defines person which takes team-role. Is similar to fullname of person. This
+	 * i the only mandatory value.
+	 * <li>
+	 * 
+	 * <pre>
+	 * Rx=
+	 * </pre>
+	 * 
+	 * CircleadRecurrenceRule as String Representation. Could be Circlead-Standard
+	 * starting with R= or Google-RecurrenceRule-Pattern starting with RRULE=
+	 * </ul>
+	 *
+	 * @return the person as list of personIdentifiers with added personal
+	 *         recurrence-rule (if set).
 	 */
-	 @JsonProperty("persons")
+	@JsonProperty("persons")
 	public List<String> getPersonIdentifiers() {
 		List<String> list = new ArrayList<String>();
 
@@ -151,7 +191,7 @@ public class TeamEntry {
 			for (String person : this.personIdentifiers) {
 				StringBuilder sb = new StringBuilder();
 
-				sb.append(person); 
+				sb.append(person);
 
 				if (this.hasRecurrenceRule(person)) {
 					sb.append(" [");
@@ -167,10 +207,11 @@ public class TeamEntry {
 	}
 
 	/**
-	 * Gets the recurrence rule.
+	 * Gets the recurrence rule of a person set by personIdentifier
 	 *
 	 * @param personIdentifier the person identifier
-	 * @return the recurrence rule
+	 * @return the recurrence rule of the person. If not set empty string "" is
+	 *         returned, not null string
 	 */
 	@JsonIgnore
 	public String getRecurrenceRule(String personIdentifier) {
@@ -182,7 +223,7 @@ public class TeamEntry {
 	}
 
 	/**
-	 * Checks for recurrence rule.
+	 * Checks for personal recurrence rule
 	 *
 	 * @param personIdentifier the person identifier
 	 * @return true, if successful
@@ -194,10 +235,6 @@ public class TeamEntry {
 		}
 		return false;
 	}
-
-	/** The comments. */
-	@JsonIgnore
-	private Map<String, String> comments = new HashMap<String, String>();
 
 	/** The recurrence rules. */
 	@JsonIgnore
@@ -217,15 +254,22 @@ public class TeamEntry {
 		}
 	}
 
-	 @JsonProperty("persons")
+	/**
+	 * Sets the person identifiers.
+	 *
+	 * @param personIdentifiers the new person identifiers
+	 */
+	@JsonProperty("persons")
 	public void setPersonIdentifiers(List<String> personIdentifiers) {
 		this.personIdentifiers = personIdentifiers;
 	}
 
 	/**
-	 * Sets the person identifiers.
+	 * Sets the persons with personIdentifier and their recurrence-rule by
+	 * string-representation.
 	 *
-	 * @param personIdentifiers the new person identifiers
+	 * @param personIdentifiers the new personIdentifiers and optional
+	 *                          personal-recurrence rule.
 	 */
 	@JsonIgnore
 	public void setPersonIdentifiers(String personIdentifiers) {

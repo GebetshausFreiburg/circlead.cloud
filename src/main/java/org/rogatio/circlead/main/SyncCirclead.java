@@ -51,8 +51,6 @@ public class SyncCirclead {
 	// TODO Atlassian User-Check (for Image-Usage or User-Link)
 	// TODO Velocity als Render-Changer nutzen
 	// TODO Activity-Process-Builder (yWorks) erzeugen
-	// TODO Add Index-File-Creator to find all roles, persons, ... (not needed for
-	// Atlassian, but for File-Synchronizer)
 
 	/** The Constant REPORTS. */
 	public static final boolean REPORTS = true;

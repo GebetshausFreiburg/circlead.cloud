@@ -42,6 +42,7 @@ import org.rogatio.circlead.control.validator.ValidationMessage;
 import org.rogatio.circlead.model.Parameter;
 import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.data.ActivityDataitem;
+import org.rogatio.circlead.model.data.CompetenceDataitem;
 import org.rogatio.circlead.model.data.IDataRow;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.RoleDataitem;
@@ -67,10 +68,15 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	/**
 	 * Instantiates a new role from a RoleDataitem.
 	 *
-	 * @param dataitem the dataitem
+	 * @param dataitem the dataitem of the role of class  
+	 * {@link org.rogatio.circlead.model.data.RoleDataitem}
 	 */
 	public Role(IDataitem dataitem) {
 		super(dataitem);
+		
+		if (!(dataitem instanceof RoleDataitem)) {
+			throw new IllegalArgumentException("IDataitem must be of type RoleDataitem");
+		}
 	}
 
 	/**

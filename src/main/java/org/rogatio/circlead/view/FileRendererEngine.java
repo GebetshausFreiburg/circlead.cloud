@@ -234,9 +234,6 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 						String rule = role.getDataitem().getRecurrenceRule(person.getFullname());
 						li.append("&nbsp;<span style=\"color: rgb(192,192,192);\">"
 								+ rule.replace("R=", "").replace("RRULE=", "") + "</span>");
-
-//						li.append("&nbsp;");
-//						li.appendText(rule);
 					}
 					if (role.getDataitem().hasComment(person.getFullname())) {
 						String comment = role.getDataitem().getComment(person.getFullname());
@@ -308,8 +305,6 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 			}
 			if (role.getDataitem().hasSkill(identifier)) {
 				String skill = role.getDataitem().getSkill(identifier);
-//				li.append("&nbsp;");
-//				li.appendText("" + skill + "%");
 				WorkitemStatusParameter status = WorkitemStatusParameter.get(skill + "%");
 				if (status != null) {
 					li.append("&nbsp;").appendElement("div").attr("id", "status" + status.getColor())
@@ -320,9 +315,6 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 				String rule = role.getDataitem().getRecurrenceRule(identifier);
 				li.append("&nbsp;<span style=\"color: rgb(192,192,192);\">"
 						+ rule.replace("R=", "").replace("RRULE=", "") + "</span>");
-
-//				li.append("&nbsp;");
-//				li.appendText(rule);
 			}
 			if (role.getDataitem().hasComment(identifier)) {
 				String comment = role.getDataitem().getComment(identifier);
@@ -399,9 +391,6 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 				String rule = role.getDataitem().getRecurrenceRule(identifier);
 				li.append("&nbsp;<span style=\"color: rgb(192,192,192);\">"
 						+ rule.replace("R=", "").replace("RRULE=", "") + "</span>");
-
-//				li.append("&nbsp;");
-//				li.appendText(rule);
 			}
 			if (role.getDataitem().hasComment(identifier)) {
 				String comment = role.getDataitem().getComment(identifier);
@@ -740,7 +729,7 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 					li.appendElement("a").attr("href", "../web/" + report.getName() + ".html")
 							.appendText(report.getName());
 					if (StringUtil.isNotNullAndNotEmpty(report.getDescription())) {
-						li.appendText(report.getDescription());
+						li.appendText(": "+report.getDescription());
 					}
 				}
 			}

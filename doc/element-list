@@ -1,0 +1,13 @@
+org.rogatio.circlead.control
+org.rogatio.circlead.control.synchronizer
+org.rogatio.circlead.control.synchronizer.atlassian
+org.rogatio.circlead.control.synchronizer.atlassian.parser
+org.rogatio.circlead.control.synchronizer.file
+org.rogatio.circlead.control.validator
+org.rogatio.circlead.main
+org.rogatio.circlead.model
+org.rogatio.circlead.model.data
+org.rogatio.circlead.model.work
+org.rogatio.circlead.util
+org.rogatio.circlead.view
+org.rogatio.circlead.view.report

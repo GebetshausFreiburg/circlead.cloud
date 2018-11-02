@@ -36,6 +36,7 @@ import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
 import org.rogatio.circlead.model.data.ActivityDataitem;
+import org.rogatio.circlead.model.data.CompetenceDataitem;
 import org.rogatio.circlead.model.data.HowTo;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.util.ObjectUtil;
@@ -44,7 +45,7 @@ import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.IWorkitemRenderer;
 
 /**
- * The Class Activity.
+ * The Class Activity is the working item for a activity
  */
 public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IValidator {
 
@@ -60,10 +61,15 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	/**
 	 * Instantiates a new activity.
 	 *
-	 * @param dataitem the dataitem
+	 * @param dataitem the dataitem of the activity of class  
+	 * {@link org.rogatio.circlead.model.data.ActivityDataitem}
 	 */
 	public Activity(IDataitem dataitem) {
 		super(dataitem);
+		
+		if (!(dataitem instanceof ActivityDataitem)) {
+			throw new IllegalArgumentException("IDataitem must be of type ActivityDataitem");
+		}
 	}
 
 	/**

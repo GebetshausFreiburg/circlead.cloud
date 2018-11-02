@@ -27,7 +27,7 @@ import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
 
 /**
- * The Class CircleadRecurrenceRule.
+ * The Class CircleadRecurrenceRule allows reccurence-rule-manipulation.
  * 
  * @see https://www.textmagic.com/free-tools/rrule-generator
  */
@@ -100,7 +100,7 @@ public class CircleadRecurrenceRule {
 		return sb.toString();
 	}
 
-	/** The recurrence rule. */
+	/** The basic recurrence rule. */
 	private RecurrenceRule recurrenceRule;
 
 	/**
@@ -113,7 +113,7 @@ public class CircleadRecurrenceRule {
 	}
 
 	/**
-	 * Gets the readable rule.
+	 * Gets the human readable rule
 	 *
 	 * @return the readable rule
 	 */
@@ -194,7 +194,7 @@ public class CircleadRecurrenceRule {
 	}
 
 	/**
-	 * Clean.
+	 * Clean the recurrence-rule-representation from the prefix R or RRULE
 	 *
 	 * @param rule the rule
 	 * @return the string
@@ -216,7 +216,7 @@ public class CircleadRecurrenceRule {
 	}
 
 	/**
-	 * Gets the recurrence rule.
+	 * Gets the basic recurrence rule.
 	 *
 	 * @param rule the rule
 	 * @return the recurrence rule
@@ -411,9 +411,6 @@ public class CircleadRecurrenceRule {
 		List<Event> events = this.getEventList(365);
 		for (Event event : events) {
 			if (event.getStartDate().after(start.getTime()) && event.getStartDate().before(end.getTime())) {
-//			if () {
-
-//			}
 				sum += this.duration * allokationUnit;
 
 			}
@@ -565,12 +562,6 @@ public class CircleadRecurrenceRule {
 		}
 		if (this.recurrenceRule.getFreq() == Freq.WEEKLY) {
 			divider = 8.0 * 5.0;
-
-			/*
-			 * List<Integer> daysInMonth = this.recurrenceRule.getByPart(Part.BYDAY); if
-			 * (ObjectUtil.isListNotNullAndEmpty(daysInMonth)) { divider /=
-			 * daysInMonth.size(); }
-			 */
 		}
 		if (this.recurrenceRule.getFreq() == Freq.MONTHLY && this.recurrenceRule.getInterval() == 1) {
 			divider = 8.0 * 20.0;

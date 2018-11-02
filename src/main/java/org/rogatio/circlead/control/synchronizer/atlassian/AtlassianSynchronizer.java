@@ -78,7 +78,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * The Class AtlassianSynchronizer.
+ * The Class AtlassianSynchronizer synchronizes Circlead with Atlassian
+ * Confluence Server. Could be used for CLoud- and Dedicated-Server.
  */
 public class AtlassianSynchronizer extends DefaultSynchronizer {
 
@@ -97,6 +98,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	/** Name of the page in space which holds the teams. */
 	private final String TEAMSPAGE = "Teams";
 
+	/** Name of the page in space which holds the competencies.*/
 	private final String COMPETENCIESPAGE = "Competencies";
 
 	/** The Constant LOGGER. */

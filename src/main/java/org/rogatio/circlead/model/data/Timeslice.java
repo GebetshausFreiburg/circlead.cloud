@@ -5,28 +5,29 @@ import java.util.Calendar;
 import org.dmfs.rfc5545.recur.Freq;
 
 /**
- * The Class Timeslice.
+ * The Class Timeslice is a piece of allocation in a timeframe. The Slice has a
+ * defined start-date and end-date
  */
 public class Timeslice {
-	
-	/** The freq. */
+
+	/** The freqquence of the timeslice */
 	private String freq;
-	
-	/** The start. */
+
+	/** The start of the timeslice */
 	private Calendar start;
-	
-	/** The end. */
+
+	/** The end of the timeslice */
 	private Calendar end;
-	
+
 	/** The slice start. */
 	private String sliceStart;
-	
-	/** The unit value. */
+
+	/** The unit value of the slice */
 	private int unitValue;
-	
-	/** The allokation. */
+
+	/** The allokation of the slice */
 	private double allokation;
-	
+
 	/**
 	 * Gets the unit value.
 	 *
@@ -45,7 +46,9 @@ public class Timeslice {
 		this.unitValue = unitValue;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
@@ -125,7 +128,8 @@ public class Timeslice {
 	}
 
 	/**
-	 * Sets the slice start.
+	 * Sets the slice start as string-representation of the slice. Is a
+	 * human-readable representation.
 	 *
 	 * @param sliceStart the new slice start
 	 */

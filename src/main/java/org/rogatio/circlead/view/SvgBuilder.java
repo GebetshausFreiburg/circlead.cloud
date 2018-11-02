@@ -13,7 +13,7 @@ import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.util.ObjectUtil;
 
 /**
- * The Class SvgBuilder.
+ * The Class SvgBuilder creates a XML-DOM for and SVG.
  */
 public class SvgBuilder {
 

@@ -36,9 +36,13 @@ public class TeamCategoryReport extends DefaultReport {
 	public TeamCategoryReport(String category) {
 		this.setName("Team Category Report");
 		this.category = category;
+		this.setDescription("Zeigt die teams der Kategorie '" + category
+				+ "' an und stellt diese in einem stundengenauen Wochenplan dar.");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.view.report.DefaultReport#getHead()
 	 */
 	@Override
@@ -121,7 +125,7 @@ public class TeamCategoryReport extends DefaultReport {
 
 	/** The onehour. */
 	private final String ONEHOUR = "onehour";
-	
+
 	/** The twohour. */
 	private final String TWOHOUR = "twohour";
 
@@ -129,8 +133,8 @@ public class TeamCategoryReport extends DefaultReport {
 	 * Sets the hour.
 	 *
 	 * @param weekday the weekday
-	 * @param hour the hour
-	 * @param ul the ul
+	 * @param hour    the hour
+	 * @param ul      the ul
 	 * @return the int
 	 */
 	private int setHour(Weekday weekday, int hour, Element ul) {
@@ -155,10 +159,10 @@ public class TeamCategoryReport extends DefaultReport {
 	/**
 	 * Sets the hour.
 	 *
-	 * @param team the team
+	 * @param team    the team
 	 * @param weekday the weekday
-	 * @param hour the hour
-	 * @param ul the ul
+	 * @param hour    the hour
+	 * @param ul      the ul
 	 * @return the int
 	 */
 	private int setHour(Team team, Weekday weekday, int hour, Element ul) {
@@ -197,7 +201,7 @@ public class TeamCategoryReport extends DefaultReport {
 
 		String spanTitle = "";
 		if (team != null) {
-		//	spanTitle = "" + StringUtil.join(team.getTeamMembers()) + "";
+			// spanTitle = "" + StringUtil.join(team.getTeamMembers()) + "";
 		}
 
 		li.appendElement("span").attr("title", spanTitle).appendText(h + ":00");

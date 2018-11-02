@@ -19,10 +19,11 @@ import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.model.data.IDataitem;
 
 /**
- * The Class DefaultWorkitem.
+ * The Class DefaultWorkitem is the default working item for all other workitems.
  */
 public class DefaultWorkitem implements IWorkitem, Comparable<DefaultWorkitem> {
 
+	/** The Singleton-Repository. */
 	protected final Repository R = Repository.getInstance();
 	
 	/**

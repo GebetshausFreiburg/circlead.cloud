@@ -33,6 +33,7 @@ public class RoleIssueReport extends DefaultReport {
 	 */
 	public RoleIssueReport() {
 		this.setName("Issue by Role-Label Report");
+		this.setDescription("Jira-Vorgangsübersicht nach Rollen klassifiziert");
 	}
 	
 	/* (non-Javadoc)

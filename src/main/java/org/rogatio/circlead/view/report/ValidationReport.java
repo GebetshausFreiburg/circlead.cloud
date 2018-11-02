@@ -25,6 +25,7 @@ public class ValidationReport extends DefaultReport {
 	 */
 	public ValidationReport() {
 		this.setName("Validation Report");
+		this.setDescription("Bericht über invalide Daten des Rollenmodells.");
 	}
 
 	/* (non-Javadoc)

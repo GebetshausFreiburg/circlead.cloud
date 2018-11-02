@@ -31,7 +31,7 @@ import org.rogatio.circlead.view.report.IReport;
 public class Connector {
 
 	/** The Constant logger. */
-	final static Logger LOGGER = LogManager.getLogger(Connector.class);
+	private final static Logger LOGGER = LogManager.getLogger(Connector.class);
 
 	public Collection<ISynchronizer> getSynchronizer() {
 		return SynchronizerFactory.getInstance().getSynchronizer();

@@ -84,7 +84,7 @@ public class RoleDataitem extends DefaultDataitem {
 
 	/** The situational. */
 	private boolean situational = false;
-	
+
 	/**
 	 * Checks if is situational.
 	 *
@@ -93,7 +93,7 @@ public class RoleDataitem extends DefaultDataitem {
 	public boolean getSituational() {
 		return this.situational;
 	}
-	
+
 	/**
 	 * Sets the situational.
 	 *
@@ -102,7 +102,7 @@ public class RoleDataitem extends DefaultDataitem {
 	public void setSituational(boolean situational) {
 		this.situational = situational;
 	}
-	
+
 	/**
 	 * Instantiates a new role data.
 	 */
@@ -488,7 +488,7 @@ public class RoleDataitem extends DefaultDataitem {
 	@JsonIgnore
 	public String getRepresentation(String personIdentifier) {
 		if (representations.containsKey(personIdentifier)) {
-			return representations.get(personIdentifier); 
+			return representations.get(personIdentifier);
 		}
 		return "";
 	}
@@ -567,7 +567,7 @@ public class RoleDataitem extends DefaultDataitem {
 	 * Sets the recurrence rule match.
 	 *
 	 * @param personFullname the person fullname
-	 * @param value the value
+	 * @param value          the value
 	 */
 	@JsonIgnore
 	private void setRecurrenceRuleMatch(String personFullname, String value) {
@@ -581,7 +581,7 @@ public class RoleDataitem extends DefaultDataitem {
 	 * Sets the status match.
 	 *
 	 * @param personFullname the person fullname
-	 * @param value the value
+	 * @param value          the value
 	 */
 	@JsonIgnore
 	private void setStatusMatch(String personFullname, String value) {
@@ -598,7 +598,7 @@ public class RoleDataitem extends DefaultDataitem {
 	 * Sets the comment match.
 	 *
 	 * @param personFullname the person fullname
-	 * @param value the value
+	 * @param value          the value
 	 */
 	@JsonIgnore
 	private void setCommentMatch(String personFullname, String value) {
@@ -619,7 +619,7 @@ public class RoleDataitem extends DefaultDataitem {
 	 * Sets the skill match.
 	 *
 	 * @param personFullname the person fullname
-	 * @param value the value
+	 * @param value          the value
 	 */
 	@JsonIgnore
 	private void setSkillMatch(String personFullname, String value) {
@@ -636,8 +636,20 @@ public class RoleDataitem extends DefaultDataitem {
 	}
 
 	/**
-	 * Sets the persons.
+	 * Sets the persons as list which take role. Defined Syntax is
+	 * 
+	 * <pre>personIdentifier [x%, status, Rx=...] ## comment</pre>
 	 *
+	 * <ul>
+	 * <li> <pre>personIdentifier</pre>Defines person which takes role. Is similar to fullname
+	 * of person. This i the only mandatory value.
+	 * <li><pre>x%</pre>Defines skill-level of person. Could be 0%, 25%, 50%, 75% or 100%
+	 * <li> <pre>Rx=</pre>CircleadRecurrenceRule as String Representation. Could be
+	 * Circlead-Standard starting with R= or Google-RecurrenceRule-Pattern starting
+	 * with RRULE=
+	 * <li> <pre>##</pre>Defines comment-line right from ##.
+	 * </ul>
+	 * 
 	 * @param persons the new persons
 	 */
 	public void setPersons(List<String> persons) {

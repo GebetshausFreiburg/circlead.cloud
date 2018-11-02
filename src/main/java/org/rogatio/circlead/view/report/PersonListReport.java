@@ -10,6 +10,7 @@ package org.rogatio.circlead.view.report;
 
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
+import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer;
 import org.rogatio.circlead.model.Parameter;
 import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.data.ContactDataitem;
@@ -24,7 +25,7 @@ public class PersonListReport extends DefaultReport {
 
 	public PersonListReport() {
 		this.setName("PersonList Report");
-		this.setDescription("Mitarbeiterliste)");
+		this.setDescription("Adressliste aller Mitarbeiter in der Organisation");
 	}
 
 	/*
@@ -49,6 +50,11 @@ public class PersonListReport extends DefaultReport {
 		tr.appendElement("th").appendText(Parameter.MAIL.toString());
 		tr.appendElement("th").appendText(Parameter.MOBILE.toString());
 		tr.appendElement("th").appendText(Parameter.PHONE.toString());
+		
+		//Need a Space-Column on right side in confluence, because PDF-Export truncates right column
+		if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
+			tr.appendElement("th").append("&nbsp;");
+		}
 
 		for (Person person : R.getPersons()) {
 
@@ -77,6 +83,11 @@ public class PersonListReport extends DefaultReport {
 						tr.appendElement("td").appendText("" + contact.getPhone());
 					} else {
 						tr.appendElement("td").appendText("-");
+					}
+					
+					//Need a Space-Column on right side in confluence, because PDF-Export truncates right column
+					if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
+						tr.appendElement("td").append("&nbsp;");
 					}
 				}
 			}

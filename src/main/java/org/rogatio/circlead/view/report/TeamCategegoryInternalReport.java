@@ -34,6 +34,7 @@ public class TeamCategegoryInternalReport extends DefaultReport {
 	public TeamCategegoryInternalReport(String category) {
 		this.setName("Team Category Analysis Report");
 		this.category = category;
+		this.setDescription("Zeigt alle Teams der Kategorie '"+category+"' an bedarfsorientierten Wochenbericht.");
 	}
 
 	/*
