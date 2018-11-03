@@ -37,6 +37,8 @@ import org.rogatio.circlead.view.WorkitemTree;
  * The Class Competence is a special workitem, because Circlead should contain
  * only one (Root)-Competence in {@link org.rogatio.circlead.control.Repository}
  * and all other Competencies should be nested child representations.
+ * 
+ * @author Matthias Wegner
  */
 public class Competence extends DefaultWorkitem implements IWorkitemRenderer, IValidator {
 

@@ -10,22 +10,26 @@ import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.util.ObjectUtil;
 
 /**
- * The Class TreeNode.
+ * The Class TreeNode is a subclass of the
+ * {@link org.rogatio.circlead.view.WorkitemTree}. Holds the nested workitem and
+ * the calculated color of the item
+ * 
+ * @author Matthias Wegner
  */
 public class TreeNode {
 
 	/** The parent. */
 	private TreeNode parent;
-	
+
 	/** The workitem. */
 	private IWorkitem workitem;
-	
+
 	/** The color. */
 	private Color color;
-	
+
 	/** The children. */
 	private List<TreeNode> children = new ArrayList<TreeNode>();
-	
+
 	/**
 	 * Instantiates a new tree node.
 	 *
@@ -39,9 +43,9 @@ public class TreeNode {
 	/**
 	 * Instantiates a new tree node.
 	 *
-	 * @param workitem the workitem
+	 * @param workitem   the workitem
 	 * @param parentNode the parent node
-	 * @param color the color
+	 * @param color      the color
 	 */
 	public TreeNode(IWorkitem workitem, TreeNode parentNode, Color color) {
 		this.workitem = workitem;
@@ -53,7 +57,7 @@ public class TreeNode {
 	/**
 	 * Instantiates a new tree node.
 	 *
-	 * @param workitem the workitem
+	 * @param workitem   the workitem
 	 * @param parentNode the parent node
 	 */
 	public TreeNode(IWorkitem workitem, TreeNode parentNode) {
@@ -81,11 +85,11 @@ public class TreeNode {
 	 * @return the color
 	 */
 	public Color getColor() {
-		
-		if (color==null) {
+
+		if (color == null) {
 			return Color.BLACK;
 		}
-		
+
 		return color;
 	}
 

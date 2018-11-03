@@ -13,6 +13,8 @@ import org.jsoup.select.Elements;
 
 /**
  * The Class ImageParserElement.
+ * 
+ * @author Matthias Wegner
  */
 public class ImageParserElement implements IParserElement {
 

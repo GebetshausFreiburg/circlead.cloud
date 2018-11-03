@@ -20,6 +20,8 @@ import org.rogatio.circlead.model.data.IDataitem;
 
 /**
  * The Class DefaultWorkitem is the default working item for all other workitems.
+ * 
+ * @author Matthias Wegner
  */
 public class DefaultWorkitem implements IWorkitem, Comparable<DefaultWorkitem> {
 

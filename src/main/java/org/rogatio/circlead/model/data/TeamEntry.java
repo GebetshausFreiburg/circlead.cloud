@@ -16,6 +16,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * The Class TeamEntry is a subclass of the
  * {@link org.rogatio.circlead.model.data.TeamDataitem}.
+ * 
+ * @author Matthias Wegner
  */
 public class TeamEntry {
 

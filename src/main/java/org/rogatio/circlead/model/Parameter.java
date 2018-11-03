@@ -3,6 +3,8 @@ package org.rogatio.circlead.model;
 /**
  * The Enum Parameter. Holds german names in enum to avoid spelling error.
  * Multilinguality not implemented.
+ * 
+ * @author Matthias Wegner
  */
 public enum Parameter {
 

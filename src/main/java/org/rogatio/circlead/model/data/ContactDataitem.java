@@ -20,6 +20,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 /**
  * The Class ContactData holds the data of a contact. Is a subclass of
  * {@link org.rogatio.circlead.model.data.PersonDataitem}
+ * 
+ * @author Matthias Wegner
  */
 public class ContactDataitem {
 

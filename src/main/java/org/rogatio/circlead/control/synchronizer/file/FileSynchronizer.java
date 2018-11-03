@@ -65,6 +65,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
  * The Class FileSynchronizer.
+ * 
+ * @author Matthias Wegner
  */
 public class FileSynchronizer extends DefaultSynchronizer implements IValidator {
 

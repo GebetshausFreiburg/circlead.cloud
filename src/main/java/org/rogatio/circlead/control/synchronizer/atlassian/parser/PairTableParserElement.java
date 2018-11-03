@@ -19,6 +19,8 @@ import org.rogatio.circlead.model.data.ContactDataitem;
 
 /**
  * The Class TablesParserElement. Is used for process-tabel in activity with subactivities.
+ * 
+ * @author Matthias Wegner
  */
 public class PairTableParserElement implements IParserElement {
 

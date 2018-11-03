@@ -15,6 +15,8 @@ import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 
 /**
  * The Interface IWorkitem.
+ * 
+ * @author Matthias Wegner
  */
 public interface IWorkitem {
 

@@ -39,6 +39,8 @@ import org.rogatio.circlead.view.IWorkitemRenderer;
 
 /**
  * The Class Team is the working item for a Team
+ * 
+ * @author Matthias Wegner
  */
 public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidator {
 

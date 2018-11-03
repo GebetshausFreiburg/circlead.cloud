@@ -10,6 +10,8 @@ package org.rogatio.circlead.control.synchronizer;
 
 /**
  * The Class SynchronizerException.
+ * 
+ * @author Matthias Wegner
  */
 public class SynchronizerException extends Exception {
 

@@ -26,6 +26,8 @@ import com.dropbox.core.v2.users.FullAccount;
 
 /**
  * The Class DropboxUtil allows to upload data and files to Dropbox.
+ * 
+ * @author Matthias Wegner
  */
 public class DropboxUtil {
 

@@ -10,7 +10,9 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 /**
- * The Class DeleteOldVersions.
+ * The Class DeleteOldVersions allows to delete all historic page-version in Atlassian Confluence
+ * 
+ * @author Matthias Wegner
  */
 public class DeleteHistoricPageVersions {
 

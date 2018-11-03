@@ -7,6 +7,8 @@ import org.dmfs.rfc5545.recur.Freq;
 /**
  * The Class Timeslice is a piece of allocation in a timeframe. The Slice has a
  * defined start-date and end-date
+ * 
+ * @author Matthias Wegner
  */
 public class Timeslice {
 
@@ -147,7 +149,7 @@ public class Timeslice {
 	}
 
 	/**
-	 * Sets the allokation.
+	 * Sets the allokation of a timeslice
 	 *
 	 * @param allokation the new allokation
 	 */

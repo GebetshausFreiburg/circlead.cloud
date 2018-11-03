@@ -17,6 +17,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 /**
  * The Class HowTo is mainly used to give back detailed index-information of
  * found HowTos for the AtlassianSynchronizer as JSON-String-Representation.
+ * 
+ * @author Matthias Wegner
  */
 public class HowTo {
 

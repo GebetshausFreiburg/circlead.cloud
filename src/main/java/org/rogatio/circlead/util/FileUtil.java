@@ -43,6 +43,8 @@ import com.kjetland.jackson.jsonSchema.JsonSchemaGenerator;
 
 /**
  * The Class FileUtil is a simple helper for File-IO-Handling.
+ * 
+ * @author Matthias Wegner
  */
 public class FileUtil {
 

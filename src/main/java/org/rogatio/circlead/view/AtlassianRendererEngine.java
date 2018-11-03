@@ -33,6 +33,8 @@ import org.rogatio.circlead.view.report.IReport;
 /**
  * The Class Atlassian Renderer allows rendering from object-data to html for
  * atlassian-confluence including valid links.
+ * 
+ * @author Matthias Wegner
  */
 public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 

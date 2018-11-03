@@ -20,6 +20,8 @@ import org.rogatio.circlead.util.StringUtil;
 
 /**
  * The Class ListParserElement.
+ * 
+ * @author Matthias Wegner
  */
 public class ListParserElement implements IParserElement {
 

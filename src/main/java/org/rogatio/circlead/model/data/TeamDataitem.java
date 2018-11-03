@@ -17,6 +17,8 @@ import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaTitle;
 
 /**
  * The Class TeamDataitem holds the data of a team
+ * 
+ * @author Matthias Wegner
  */
 public class TeamDataitem extends DefaultDataitem {
 

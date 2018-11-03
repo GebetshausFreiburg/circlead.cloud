@@ -15,6 +15,8 @@ import java.util.List;
 /**
  * The Enum WorkitemParameter allows rendering of different workitem-fields
  * which map all values to a defined set of parameters.
+ * 
+ * @author Matthias Wegner
  */
 public enum WorkitemParameter {
 

@@ -46,6 +46,8 @@ import org.rogatio.circlead.view.IWorkitemRenderer;
 
 /**
  * The Class Activity is the working item for a activity
+ * 
+ * @author Matthias Wegner
  */
 public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IValidator {
 

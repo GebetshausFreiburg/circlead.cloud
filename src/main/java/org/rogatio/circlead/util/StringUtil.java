@@ -34,6 +34,8 @@ import org.rogatio.circlead.model.work.Team;
 
 /**
  * The Class StringUtil is a simple helper for text-parsing.
+ * 
+ * @author Matthias Wegner
  */
 public class StringUtil {
 

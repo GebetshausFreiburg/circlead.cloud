@@ -24,6 +24,8 @@ import org.rogatio.circlead.model.data.Timeslice;
 
 /**
  * The Class ObjectUtil is a simple helper for objects.
+ * 
+ * @author Matthias Wegner
  */
 public class ObjectUtil {
 

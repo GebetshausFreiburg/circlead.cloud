@@ -20,6 +20,8 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * The Class MailUtil allows to send a mail with or without attachment
+ * 
+ * @author Matthias Wegner
  */
 public class MailUtil {
 

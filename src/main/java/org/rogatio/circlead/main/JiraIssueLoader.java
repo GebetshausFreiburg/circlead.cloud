@@ -19,6 +19,8 @@ import org.rogatio.circlead.util.ObjectUtil;
 
 /**
  * The Class JiraIssueLoader.
+ * 
+ * @author Matthias Wegner
  */
 public class JiraIssueLoader {
 

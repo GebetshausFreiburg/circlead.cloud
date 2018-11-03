@@ -15,6 +15,8 @@ import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 
 /**
  * The Interface IDataitem for all data-representations
+ * 
+ * @author Matthias Wegner
  */
 public interface IDataitem {
 

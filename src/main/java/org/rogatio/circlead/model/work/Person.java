@@ -47,6 +47,8 @@ import org.rogatio.circlead.view.SvgBuilder;
 
 /**
  * The Class Person is the working item for a person
+ * 
+ * @author Matthias Wegner
  */
 public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValidator, IDataRow {
 

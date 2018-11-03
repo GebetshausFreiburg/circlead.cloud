@@ -30,6 +30,8 @@ import org.rogatio.circlead.util.StringUtil;
  * The Class CircleadRecurrenceRule allows reccurence-rule-manipulation.
  * 
  * @see https://www.textmagic.com/free-tools/rrule-generator
+ * 
+ * @author Matthias Wegner
  */
 public class CircleadRecurrenceRule {
 

@@ -27,6 +27,8 @@ import org.rogatio.circlead.view.report.IReport;
 
 /**
  * The Class Connector is used to bind all set synchronizers to the repository
+ * 
+ * @author Matthias Wegner
  */
 public class Connector {
 

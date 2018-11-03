@@ -40,6 +40,8 @@ import org.rogatio.circlead.model.work.Rolegroup;
 /**
  * The Class WorkitemTree renders the phylogenetic tree of roles. Creates valid
  * links to roles and displays the purpose of the role if it is set.
+ * 
+ * @author Matthias Wegner
  */
 public class WorkitemTree {
 

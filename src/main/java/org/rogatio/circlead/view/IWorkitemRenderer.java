@@ -13,6 +13,8 @@ import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 
 /**
  * The Interface IRenderer allows rendering for all workitems.
+ * 
+ * @author Matthias Wegner
  */
 public interface IWorkitemRenderer {
 

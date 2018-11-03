@@ -15,6 +15,8 @@ import java.util.List;
 /**
  * The Enum WorkitemStatusParameter allows different status values which are
  * normalized to a given state and color.
+ * 
+ * @author Matthias Wegner
  */
 public enum WorkitemStatusParameter {
 

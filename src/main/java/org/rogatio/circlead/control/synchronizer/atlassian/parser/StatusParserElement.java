@@ -13,6 +13,8 @@ import org.jsoup.select.Elements;
 
 /**
  * The Class StatusParserElement.
+ * 
+ * @author Matthias Wegner
  */
 public class StatusParserElement implements IParserElement {
 

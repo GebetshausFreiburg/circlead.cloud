@@ -22,6 +22,8 @@ import org.rogatio.circlead.model.work.Activity;
 
 /**
  * The Class ActivityTableParserElement parses the html-table of an activity
+ * 
+ * @author Matthias Wegner
  */
 public class ActivityTableParserElement implements IParserElement {
 

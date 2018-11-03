@@ -27,6 +27,8 @@ import org.rogatio.circlead.view.report.IReport;
 /**
  * The Interface ISynchronizerRenderer allows rendering of content in dependency
  * of the target system of the synchronizer.
+ * 
+ * @author Matthias Wegner
  */
 public interface ISynchronizerRendererEngine {
 

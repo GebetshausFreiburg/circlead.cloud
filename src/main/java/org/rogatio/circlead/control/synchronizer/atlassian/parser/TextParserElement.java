@@ -12,6 +12,8 @@ import org.jsoup.nodes.Element;
 
 /**
  * The Class TextParserElement.
+ * 
+ * @author Matthias Wegner
  */
 public class TextParserElement implements IParserElement {
 

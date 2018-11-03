@@ -10,6 +10,8 @@ package org.rogatio.circlead.control.synchronizer.atlassian.parser;
 
 /**
  * The Interface IParserElement.
+ * 
+ * @author Matthias Wegner
  */
 public interface IParserElement {
 	

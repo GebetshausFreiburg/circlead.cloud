@@ -22,6 +22,8 @@ import org.rogatio.circlead.util.StringUtil;
 
 /**
  * The Class PrayHourImporter.
+ * 
+ * @author Matthias Wegner
  */
 public class PrayHourImporter {
 

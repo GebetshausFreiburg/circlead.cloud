@@ -80,6 +80,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * The Class AtlassianSynchronizer synchronizes Circlead with Atlassian
  * Confluence Server. Could be used for CLoud- and Dedicated-Server.
+ * 
+ * @author Matthias Wegner
  */
 public class AtlassianSynchronizer extends DefaultSynchronizer {
 

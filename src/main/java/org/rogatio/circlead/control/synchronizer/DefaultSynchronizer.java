@@ -19,6 +19,8 @@ import org.rogatio.circlead.view.report.IReport;
 
 /**
  * The Class DefaultSynchronizer.
+ * 
+ * @author Matthias Wegner
  */
 public class DefaultSynchronizer implements ISynchronizer {
 

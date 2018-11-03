@@ -19,6 +19,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
  * found Reports for the AtlassianSynchronizer as JSON-String-Representation. Is
  * needed to get back Atlassian-Page-Ids to get the actual page-version, so it
  * could be updated.
+ * 
+ * @author Matthias Wegner
  */
 public class Report {
 

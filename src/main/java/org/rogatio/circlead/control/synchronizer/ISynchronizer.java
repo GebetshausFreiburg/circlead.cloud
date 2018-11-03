@@ -17,6 +17,8 @@ import org.rogatio.circlead.view.report.IReport;
 
 /**
  * The Interface of ISynchronizer.
+ * 
+ * @author Matthias Wegner
  */
 public interface ISynchronizer {
 	

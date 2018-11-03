@@ -30,7 +30,9 @@ import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.report.IReport;
 
 /**
- * The Class RenderUtil.
+ * The Class FileRenderEngine supports rendering of data to flat-file html-representation
+ * 
+ * @author Matthias Wegner
  */
 public class FileRendererEngine implements ISynchronizerRendererEngine {
 

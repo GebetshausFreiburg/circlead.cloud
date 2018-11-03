@@ -84,7 +84,8 @@ public class SyncCirclead {
 	/**
 	 * The main method of the application.
 	 *
-	 * @param args the arguments
+	 * @param args the arguments 
+	 * @author Matthias Wegner
 	 */
 	public static void main(String[] args) {
 		@SuppressWarnings("unused")

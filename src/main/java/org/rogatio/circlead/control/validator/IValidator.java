@@ -12,6 +12,8 @@ import java.util.List;
 
 /**
  * The Interface IValidator allows data-validation.
+ * 
+ * @author Matthias Wegner
  */
 public interface IValidator {
 	

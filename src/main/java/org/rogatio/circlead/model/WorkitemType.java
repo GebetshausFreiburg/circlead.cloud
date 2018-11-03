@@ -14,6 +14,8 @@ import org.rogatio.circlead.model.work.IWorkitem;
  * The Enum WorkitemType is a little helper for building io.logic in the
  * synchronizer. Could also be used by instanceof, but for a easier handling the
  * enum is used
+ * 
+ * @author Matthias Wegner
  */
 public enum WorkitemType {
 

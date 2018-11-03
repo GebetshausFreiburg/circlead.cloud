@@ -14,6 +14,8 @@ import org.rogatio.circlead.util.ObjectUtil;
 
 /**
  * The Class SvgBuilder creates a XML-DOM for and SVG.
+ * 
+ * @author Matthias Wegner
  */
 public class SvgBuilder {
 

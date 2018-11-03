@@ -112,6 +112,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * The Class Parser.
+ * 
+ * @author Matthias Wegner
  */
 public class Parser {
 

@@ -55,6 +55,8 @@ import org.rogatio.circlead.view.SvgBuilder;
 
 /**
  * The Class Role holds the core information of the role workitem.
+ * 
+ * @author Matthias Wegner
  */
 public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidator, IDataRow {
 

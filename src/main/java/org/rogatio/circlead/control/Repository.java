@@ -56,6 +56,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * The Class Repository is a singleton-representation of all loaded and handled
  * data while runtime. This is the real core of the circlead-application.
+ * 
+ * @author Matthias Wegner
  */
 public final class Repository {
 

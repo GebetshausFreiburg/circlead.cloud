@@ -31,6 +31,8 @@ import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaTitle;
 
 /**
  * The Class DefaultDataitem is a default data representation of any workitem
+ * 
+ * @author Matthias Wegner
  */
 public class DefaultDataitem implements IDataitem {
 

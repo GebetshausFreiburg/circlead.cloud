@@ -18,6 +18,8 @@ import org.jsoup.select.Elements;
 
 /**
  * The Class HeadTableParserElement.
+ * 
+ * @author Matthias Wegner
  */
 public class HeaderTableParserElement implements IParserElement {
 

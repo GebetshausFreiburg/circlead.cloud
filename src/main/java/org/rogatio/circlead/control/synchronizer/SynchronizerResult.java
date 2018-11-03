@@ -12,6 +12,8 @@ package org.rogatio.circlead.control.synchronizer;
  * The Class SynchronizerResult. Allows qualified information if the
  * synchronizer works. Not only holds request-codes. Contains also handeld
  * content, response-message, ...
+ * 
+ * @author Matthias Wegner
  */
 public class SynchronizerResult {
 

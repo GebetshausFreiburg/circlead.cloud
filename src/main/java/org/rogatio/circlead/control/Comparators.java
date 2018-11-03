@@ -15,6 +15,8 @@ import org.rogatio.circlead.model.work.Role;
 
 /**
  * Comparators for workitems
+ * 
+ * @author Matthias Wegner
  */
 public class Comparators {
 

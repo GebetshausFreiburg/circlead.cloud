@@ -24,6 +24,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * The Class JiraClient.
+ * 
+ * @author Matthias Wegner
  */
 public class JiraClient extends HttpClient {
 

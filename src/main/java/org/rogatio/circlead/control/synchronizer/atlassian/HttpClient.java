@@ -26,6 +26,8 @@ import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
 
 /**
  * The Class HttpClient.
+ * 
+ * @author Matthias Wegner
  */
 public class HttpClient {
 

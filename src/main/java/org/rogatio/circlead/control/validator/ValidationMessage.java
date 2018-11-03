@@ -10,6 +10,8 @@ package org.rogatio.circlead.control.validator;
 
 /**
  * The Class ValidationMessage. Is a validation logger for consitent data in and between workitems
+ * 
+ * @author Matthias Wegner
  */
 public class ValidationMessage {
 
