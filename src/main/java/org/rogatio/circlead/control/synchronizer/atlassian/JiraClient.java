@@ -17,6 +17,7 @@ import java.util.List;
 import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
 import org.rogatio.circlead.control.synchronizer.atlassian.jira.Issue;
 import org.rogatio.circlead.control.synchronizer.atlassian.jira.Results;
+import org.rogatio.circlead.util.PropertyUtil;
 import org.rogatio.circlead.util.StringUtil;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -29,6 +30,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class JiraClient extends HttpClient {
 
+	private final int LIMIT = PropertyUtil.getInstance().getIntValue(PropertyUtil.ATLASSIAN_QUERY_LIMIT);
+	
 	/** The rest prefix. Is different for cloud to dedicated server */
 	private String restPrefix = null;
 
@@ -148,7 +151,7 @@ public class JiraClient extends HttpClient {
 	 * @return the issues
 	 */
 	public List<Issue> getIssues(final String jql, final String fields) {
-		return getIssues(jql, fields, Constant.LIMIT, -1);
+		return getIssues(jql, fields, LIMIT, -1);
 	}
 
 	/**
@@ -158,7 +161,7 @@ public class JiraClient extends HttpClient {
 	 * @return the synchronizer result
 	 */
 	public SynchronizerResult search(final String jql) {
-		return search(jql, null, Constant.LIMIT, 0);
+		return search(jql, null, LIMIT, 0);
 	}
 
 	/**

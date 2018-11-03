@@ -41,7 +41,7 @@ public class DropboxUtil {
 	 * @return the client
 	 * @see https://blogs.dropbox.com/developers/2014/05/generate-an-access-token-for-your-own-account/
 	 */
-	public static DbxClientV2 getClient(String authFile) {
+	public static DbxClientV2 getClientFromAuthFile(String authFile) {
 
 		/**
 		 * Needs to load an auth-file 'name.credentials' with the json structure {
@@ -74,13 +74,34 @@ public class DropboxUtil {
 		return dbxClient;
 
 	}
+	
+	public static DbxClientV2 getClientFromAccessToken(String accessToken) {
+
+		DbxRequestConfig requestConfig = new DbxRequestConfig("circlead-cloud");
+		DbxClientV2 dbxClient = new DbxClientV2(requestConfig, accessToken);
+
+		// Make the /account/info API call.
+		FullAccount dbxAccountInfo;
+		try {
+			dbxAccountInfo = dbxClient.users().getCurrentAccount();
+		} catch (DbxException ex) {
+			LOGGER.error("Error making API call: " + ex.getMessage());
+			return null;
+		}
+
+		LOGGER.info("Load Dropbox-Client '" + dbxAccountInfo.getTeam().getName() + "' for user '"
+				+ dbxAccountInfo.getName().getDisplayName() + "'");
+
+		return dbxClient;
+
+	}
 
 	/**
      * Load and authenticate dropbox-client by authentification file <pre>*.credentials</pre> in classpath *
 	 * @param authFile the auth file
 	 * @return the team client
 	 */
-	public static DbxTeamClientV2 getTeamClient(String authFile) {
+	public static DbxTeamClientV2 getTeamClientFromAuthFile(String authFile) {
 
 		/**
 		 * Needs to load an auth-file 'name.credentials' with the json structure {
@@ -97,6 +118,26 @@ public class DropboxUtil {
 
 		DbxRequestConfig requestConfig = new DbxRequestConfig("circlead-cloud");
 		DbxTeamClientV2 dbxClient = new DbxTeamClientV2(requestConfig, authInfo.getAccessToken(), authInfo.getHost());
+
+		// Make the /account/info API call.
+		TeamGetInfoResult info;
+		try {
+			info = dbxClient.team().getInfo();
+		} catch (DbxException ex) {
+			LOGGER.error("Error making API call: " + ex.getMessage());
+			return null;
+		}
+
+		LOGGER.info("Load Dropbox-Team-Client for '" + info.getName() + "'");
+
+		return dbxClient;
+
+	}
+	
+	public static DbxTeamClientV2 getTeamClientFromAccessToken(String accessToken) {
+		
+		DbxRequestConfig requestConfig = new DbxRequestConfig("circlead-cloud");
+		DbxTeamClientV2 dbxClient = new DbxTeamClientV2(requestConfig, accessToken);
 
 		// Make the /account/info API call.
 		TeamGetInfoResult info;

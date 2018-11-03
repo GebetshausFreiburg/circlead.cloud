@@ -38,7 +38,7 @@ import org.rogatio.circlead.model.Parameter;
 public class ExcelUtil {
 
 	/** The Constant LOGGER. */
-	final static Logger LOGGER = LogManager.getLogger(ExcelUtil.class);
+	private final static Logger LOGGER = LogManager.getLogger(ExcelUtil.class);
 
 	/**
 	 * Adds the color background.

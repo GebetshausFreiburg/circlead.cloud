@@ -9,6 +9,7 @@
 package org.rogatio.circlead.main;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -18,11 +19,14 @@ import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
 import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer;
 import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
+import org.rogatio.circlead.control.webserver.Webserver;
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.data.CompetenceDataitem;
 import org.rogatio.circlead.model.work.Competence;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.util.DropboxUtil;
+import org.rogatio.circlead.util.FileUtil;
+import org.rogatio.circlead.util.PropertyUtil;
 import org.rogatio.circlead.view.report.OverviewReport;
 import org.rogatio.circlead.view.report.PersonListReport;
 import org.rogatio.circlead.view.report.PersonListReportDetails;
@@ -78,13 +82,15 @@ public class SyncCirclead {
 
 	public static final boolean WRITE_UPDATE = true;
 
+	public static final boolean USEWEBSERVER = false;
+
 	/** The Constant logger. */
 	final static Logger LOGGER = LogManager.getLogger(SyncCirclead.class);
 
 	/**
 	 * The main method of the application
 	 *
-	 * @param args the arguments 
+	 * @param args the arguments
 	 * @author Matthias Wegner
 	 */
 	public static void main(String[] args) {
@@ -182,9 +188,36 @@ public class SyncCirclead {
 			PrayHourExporter phe = new PrayHourExporter();
 			phe.export("Gebetsstundenübersicht");
 
-			DbxTeamClientV2 dbxClient = DropboxUtil.getTeamClient("gebetshaus.credentials");
+			DbxTeamClientV2 dbxClient = DropboxUtil.getTeamClientFromAccessToken(PropertyUtil.DROPBOX_CREDENTIALS_ACCESSTOKEN);
+//			DbxTeamClientV2 dbxClient = DropboxUtil.getTeamClientFromAuthFile("gebetshaus.credentials");
 			DropboxUtil.uploadFileToTeamFolder(dbxClient, new File("exports/Gebetsstundenübersicht.xlsx"),
 					"/06_GBH_BO_Gebetstundenorga/Gebetsstundenübersicht.xlsx", "Matthias Wegner");
+		}
+
+		// Copy ressources to web-dir
+		try {
+			FileUtil.copyFileOrFolder(
+					new File("data" + File.separatorChar + "ressources" + File.separatorChar + "images"),
+					new File("web" + File.separatorChar + "images"));
+			FileUtil.copyFileOrFolder(new File("data" + File.separatorChar + "howtos"),
+					new File("web" + File.separatorChar + "howtos"));
+			FileUtil.copyFileOrFolder(
+					new File("data" + File.separatorChar + "ressources" + File.separatorChar + "styles.css"),
+					new File("web" + File.separatorChar + "styles.css"));
+			FileUtil.copyFileOrFolder(
+					new File("data" + File.separatorChar + "ressources" + File.separatorChar
+							+ "stylesCategoryReport.css"),
+					new File("web" + File.separatorChar + "stylesCategoryReport.css"));
+		} catch (IOException e) {
+			LOGGER.error(e);
+		}
+		if (USEWEBSERVER) {
+			// Create Webserver
+			Webserver server = new Webserver();
+			// Open Localhost in Browser
+			server.openInBrowser();
+			// Start Webserver
+			server.run();
 		}
 	}
 

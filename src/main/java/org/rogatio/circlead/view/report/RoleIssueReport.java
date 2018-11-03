@@ -1,9 +1,9 @@
 package org.rogatio.circlead.view.report;
 
-import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.DEDICATEDSERVER;
-import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.PASSWORD;
-import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.URLJIRA;
-import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.USER;
+//import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.DEDICATEDSERVER;
+//import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.PASSWORD;
+//import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.URLJIRA;
+//import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.USER;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,12 +19,18 @@ import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer
 import org.rogatio.circlead.control.synchronizer.atlassian.JiraClient;
 import org.rogatio.circlead.control.synchronizer.atlassian.jira.Issue;
 import org.rogatio.circlead.util.ObjectUtil;
+import org.rogatio.circlead.util.PropertyUtil;
 
 /**
  * The Class RoleIssueReport.
  */
 public class RoleIssueReport extends DefaultReport {
 
+	private final String URLJIRA = PropertyUtil.getInstance().getValue(PropertyUtil.ATLASSIAN_JIRA_URL);
+	private final String USER = PropertyUtil.getInstance().getValue(PropertyUtil.ATLASSIAN_LOGIN_USER);
+	private final String PASSWORD = PropertyUtil.getInstance().getValue(PropertyUtil.ATLASSIAN_LOGIN_PASSWORD);
+	private final boolean DEDICATEDSERVER = PropertyUtil.getInstance().getBooleanValue(PropertyUtil.ATLASSIAN_SERVER_DEDICATED);
+	
 	/** The Constant LOGGER. */
 	final static Logger LOGGER = LogManager.getLogger(RoleIssueReport.class);
 
@@ -45,7 +51,7 @@ public class RoleIssueReport extends DefaultReport {
 
 		if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
 
-			if (org.rogatio.circlead.control.synchronizer.atlassian.Constant.DEDICATEDSERVER) {
+			if (DEDICATEDSERVER) {
 				element.appendText("Not implemented for Dedicated Server");
 				return element;
 			}

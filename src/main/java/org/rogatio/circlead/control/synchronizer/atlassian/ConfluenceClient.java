@@ -14,6 +14,7 @@ import java.net.URLEncoder;
 import java.util.UUID;
 
 import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
+import org.rogatio.circlead.util.PropertyUtil;
 
 /**
  * The Class ConfluenceClient.
@@ -29,6 +30,8 @@ import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
  */
 public class ConfluenceClient extends HttpClient {
 
+	private final int LIMIT = PropertyUtil.getInstance().getIntValue(PropertyUtil.ATLASSIAN_QUERY_LIMIT);
+	
 	/** The rest prefix. Is different for cloud to dedicated server */
 	private String restPrefix = null;
 
@@ -355,7 +358,7 @@ public class ConfluenceClient extends HttpClient {
 	public SynchronizerResult search(String cql) {
 		try {
 			String encoded = URLEncoder.encode(cql, "UTF-8");
-			return this.get(restPrefix + "search?limit=" + Constant.LIMIT + "&cql=" + encoded);
+			return this.get(restPrefix + "search?limit=" + LIMIT + "&cql=" + encoded);
 		} catch (UnsupportedEncodingException e1) {
 			return null;
 		} catch (IOException e) {
@@ -371,7 +374,7 @@ public class ConfluenceClient extends HttpClient {
 	 */
 	public SynchronizerResult browseContent() {
 		try {
-			return this.get(restPrefix + "content?expand=space&limit=" + Constant.LIMIT);
+			return this.get(restPrefix + "content?expand=space&limit=" + LIMIT);
 		} catch (IOException e) {
 			return null;
 		}

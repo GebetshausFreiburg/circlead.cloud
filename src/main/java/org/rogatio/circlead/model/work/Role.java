@@ -528,7 +528,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 								+ "\" ri:version-at-save=\"1\"/><ac:plain-text-link-body><![CDATA[" + team.getTitle()
 								+ "" + c + "]]></ac:plain-text-link-body></ac:link>");
 					} else if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
-						li.appendElement("a").attr("href", "../web/" + team.getId(synchronizer) + ".html")
+						li.appendElement("a").attr("href", "" + team.getId(synchronizer) + ".html")
 								.appendText(team.getTitle() + c);
 					}
 

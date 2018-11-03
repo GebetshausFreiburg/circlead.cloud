@@ -1,9 +1,9 @@
 package org.rogatio.circlead.main;
 
-import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.DEDICATEDSERVER;
-import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.PASSWORD;
-import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.URLJIRA;
-import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.USER;
+//import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.DEDICATEDSERVER;
+//import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.PASSWORD;
+//import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.URLJIRA;
+//import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.USER;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 import org.rogatio.circlead.control.synchronizer.atlassian.JiraClient;
 import org.rogatio.circlead.control.synchronizer.atlassian.jira.Issue;
 import org.rogatio.circlead.util.ObjectUtil;
+import org.rogatio.circlead.util.PropertyUtil;
 
 /**
  * The Class JiraIssueLoader.
@@ -24,6 +25,11 @@ import org.rogatio.circlead.util.ObjectUtil;
  */
 public class JiraIssueLoader {
 
+	private static final String URLJIRA = PropertyUtil.getInstance().getValue(PropertyUtil.ATLASSIAN_JIRA_URL);
+	private static final String USER = PropertyUtil.getInstance().getValue(PropertyUtil.ATLASSIAN_LOGIN_USER);
+	private static final String PASSWORD = PropertyUtil.getInstance().getValue(PropertyUtil.ATLASSIAN_LOGIN_PASSWORD);
+	private static final boolean DEDICATEDSERVER = PropertyUtil.getInstance().getBooleanValue(PropertyUtil.ATLASSIAN_SERVER_DEDICATED);
+	
 	/** The Constant LOGGER. */
 	final static Logger LOGGER = LogManager.getLogger(JiraIssueLoader.class);
 

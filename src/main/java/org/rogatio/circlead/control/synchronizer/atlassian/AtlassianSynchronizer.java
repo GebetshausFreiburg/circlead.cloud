@@ -8,18 +8,7 @@
  */
 package org.rogatio.circlead.control.synchronizer.atlassian;
 
-import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.DEDICATEDSERVER;
-import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.PASSWORD;
-import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.URLCONFLUENCE;
-import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.USER;
-import static org.rogatio.circlead.model.WorkitemType.ACTIVITY;
-import static org.rogatio.circlead.model.WorkitemType.HOWTO;
-import static org.rogatio.circlead.model.WorkitemType.COMPETENCE;
-import static org.rogatio.circlead.model.WorkitemType.PERSON;
-import static org.rogatio.circlead.model.WorkitemType.REPORT;
-import static org.rogatio.circlead.model.WorkitemType.TEAM;
-import static org.rogatio.circlead.model.WorkitemType.ROLE;
-import static org.rogatio.circlead.model.WorkitemType.ROLEGROUP;
+import static org.rogatio.circlead.model.WorkitemType.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -66,6 +55,7 @@ import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.model.work.Team;
+import org.rogatio.circlead.util.PropertyUtil;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.AtlassianRendererEngine;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
@@ -85,6 +75,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class AtlassianSynchronizer extends DefaultSynchronizer {
 
+	private final String URLCONFLUENCE = PropertyUtil.getInstance().getValue(PropertyUtil.ATLASSIAN_CONFLUENCE_URL);
+	private final String USER = PropertyUtil.getInstance().getValue(PropertyUtil.ATLASSIAN_LOGIN_USER);
+	private final String PASSWORD = PropertyUtil.getInstance().getValue(PropertyUtil.ATLASSIAN_LOGIN_PASSWORD);
+	private final boolean DEDICATEDSERVER = PropertyUtil.getInstance().getBooleanValue(PropertyUtil.ATLASSIAN_SERVER_DEDICATED);
+	private final int LIMIT = PropertyUtil.getInstance().getIntValue(PropertyUtil.ATLASSIAN_QUERY_LIMIT);
+	
 	/** Name of the page in space which holds the roles. */
 	private final String ROLESPAGE = "Roles";
 
@@ -126,6 +122,22 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	public AtlassianSynchronizer(String spaceKey) {
 		circleadSpace = spaceKey;
 		confluenceClient = new ConfluenceClient(URLCONFLUENCE, USER, PASSWORD, DEDICATEDSERVER);
+		
+		LOGGER.info("URL of Confluence is set to '"+URLCONFLUENCE+"'");
+		LOGGER.info("USER is set to '"+USER+"'");
+		
+		boolean pswdNotSet = true;
+		if (PASSWORD!=null) {
+			if (!PASSWORD.equalsIgnoreCase("password")) {
+				LOGGER.info("PASSWORD is set");		
+				pswdNotSet = false;
+			}
+		}
+		if (pswdNotSet) {
+			LOGGER.error("PASSWORD is NOT set");	
+		}
+		
+		LOGGER.info("LIMIT for search results and Index is set to '"+LIMIT+"'");
 	}
 
 	/** The confluence client. */

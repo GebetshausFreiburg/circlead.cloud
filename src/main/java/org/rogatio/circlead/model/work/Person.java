@@ -453,7 +453,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 			if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
 				element.append(Parser.addImage(getAvatar(), 250, 1));
 			} else if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
-				element.append("<img src=\"..\\data\\images\\profile\\" + getAvatar() + "\" alt=\"" + this.getFullname()
+				element.append("<img src=\"images\\profile\\" + getAvatar() + "\" alt=\"" + this.getFullname()
 						+ "\" width=\"250px\">");
 			}
 		}

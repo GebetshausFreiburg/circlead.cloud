@@ -323,11 +323,11 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 			renderer.render(this).appendTo(body);
 
 			try {
-				String f = "reports/" + filename + ".html";
+				String f = "web/" + filename + ".html";
 
 				LOGGER.info("Write/Update file '" + f + "'");
 
-				File ff = new File("reports");
+				File ff = new File("web");
 				ff.mkdirs();
 				Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"));
 				try {
@@ -393,7 +393,7 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 		if (WorkitemType.ROLE == workitemType) {
 			fileIndex = readFolder("roles");
 		} else if (WorkitemType.REPORT == workitemType) {
-			List<String> files = readFolder("reports");
+			List<String> files = readFolder("web");
 			for (String f : files) {
 				File file = new File(f);
 				HowTo ht = new HowTo();
@@ -654,7 +654,7 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 				"intermediate-event-none.png", "end-event-multiple.png", "space-tool.png", "end-event-link.png" };
 		for (String file : bpmnFiles) {
 			Path p = Paths.get(
-					"data" + File.separatorChar + "images" + File.separatorChar + "bpmn" + File.separatorChar + file);
+					"web" + File.separatorChar + "images" + File.separatorChar + "bpmn" + File.separatorChar + file);
 			if (!Files.exists(p)) {
 				ValidationMessage m = new ValidationMessage(this);
 				m.error("File missing",
@@ -666,7 +666,7 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 		String reportImageFiles[] = { "child.png", "group.png", "groupchild.png", "groupparent.png",
 				"groupwithrole.png", "parent.png", "role.png" };
 		for (String file : reportImageFiles) {
-			Path p = Paths.get("reports" + File.separatorChar + "images" + File.separatorChar + file);
+			Path p = Paths.get("web" + File.separatorChar + "images" + File.separatorChar + file);
 			if (!Files.exists(p)) {
 				ValidationMessage m = new ValidationMessage(this);
 				m.error("File missing",
@@ -675,14 +675,7 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 			}
 		}
 
-		Path p = Paths.get("reports" + File.separatorChar + "styles.css");
-		if (!Files.exists(p)) {
-			ValidationMessage m = new ValidationMessage(this);
-			m.error("File missing", "File '" + p.toString() + "' is missing for usage in FileSynchronizer (Reports)");
-			messages.add(m);
-		}
-
-		p = Paths.get("reports" + File.separatorChar + "stylesCategoryReport.css");
+		Path p = Paths.get("web" + File.separatorChar + "stylesCategoryReport.css");
 		if (!Files.exists(p)) {
 			ValidationMessage m = new ValidationMessage(this);
 			m.error("File missing", "File '" + p.toString() + "' is missing for usage in FileSynchronizer (Reports)");
