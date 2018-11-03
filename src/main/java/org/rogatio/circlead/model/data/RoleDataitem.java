@@ -724,7 +724,7 @@ public class RoleDataitem extends DefaultDataitem {
 	}
 
 	/**
-	 * Sets the synonyms of a role
+	 * Sets the synonyms of a role.
 	 *
 	 * @param synonyms the new synonyms
 	 */
