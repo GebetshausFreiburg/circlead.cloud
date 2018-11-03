@@ -147,7 +147,7 @@ public class Timeslice {
 	}
 
 	/**
-	 * Sets the allokation.
+	 * Sets the allokation of a timeslice
 	 *
 	 * @param allokation the new allokation
 	 */
