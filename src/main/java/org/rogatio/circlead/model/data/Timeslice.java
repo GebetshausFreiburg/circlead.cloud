@@ -138,7 +138,7 @@ public class Timeslice {
 	}
 
 	/**
-	 * Gets the allokation.
+	 * Gets the allokation of the timeslice
 	 *
 	 * @return the allokation
 	 */
