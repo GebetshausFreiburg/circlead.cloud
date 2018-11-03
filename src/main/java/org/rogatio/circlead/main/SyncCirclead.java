@@ -82,7 +82,7 @@ public class SyncCirclead {
 	final static Logger LOGGER = LogManager.getLogger(SyncCirclead.class);
 
 	/**
-	 * The main method of the application.
+	 * The main method of the application
 	 *
 	 * @param args the arguments 
 	 * @author Matthias Wegner
