@@ -18,7 +18,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
- * The Class ContactData.
+ * The Class ContactData holds the data of a contact. Is a subclass of
+ * {@link org.rogatio.circlead.model.data.PersonDataitem}
  */
 public class ContactDataitem {
 
@@ -55,8 +56,7 @@ public class ContactDataitem {
 	/**
 	 * Sets the organisation.
 	 *
-	 * @param organisation
-	 *            the new organisation
+	 * @param organisation the new organisation
 	 */
 	public void setOrganisation(String organisation) {
 		this.organisation = organisation;
@@ -74,8 +74,7 @@ public class ContactDataitem {
 	/**
 	 * Sets the type.
 	 *
-	 * @param type
-	 *            the new type
+	 * @param type the new type
 	 */
 	public void setType(String type) {
 		this.type = type;
@@ -93,8 +92,7 @@ public class ContactDataitem {
 	/**
 	 * Sets the subtype.
 	 *
-	 * @param subtype
-	 *            the new subtype
+	 * @param subtype the new subtype
 	 */
 	public void setSubtype(String subtype) {
 		this.subtype = subtype;
@@ -112,8 +110,7 @@ public class ContactDataitem {
 	/**
 	 * Sets the address.
 	 *
-	 * @param address
-	 *            the new address
+	 * @param address the new address
 	 */
 	public void setAddress(String address) {
 		this.address = address;
@@ -131,8 +128,7 @@ public class ContactDataitem {
 	/**
 	 * Sets the mobile.
 	 *
-	 * @param mobile
-	 *            the new mobile
+	 * @param mobile the new mobile
 	 */
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
@@ -150,8 +146,7 @@ public class ContactDataitem {
 	/**
 	 * Sets the phone.
 	 *
-	 * @param phone
-	 *            the new phone
+	 * @param phone the new phone
 	 */
 	public void setPhone(String phone) {
 		this.phone = phone;
@@ -169,8 +164,7 @@ public class ContactDataitem {
 	/**
 	 * Sets the mail.
 	 *
-	 * @param mail
-	 *            the new mail
+	 * @param mail the new mail
 	 */
 	public void setMail(String mail) {
 		this.mail = mail;
@@ -188,10 +182,10 @@ public class ContactDataitem {
 			sb.append(this.getType());
 		}
 		if (this.getSubtype() != null) {
-			sb.append(" - "+this.getSubtype());
+			sb.append(" - " + this.getSubtype());
 		}
 		if (this.getOrganisation() != null) {
-			sb.append(" ("+this.getOrganisation()+")");
+			sb.append(" (" + this.getOrganisation() + ")");
 		}
 		return sb.toString();
 	}
@@ -221,7 +215,9 @@ public class ContactDataitem {
 		return list;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@JsonIgnore

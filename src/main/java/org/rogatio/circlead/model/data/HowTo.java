@@ -15,22 +15,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
- * The Class HowTo is mainly used to give back detailed index-information of found HowTos for the AtlassianSynchronizer as JSON-String-Representation.
+ * The Class HowTo is mainly used to give back detailed index-information of
+ * found HowTos for the AtlassianSynchronizer as JSON-String-Representation.
  */
 public class HowTo {
 
 	/** The type. */
 	private String type;
-	
+
 	/** The synchronizer. */
 	private String synchronizer;
-	
+
 	/** The id. */
 	private String id;
-	
+
 	/** The title. */
 	private String title;
-	
+
 	/** The url. */
 	private String url;
 
@@ -124,7 +125,9 @@ public class HowTo {
 		this.url = url;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@JsonIgnore

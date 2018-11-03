@@ -30,7 +30,7 @@ import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaDescription;
 import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaTitle;
 
 /**
- * The Class DefaultDataitem.
+ * The Class DefaultDataitem is a default data representation of any workitem
  */
 public class DefaultDataitem implements IDataitem {
 

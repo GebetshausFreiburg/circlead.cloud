@@ -14,7 +14,7 @@ import java.util.HashMap;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 
 /**
- * The Interface IDataitem.
+ * The Interface IDataitem for all data-representations
  */
 public interface IDataitem {
 

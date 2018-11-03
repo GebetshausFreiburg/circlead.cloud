@@ -15,23 +15,25 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
- * The Class Report is mainly used to give back detailed index-information of found Reports for the AtlassianSynchronizer as JSON-String-Representation.
- * Is needed to get back Atlassian-Page-Ids to get the actual page-version, so it could be updated.
+ * The Class Report is mainly used to give back detailed index-information of
+ * found Reports for the AtlassianSynchronizer as JSON-String-Representation. Is
+ * needed to get back Atlassian-Page-Ids to get the actual page-version, so it
+ * could be updated.
  */
 public class Report {
 
 	/** The type. */
 	private String type;
-	
+
 	/** The synchronizer. */
 	private String synchronizer;
-	
+
 	/** The id. */
 	private String id;
-	
+
 	/** The title. */
 	private String title;
-	
+
 	/** The url. */
 	private String url;
 
@@ -125,7 +127,9 @@ public class Report {
 		this.url = url;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@JsonIgnore

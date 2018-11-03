@@ -23,7 +23,7 @@ import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaDescription;
 import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaTitle;
 
 /**
- * The Class RoleDataitem.
+ * The Class RoleDataitem holds the data of a role
  */
 public class RoleDataitem extends DefaultDataitem {
 

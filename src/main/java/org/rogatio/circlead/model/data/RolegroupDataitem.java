@@ -17,7 +17,7 @@ import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaDescription;
 import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaTitle;
 
 /**
- * The Class RolegroupDataitem.
+ * The Class RolegroupDataitem holds the data of a rolegroup
  */
 public class RolegroupDataitem extends DefaultDataitem {
 

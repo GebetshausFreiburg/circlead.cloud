@@ -17,7 +17,7 @@ import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaDescription;
 import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaTitle;
 
 /**
- * The Class ActivityDataitem.
+ * The Class ActivityDataitem hold the data of activity
  */
 public class ActivityDataitem extends DefaultDataitem {
 

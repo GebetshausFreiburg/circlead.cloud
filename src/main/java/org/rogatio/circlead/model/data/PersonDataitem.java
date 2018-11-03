@@ -16,7 +16,7 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
- * The Class PersonDataitem.
+ * The Class PersonDataitem holds the data for a person
  */
 public class PersonDataitem extends DefaultDataitem {
 
