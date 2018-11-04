@@ -76,10 +76,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class AtlassianSynchronizer extends DefaultSynchronizer {
 
 	private final String URLCONFLUENCE = PropertyUtil.getInstance().getValue(PropertyUtil.ATLASSIAN_CONFLUENCE_URL);
-	private final String USER = PropertyUtil.getInstance().getValue(PropertyUtil.ATLASSIAN_LOGIN_USER);
-	private final String PASSWORD = PropertyUtil.getInstance().getValue(PropertyUtil.ATLASSIAN_LOGIN_PASSWORD);
 	private final boolean DEDICATEDSERVER = PropertyUtil.getInstance().getBooleanValue(PropertyUtil.ATLASSIAN_SERVER_DEDICATED);
-	private final int LIMIT = PropertyUtil.getInstance().getIntValue(PropertyUtil.ATLASSIAN_QUERY_LIMIT);
 	
 	/** Name of the page in space which holds the roles. */
 	private final String ROLESPAGE = "Roles";
@@ -121,23 +118,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	 */
 	public AtlassianSynchronizer(String spaceKey) {
 		circleadSpace = spaceKey;
-		confluenceClient = new ConfluenceClient(URLCONFLUENCE, USER, PASSWORD, DEDICATEDSERVER);
-		
-		LOGGER.info("URL of Confluence is set to '"+URLCONFLUENCE+"'");
-		LOGGER.info("USER is set to '"+USER+"'");
-		
-		boolean pswdNotSet = true;
-		if (PASSWORD!=null) {
-			if (!PASSWORD.equalsIgnoreCase("password")) {
-				LOGGER.info("PASSWORD is set");		
-				pswdNotSet = false;
-			}
-		}
-		if (pswdNotSet) {
-			LOGGER.error("PASSWORD is NOT set");	
-		}
-		
-		LOGGER.info("LIMIT for search results and Index is set to '"+LIMIT+"'");
+		confluenceClient = new ConfluenceClient();
 	}
 
 	/** The confluence client. */

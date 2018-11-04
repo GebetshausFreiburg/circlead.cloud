@@ -52,11 +52,27 @@ public class ConfluenceClient extends HttpClient {
 		if (server) {
 			// Set rest-prefix if atlassian-dedicated-server
 			restPrefix = "rest/api/";
-			LOGGER.info("ConfluenceClient ist set to dedicated server");
+			//LOGGER.info("ConfluenceClient ist set to dedicated server");
 		} else {
 			// Set rest-prefix if atlassian-cloud-server
 			restPrefix = "wiki/rest/api/";
-			LOGGER.info("ConfluenceClient ist set to cloud server");
+			//LOGGER.info("ConfluenceClient ist set to cloud server");
+		}
+	}
+	
+	public ConfluenceClient() {
+		this.baseUrl = PropertyUtil.getInstance().getConfluenceUrl();
+		this.user = PropertyUtil.getInstance().getAtlassianUser();
+		this.password = PropertyUtil.getInstance().getAtlassianPassword();
+
+		if (PropertyUtil.getInstance().isDedicatedServer()) {
+			// Set rest-prefix if atlassian-dedicated-server
+			restPrefix = "rest/api/";
+			//LOGGER.info("ConfluenceClient ist set to dedicated server");
+		} else {
+			// Set rest-prefix if atlassian-cloud-server
+			restPrefix = "wiki/rest/api/";
+			//LOGGER.info("ConfluenceClient ist set to cloud server");
 		}
 	}
 

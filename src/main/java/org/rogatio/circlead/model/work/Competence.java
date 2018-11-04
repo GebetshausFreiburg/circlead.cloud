@@ -8,21 +8,20 @@
  */
 package org.rogatio.circlead.model.work;
 
-import static org.rogatio.circlead.model.Parameter.*;
+import static org.rogatio.circlead.model.Parameter.COMPETENCE;
+import static org.rogatio.circlead.model.Parameter.DESCRIPTION;
+import static org.rogatio.circlead.model.Parameter.ROLES;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.HeaderTableParserElement;
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
-import org.rogatio.circlead.main.SyncCirclead;
 import org.rogatio.circlead.model.Parameter;
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.data.CompetenceDataitem;
@@ -272,7 +271,6 @@ public class Competence extends DefaultWorkitem implements IWorkitemRenderer, IV
 	 */
 	@Override
 	public Element render(ISynchronizer synchronizer) {
-		@SuppressWarnings("unused")
 		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 		Element element = new Element("p");
 

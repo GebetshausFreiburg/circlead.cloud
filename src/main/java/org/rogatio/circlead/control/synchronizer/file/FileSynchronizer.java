@@ -315,6 +315,13 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 					head.append(h);
 				}
 			}
+			head.append("<link rel=\"apple-touch-icon\" sizes=\"152x152\" href=\"images/apple-touch-icon.png\">");
+			head.append("<link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"images/favicon-32x32.png\">");
+			head.append("<link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"images/favicon-16x16.png\">");
+			head.append("<link rel=\"manifest\" href=\"images/site.webmanifest\">");
+			head.append("<link rel=\"mask-icon\" href=\"images/safari-pinned-tab.svg\" color=\"#5bbad5\">");
+			head.append("<meta name=\"msapplication-TileColor\" content=\"#da532c\">");
+			head.append("<meta name=\"theme-color\" content=\"#ffffff\">");
 			head.append("<meta charset=\"utf-8\">");
 			Element body = html.appendElement("body");
 
@@ -355,6 +362,13 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 			Element html = doc.appendElement("html");
 			Element head = html.appendElement("head");
 			head.append("<link rel=\"stylesheet\" href=\"styles.css\"/>");
+			head.append("<link rel=\"apple-touch-icon\" sizes=\"152x152\" href=\"images/apple-touch-icon.png\">");
+			head.append("<link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"images/favicon-32x32.png\">");
+			head.append("<link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"images/favicon-16x16.png\">");
+			head.append("<link rel=\"manifest\" href=\"images/site.webmanifest\">");
+			head.append("<link rel=\"mask-icon\" href=\"images/safari-pinned-tab.svg\" color=\"#5bbad5\">");
+			head.append("<meta name=\"msapplication-TileColor\" content=\"#da532c\">");
+			head.append("<meta name=\"theme-color\" content=\"#ffffff\">");
 			head.append("<meta charset=\"utf-8\"/>");
 			Element body = html.appendElement("body");
 
@@ -613,6 +627,9 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 		return new FileRendererEngine(this);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.control.validator.IValidator#validate()
+	 */
 	@Override
 	public List<ValidationMessage> validate() {
 		List<ValidationMessage> messages = new ArrayList<ValidationMessage>();
@@ -692,6 +709,9 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 		return messages;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#writeIndex()
+	 */
 	@Override
 	public void writeIndex() {
 		LOGGER.info("Write Index");

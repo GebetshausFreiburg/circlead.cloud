@@ -14,6 +14,8 @@ import org.eclipse.jetty.util.log.AbstractLogger;
 import org.eclipse.jetty.util.log.Logger;
 
 /**
+ * Logger-Bridge to log jetty-logs to log4j in circlead-application
+ * 
  * User: Robert Franz Date: 2015-08-24 Time: 20:35.
  */
 public class Jetty2Log4j2Bridge extends AbstractLogger {

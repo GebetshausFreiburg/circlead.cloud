@@ -30,6 +30,24 @@ public class PropertyUtil {
 
 	private Properties props = new Properties();
 
+	static {
+		LOGGER.info("URL of Confluence is set to '"+PropertyUtil.getInstance().getConfluenceUrl()+"'");
+		LOGGER.info("USER is set to '"+PropertyUtil.getInstance().getAtlassianUser()+"'");
+		
+		boolean pswdNotSet = true;
+		if (PropertyUtil.getInstance().getAtlassianPassword()!=null) {
+			if (!PropertyUtil.getInstance().getAtlassianPassword().equalsIgnoreCase("password")) {
+				LOGGER.info("PASSWORD is set");		
+				pswdNotSet = false;
+			}
+		}
+		if (pswdNotSet) {
+			LOGGER.error("PASSWORD is NOT set");	
+		}
+		
+		LOGGER.info("LIMIT for search results and Index is set to '"+PropertyUtil.getInstance().getAtlassianQueryLimit()+"'");
+	}
+	
 	private PropertyUtil() {
 		String currentDir = System.getProperty("user.dir");
 		String appConfigPath = currentDir + File.separatorChar + "circlead.properties";
@@ -72,4 +90,33 @@ public class PropertyUtil {
 			return null;
 		}
 	}
+	
+	public Boolean isDedicatedServer() {
+		return getBooleanValue(ATLASSIAN_SERVER_DEDICATED);
+	}
+	
+	public String getConfluenceUrl() {
+		return getValue(ATLASSIAN_CONFLUENCE_URL);
+	}
+	
+	public String getJiraUrl() {
+		return getValue(ATLASSIAN_JIRA_URL);
+	}
+	
+	public Integer getAtlassianQueryLimit() {
+		return getIntValue(ATLASSIAN_QUERY_LIMIT);
+	}
+	
+	public String getAtlassianUser() {
+		return getValue(ATLASSIAN_LOGIN_USER);
+	}
+	
+	public String getAtlassianPassword() {
+		return getValue(ATLASSIAN_LOGIN_PASSWORD);
+	}
+	
+	public String getDropboxAccesstoken() {
+		return getValue(DROPBOX_CREDENTIALS_ACCESSTOKEN);
+	}
+	
 }

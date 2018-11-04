@@ -35,6 +35,22 @@ public class JiraClient extends HttpClient {
 	/** The rest prefix. Is different for cloud to dedicated server */
 	private String restPrefix = null;
 
+	public JiraClient() {
+		this.baseUrl = PropertyUtil.getInstance().getJiraUrl();
+		this.user = PropertyUtil.getInstance().getAtlassianUser();
+		this.password = PropertyUtil.getInstance().getAtlassianPassword();
+
+		if (PropertyUtil.getInstance().isDedicatedServer()) {
+			/* Set rest-prefix if atlassian-dedicated-server */
+			restPrefix = "rest/api/2/";
+			//LOGGER.info("JiraClient ist set to dedicated server");
+		} else {
+			/* Set rest-prefix if atlassian-cloud-server */
+			restPrefix = "rest/api/3/";
+			//LOGGER.info("JiraClient ist set to cloud server");
+		}
+	}
+	
 	/**
 	 * Authentification is enabled with basic auth. Check "curl -v
 	 * http://url-to-atlassian?os_authType=basic If basic auth enabled, the
@@ -53,11 +69,11 @@ public class JiraClient extends HttpClient {
 		if (server) {
 			/* Set rest-prefix if atlassian-dedicated-server */
 			restPrefix = "rest/api/2/";
-			LOGGER.info("JiraClient ist set to dedicated server");
+			//LOGGER.info("JiraClient ist set to dedicated server");
 		} else {
 			/* Set rest-prefix if atlassian-cloud-server */
 			restPrefix = "rest/api/3/";
-			LOGGER.info("JiraClient ist set to cloud server");
+			//LOGGER.info("JiraClient ist set to cloud server");
 		}
 	}
 
