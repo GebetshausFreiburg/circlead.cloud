@@ -9,6 +9,9 @@
 package org.rogatio.circlead.util;
 
 import java.awt.Color;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -20,7 +23,19 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jsonschema2pojo.DefaultGenerationConfig;
+import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.Jackson2Annotator;
+import org.jsonschema2pojo.SchemaGenerator;
+import org.jsonschema2pojo.SchemaMapper;
+import org.jsonschema2pojo.SchemaStore;
+import org.jsonschema2pojo.SourceType;
+import org.jsonschema2pojo.rules.RuleFactory;
 import org.rogatio.circlead.model.data.Timeslice;
+
+import com.sun.codemodel.JCodeModel;
 
 /**
  * The Class ObjectUtil is a simple helper for objects.
@@ -28,6 +43,8 @@ import org.rogatio.circlead.model.data.Timeslice;
  * @author Matthias Wegner
  */
 public class ObjectUtil {
+
+	private final static Logger LOGGER = LogManager.getLogger(ObjectUtil.class);
 
 	/**
 	 * Cast list to wanted type.
@@ -66,7 +83,7 @@ public class ObjectUtil {
 	 * Divide slices.
 	 *
 	 * @param slices the slices
-	 * @param size the size
+	 * @param size   the size
 	 * @return the list
 	 */
 	public static List<Timeslice> divideSlices(List<Timeslice> slices, int size) {
@@ -134,16 +151,16 @@ public class ObjectUtil {
 	 */
 	public static List<Timeslice> merge(Map<String, List<Timeslice>> dataMap) {
 		List<Timeslice> list = null;
-		
+
 		Vector<String> keys = new Vector<String>(dataMap.keySet());
 		for (String key : keys) {
 			List<Timeslice> dataset = dataMap.get(key);
 			list = merge(dataset, list);
 		}
-		
+
 		return list;
 	}
-	
+
 	/**
 	 * Sort.
 	 *
@@ -163,28 +180,24 @@ public class ObjectUtil {
 			}
 			sortedMap.put(sum, key);
 		}
-		
+
 		Map<String, List<Timeslice>> map = new LinkedHashMap<String, List<Timeslice>>();
-		
+
 		Vector<Double> k = new Vector<Double>(sortedMap.keySet());
 		for (Double d : k) {
 //			System.out.println(d+": "+sortedMap.get(d));
 			map.put(sortedMap.get(d), dataMap.get(sortedMap.get(d)));
 		}
-		
+
 		return map;
 	}
-	
 
 	/**
 	 * Sort by value.
 	 *
-	 * @param <K>
-	 *            the key type
-	 * @param <V>
-	 *            the value type
-	 * @param map
-	 *            the map
+	 * @param     <K> the key type
+	 * @param     <V> the value type
+	 * @param map the map
 	 * @return the map
 	 */
 	public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
@@ -205,12 +218,67 @@ public class ObjectUtil {
 	/**
 	 * Convert to html color.
 	 *
-	 * @param color
-	 *            the color
+	 * @param color the color
 	 * @return the string
 	 */
 	public static String convertToHtmlColor(Color color) {
 		return "#" + Integer.toHexString(color.getRGB()).substring(2) + "";
+	}
+
+	public static void createPojoZipFromJson(String jsonSource, String className, String packageDir, String zipFile) {
+		JCodeModel codeModel = new JCodeModel();
+		GenerationConfig config = new DefaultGenerationConfig() {
+			@Override
+			public boolean isGenerateBuilders() { // set config option by overriding method
+				return true;
+			}
+
+			public SourceType getSourceType() {
+				return SourceType.JSON;
+			}
+		};
+
+		try {
+			File f = Files.createTempDirectory("json2pojo").toFile();
+			SchemaMapper mapper = new SchemaMapper(
+					new RuleFactory(config, new Jackson2Annotator(config), new SchemaStore()), new SchemaGenerator());
+			mapper.generate(codeModel, className, packageDir, jsonSource);
+
+			codeModel.build(f);
+
+			FileUtil.zipDirectory(f.toString(), zipFile);
+		} catch (IOException e) {
+			LOGGER.error(e);
+		}
+
+	}
+
+	public static void createPojoDirFromJson(String jsonSource, String className, String packageDir, String targetDir) {
+		JCodeModel codeModel = new JCodeModel();
+		GenerationConfig config = new DefaultGenerationConfig() {
+			@Override
+			public boolean isGenerateBuilders() { // set config option by overriding method
+				return true;
+			}
+
+			public SourceType getSourceType() {
+				return SourceType.JSON;
+			}
+		};
+
+		try {
+			File f = Files.createTempDirectory("json2pojo").toFile();
+			SchemaMapper mapper = new SchemaMapper(
+					new RuleFactory(config, new Jackson2Annotator(config), new SchemaStore()), new SchemaGenerator());
+			mapper.generate(codeModel, className, packageDir, jsonSource);
+
+			codeModel.build(f);
+
+			FileUtil.copyFileOrFolder(f, new File(targetDir));
+		} catch (IOException e) {
+			LOGGER.error(e);
+		}
+
 	}
 
 }

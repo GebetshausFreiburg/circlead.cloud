@@ -531,15 +531,14 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 							+ "\" ri:version-at-save=\"1\"/><ac:plain-text-link-body><![CDATA[" + team.getTitle() + ""
 							+ c + "]]></ac:plain-text-link-body></ac:link>");
 				} else if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
-					li.appendElement("a").attr("href", "../web/" + team.getId(synchronizer) + ".html")
+					li.appendElement("a").attr("href", "" + team.getId(synchronizer) + ".html")
 							.appendText(team.getTitle() + c);
 				}
 
 				WorkitemStatusParameter status = WorkitemStatusParameter.get(team.getStatus());
 				if (status != null) {
-					Element s = Parser.getStatus(status.getName());
 					li.append("&nbsp;");
-					s.appendTo(li);
+					renderer.addStatus(li, status.getName());
 				}
 
 				List<TeamEntry> x = team.getTeamEntries();
@@ -628,7 +627,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 				} else if (renderer.getSynchronizer().getClass().getSimpleName()
 						.equals(FileSynchronizer.class.getSimpleName())) {
 					listElement.appendElement("a")
-							.attr("href", "../web/" + role.getId(renderer.getSynchronizer()) + ".html")
+							.attr("href", "" + role.getId(renderer.getSynchronizer()) + ".html")
 							.appendText(role.getTitle());
 				}
 			} else {

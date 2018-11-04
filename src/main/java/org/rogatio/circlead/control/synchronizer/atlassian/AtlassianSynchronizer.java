@@ -667,9 +667,9 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 				throw new SynchronizerException(
 						"Item with id '" + indexId + "' could not be founded/loaded with Atlassian Synchronizer.");
 			}
-
+			
 			Page p = mapper.readValue(page.getContent(), Page.class);
-
+			
 			String created = p.getHistory().getCreatedDate();
 			pairs.put("created", new TextParserElement(created));
 			String modified = p.getHistory().getLastUpdated().getWhen();
@@ -679,10 +679,10 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 
 			String type = null;
 			String acestorId = null;
-
+			
 			for (org.rogatio.circlead.control.synchronizer.atlassian.content.Result result : p.getMetadata().getLabels()
 					.getResults()) {
-
+				
 				String label = null;
 				if (result.getName() != null) {
 					label = result.getName();

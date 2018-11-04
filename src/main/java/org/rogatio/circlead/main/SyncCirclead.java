@@ -188,7 +188,7 @@ public class SyncCirclead {
 			PrayHourExporter phe = new PrayHourExporter();
 			phe.export("Gebetsstundenübersicht");
 
-			DbxTeamClientV2 dbxClient = DropboxUtil.getTeamClientFromAccessToken(PropertyUtil.DROPBOX_CREDENTIALS_ACCESSTOKEN);
+			DbxTeamClientV2 dbxClient = DropboxUtil.getTeamClientFromAccessToken(PropertyUtil.getInstance().getValue(PropertyUtil.DROPBOX_CREDENTIALS_ACCESSTOKEN));
 //			DbxTeamClientV2 dbxClient = DropboxUtil.getTeamClientFromAuthFile("gebetshaus.credentials");
 			DropboxUtil.uploadFileToTeamFolder(dbxClient, new File("exports/Gebetsstundenübersicht.xlsx"),
 					"/06_GBH_BO_Gebetstundenorga/Gebetsstundenübersicht.xlsx", "Matthias Wegner");

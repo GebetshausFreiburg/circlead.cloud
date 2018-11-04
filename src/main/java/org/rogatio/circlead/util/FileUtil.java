@@ -10,11 +10,15 @@ package org.rogatio.circlead.util;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -52,7 +56,7 @@ import com.kjetland.jackson.jsonSchema.JsonSchemaGenerator;
 public class FileUtil {
 
 	/** The Constant logger. */
-	final static Logger LOGGER = LogManager.getLogger(FileUtil.class);
+	private final static Logger LOGGER = LogManager.getLogger(FileUtil.class);
 
 	/**
 	 * Delete recursively a directory.
@@ -117,11 +121,20 @@ public class FileUtil {
 		}
 	}
 
+	/**
+	 * Generate HTML from PDF.
+	 *
+	 * @param htmlInputFile the html input file
+	 * @param pdfOutputFile the pdf output file
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws DocumentException the document exception
+	 */
 	public static void generateHTMLFromPDF(String htmlInputFile, String pdfOutputFile)
 			throws ParserConfigurationException, IOException, DocumentException {
-		String CSS_DIR = new File("reports"+File.separatorChar).getAbsolutePath()+File.separatorChar;
-		String RELATIVE_PATH = new File("reports"+File.separatorChar).getAbsolutePath()+File.separatorChar;
-		String IMG_PATH = new File("reports"+File.separatorChar).getAbsolutePath()+File.separatorChar;
+		String CSS_DIR = new File("reports" + File.separatorChar).getAbsolutePath() + File.separatorChar;
+		String RELATIVE_PATH = new File("reports" + File.separatorChar).getAbsolutePath() + File.separatorChar;
+		String IMG_PATH = new File("reports" + File.separatorChar).getAbsolutePath() + File.separatorChar;
 
 		// step 1
 		Document document = new Document();
@@ -165,6 +178,15 @@ public class FileUtil {
 
 	}
 
+	/**
+	 * Generate HTML from PDF simple.
+	 *
+	 * @param htmlInputFile the html input file
+	 * @param pdfOutputFile the pdf output file
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws DocumentException the document exception
+	 */
 	public static void generateHTMLFromPDFSimple(String htmlInputFile, String pdfOutputFile)
 			throws ParserConfigurationException, IOException, DocumentException {
 		Document document = new Document();
@@ -174,49 +196,154 @@ public class FileUtil {
 		document.close();
 
 	}
-	
+
+	/**
+	 * Copy file or folder.
+	 *
+	 * @param source the source
+	 * @param dest the dest
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static void copyFileOrFolder(File source, File dest) throws IOException {
-		CopyOption[] options = new CopyOption[] {StandardCopyOption.REPLACE_EXISTING};
-		
-	    if (source.isDirectory())
-	        copyFolder(source, dest, options);
-	    else {
-	        ensureParentFolder(dest);
-	        copyFile(source, dest, options);
-	    }
-	}
-	
-	public static void copyFileOrFolder(File source, File dest, CopyOption...  options) throws IOException {
-	    if (source.isDirectory())
-	        copyFolder(source, dest, options);
-	    else {
-	        ensureParentFolder(dest);
-	        copyFile(source, dest, options);
-	    }
+		CopyOption[] options = new CopyOption[] { StandardCopyOption.REPLACE_EXISTING };
+
+		if (source.isDirectory())
+			copyFolder(source, dest, options);
+		else {
+			ensureParentFolder(dest);
+			copyFile(source, dest, options);
+		}
 	}
 
+	/**
+	 * Copy file or folder.
+	 *
+	 * @param source the source
+	 * @param dest the dest
+	 * @param options the options
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public static void copyFileOrFolder(File source, File dest, CopyOption... options) throws IOException {
+		if (source.isDirectory())
+			copyFolder(source, dest, options);
+		else {
+			ensureParentFolder(dest);
+			copyFile(source, dest, options);
+		}
+	}
+
+	/**
+	 * Copy folder.
+	 *
+	 * @param source the source
+	 * @param dest the dest
+	 * @param options the options
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private static void copyFolder(File source, File dest, CopyOption... options) throws IOException {
-	    if (!dest.exists())
-	        dest.mkdirs();
-	    File[] contents = source.listFiles();
-	    if (contents != null) {
-	        for (File f : contents) {
-	            File newFile = new File(dest.getAbsolutePath() + File.separator + f.getName());
-	            if (f.isDirectory())
-	                copyFolder(f, newFile, options);
-	            else
-	                copyFile(f, newFile, options);
-	        }
-	    }
+		if (!dest.exists())
+			dest.mkdirs();
+		File[] contents = source.listFiles();
+		if (contents != null) {
+			for (File f : contents) {
+				File newFile = new File(dest.getAbsolutePath() + File.separator + f.getName());
+				if (f.isDirectory())
+					copyFolder(f, newFile, options);
+				else
+					copyFile(f, newFile, options);
+			}
+		}
 	}
 
+	/**
+	 * Copy file.
+	 *
+	 * @param source the source
+	 * @param dest the dest
+	 * @param options the options
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private static void copyFile(File source, File dest, CopyOption... options) throws IOException {
-	    Files.copy(source.toPath(), dest.toPath(), options);
+		Files.copy(source.toPath(), dest.toPath(), options);
 	}
 
+	/**
+	 * Ensure parent folder.
+	 *
+	 * @param file the file
+	 */
 	private static void ensureParentFolder(File file) {
-	    File parent = file.getParentFile();
-	    if (parent != null && !parent.exists())
-	        parent.mkdirs();
-	} 
+		File parent = file.getParentFile();
+		if (parent != null && !parent.exists())
+			parent.mkdirs();
+	}
+
+	/**
+	 * Zip directory.
+	 *
+	 * @param pathToZip the path to zip
+	 * @param zipFile the zip file
+	 */
+	public static void zipDirectory(String pathToZip, String zipFile) {
+		LOGGER.info("Try Zip File '"+zipFile+"' from path '"+pathToZip+"'");
+		try {
+			FileOutputStream fos = new FileOutputStream(zipFile);
+			ZipOutputStream zos = new ZipOutputStream(fos);
+
+			File f = new File(pathToZip);
+			for (File file : f.listFiles()) {
+				addDirToZipArchive(zos, file, null);
+			}
+
+			zos.flush();
+			fos.flush();
+			zos.close();
+			fos.close();
+		} catch (FileNotFoundException e) {
+			LOGGER.error(e);
+		} catch (IOException e) {
+			LOGGER.error(e);
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+
+	}
+
+	/**
+	 * Adds the dir to zip archive.
+	 *
+	 * @param zos the zos
+	 * @param fileToZip the file to zip
+	 * @param parrentDirectoryName the parrent directory name
+	 * @throws Exception the exception
+	 */
+	private static void addDirToZipArchive(ZipOutputStream zos, File fileToZip, String parrentDirectoryName)
+			throws Exception {
+		if (fileToZip == null || !fileToZip.exists()) {
+			return;
+		}
+
+		String zipEntryName = fileToZip.getName();
+		if (parrentDirectoryName != null && !parrentDirectoryName.isEmpty()) {
+			zipEntryName = parrentDirectoryName + "/" + fileToZip.getName();
+		}
+
+		if (fileToZip.isDirectory()) {
+			LOGGER.debug("+" + zipEntryName);
+			for (File file : fileToZip.listFiles()) {
+				addDirToZipArchive(zos, file, zipEntryName);
+			}
+		} else {
+			LOGGER.debug("   " + zipEntryName);
+			byte[] buffer = new byte[1024];
+			FileInputStream fis = new FileInputStream(fileToZip);
+			zos.putNextEntry(new ZipEntry(zipEntryName));
+			int length;
+			while ((length = fis.read(buffer)) > 0) {
+				zos.write(buffer, 0, length);
+			}
+			zos.closeEntry();
+			fis.close();
+		}
+	}
 }
