@@ -501,10 +501,11 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 			add = " (" + Math.round(sumR) + "h/Woche" + orgWorkload + ")";
 		}
 
-		renderer.addH2(element, ROLESINORGANISATION.toString() + add);
-
 		List<Role> orgRoles = R.getOrganisationalRolesWithPerson(this.getFullname());
-		renderer.addRoleList(element, orgRoles, this);
+		if (ObjectUtil.isListNotNullAndEmpty(orgRoles)) {
+			renderer.addH2(element, ROLESINORGANISATION.toString() + add);
+			renderer.addRoleList(element, orgRoles, this);
+		}
 
 		List<Team> foundTeams = R.getTeamsWithMember(this);
 		if (ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
@@ -625,8 +626,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 							"<ri:page ri:content-title=\"" + role.getTitle() + "\" ri:version-at-save=\"1\" />");
 				} else if (renderer.getSynchronizer().getClass().getSimpleName()
 						.equals(FileSynchronizer.class.getSimpleName())) {
-					listElement.appendElement("a")
-							.attr("href", "" + role.getId(renderer.getSynchronizer()) + ".html")
+					listElement.appendElement("a").attr("href", "" + role.getId(renderer.getSynchronizer()) + ".html")
 							.appendText(role.getTitle());
 				}
 			} else {

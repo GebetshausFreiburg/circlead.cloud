@@ -114,7 +114,7 @@ public class Connector {
 		List<String> list = loadIndex(type);
 		for (String index : list) {
 			IWorkitem wi = null;
-			wi = get(index); 
+			wi = get(index);
 			if (wi != null) {
 				if (!workitems.contains(wi)) {
 					workitems.add(wi);
@@ -290,7 +290,10 @@ public class Connector {
 		List<ISynchronizer> synchronizers = SynchronizerFactory.getInstance().getSynchronizers();
 		for (ISynchronizer synchronizer : synchronizers) {
 			try {
-				results.add(synchronizer.add(workitem));
+				SynchronizerResult s = synchronizer.add(workitem);
+				if (s != null) {
+					results.add(s);
+				}
 			} catch (SynchronizerException e) {
 				LOGGER.error(e);
 			}
@@ -309,7 +312,10 @@ public class Connector {
 		List<ISynchronizer> synchronizers = SynchronizerFactory.getInstance().getSynchronizers();
 		for (ISynchronizer synchronizer : synchronizers) {
 			try {
-				results.add(synchronizer.add(report));
+				SynchronizerResult s = synchronizer.add(report);
+				if (s != null) {
+					results.add(s);
+				}
 			} catch (SynchronizerException e) {
 				LOGGER.error(e);
 			}

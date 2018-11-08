@@ -192,6 +192,10 @@ public class DropboxUtil {
 		}
 	}
 
+	public static void uploadFileToTeamFolder(DbxTeamClientV2 dbxClient, File localFile, String targetPath) {
+		uploadFileToTeamFolder(dbxClient, localFile, targetPath, PropertyUtil.getInstance().getDropboxTeamUsername());
+	}
+	
 	/**
 	 * Upload file to team folder.
 	 *
@@ -210,7 +214,7 @@ public class DropboxUtil {
 //				}
 //			}
 			
-			String memberId = null;
+			String memberId = null; 
 			List<TeamMemberInfo> members = dbxClient.team().membersList().getMembers();
 			for (TeamMemberInfo teamMemberInfo : members) {
 				if (teamMemberInfo.getProfile().getName().getDisplayName().equals(displayUserName)) {

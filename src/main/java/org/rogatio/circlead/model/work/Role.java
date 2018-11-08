@@ -61,7 +61,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		
 		if (!(dataitem instanceof RoleDataitem)) {
 			throw new IllegalArgumentException("IDataitem must be of type RoleDataitem");
-		}
+		} 
 	}
 
 	/**

@@ -76,8 +76,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class AtlassianSynchronizer extends DefaultSynchronizer {
 
 	private final String URLCONFLUENCE = PropertyUtil.getInstance().getValue(PropertyUtil.ATLASSIAN_CONFLUENCE_URL);
-	private final boolean DEDICATEDSERVER = PropertyUtil.getInstance().getBooleanValue(PropertyUtil.ATLASSIAN_SERVER_DEDICATED);
-	
+	private final boolean DEDICATEDSERVER = PropertyUtil.getInstance()
+			.getBooleanValue(PropertyUtil.ATLASSIAN_SERVER_DEDICATED);
+
 	/** Name of the page in space which holds the roles. */
 	private final String ROLESPAGE = "Roles";
 
@@ -93,7 +94,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	/** Name of the page in space which holds the teams. */
 	private final String TEAMSPAGE = "Teams";
 
-	/** Name of the page in space which holds the competencies.*/
+	/** Name of the page in space which holds the competencies. */
 	private final String COMPETENCIESPAGE = "Competencies";
 
 	/** The Constant LOGGER. */
@@ -187,37 +188,41 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		 */
 		SynchronizerFactory.getInstance().setActual(this);
 
-		/* Create confluence-page-object from report */
-		Page page = Parser.createPage(report, circleadSpace, this);
+		if (PropertyUtil.getInstance().isAtlassianSynchronizerEnabled()
+				&& PropertyUtil.getInstance().isAtlassianSynchronizerWriteMode()) {
 
-		try {
-			/* Create label for confluence-page */
-			Metadata m = Parser.getLabelMetadata(report);
-			page.setMetadata(m);
+			/* Create confluence-page-object from report */
+			Page page = Parser.createPage(report, circleadSpace, this);
 
-			// Set parent-oage to report
-			List<Ancestor> ancestors = new ArrayList<Ancestor>();
-			Ancestor a = new Ancestor();
-			a.setId(getAcestorId("report"));
-			a.setTitle("Reports");
-			a.setType("page");
-			ancestors.add(a);
-			page.setAncestors(ancestors);
+			try {
+				/* Create label for confluence-page */
+				Metadata m = Parser.getLabelMetadata(report);
+				page.setMetadata(m);
 
-			// Instantiate Jackson-JSON_Mapper and create valid json-string
-			ObjectMapper mapper = new ObjectMapper();
-			mapper.setSerializationInclusion(Include.NON_NULL);
-			String data = mapper.writeValueAsString(page);
+				// Set parent-oage to report
+				List<Ancestor> ancestors = new ArrayList<Ancestor>();
+				Ancestor a = new Ancestor();
+				a.setId(getAcestorId("report"));
+				a.setTitle("Reports");
+				a.setType("page");
+				ancestors.add(a);
+				page.setAncestors(ancestors);
 
-			// Post json to rest. Save response
-			SynchronizerResult res = confluenceClient.post(confluenceClient.getRestPrefix() + "content/", data);
+				// Instantiate Jackson-JSON_Mapper and create valid json-string
+				ObjectMapper mapper = new ObjectMapper();
+				mapper.setSerializationInclusion(Include.NON_NULL);
+				String data = mapper.writeValueAsString(page);
 
-			// return result
-			return res;
-		} catch (JsonProcessingException e) {
-			LOGGER.error(e);
-		} catch (IOException e) {
-			LOGGER.error(e);
+				// Post json to rest. Save response
+				SynchronizerResult res = confluenceClient.post(confluenceClient.getRestPrefix() + "content/", data);
+
+				// return result
+				return res;
+			} catch (JsonProcessingException e) {
+				LOGGER.error(e);
+			} catch (IOException e) {
+				LOGGER.error(e);
+			}
 		}
 
 		// return null if something went wrong
@@ -237,32 +242,36 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		// setting of id
 		SynchronizerFactory.getInstance().setActual(this);
 
-		// Create Confluence-POJO-Object from workitem
-		Page page = Parser.createPage(workitem, circleadSpace, this);
-		page.setTitle(workitem.getTitle());
+		if (PropertyUtil.getInstance().isAtlassianSynchronizerEnabled()
+				&& PropertyUtil.getInstance().isAtlassianSynchronizerWriteMode()) {
 
-		// Add label to confluence-page. Called metadata in confluence
-		Metadata m = Parser.getLabelMetadata(workitem);
-		page.setMetadata(m);
+			// Create Confluence-POJO-Object from workitem
+			Page page = Parser.createPage(workitem, circleadSpace, this);
+			page.setTitle(workitem.getTitle());
 
-		// Add parent-page to confluence-page.
-		List<Ancestor> ancestors = getSingleAcestorList(workitem);
-		if (ancestors != null) {
-			page.setAncestors(ancestors);
-		}
+			// Add label to confluence-page. Called metadata in confluence
+			Metadata m = Parser.getLabelMetadata(workitem);
+			page.setMetadata(m);
 
-		try {
-			ObjectMapper mapper = new ObjectMapper();
-			mapper.setSerializationInclusion(Include.NON_NULL);
-			// Create valid json from POJO-Object
-			String data = mapper.writeValueAsString(page);
-			// Catch result from rest-interface writing confluence-page
-			SynchronizerResult res = confluenceClient.post(confluenceClient.getRestPrefix() + "content/", data);
-			return res;
-		} catch (JsonProcessingException e) {
-			LOGGER.error(e);
-		} catch (IOException e) {
-			LOGGER.error(e);
+			// Add parent-page to confluence-page.
+			List<Ancestor> ancestors = getSingleAcestorList(workitem);
+			if (ancestors != null) {
+				page.setAncestors(ancestors);
+			}
+
+			try {
+				ObjectMapper mapper = new ObjectMapper();
+				mapper.setSerializationInclusion(Include.NON_NULL);
+				// Create valid json from POJO-Object
+				String data = mapper.writeValueAsString(page);
+				// Catch result from rest-interface writing confluence-page
+				SynchronizerResult res = confluenceClient.post(confluenceClient.getRestPrefix() + "content/", data);
+				return res;
+			} catch (JsonProcessingException e) {
+				LOGGER.error(e);
+			} catch (IOException e) {
+				LOGGER.error(e);
+			}
 		}
 		return null;
 	}
@@ -280,44 +289,48 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		// setting of id
 		SynchronizerFactory.getInstance().setActual(this);
 
-		// Create Confluence-POJO-Object from workitem
-		Page page = Parser.createPage(workitem, circleadSpace, this);
+		if (PropertyUtil.getInstance().isAtlassianSynchronizerEnabled()
+				&& PropertyUtil.getInstance().isAtlassianSynchronizerWriteMode()) {
 
-		LOGGER.info("Update '" + URLCONFLUENCE + confluenceClient.getRestPrefix() + "content/" + workitem.getId(this)
-				+ "'");
+			// Create Confluence-POJO-Object from workitem
+			Page page = Parser.createPage(workitem, circleadSpace, this);
 
-		// Increment version-number if version and page already exists
-		if (workitem.getVersion() != null) {
-			Version v = new Version();
-			v.setNumber(StringUtil.toInt(workitem.getVersion()) + 1);
-			page.setVersion(v);
-		} else {
-			// If version not exists, then create it with version 1
-			Version v = new Version();
-			v.setNumber(1);
-			page.setVersion(v);
-		}
+			LOGGER.info("Update '" + URLCONFLUENCE + confluenceClient.getRestPrefix() + "content/"
+					+ workitem.getId(this) + "'");
 
-		try {
-			ObjectMapper mapper = new ObjectMapper();
-			mapper.setSerializationInclusion(Include.NON_NULL);
-			// Create valid json from POJO-Object
-			String data = mapper.writeValueAsString(page);
+			// Increment version-number if version and page already exists
+			if (workitem.getVersion() != null) {
+				Version v = new Version();
+				v.setNumber(StringUtil.toInt(workitem.getVersion()) + 1);
+				page.setVersion(v);
+			} else {
+				// If version not exists, then create it with version 1
+				Version v = new Version();
+				v.setNumber(1);
+				page.setVersion(v);
+			}
 
-			/* find id of workitem for this synchronizer */
-			String id = workitem.getId(this);
+			try {
+				ObjectMapper mapper = new ObjectMapper();
+				mapper.setSerializationInclusion(Include.NON_NULL);
+				// Create valid json from POJO-Object
+				String data = mapper.writeValueAsString(page);
 
-			String uri = confluenceClient.getRestPrefix() + "content/" + id;
-			/* Catch result from rest-interface writing confluence-page */
-			SynchronizerResult res = confluenceClient.put(uri, data);
+				/* find id of workitem for this synchronizer */
+				String id = workitem.getId(this);
 
-			LOGGER.debug(workitem.getTitle() + ": " + res.toString());
+				String uri = confluenceClient.getRestPrefix() + "content/" + id;
+				/* Catch result from rest-interface writing confluence-page */
+				SynchronizerResult res = confluenceClient.put(uri, data);
 
-			return res;
-		} catch (JsonProcessingException e) {
-			LOGGER.error(e);
-		} catch (IOException e) {
-			LOGGER.error(e);
+				LOGGER.debug(workitem.getTitle() + ": " + res.toString());
+
+				return res;
+			} catch (JsonProcessingException e) {
+				LOGGER.error(e);
+			} catch (IOException e) {
+				LOGGER.error(e);
+			}
 		}
 		return null;
 	}
@@ -337,50 +350,54 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		 */
 		SynchronizerFactory.getInstance().setActual(this);
 
-		/* Create Confluence-POJO-Object from report */
-		Page page = Parser.createPage(report, circleadSpace, this);
+		if (PropertyUtil.getInstance().isAtlassianSynchronizerEnabled()
+				&& PropertyUtil.getInstance().isAtlassianSynchronizerWriteMode()) {
 
-		/* Only update report if it exists in target system */
-		Report repo = Repository.getInstance().getReport(report.getName());
-		if (repo != null) {
+			/* Create Confluence-POJO-Object from report */
+			Page page = Parser.createPage(report, circleadSpace, this);
 
-			LOGGER.info("Update '" + URLCONFLUENCE + confluenceClient.getRestPrefix() + "content/" + repo.getId()
-					+ "' (" + report.getName() + ")");
+			/* Only update report if it exists in target system */
+			Report repo = Repository.getInstance().getReport(report.getName());
+			if (repo != null) {
 
-			/* Load version of existing report and increment +1 for update */
-			Integer version = 0;
-			try {
-				ObjectMapper omapper = new ObjectMapper();
-				omapper.setSerializationInclusion(Include.NON_NULL);
-				SynchronizerResult pageR = confluenceClient.getPage(Integer.parseInt(repo.getId()));
-				Page p = omapper.readValue(pageR.getContent(), Page.class);
+				LOGGER.info("Update '" + URLCONFLUENCE + confluenceClient.getRestPrefix() + "content/" + repo.getId()
+						+ "' (" + report.getName() + ")");
 
-				version = p.getVersion().getNumber() + 1;
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
+				/* Load version of existing report and increment +1 for update */
+				Integer version = 0;
+				try {
+					ObjectMapper omapper = new ObjectMapper();
+					omapper.setSerializationInclusion(Include.NON_NULL);
+					SynchronizerResult pageR = confluenceClient.getPage(Integer.parseInt(repo.getId()));
+					Page p = omapper.readValue(pageR.getContent(), Page.class);
 
-			/* Build page for report content */
-			try {
-				ObjectMapper mapper = new ObjectMapper();
-				mapper.setSerializationInclusion(Include.NON_NULL);
+					version = p.getVersion().getNumber() + 1;
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 
-				Metadata m = Parser.getLabelMetadata(report);
-				page.setMetadata(m);
+				/* Build page for report content */
+				try {
+					ObjectMapper mapper = new ObjectMapper();
+					mapper.setSerializationInclusion(Include.NON_NULL);
 
-				Version v = new Version();
-				v.setNumber(version);
-				page.setVersion(v);
+					Metadata m = Parser.getLabelMetadata(report);
+					page.setMetadata(m);
 
-				String data = mapper.writeValueAsString(page);
-				String uri = confluenceClient.getRestPrefix() + "content/" + repo.getId();
-				SynchronizerResult res = confluenceClient.put(uri, data);
+					Version v = new Version();
+					v.setNumber(version);
+					page.setVersion(v);
 
-				return res;
-			} catch (JsonProcessingException e) {
-				LOGGER.error(e);
-			} catch (IOException e) {
-				LOGGER.error(e);
+					String data = mapper.writeValueAsString(page);
+					String uri = confluenceClient.getRestPrefix() + "content/" + repo.getId();
+					SynchronizerResult res = confluenceClient.put(uri, data);
+
+					return res;
+				} catch (JsonProcessingException e) {
+					LOGGER.error(e);
+				} catch (IOException e) {
+					LOGGER.error(e);
+				}
 			}
 		}
 		return null;
@@ -476,31 +493,35 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	 * @return true, if successful
 	 */
 	public boolean deleteVersions(Integer pageId) {
-		/* Deletion is not possible via rest on dedicated server. Throw warning */
-		if (DEDICATEDSERVER) {
-			LOGGER.warn("REST-API for deleting page-versions on dedicated server NOT available");
-			return false;
-		}
 
-		/* Load all versions to delete */
-		List<Integer> x = getVersions(pageId);
-		x = x.subList(0, x.size() - 1);
-		if (x.size() > deleteVersionCounter) {
-			deleteVersionCounter = x.size();
-			deleteVersionCounterMax = x.size();
-		}
+		if (PropertyUtil.getInstance().isAtlassianSynchronizerEnabled()) {
 
-		/* Start deletion */
-		for (Integer i : x) {
-			SynchronizerResult r = deleteVersion(pageId, i);
-			/* If deletion is skipped, the start new */
-			if (r.getCode() == 400) {
-				LOGGER.debug("Restart recursive deleting versions of page '" + pageId + "' because of code 400");
-				deleteVersions(pageId);
-				break;
+			/* Deletion is not possible via rest on dedicated server. Throw warning */
+			if (DEDICATEDSERVER) {
+				LOGGER.warn("REST-API for deleting page-versions on dedicated server NOT available");
+				return false;
 			}
-			LOGGER.debug("Delete version='" + i + "' (" + (deleteVersionCounter--) + "/" + deleteVersionCounterMax
-					+ ") of page '" + pageId + "'. Code " + r.getCode());
+
+			/* Load all versions to delete */
+			List<Integer> x = getVersions(pageId);
+			x = x.subList(0, x.size() - 1);
+			if (x.size() > deleteVersionCounter) {
+				deleteVersionCounter = x.size();
+				deleteVersionCounterMax = x.size();
+			}
+
+			/* Start deletion */
+			for (Integer i : x) {
+				SynchronizerResult r = deleteVersion(pageId, i);
+				/* If deletion is skipped, the start new */
+				if (r.getCode() == 400) {
+					LOGGER.debug("Restart recursive deleting versions of page '" + pageId + "' because of code 400");
+					deleteVersions(pageId);
+					break;
+				}
+				LOGGER.debug("Delete version='" + i + "' (" + (deleteVersionCounter--) + "/" + deleteVersionCounterMax
+						+ ") of page '" + pageId + "'. Code " + r.getCode());
+			}
 		}
 		return true;
 	}
@@ -519,7 +540,10 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 			return null;
 		}
 
-		return confluenceClient.deleteVersion(pageId, version);
+		if (PropertyUtil.getInstance().isAtlassianSynchronizerEnabled()) {
+			return confluenceClient.deleteVersion(pageId, version);
+		}
+		return null;
 	}
 
 	/**
@@ -622,161 +646,165 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		// setting of id
 		SynchronizerFactory.getInstance().setActual(this);
 
-		// If index is not correct, then throw exception
-		if (indexId.endsWith(".json")) {
-			throw new SynchronizerException(
-					"Item with id '" + indexId + "' could not be loaded with Atlassian Synchronizer.");
-		}
-
-		// ignore all prefix, because id in atlassian-confluence is a numeric int. So
-		// parse for correct id on right side
-		int idx = indexId.lastIndexOf("/");
-		if (idx > 0) {
-			indexId = indexId.substring(idx + 1, indexId.length());
-		}
-
 		IWorkitem wi = null;
 
-		Map<String, IParserElement> pairs = new HashMap<String, IParserElement>();
+		if (PropertyUtil.getInstance().isAtlassianSynchronizerEnabled()
+				&& PropertyUtil.getInstance().isAtlassianSynchronizerReadMode()) {
 
-		try {
-			ObjectMapper mapper = new ObjectMapper();
-			mapper.setSerializationInclusion(Include.NON_NULL);
-			SynchronizerResult page = confluenceClient.getPage(Integer.parseInt(indexId));
-
-			if (page == null) {
+			// If index is not correct, then throw exception
+			if (indexId.endsWith(".json")) {
 				throw new SynchronizerException(
-						"Item with id '" + indexId + "' could not be founded/loaded with Atlassian Synchronizer.");
-			}
-			
-			Page p = mapper.readValue(page.getContent(), Page.class);
-			
-			String created = p.getHistory().getCreatedDate();
-			pairs.put("created", new TextParserElement(created));
-			String modified = p.getHistory().getLastUpdated().getWhen();
-			pairs.put("modified", new TextParserElement(modified));
-			String version = "" + p.getVersion().getNumber();
-			pairs.put("version", new TextParserElement(version));
-
-			String type = null;
-			String acestorId = null;
-			
-			for (org.rogatio.circlead.control.synchronizer.atlassian.content.Result result : p.getMetadata().getLabels()
-					.getResults()) {
-				
-				String label = null;
-				if (result.getName() != null) {
-					label = result.getName();
-				}
-				if (result.getLabel() != null) {
-					label = result.getLabel();
-				}
-
-				if (ROLE.isEquals(label)) {
-					type = ROLE.getLowerName();
-					acestorId = getAcestorId(ROLESPAGE, p);
-				}
-				if (ACTIVITY.isEquals(label)) {
-					type = ACTIVITY.getLowerName();
-					acestorId = getAcestorId(ACTIVITIESPAGE, p);
-				}
-				if (ROLEGROUP.isEquals(label)) {
-					type = ROLEGROUP.getLowerName();
-					acestorId = getAcestorId(ROLEGROUPSPAGE, p);
-				}
-				if (PERSON.isEquals(label)) {
-					type = PERSON.getLowerName();
-					acestorId = getAcestorId(PERSONSPAGE, p);
-				}
-				if (TEAM.isEquals(label)) {
-					type = TEAM.getLowerName();
-					acestorId = getAcestorId(TEAMSPAGE, p);
-				}
-				if (COMPETENCE.isEquals(label)) {
-					type = COMPETENCE.getLowerName();
-					acestorId = getAcestorId(COMPETENCIESPAGE, p);
-				}
-				acestorPages.put(type, acestorId);
+						"Item with id '" + indexId + "' could not be loaded with Atlassian Synchronizer.");
 			}
 
-			if (type == null) {
-				throw new SynchronizerException("Type of Workitem (Page-Id '" + indexId + "') not found in label.");
+			// ignore all prefix, because id in atlassian-confluence is a numeric int. So
+			// parse for correct id on right side
+			int idx = indexId.lastIndexOf("/");
+			if (idx > 0) {
+				indexId = indexId.substring(idx + 1, indexId.length());
 			}
 
-			Document doc = Jsoup.parse(p.getBody().getStorage().getValue());
+			Map<String, IParserElement> pairs = new HashMap<String, IParserElement>();
 
-			Elements elements = doc.getElementsByAttributeValue("ac:name", "details");
+			try {
+				ObjectMapper mapper = new ObjectMapper();
+				mapper.setSerializationInclusion(Include.NON_NULL);
+				SynchronizerResult page = confluenceClient.getPage(Integer.parseInt(indexId));
 
-			if (elements.size() == 0) {
-				throw new SynchronizerException("Workitem (Page-Id '" + indexId + "') contains no data.");
-			}
+				if (page == null) {
+					throw new SynchronizerException(
+							"Item with id '" + indexId + "' could not be founded/loaded with Atlassian Synchronizer.");
+				}
 
-			for (Element element : elements) {
-				if (element.getElementsByTag("tbody").size() > 0) {
-					Element table = element.getElementsByTag("tbody").get(0);
-					for (Element row : table.getElementsByTag("tr")) {
+				Page p = mapper.readValue(page.getContent(), Page.class);
 
-						// Only allow table with th left and td right, a pair-couple
-						if (row.children().size() == 2) {
-							String key = row.getElementsByTag("th").get(0).text();
-							Element unparsedValue = row.getElementsByTag("td").get(0);
+				String created = p.getHistory().getCreatedDate();
+				pairs.put("created", new TextParserElement(created));
+				String modified = p.getHistory().getLastUpdated().getWhen();
+				pairs.put("modified", new TextParserElement(modified));
+				String version = "" + p.getVersion().getNumber();
+				pairs.put("version", new TextParserElement(version));
 
-							IParserElement parserElement;
+				String type = null;
+				String acestorId = null;
 
-							if (WorkitemParameter.STATUS.has(key)) {
-								parserElement = new StatusParserElement(unparsedValue);
-							} else if (WorkitemParameter.ACTIVITY.has(key)) {
-								parserElement = new ListParserElement(unparsedValue);
-							} else if (WorkitemParameter.RESPONSIBILITY.has(key)) {
-								parserElement = new ListParserElement(unparsedValue);
-							} else if (WorkitemParameter.DATA.has(key)) {
-								parserElement = new PairTableParserElement(unparsedValue);
-							} else if (WorkitemParameter.ACTIVITY.has(key)) {
-								parserElement = new ListParserElement(unparsedValue);
-							} else if (WorkitemParameter.COMPETENCETREE.has(key)) {
-								parserElement = new HeaderTableParserElement(unparsedValue);
-							} else if (WorkitemParameter.TEAMROLES.has(key)) {
-								parserElement = new HeaderTableParserElement(unparsedValue);
-							} else if (WorkitemParameter.SUBACTIVITY.has(key)) {
-								parserElement = new ActivityTableParserElement(unparsedValue);
-							} else if (WorkitemParameter.IMAGE.has(key)) {
-								parserElement = new ImageParserElement(unparsedValue);
-							} else if (WorkitemParameter.CONTACTS.has(key)) {
-								parserElement = new PairTableParserElement(unparsedValue);
-							} else if (WorkitemParameter.OPPORTUNITIES.has(key)) {
-								parserElement = new ListParserElement(unparsedValue);
-							} else if (WorkitemParameter.GUIDELINES.has(key)) {
-								parserElement = new ListParserElement(unparsedValue);
-							} else if (WorkitemParameter.COMPETENCIES.has(key)) {
-								parserElement = new ListParserElement(unparsedValue);
-							} else if (WorkitemParameter.PERSONS.has(key)) {
-								parserElement = new ListParserElement(unparsedValue);
-							} else if (WorkitemParameter.ROLES.has(key)) {
-								parserElement = new ListParserElement(unparsedValue);
-							} else {
-								parserElement = new TextParserElement(unparsedValue);
+				for (org.rogatio.circlead.control.synchronizer.atlassian.content.Result result : p.getMetadata()
+						.getLabels().getResults()) {
+
+					String label = null;
+					if (result.getName() != null) {
+						label = result.getName();
+					}
+					if (result.getLabel() != null) {
+						label = result.getLabel();
+					}
+
+					if (ROLE.isEquals(label)) {
+						type = ROLE.getLowerName();
+						acestorId = getAcestorId(ROLESPAGE, p);
+					}
+					if (ACTIVITY.isEquals(label)) {
+						type = ACTIVITY.getLowerName();
+						acestorId = getAcestorId(ACTIVITIESPAGE, p);
+					}
+					if (ROLEGROUP.isEquals(label)) {
+						type = ROLEGROUP.getLowerName();
+						acestorId = getAcestorId(ROLEGROUPSPAGE, p);
+					}
+					if (PERSON.isEquals(label)) {
+						type = PERSON.getLowerName();
+						acestorId = getAcestorId(PERSONSPAGE, p);
+					}
+					if (TEAM.isEquals(label)) {
+						type = TEAM.getLowerName();
+						acestorId = getAcestorId(TEAMSPAGE, p);
+					}
+					if (COMPETENCE.isEquals(label)) {
+						type = COMPETENCE.getLowerName();
+						acestorId = getAcestorId(COMPETENCIESPAGE, p);
+					}
+					acestorPages.put(type, acestorId);
+				}
+
+				if (type == null) {
+					throw new SynchronizerException("Type of Workitem (Page-Id '" + indexId + "') not found in label.");
+				}
+
+				Document doc = Jsoup.parse(p.getBody().getStorage().getValue());
+
+				Elements elements = doc.getElementsByAttributeValue("ac:name", "details");
+
+				if (elements.size() == 0) {
+					throw new SynchronizerException("Workitem (Page-Id '" + indexId + "') contains no data.");
+				}
+
+				for (Element element : elements) {
+					if (element.getElementsByTag("tbody").size() > 0) {
+						Element table = element.getElementsByTag("tbody").get(0);
+						for (Element row : table.getElementsByTag("tr")) {
+
+							// Only allow table with th left and td right, a pair-couple
+							if (row.children().size() == 2) {
+								String key = row.getElementsByTag("th").get(0).text();
+								Element unparsedValue = row.getElementsByTag("td").get(0);
+
+								IParserElement parserElement;
+
+								if (WorkitemParameter.STATUS.has(key)) {
+									parserElement = new StatusParserElement(unparsedValue);
+								} else if (WorkitemParameter.ACTIVITY.has(key)) {
+									parserElement = new ListParserElement(unparsedValue);
+								} else if (WorkitemParameter.RESPONSIBILITY.has(key)) {
+									parserElement = new ListParserElement(unparsedValue);
+								} else if (WorkitemParameter.DATA.has(key)) {
+									parserElement = new PairTableParserElement(unparsedValue);
+								} else if (WorkitemParameter.ACTIVITY.has(key)) {
+									parserElement = new ListParserElement(unparsedValue);
+								} else if (WorkitemParameter.COMPETENCETREE.has(key)) {
+									parserElement = new HeaderTableParserElement(unparsedValue);
+								} else if (WorkitemParameter.TEAMROLES.has(key)) {
+									parserElement = new HeaderTableParserElement(unparsedValue);
+								} else if (WorkitemParameter.SUBACTIVITY.has(key)) {
+									parserElement = new ActivityTableParserElement(unparsedValue);
+								} else if (WorkitemParameter.IMAGE.has(key)) {
+									parserElement = new ImageParserElement(unparsedValue);
+								} else if (WorkitemParameter.CONTACTS.has(key)) {
+									parserElement = new PairTableParserElement(unparsedValue);
+								} else if (WorkitemParameter.OPPORTUNITIES.has(key)) {
+									parserElement = new ListParserElement(unparsedValue);
+								} else if (WorkitemParameter.GUIDELINES.has(key)) {
+									parserElement = new ListParserElement(unparsedValue);
+								} else if (WorkitemParameter.COMPETENCIES.has(key)) {
+									parserElement = new ListParserElement(unparsedValue);
+								} else if (WorkitemParameter.PERSONS.has(key)) {
+									parserElement = new ListParserElement(unparsedValue);
+								} else if (WorkitemParameter.ROLES.has(key)) {
+									parserElement = new ListParserElement(unparsedValue);
+								} else {
+									parserElement = new TextParserElement(unparsedValue);
+								}
+								pairs.put(key, parserElement);
 							}
-							pairs.put(key, parserElement);
 						}
 					}
 				}
+
+				wi = setData(pairs, type, indexId);
+				wi.setTitle(p.getTitle());
+
+				LOGGER.debug("Load: code=" + page.getCode() + ", message=" + page.getMessage() + ", source="
+						+ page.getSource() + ", title=" + p.getTitle());
+
+			} catch (JsonParseException e) {
+				throw new SynchronizerException("Error (JsonParse) loading item '" + indexId + "'. " + e.getMessage(),
+						e.getCause());
+			} catch (JsonMappingException e) {
+				throw new SynchronizerException("Error (JsonMapping) loading item '" + indexId + "'. " + e.getMessage(),
+						e.getCause());
+			} catch (IOException e) {
+				throw new SynchronizerException("Error (IOException) loading item '" + indexId + "'. " + e.getMessage(),
+						e.getCause());
 			}
-
-			wi = setData(pairs, type, indexId);
-			wi.setTitle(p.getTitle());
-
-			LOGGER.debug("Load: code=" + page.getCode() + ", message=" + page.getMessage() + ", source="
-					+ page.getSource() + ", title=" + p.getTitle());
-
-		} catch (JsonParseException e) {
-			throw new SynchronizerException("Error (JsonParse) loading item '" + indexId + "'. " + e.getMessage(),
-					e.getCause());
-		} catch (JsonMappingException e) {
-			throw new SynchronizerException("Error (JsonMapping) loading item '" + indexId + "'. " + e.getMessage(),
-					e.getCause());
-		} catch (IOException e) {
-			throw new SynchronizerException("Error (IOException) loading item '" + indexId + "'. " + e.getMessage(),
-					e.getCause());
 		}
 
 		return wi;
@@ -1075,8 +1103,11 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	public SynchronizerResult delete(int pageId) {
 		// Set actual used synchronizer to singleton. Is needed for correct finding and
 		// setting of id
-		SynchronizerFactory.getInstance().setActual(this);
-		return confluenceClient.deletePage(pageId);
+		if (PropertyUtil.getInstance().isAtlassianSynchronizerEnabled()) {
+			SynchronizerFactory.getInstance().setActual(this);
+			return confluenceClient.deletePage(pageId);
+		}
+		return null;
 	}
 
 	/*
@@ -1090,59 +1121,65 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		String type = workitemType.getName().toLowerCase();
 		ArrayList<String> fileIndex = new ArrayList<String>();
 
-		try {
-			LOGGER.info("Loading Index '" + workitemType.getName() + "' from system '"
-					+ confluenceClient.getSysteminfo().getContent() + "'");
-		} catch (Exception e) {
-			LOGGER.info("Loading Index '" + workitemType.getName() + "' from system '" + URLCONFLUENCE + "'");
-		}
+		if (PropertyUtil.getInstance().isAtlassianSynchronizerEnabled()
+				&& PropertyUtil.getInstance().isAtlassianSynchronizerReadMode()) {
 
-		// To Avoid loading of wrong labeld pages (and simplify writing) the loading of
-		// index is reduced to space of circlead.
-		// THis must be done here, because the url seems not be always correct. It not
-		// always includes space in url. It seems it only works correct on
-		// cloud-version. On dedicated server german umlaute have different urls
-		SynchronizerResult results = confluenceClient
-				.search("space = \"" + circleadSpace + "\" AND label = \"" + type + "\"");
-
-		if (results.getContent() == null) {
-			LOGGER.error("Error occured: Loading Index returns no content in result-set.");
-		}
-
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.setSerializationInclusion(Include.NON_NULL);
-		try {
-			Results queryResults = mapper.readValue(results.getContent(), Results.class);
-			for (Result result : queryResults.getResults()) {
-				if (HOWTO.isEquals(type)) {
-					HowTo ht = new HowTo();
-					ht.setSynchronizer(this.toString());
-					ht.setType(type);
-					ht.setId(result.getContent().getId());
-					ht.setTitle(new String(result.getContent().getTitle().trim().getBytes(), "UTF-8"));
-					ht.setUrl(confluenceClient.getRestPrefix() + "content/" + type + "/" + result.getContent().getId());
-					fileIndex.add(ht.toString());
-					LOGGER.debug("Found HowTo '" + ht.getTitle() + "' with '" + this.toString() + "'");
-				} else if (REPORT.isEquals(type)) {
-					Report ht = new Report();
-					ht.setSynchronizer(this.toString());
-					ht.setType(type);
-					ht.setId(result.getContent().getId());
-					ht.setTitle(new String(result.getContent().getTitle().trim().getBytes(), "UTF-8"));
-					ht.setUrl(confluenceClient.getRestPrefix() + "content/" + type + "/" + result.getContent().getId());
-					fileIndex.add(ht.toString());
-					LOGGER.debug("Found Report '" + ht.getTitle() + "' with '" + this.toString() + "'");
-				} else {
-					fileIndex.add(URLCONFLUENCE + confluenceClient.getRestPrefix() + "content/" + type + "/"
-							+ result.getContent().getId());
-				}
+			try {
+				LOGGER.info("Loading Index '" + workitemType.getName() + "' from system '"
+						+ confluenceClient.getSysteminfo().getContent() + "'");
+			} catch (Exception e) {
+				LOGGER.info("Loading Index '" + workitemType.getName() + "' from system '" + URLCONFLUENCE + "'");
 			}
-		} catch (JsonParseException e) {
-			LOGGER.error("Error loading " + type + " from confluence", e);
-		} catch (JsonMappingException e) {
-			LOGGER.error("Error loading " + type + " from confluence", e);
-		} catch (IOException e) {
-			LOGGER.error("Error loading " + type + " from confluence", e);
+
+			// To Avoid loading of wrong labeld pages (and simplify writing) the loading of
+			// index is reduced to space of circlead.
+			// THis must be done here, because the url seems not be always correct. It not
+			// always includes space in url. It seems it only works correct on
+			// cloud-version. On dedicated server german umlaute have different urls
+			SynchronizerResult results = confluenceClient
+					.search("space = \"" + circleadSpace + "\" AND label = \"" + type + "\"");
+
+			if (results.getContent() == null) {
+				LOGGER.error("Error occured: Loading Index returns no content in result-set.");
+			}
+
+			ObjectMapper mapper = new ObjectMapper();
+			mapper.setSerializationInclusion(Include.NON_NULL);
+			try {
+				Results queryResults = mapper.readValue(results.getContent(), Results.class);
+				for (Result result : queryResults.getResults()) {
+					if (HOWTO.isEquals(type)) {
+						HowTo ht = new HowTo();
+						ht.setSynchronizer(this.toString());
+						ht.setType(type);
+						ht.setId(result.getContent().getId());
+						ht.setTitle(new String(result.getContent().getTitle().trim().getBytes(), "UTF-8"));
+						ht.setUrl(confluenceClient.getRestPrefix() + "content/" + type + "/"
+								+ result.getContent().getId());
+						fileIndex.add(ht.toString());
+						LOGGER.debug("Found HowTo '" + ht.getTitle() + "' with '" + this.toString() + "'");
+					} else if (REPORT.isEquals(type)) {
+						Report ht = new Report();
+						ht.setSynchronizer(this.toString());
+						ht.setType(type);
+						ht.setId(result.getContent().getId());
+						ht.setTitle(new String(result.getContent().getTitle().trim().getBytes(), "UTF-8"));
+						ht.setUrl(confluenceClient.getRestPrefix() + "content/" + type + "/"
+								+ result.getContent().getId());
+						fileIndex.add(ht.toString());
+						LOGGER.debug("Found Report '" + ht.getTitle() + "' with '" + this.toString() + "'");
+					} else {
+						fileIndex.add(URLCONFLUENCE + confluenceClient.getRestPrefix() + "content/" + type + "/"
+								+ result.getContent().getId());
+					}
+				}
+			} catch (JsonParseException e) {
+				LOGGER.error("Error loading " + type + " from confluence", e);
+			} catch (JsonMappingException e) {
+				LOGGER.error("Error loading " + type + " from confluence", e);
+			} catch (IOException e) {
+				LOGGER.error("Error loading " + type + " from confluence", e);
+			}
 		}
 
 		return fileIndex;

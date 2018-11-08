@@ -147,7 +147,7 @@ public final class Repository {
 		List<Activity> allA = Repository.getInstance().getActivities();
 		for (Activity activity : allA) {
 			List<ActivityDataitem> ac = activity.getSubactivitiesWithResponsible(roleTitle);
-			if (ObjectUtil.isListNotNullAndEmpty(ac)) {
+			if (ObjectUtil.isListNotNullAndEmpty(ac)) { 
 				map.put(activity, ac);
 			}
 		}
@@ -233,8 +233,8 @@ public final class Repository {
 		if (role.getParentIdentifier() != null) {
 			if (!role.getParentIdentifier().equals(role.getTitle())) {
 				Role p = getRole(role.getParentIdentifier());
-				parents.add(0, p);
 				if (p != null) {
+					parents.add(0, p);
 					getParentRoles(p, parents);
 				}
 			}

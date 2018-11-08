@@ -27,42 +27,61 @@ public class MailUtil {
 
 	/** The Constant LOGGER. */
 	final static Logger LOGGER = LogManager.getLogger(MailUtil.class);
-	
+
 	/** The host. */
 	private String host = "";
-	
+
 	/** The port. */
 	private int port = 0;
-	
+
 	/** The username. */
 	private String username = "";
-	
+
 	/** The password. */
 	private String password = "";
+
+	public MailUtil() {
+		this.host = PropertyUtil.getInstance().getMailHost();
+		this.port = PropertyUtil.getInstance().getMailPort();
+		this.username = PropertyUtil.getInstance().getMailUser();
+		this.password = PropertyUtil.getInstance().getMailPassword();
+	}
 
 	/**
 	 * Instantiates a new mail util.
 	 *
-	 * @param host the host
-	 * @param port the port
+	 * @param host     the host
+	 * @param port     the port
 	 * @param username the username
 	 * @param password the password
 	 */
 	public MailUtil(String host, int port, String username, String password) {
-		
+
 		this.host = host;
 		this.port = port;
 		this.username = username;
 		this.password = password;
 	}
 
+	public void sendMail(String to, String subject) {
+		sendMail(PropertyUtil.getInstance().getMailSender(), to, subject, "", null);
+	}
+	
+	public void sendMail(String to, String subject, String msg) {
+		sendMail(PropertyUtil.getInstance().getMailSender(), to, subject, msg, null);
+	}
+	
+	public void sendMail(String to, String subject, String msg, File attachment) {
+		sendMail(PropertyUtil.getInstance().getMailSender(), to, subject, msg, attachment);
+	}
+
 	/**
 	 * Send mail.
 	 *
-	 * @param from the from
-	 * @param to the to
-	 * @param subject the subject
-	 * @param msg the msg
+	 * @param from       the from
+	 * @param to         the to
+	 * @param subject    the subject
+	 * @param msg        the msg
 	 * @param attachment the attachment
 	 */
 	public void sendMail(String from, String to, String subject, String msg, File attachment) {
@@ -85,7 +104,7 @@ public class MailUtil {
 
 			Message message = new MimeMessage(session);
 			message.setHeader("X-Mailer", "Circlead");
-		    message.setSentDate(new Date());
+			message.setSentDate(new Date());
 			message.setFrom(new InternetAddress(from));
 			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
 			message.setSubject(subject);
@@ -95,7 +114,7 @@ public class MailUtil {
 
 			Multipart multipart = new MimeMultipart();
 			multipart.addBodyPart(mimeBodyPart);
-			
+
 			if (attachment != null) {
 				if (attachment.exists()) {
 					MimeBodyPart attachmentBodyPart = new MimeBodyPart();

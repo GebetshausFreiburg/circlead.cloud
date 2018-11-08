@@ -42,7 +42,7 @@ public class SvgBuilder {
 	 * Creates the person dna profile.
 	 *
 	 * @param person the person
-	 * @param size the size
+	 * @param size   the size
 	 * @return the element
 	 */
 	public static Element createPersonDnaProfile(Person person, int size) {
@@ -86,9 +86,11 @@ public class SvgBuilder {
 			SvgBuilder.addSvgCompetence(competence, size, element, tree);
 			List<Role> f = Repository.getInstance().getParentRoles(role);
 			for (Role rx : f) {
-				List<String> co = rx.getCompetences();
-				for (String c : co) {
-					SvgBuilder.addSvgImplicitCompetence(rx, c, size, element, tree);
+				if (rx.getCompetences() != null) {
+					List<String> co = rx.getCompetences();
+					for (String c : co) {
+						SvgBuilder.addSvgImplicitCompetence(rx, c, size, element, tree);
+					}
 				}
 			}
 
@@ -100,11 +102,11 @@ public class SvgBuilder {
 	/**
 	 * Adds the svg person implicit competence.
 	 *
-	 * @param person the person
+	 * @param person     the person
 	 * @param competence the competence
-	 * @param size the size
-	 * @param element the element
-	 * @param tree the tree
+	 * @param size       the size
+	 * @param element    the element
+	 * @param tree       the tree
 	 */
 	private static void addSvgPersonImplicitCompetence(Person person, String competence, int size, Element element,
 			WorkitemTree tree) {
@@ -137,13 +139,14 @@ public class SvgBuilder {
 	/**
 	 * Adds the svg implicit competence.
 	 *
-	 * @param rx the rx
+	 * @param rx         the rx
 	 * @param competence the competence
-	 * @param size the size
-	 * @param element the element
-	 * @param tree the tree
+	 * @param size       the size
+	 * @param element    the element
+	 * @param tree       the tree
 	 */
-	private static void addSvgImplicitCompetence(IWorkitem rx, String competence, int size, Element element, WorkitemTree tree) {
+	private static void addSvgImplicitCompetence(IWorkitem rx, String competence, int size, Element element,
+			WorkitemTree tree) {
 
 		double opacity = 1.0;
 
@@ -157,7 +160,7 @@ public class SvgBuilder {
 					.attr("y2", "24").attr("stroke-width", "2").attr("stroke", "gray");
 
 			Element title = line.appendElement("title");
-			title.appendText(competence + " (Implizit "+rx.getTitle()+")");
+			title.appendText(competence + " (Implizit " + rx.getTitle() + ")");
 
 			line = element.appendElement("line");
 			line.attr("opacity", opacity + "").attr("x1", "" + (idx + 2)).attr("y1", "1").attr("x2", "" + (idx + 2))
@@ -165,7 +168,7 @@ public class SvgBuilder {
 					.attr("stroke", ObjectUtil.convertToHtmlColor(node.getColor()));
 
 			title = line.appendElement("title");
-			title.appendText(competence + " (Implizit "+rx.getTitle()+")");
+			title.appendText(competence + " (Implizit " + rx.getTitle() + ")");
 		}
 	}
 
@@ -173,9 +176,9 @@ public class SvgBuilder {
 	 * Adds the svg competence.
 	 *
 	 * @param competence the competence
-	 * @param size the size
-	 * @param element the element
-	 * @param tree the tree
+	 * @param size       the size
+	 * @param element    the element
+	 * @param tree       the tree
 	 */
 	private static void addSvgCompetence(String competence, int size, Element element, WorkitemTree tree) {
 
@@ -199,11 +202,11 @@ public class SvgBuilder {
 	/**
 	 * Adds the svg person competence.
 	 *
-	 * @param person the person
+	 * @param person     the person
 	 * @param competence the competence
-	 * @param size the size
-	 * @param element the element
-	 * @param tree the tree
+	 * @param size       the size
+	 * @param element    the element
+	 * @param tree       the tree
 	 */
 	private static void addSvgPersonCompetence(Person person, String competence, int size, Element element,
 			WorkitemTree tree) {

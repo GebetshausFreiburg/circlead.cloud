@@ -30,7 +30,8 @@ import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.report.IReport;
 
 /**
- * The Class FileRenderEngine supports rendering of data to flat-file html-representation
+ * The Class FileRenderEngine supports rendering of data to flat-file
+ * html-representation
  * 
  * @author Matthias Wegner
  */
@@ -357,8 +358,7 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 
 			if (person != null) {
 				if (identifier.equals(leadPerson)) {
-					li.appendElement("u").appendElement("a")
-							.attr("href", "" + person.getId(synchronizer) + ".html")
+					li.appendElement("u").appendElement("a").attr("href", "" + person.getId(synchronizer) + ".html")
 							.appendText(person.getTitle());
 				} else {
 					li.appendElement("a").attr("href", "" + person.getId(synchronizer) + ".html")
@@ -514,8 +514,7 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		}
 		if (content != null) {
 			if (r != null) {
-				div.appendElement("a").attr("href", "" + r.getId(synchronizer) + ".html")
-						.appendText(r.getTitle());
+				div.appendElement("a").attr("href", "" + r.getId(synchronizer) + ".html").appendText(r.getTitle());
 			} else {
 				div.appendText(content);
 			}
@@ -541,8 +540,7 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		}
 		if (content != null) {
 			if (r != null) {
-				div.appendElement("a").attr("href", "" + r.getId(synchronizer) + ".html")
-						.appendText(r.getTitle());
+				div.appendElement("a").attr("href", "" + r.getId(synchronizer) + ".html").appendText(r.getTitle());
 			} else {
 				div.appendText(content);
 			}
@@ -568,8 +566,7 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		}
 		if (content != null) {
 			if (r != null) {
-				div.appendElement("a").attr("href", "" + r.getId(synchronizer) + ".html")
-						.appendText(r.getTitle());
+				div.appendElement("a").attr("href", "" + r.getId(synchronizer) + ".html").appendText(r.getTitle());
 			} else {
 				div.appendText(content);
 			}
@@ -595,8 +592,7 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		}
 		if (content != null) {
 			if (r != null) {
-				div.appendElement("a").attr("href", "" + r.getId(synchronizer) + ".html")
-						.appendText(r.getTitle());
+				div.appendElement("a").attr("href", "" + r.getId(synchronizer) + ".html").appendText(r.getTitle());
 			} else {
 				div.appendText(content);
 			}
@@ -620,8 +616,7 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		div.appendText(": ");
 		if (content != null) {
 			if (rg != null) {
-				div.appendElement("a").attr("href", "" + rg.getId(synchronizer) + ".html")
-						.appendText(rg.getTitle());
+				div.appendElement("a").attr("href", "" + rg.getId(synchronizer) + ".html").appendText(rg.getTitle());
 			} else {
 				div.appendText(content);
 			}
@@ -727,11 +722,16 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 			if (list.size() > 0) {
 				Element ul = element.appendElement("div").appendElement("ul");
 				for (IReport report : list) {
-					Element li = ul.appendElement("li");
-					li.appendElement("a").attr("href", "" + report.getName() + ".html")
-							.appendText(report.getName());
-					if (StringUtil.isNotNullAndNotEmpty(report.getDescription())) {
-						li.appendText(": "+report.getDescription());
+					if (report != null) {
+						if (report.getName() != null) {
+							Element li = ul.appendElement("li");
+							li.appendElement("a").attr("href", "" + report.getName() + ".html")
+									.appendText(report.getName());
+
+							if (StringUtil.isNotNullAndNotEmpty(report.getDescription())) {
+								li.appendText(": " + report.getDescription());
+							}
+						}
 					}
 				}
 			}

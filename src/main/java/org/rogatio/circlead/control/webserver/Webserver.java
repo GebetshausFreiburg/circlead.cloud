@@ -97,7 +97,7 @@ public class Webserver extends Server {
 	 * Run.
 	 */
 	public void run() {
-		LOGGER.info("Start Webserver");
+		LOGGER.info("Start Webserver at http://localhost:8090/");
 		try {
 			this.start();
 			this.join();

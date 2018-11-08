@@ -45,6 +45,7 @@ import com.dropbox.core.v2.DbxTeamClientV2;
  * as actual "copy" of Atlassian-Storage
  */
 public class SyncCirclead {
+	// TODO BUGFIX for activities and subactivities, see Kanban-Ablauf
 	// TODO Comment for person in team
 	// TODO Validation role status vs. person-holder status (i.e. paused, closed)
 	// TODO Validation "empty" (<10 chars) text in role
@@ -80,7 +81,7 @@ public class SyncCirclead {
 
 	public static final boolean USEWEBSERVER = false;
 
-	/** The Constant logger. */
+	/** The Constant logger. */ 
 	final static Logger LOGGER = LogManager.getLogger(SyncCirclead.class);
 
 	/**
@@ -155,7 +156,7 @@ public class SyncCirclead {
 		/* Add report-handler */
 		if (REPORTS) {
 			// repository.addReports(RolegroupReport.createReports());
-			repository.addReport(new RolegroupReport("Gebetstunden"));
+			repository.addReport(new RolegroupReport(PropertyUtil.getInstance().getApplicationDefaultRolegroup()));
 			repository.addReport(new RoleHolderReport());
 			repository.addReport(new OverviewReport());
 			repository.addReport(new ValidationReport());
@@ -165,8 +166,8 @@ public class SyncCirclead {
 			repository.addReport(new RoleTreeReport());
 			repository.addReport(new RoleListReportDetails());
 			repository.addReport(new RolegroupSummaryReport());
-			repository.addReport(new TeamCategoryReport("Gebetsstunde"));
-			repository.addReport(new TeamCategegoryInternalReport("Gebetsstunde"));
+			repository.addReport(new TeamCategoryReport(PropertyUtil.getInstance().getApplicationDefaultTeamcategory()));
+			repository.addReport(new TeamCategegoryInternalReport(PropertyUtil.getInstance().getApplicationDefaultTeamcategory()));
 			// repository.addReport(new RoleIssueReport());
 
 			/* Rewrite Reports */
@@ -184,10 +185,10 @@ public class SyncCirclead {
 			PrayHourExporter phe = new PrayHourExporter();
 			phe.export("Gebetsstundenübersicht");
 
-			DbxTeamClientV2 dbxClient = DropboxUtil.getTeamClientFromAccessToken(PropertyUtil.getInstance().getValue(PropertyUtil.DROPBOX_CREDENTIALS_ACCESSTOKEN));
+			DbxTeamClientV2 dbxClient = DropboxUtil.getTeamClientFromAccessToken(PropertyUtil.getInstance().getDropboxAccesstoken());
 //			DbxTeamClientV2 dbxClient = DropboxUtil.getTeamClientFromAuthFile("gebetshaus.credentials");
 			DropboxUtil.uploadFileToTeamFolder(dbxClient, new File("exports/Gebetsstundenübersicht.xlsx"),
-					"/06_GBH_BO_Gebetstundenorga/Gebetsstundenübersicht.xlsx", "Matthias Wegner");
+					"/06_GBH_BO_Gebetstundenorga/Gebetsstundenübersicht.xlsx");
 		}
 
 		// Copy ressources to web-dir

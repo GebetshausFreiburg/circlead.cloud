@@ -6,6 +6,7 @@ import org.rogatio.circlead.control.synchronizer.atlassian.JiraClient;
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.util.ObjectUtil;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class AtlassianPojoCreator creates POJO-Classes from found response to
  * atlassian-server. All sources are saved in folder "lib" in classpath.
@@ -14,12 +15,17 @@ import org.rogatio.circlead.util.ObjectUtil;
  */
 public class AtlassianPojoCreator {
 
-	public static void main(String[] args) {
-		//AtlassianPojoCreator.createAtlassionPojos("project in (ASSET, GEB)", "264700209", "CIRCLEAD");
-	}
+//	public static void main(String[] args) {
+	// AtlassianPojoCreator.createAtlassianPojos("project in (ASSET, GEB)",
+	// "264700209", "CIRCLEAD");
+//	}
 
+	public static void createAtlassianPojos(String jiraJQL, String roleID) {
+		createAtlassianPojos(jiraJQL, roleID, null);
+	}
+	
 	/**
-	 * Creates the atlassion pojos.
+	 * Creates the atlassian pojos.
 	 *
 	 * @param jiraJQL the jira JQL. Must find a representative set of issues. Query
 	 *                must return more than one result
@@ -28,7 +34,7 @@ public class AtlassianPojoCreator {
 	 * @param spaceID the space ID. Id of the space. If null 'CIRCLEAD' is set as
 	 *                default
 	 */
-	public static void createAtlassionPojos(String jiraJQL, String roleID, String spaceID) {
+	public static void createAtlassianPojos(String jiraJQL, String roleID, String spaceID) {
 
 		if (spaceID == null) {
 			spaceID = "CIRCLEAD";
@@ -59,6 +65,15 @@ public class AtlassianPojoCreator {
 	/**
 	 * Creates the content versions.
 	 *
+	 * @param pageId the page id
+	 */
+	public static void createContentVersions(String pageId) {
+		createContentVersions("CIRCLEAD", pageId);
+	}
+
+	/**
+	 * Creates the content versions.
+	 *
 	 * @param circleadSpace the circlead space
 	 * @param pageId        the page id
 	 */
@@ -70,6 +85,15 @@ public class AtlassianPojoCreator {
 
 		ObjectUtil.createPojoDirFromJson(jsonSource, "Results",
 				"org.rogatio.circlead.control.synchronizer.atlassian.version", "lib");
+	}
+
+	/**
+	 * Creates the page content.
+	 *
+	 * @param pageId the page id
+	 */
+	public static void createPageContent(String pageId) {
+		createPageContent("CIRCLEAD", pageId);
 	}
 
 	/**
@@ -88,6 +112,22 @@ public class AtlassianPojoCreator {
 				"org.rogatio.circlead.control.synchronizer.atlassian.content", "lib");
 	}
 
+	/**
+	 * Creates the search results.
+	 */
+	public static void createSearchResults() {
+		createSearchResults(WorkitemType.ROLE);
+	}
+	
+	/**
+	 * Creates the search results.
+	 *
+	 * @param type the type
+	 */
+	public static void createSearchResults(WorkitemType type) {
+		createSearchResults("CIRCLEAD", type);
+	}
+	
 	/**
 	 * Creates the search results.
 	 *

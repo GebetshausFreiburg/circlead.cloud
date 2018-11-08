@@ -37,7 +37,7 @@ public class IndexWorkitems extends DefaultReport {
 	public IndexWorkitems(WorkitemType type) {
 		this.type = type;
 		this.setName("Index " + type.getName());
-		this.setDescription("Inhaltsverzeichnis von '"+type.getName()+"'");
+		this.setDescription("Inhaltsverzeichnis von '" + type.getName() + "'");
 	}
 
 	/*
@@ -54,7 +54,7 @@ public class IndexWorkitems extends DefaultReport {
 
 		element.append("<a href=\"Index Circlead.html\">[Index]</a>");
 		element.append("<br/>");
-		
+
 		if (type == WorkitemType.ROLE) {
 			List<Role> roles = R.getRoles();
 			renderer.addRoleList(element, roles);
@@ -69,7 +69,9 @@ public class IndexWorkitems extends DefaultReport {
 			renderer.addTeamList(element, wi);
 		} else if (type == WorkitemType.REPORT) {
 			List<IReport> wi = R.getReports();
-			renderer.addReportList(element, wi);
+			if (wi != null) {
+				renderer.addReportList(element, wi);
+			}
 		} else if (type == WorkitemType.HOWTO) {
 			List<HowTo> wi = R.getIndexHowTos();
 			renderer.addHowToList(element, wi);

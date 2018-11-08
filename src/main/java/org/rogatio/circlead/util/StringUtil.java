@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -264,6 +266,31 @@ public class StringUtil {
 				throw new AssertionError("StringWriter#close() should not throw IOException", e);
 			}
 		}
+	}
+	
+	/**
+	 * Contains insenstitive.
+	 *
+	 * @param wantedStr the wanted str
+	 * @param source the source
+	 * @return true, if successful
+	 */
+	public static boolean containsInsensitive(String wantedStr, String source) {
+		return Pattern.compile(Pattern.quote(wantedStr), Pattern.CASE_INSENSITIVE).matcher(source).find();
+	}
+
+	/**
+	 * Replace insensisitive.
+	 *
+	 * @param source the source
+	 * @param target the target
+	 * @return the string
+	 */
+	public static String replaceInsensitive(String source, String target) {
+		String replacement = "";
+		String result = Pattern.compile(target, Pattern.LITERAL | Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE)
+				.matcher(source).replaceAll(Matcher.quoteReplacement(replacement));
+		return result;
 	}
 
 }

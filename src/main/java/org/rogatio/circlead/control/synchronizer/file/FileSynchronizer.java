@@ -50,6 +50,7 @@ import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.FileUtil;
 import org.rogatio.circlead.util.ObjectUtil;
+import org.rogatio.circlead.util.PropertyUtil;
 import org.rogatio.circlead.view.FileRendererEngine;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.IWorkitemRenderer;
@@ -150,30 +151,33 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 	@Override
 	public SynchronizerResult add(IWorkitem workitem) {
 		SynchronizerFactory.getInstance().setActual(this);
-
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.setSerializationInclusion(Include.NON_NULL);
-		mapper.enable(SerializationFeature.INDENT_OUTPUT);
-
-		if (WorkitemType.ROLE.isTypeOf(workitem)) {
-			writeWorkitemData(workitem, "roles");
-		} else if (WorkitemType.ACTIVITY.isTypeOf(workitem)) {
-			writeWorkitemData(workitem, "activities");
-		} else if (WorkitemType.ROLEGROUP.isTypeOf(workitem)) {
-			writeWorkitemData(workitem, "rolegroups");
-		} else if (WorkitemType.PERSON.isTypeOf(workitem)) {
-			writeWorkitemData(workitem, "persons");
-		} else if (WorkitemType.TEAM.isTypeOf(workitem)) {
-			writeWorkitemData(workitem, "teams");
-		} else if (WorkitemType.COMPETENCE.isTypeOf(workitem)) {
-			writeWorkitemData(workitem, "competencies");
-		}
-
-		writeWorkitemRendered(workitem);
-
 		SynchronizerResult res = new SynchronizerResult();
-		res.setMessage("Write");
-		res.setCode(200);
+
+		if (PropertyUtil.getInstance().isFileSynchronizerEnabled()
+				&& PropertyUtil.getInstance().isFileSynchronizerWriteMode()) {
+			ObjectMapper mapper = new ObjectMapper();
+			mapper.setSerializationInclusion(Include.NON_NULL);
+			mapper.enable(SerializationFeature.INDENT_OUTPUT);
+
+			if (WorkitemType.ROLE.isTypeOf(workitem)) {
+				writeWorkitemData(workitem, "roles");
+			} else if (WorkitemType.ACTIVITY.isTypeOf(workitem)) {
+				writeWorkitemData(workitem, "activities");
+			} else if (WorkitemType.ROLEGROUP.isTypeOf(workitem)) {
+				writeWorkitemData(workitem, "rolegroups");
+			} else if (WorkitemType.PERSON.isTypeOf(workitem)) {
+				writeWorkitemData(workitem, "persons");
+			} else if (WorkitemType.TEAM.isTypeOf(workitem)) {
+				writeWorkitemData(workitem, "teams");
+			} else if (WorkitemType.COMPETENCE.isTypeOf(workitem)) {
+				writeWorkitemData(workitem, "competencies");
+			}
+
+			writeWorkitemRendered(workitem);
+
+			res.setMessage("Write");
+			res.setCode(200);
+		}
 
 		return res;
 	}
@@ -188,16 +192,20 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 	@Override
 	public SynchronizerResult add(IReport report) {
 		SynchronizerFactory.getInstance().setActual(this);
-
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.setSerializationInclusion(Include.NON_NULL);
-		mapper.enable(SerializationFeature.INDENT_OUTPUT);
-
-		writeReportRendered(report);
-
 		SynchronizerResult res = new SynchronizerResult();
-		res.setMessage("OK");
-		res.setCode(200);
+
+		if (PropertyUtil.getInstance().isFileSynchronizerEnabled() 
+				&& PropertyUtil.getInstance().isFileSynchronizerWriteMode()) {
+
+			ObjectMapper mapper = new ObjectMapper();
+			mapper.setSerializationInclusion(Include.NON_NULL);
+			mapper.enable(SerializationFeature.INDENT_OUTPUT);
+
+			writeReportRendered(report);
+
+			res.setMessage("OK");
+			res.setCode(200);
+		}
 
 		return res;
 	}
@@ -304,6 +312,12 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 	 */
 	private void writeReportRendered(IReport report) {
 		if (report instanceof IWorkitemRenderer) {
+			
+			if (report.getName()==null) {
+				LOGGER.warn("Report '"+report.getClass()+"' could not be found.");
+				return;
+			}
+			
 			IWorkitemRenderer renderer = (IWorkitemRenderer) report;
 			String filename = report.getName();
 			Document doc = new Document("");
@@ -324,8 +338,8 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 			head.append("<meta name=\"theme-color\" content=\"#ffffff\">");
 			head.append("<meta charset=\"utf-8\">");
 			Element body = html.appendElement("body");
-
-			body.appendElement("H1").appendText(report.getName());
+			
+			body.appendElement("H1").appendText(report.getName()); 
 
 			renderer.render(this).appendTo(body);
 
@@ -404,50 +418,54 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 
 		List<String> fileIndex = new ArrayList<String>();
 
-		if (WorkitemType.ROLE == workitemType) {
-			fileIndex = readFolder("roles");
-		} else if (WorkitemType.REPORT == workitemType) {
-			List<String> files = readFolder("web");
-			for (String f : files) {
-				File file = new File(f);
-				HowTo ht = new HowTo();
-				ht.setType("report");
-				ht.setSynchronizer(this.toString());
-				ht.setId(f);
-				ht.setTitle(file.getName());
-				try {
-					ht.setUrl(file.toURI().toURL().toString());
-				} catch (MalformedURLException e) {
-					ht.setUrl(f);
+		if (PropertyUtil.getInstance().isFileSynchronizerEnabled()
+				&& PropertyUtil.getInstance().isFileSynchronizerReadMode()) {
+
+			if (WorkitemType.ROLE == workitemType) {
+				fileIndex = readFolder("roles");
+			} else if (WorkitemType.REPORT == workitemType) {
+				List<String> files = readFolder("web");
+				for (String f : files) {
+					File file = new File(f);
+					HowTo ht = new HowTo();
+					ht.setType("report");
+					ht.setSynchronizer(this.toString());
+					ht.setId(f);
+					ht.setTitle(file.getName());
+					try {
+						ht.setUrl(file.toURI().toURL().toString());
+					} catch (MalformedURLException e) {
+						ht.setUrl(f);
+					}
+					fileIndex.add(ht.toString());
 				}
-				fileIndex.add(ht.toString());
-			}
-		} else if (WorkitemType.HOWTO == workitemType) {
-			List<String> files = readFolder("howtos");
-			for (String f : files) {
-				File file = new File(f);
-				HowTo ht = new HowTo();
-				ht.setType("howto");
-				ht.setSynchronizer(this.toString());
-				ht.setId(f);
-				ht.setTitle(file.getName());
-				try {
-					ht.setUrl(file.toURI().toURL().toString());
-				} catch (MalformedURLException e) {
-					ht.setUrl(f);
+			} else if (WorkitemType.HOWTO == workitemType) {
+				List<String> files = readFolder("howtos");
+				for (String f : files) {
+					File file = new File(f);
+					HowTo ht = new HowTo();
+					ht.setType("howto");
+					ht.setSynchronizer(this.toString());
+					ht.setId(f);
+					ht.setTitle(file.getName());
+					try {
+						ht.setUrl(file.toURI().toURL().toString());
+					} catch (MalformedURLException e) {
+						ht.setUrl(f);
+					}
+					fileIndex.add(ht.toString());
 				}
-				fileIndex.add(ht.toString());
+			} else if (WorkitemType.ACTIVITY == workitemType) {
+				fileIndex = readFolder("activities");
+			} else if (WorkitemType.ROLEGROUP == workitemType) {
+				fileIndex = readFolder("rolegroups");
+			} else if (WorkitemType.PERSON == workitemType) {
+				fileIndex = readFolder("persons");
+			} else if (WorkitemType.TEAM == workitemType) {
+				fileIndex = readFolder("teams");
+			} else if (WorkitemType.COMPETENCE == workitemType) {
+				fileIndex = readFolder("competencies");
 			}
-		} else if (WorkitemType.ACTIVITY == workitemType) {
-			fileIndex = readFolder("activities");
-		} else if (WorkitemType.ROLEGROUP == workitemType) {
-			fileIndex = readFolder("rolegroups");
-		} else if (WorkitemType.PERSON == workitemType) {
-			fileIndex = readFolder("persons");
-		} else if (WorkitemType.TEAM == workitemType) {
-			fileIndex = readFolder("teams");
-		} else if (WorkitemType.COMPETENCE == workitemType) {
-			fileIndex = readFolder("competencies");
 		}
 
 		return fileIndex;
@@ -488,61 +506,66 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 		File file = new File(filename);
 		Date modified = new Date(file.lastModified());
 
-		if (!file.exists()) {
-			throw new SynchronizerException(
-					"Item with id '" + filename + "' could not be loaded with File Synchronizer.");
-		}
+		if (PropertyUtil.getInstance().isFileSynchronizerEnabled()
+				&& PropertyUtil.getInstance().isFileSynchronizerReadMode()) {
 
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.setSerializationInclusion(Include.NON_NULL);
-		try {
-			LOGGER.info("Read file '" + filename + "'");
-
-			IWorkitem item = null;
-
-			if (!file.toString().contains(".schema")) {
-				if (filename.endsWith(".role.json")) {
-					RoleDataitem data = mapper.readValue(file, RoleDataitem.class);
-					item = new Role(data);
-				}
-				if (filename.endsWith(".activity.json")) {
-					ActivityDataitem data = mapper.readValue(file, ActivityDataitem.class);
-					item = new Activity(data);
-				}
-				if (filename.endsWith(".rolegroup.json")) {
-					RolegroupDataitem data = mapper.readValue(file, RolegroupDataitem.class);
-					item = new Rolegroup(data);
-				}
-				if (filename.endsWith(".person.json")) {
-					PersonDataitem data = mapper.readValue(file, PersonDataitem.class);
-					item = new Person(data);
-				}
-				if (filename.endsWith(".team.json")) {
-					TeamDataitem data = mapper.readValue(file, TeamDataitem.class);
-					item = new Team(data);
-				}
-				if (filename.endsWith(".competence.json")) {
-					CompetenceDataitem data = mapper.readValue(file, CompetenceDataitem.class);
-					Competence c = new Competence(data);
-					item = c;
-				}
+			if (!file.exists()) {
+				throw new SynchronizerException(
+						"Item with id '" + filename + "' could not be loaded with File Synchronizer.");
 			}
 
-			item.setModified(modified);
-			setWorkitemId(filename, item);
-			return item;
+			ObjectMapper mapper = new ObjectMapper();
+			mapper.setSerializationInclusion(Include.NON_NULL);
+			try {
+				LOGGER.info("Read file '" + filename + "'");
 
-		} catch (JsonParseException e) {
-			throw new SynchronizerException("Error (JsonParse) loading role '" + file + "'. " + e.getMessage(),
-					e.getCause());
-		} catch (JsonMappingException e) {
-			throw new SynchronizerException("Error (JsonMapping) loading role '" + file + "'. " + e.getMessage(),
-					e.getCause());
-		} catch (IOException e) {
-			throw new SynchronizerException("Error (IOException) loading role '" + file + "'. " + e.getMessage(),
-					e.getCause());
+				IWorkitem item = null;
+
+				if (!file.toString().contains(".schema")) {
+					if (filename.endsWith(".role.json")) {
+						RoleDataitem data = mapper.readValue(file, RoleDataitem.class);
+						item = new Role(data);
+					}
+					if (filename.endsWith(".activity.json")) {
+						ActivityDataitem data = mapper.readValue(file, ActivityDataitem.class);
+						item = new Activity(data);
+					}
+					if (filename.endsWith(".rolegroup.json")) {
+						RolegroupDataitem data = mapper.readValue(file, RolegroupDataitem.class);
+						item = new Rolegroup(data);
+					}
+					if (filename.endsWith(".person.json")) {
+						PersonDataitem data = mapper.readValue(file, PersonDataitem.class);
+						item = new Person(data);
+					}
+					if (filename.endsWith(".team.json")) {
+						TeamDataitem data = mapper.readValue(file, TeamDataitem.class);
+						item = new Team(data);
+					}
+					if (filename.endsWith(".competence.json")) {
+						CompetenceDataitem data = mapper.readValue(file, CompetenceDataitem.class);
+						Competence c = new Competence(data);
+						item = c;
+					}
+				}
+
+				item.setModified(modified);
+				setWorkitemId(filename, item);
+
+				return item;
+
+			} catch (JsonParseException e) {
+				throw new SynchronizerException("Error (JsonParse) loading role '" + file + "'. " + e.getMessage(),
+						e.getCause());
+			} catch (JsonMappingException e) {
+				throw new SynchronizerException("Error (JsonMapping) loading role '" + file + "'. " + e.getMessage(),
+						e.getCause());
+			} catch (IOException e) {
+				throw new SynchronizerException("Error (IOException) loading role '" + file + "'. " + e.getMessage(),
+						e.getCause());
+			}
 		}
-
+		return null;
 	}
 
 	/**
@@ -592,25 +615,28 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 	public String delete(IWorkitem workitem) throws SynchronizerException {
 		SynchronizerFactory.getInstance().setActual(this);
 
-		File f = null;
-		if (WorkitemType.ROLE.isTypeOf(workitem)) {
-			f = createFile(workitem, "roles");
-		} else if (WorkitemType.ACTIVITY.isTypeOf(workitem)) {
-			f = createFile(workitem, "activities");
-		} else if (WorkitemType.ROLEGROUP.isTypeOf(workitem)) {
-			f = createFile(workitem, "rolegroups");
-		} else if (WorkitemType.PERSON.isTypeOf(workitem)) {
-			f = createFile(workitem, "persons");
-		} else if (WorkitemType.TEAM.isTypeOf(workitem)) {
-			f = createFile(workitem, "teams");
-		} else if (WorkitemType.COMPETENCE.isTypeOf(workitem)) {
-			f = createFile(workitem, "competencies");
-		}
-		if (f != null) {
-			if (f.exists()) {
-				LOGGER.debug("DELETE " + f);
-				f.delete();
-				return "OK";
+		if (PropertyUtil.getInstance().isFileSynchronizerEnabled()) {
+
+			File f = null;
+			if (WorkitemType.ROLE.isTypeOf(workitem)) {
+				f = createFile(workitem, "roles");
+			} else if (WorkitemType.ACTIVITY.isTypeOf(workitem)) {
+				f = createFile(workitem, "activities");
+			} else if (WorkitemType.ROLEGROUP.isTypeOf(workitem)) {
+				f = createFile(workitem, "rolegroups");
+			} else if (WorkitemType.PERSON.isTypeOf(workitem)) {
+				f = createFile(workitem, "persons");
+			} else if (WorkitemType.TEAM.isTypeOf(workitem)) {
+				f = createFile(workitem, "teams");
+			} else if (WorkitemType.COMPETENCE.isTypeOf(workitem)) {
+				f = createFile(workitem, "competencies");
+			}
+			if (f != null) {
+				if (f.exists()) {
+					LOGGER.debug("DELETE " + f);
+					f.delete();
+					return "OK";
+				}
 			}
 		}
 		return "NIO";
@@ -627,7 +653,9 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 		return new FileRendererEngine(this);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.control.validator.IValidator#validate()
 	 */
 	@Override
@@ -709,19 +737,25 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 		return messages;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#writeIndex()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.rogatio.circlead.control.synchronizer.DefaultSynchronizer#writeIndex()
 	 */
 	@Override
 	public void writeIndex() {
-		LOGGER.info("Write Index");
-		writeReportRendered(new IndexCirclead());
-		writeReportRendered(new IndexWorkitems(WorkitemType.ROLE));
-		writeReportRendered(new IndexWorkitems(WorkitemType.ROLEGROUP));
-		writeReportRendered(new IndexWorkitems(WorkitemType.PERSON));
-		writeReportRendered(new IndexWorkitems(WorkitemType.ACTIVITY));
-		writeReportRendered(new IndexWorkitems(WorkitemType.TEAM));
-		writeReportRendered(new IndexWorkitems(WorkitemType.REPORT));
-		writeReportRendered(new IndexWorkitems(WorkitemType.HOWTO));
+		if (PropertyUtil.getInstance().isFileSynchronizerEnabled()
+				&& PropertyUtil.getInstance().isFileSynchronizerWriteMode()) {
+			LOGGER.info("Write Index");
+			writeReportRendered(new IndexCirclead());
+			writeReportRendered(new IndexWorkitems(WorkitemType.ROLE));
+			writeReportRendered(new IndexWorkitems(WorkitemType.ROLEGROUP));
+			writeReportRendered(new IndexWorkitems(WorkitemType.PERSON));
+			writeReportRendered(new IndexWorkitems(WorkitemType.ACTIVITY));
+			writeReportRendered(new IndexWorkitems(WorkitemType.TEAM));
+			writeReportRendered(new IndexWorkitems(WorkitemType.REPORT));
+			writeReportRendered(new IndexWorkitems(WorkitemType.HOWTO));
+		}
 	}
 }

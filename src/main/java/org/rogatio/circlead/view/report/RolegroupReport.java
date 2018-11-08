@@ -48,7 +48,7 @@ public class RolegroupReport extends DefaultReport {
 
 	public RolegroupReport(String rolegroupIdentifier) {
 		Rolegroup rolegroup = Repository.getInstance().getRolegroup(rolegroupIdentifier);
-		if (rolegroup != null) {
+		if (rolegroup != null) { 
 			this.setName("Report '" + rolegroup.getTitle() + "'");
 			this.rolegroup = rolegroup;
 			this.setDescription("(Druckfähige) Zusammenfassung der Rollengruppe '"+rolegroupIdentifier+"' mit allen enthaltenen Rollen"); 
