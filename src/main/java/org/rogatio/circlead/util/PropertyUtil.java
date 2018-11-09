@@ -89,6 +89,8 @@ public class PropertyUtil {
 	/** The atlassian query limit. */
 	public static String ATLASSIAN_QUERY_LIMIT = "atlassian.query.limit";
 
+	public static String APPLICATION_SPECIALIZED_CHAR = "application.specialized.char";
+	
 	/** The Constant LOGGER. */
 	private final static Logger LOGGER = LogManager.getLogger(PropertyUtil.class);
 
@@ -291,6 +293,14 @@ public class PropertyUtil {
 	 */
 	public String getApplicationDefaultTeamcategory() {
 		return getValue(APPLICATION_DEFAULT_TEAMCATEGORY);
+	}
+	
+	public String getApplicationSpecializedChar() {
+		String c = getValue(APPLICATION_SPECIALIZED_CHAR);
+		if (c==null) {
+			return "UNKNOWN_SPECIALIZED_CHAR";
+		}
+		return c.trim();
 	}
 
 	/**

@@ -17,7 +17,9 @@ import org.rogatio.circlead.control.Comparators;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.model.data.IDataitem;
+import org.rogatio.circlead.util.PropertyUtil;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class DefaultWorkitem is the default working item for all other workitems.
  * 
@@ -84,6 +86,18 @@ public class DefaultWorkitem implements IWorkitem, Comparable<DefaultWorkitem> {
 	@Override
 	public String getTitle() {
 		return dataitem.getTitle();
+	}
+
+	/**
+	 * Checks if is specialized.
+	 *
+	 * @return true, if is specialized
+	 */
+	public boolean isSpecialized() {
+		if (this.getTitle().contains(PropertyUtil.getInstance().getApplicationSpecializedChar())) {
+			return true;
+		}
+		return false;
 	}
 
 	/*

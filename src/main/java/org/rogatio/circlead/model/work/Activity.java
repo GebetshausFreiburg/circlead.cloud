@@ -51,7 +51,7 @@ import org.rogatio.circlead.view.IWorkitemRenderer;
 public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IValidator {
 
 	final static Logger LOGGER = LogManager.getLogger(Activity.class);
-	
+
 	/**
 	 * Instantiates a new activity.
 	 */
@@ -62,12 +62,12 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	/**
 	 * Instantiates a new activity.
 	 *
-	 * @param dataitem the dataitem of the activity of class  
-	 * {@link org.rogatio.circlead.model.data.ActivityDataitem}
+	 * @param dataitem the dataitem of the activity of class
+	 *                 {@link org.rogatio.circlead.model.data.ActivityDataitem}
 	 */
 	public Activity(IDataitem dataitem) {
 		super(dataitem);
-		
+
 		if (!(dataitem instanceof ActivityDataitem)) {
 			throw new IllegalArgumentException("IDataitem must be of type ActivityDataitem");
 		}
@@ -172,7 +172,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	public String getChild() {
 		return this.getDataitem().getChild();
 	}
-	
+
 	/**
 	 * Gets the bpmn.
 	 *
@@ -181,7 +181,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	public String getBpmn() {
 		return this.getDataitem().getBpmn();
 	}
-	
+
 	/**
 	 * Gets the id of activity (=aid).
 	 *
@@ -208,7 +208,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	public void setBPMN(String bpmn) {
 		this.getDataitem().setBpmn(bpmn);
 	}
-	
+
 	/**
 	 * Sets the child.
 	 *
@@ -217,7 +217,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	public void setChild(String child) {
 		this.getDataitem().setChild(child);
 	}
-	
+
 	/**
 	 * Sets the id of activity (aid).
 	 *
@@ -327,6 +327,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 		List<ActivityDataitem> list = new ArrayList<ActivityDataitem>();
 		if (ObjectUtil.isListNotNullAndEmpty(this.getSubactivities())) {
 			for (ActivityDataitem sub : this.getSubactivities()) {
+
 				if (StringUtil.isNotNullAndNotEmpty(sub.getResponsible())) {
 					if (sub.getResponsible().equals(responsible)) {
 						list.add(sub);
@@ -445,19 +446,19 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 
 		List<Role> roles = R.getRoles(this.getSupplierIdentifiers());
 		if (ObjectUtil.isListNotNullAndEmpty(roles)) {
-			renderer.addItem(element, SUPPORTER.toString()+":", "");
+			renderer.addItem(element, SUPPORTER.toString() + ":", "");
 			renderer.addRoleList(element, roles);
 		}
 
 		roles = R.getRoles(this.getConsultantIdentifiers());
 		if (ObjectUtil.isListNotNullAndEmpty(roles)) {
-			renderer.addItem(element, CONSULTANT.toString()+":", "");
+			renderer.addItem(element, CONSULTANT.toString() + ":", "");
 			renderer.addRoleList(element, roles);
 		}
 
 		roles = R.getRoles(this.getInformedIdentifiers());
 		if (ObjectUtil.isListNotNullAndEmpty(roles)) {
-			renderer.addItem(element, INFORMED.toString()+":", "");
+			renderer.addItem(element, INFORMED.toString() + ":", "");
 			renderer.addRoleList(element, roles);
 		}
 
@@ -476,8 +477,8 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 
 			/*
 			 * for (ActivityDataitem subactivity : getSubactivities()) { Activity a =
-			 * R.getActivity(subactivity.getTitle()); if (a != null)
-			 * { Elements es = table.getElementsContainingText(subactivity.getTitle());
+			 * R.getActivity(subactivity.getTitle()); if (a != null) { Elements es =
+			 * table.getElementsContainingText(subactivity.getTitle());
 			 * System.out.println(es); Element e = es.get(0); e.text("");
 			 * renderer.addActivityItem(e, null, subactivity.getTitle()); } }
 			 */
@@ -489,7 +490,8 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 		if (this.getHowTos() != null) {
 			for (String ht : this.getHowTos()) {
 				for (HowTo howTo : howtos) {
-					//LOGGER.debug("CHECK:::"+ht+"=="+howTo.getTitle() + "("+howTo.getSynchronizer()+"=="+synchronizer.toString()+")");
+					// LOGGER.debug("CHECK:::"+ht+"=="+howTo.getTitle() +
+					// "("+howTo.getSynchronizer()+"=="+synchronizer.toString()+")");
 					if (ht.equalsIgnoreCase(howTo.getTitle())) {
 						if (howTo.getSynchronizer().equals(synchronizer.toString())) {
 							renderer.addHowToItem(element, "HowTo", howTo.getTitle());
@@ -519,6 +521,18 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 
 		if (ObjectUtil.isListNotNullAndEmpty(this.getSubactivities())) {
 			for (ActivityDataitem activity : this.getSubactivities()) {
+
+				if (ObjectUtil.isListNotNullAndEmpty(activity.getSupplier())
+						|| ObjectUtil.isListNotNullAndEmpty(activity.getConsultant())
+						|| ObjectUtil.isListNotNullAndEmpty(activity.getInformed())) {
+					if (!StringUtil.isNotNullAndNotEmpty(activity.getResponsible())) {
+						ValidationMessage m = new ValidationMessage(this);
+						m.error("Responsible missing", "Subactivity '" + activity.getTitle()
+								+ "' has no named responsible");
+						messages.add(m);
+					}
+				}
+
 				Activity a = R.getActivity(activity.getTitle());
 				if (a != null) {
 					String actR = a.getResponsibleIdentifier();
@@ -539,7 +553,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 							messages.add(m);
 						}
 					}
-					
+
 					if (StringUtil.isNotNullAndNotEmpty(subR)) {
 						if (StringUtil.isNotNullAndNotEmpty(actR)) {
 							if (!subR.equals(actR)) {

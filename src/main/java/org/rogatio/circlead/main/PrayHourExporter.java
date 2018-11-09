@@ -185,23 +185,23 @@ public class PrayHourExporter {
 					cellStyle.setVerticalAlignment(org.apache.poi.ss.usermodel.VerticalAlignment.TOP);
 					cellStyle.setWrapText(true);
 
+					if (mode.equals(MODE_NEED)) {
+						if (team.getRedundance() < 1.0) {
+							ExcelUtil.addColorBackground(cellStyle, (byte) 255, (byte) 255, (byte) 0);
+						}
+						if (team.getTeamSize() < 2&&(!team.isSpecialized())) {
+							ExcelUtil.addColorBackground(cellStyle, (byte) 255, (byte) 0, (byte) 0);
+						}
+					}
 					if (mode.equals(MODE_INTERN)) {
-						if (team.getTeamSize() < 2) {
+						if ((team.getTeamSize() < 2)&&(!team.isSpecialized())) {
 							ExcelUtil.addColorBackground(cellStyle, (byte) 240, (byte) 240, (byte) 240);
 						}
 					}
 					if (mode.equals(MODE_EXTERN)) {
-						if (team.getTeamSize() > 1) {
+						if ((team.getTeamSize() > 1)||(!team.isSpecialized())) {
 							cell.setCellStyle(cellStyle);
 							cell.setCellValue(rts);
-						}
-					}
-					if (mode.equals(MODE_NEED)) {
-						if (team.getTeamSize() < 2) {
-							ExcelUtil.addColorBackground(cellStyle, (byte) 255, (byte) 0, (byte) 0);
-						}
-						if (team.getRedundance() < 1.0) {
-							ExcelUtil.addColorBackground(cellStyle, (byte) 255, (byte) 255, (byte) 0);
 						}
 					}
 					if (mode.equals(MODE_DETAIL)) {

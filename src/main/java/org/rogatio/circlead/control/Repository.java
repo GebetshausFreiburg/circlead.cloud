@@ -144,20 +144,21 @@ public final class Repository {
 	 */
 	public TreeMap<Activity, List<ActivityDataitem>> getSubactivitiesWithResponsible(String roleTitle) {
 		TreeMap<Activity, List<ActivityDataitem>> map = new TreeMap<Activity, List<ActivityDataitem>>();
-		List<Activity> allA = Repository.getInstance().getActivities();
-		for (Activity activity : allA) {
+		List<Activity> allActivities = Repository.getInstance().getActivities();
+		for (Activity activity : allActivities) {
 			List<ActivityDataitem> ac = activity.getSubactivitiesWithResponsible(roleTitle);
-			if (ObjectUtil.isListNotNullAndEmpty(ac)) { 
+			if (ObjectUtil.isListNotNullAndEmpty(ac)) {
 				map.put(activity, ac);
 			}
 		}
+
 		return map;
 	}
 
 	/**
 	 * Gets the roles with competence.
 	 *
-	 * @param person the person
+	 * @param person     the person
 	 * @param competence the competence
 	 * @return the roles with competence
 	 */
@@ -181,7 +182,7 @@ public final class Repository {
 	/**
 	 * Gets the skill of person competence.
 	 *
-	 * @param person the person
+	 * @param person     the person
 	 * @param competence the competence
 	 * @return the skill of person competence
 	 */
@@ -225,7 +226,7 @@ public final class Repository {
 	/**
 	 * Gets the parent roles.
 	 *
-	 * @param role the role
+	 * @param role    the role
 	 * @param parents the parents
 	 * @return the parent roles
 	 */
@@ -264,6 +265,49 @@ public final class Repository {
 
 		return list;
 	}
+	
+	/**Unfinished*/
+/*	public void changeNameOfRole(String roleIdentifierOld, String roleIdentifierNew) {
+		Role role = this.getRole(roleIdentifierOld);
+		if (role!=null) {
+			role.setTitle(roleIdentifierNew);
+		}
+		
+		List<Team> teams = this.getTeamsWithRole(roleIdentifierOld);
+		for (Team team : teams) {
+			List<TeamEntry> entries = team.getTeamEntries();
+			for (TeamEntry entry : entries) {
+				if  (StringUtil.isNotNullAndNotEmpty(entry.getRoleIdentifier())) {
+					if (entry.getRoleIdentifier().equals(roleIdentifierOld)) {
+						entry.setRoleIdentifier(roleIdentifierNew);
+					}
+				}
+			}
+		}
+		
+		List<Activity> activities = this.getActivities();
+		for (Activity activity : activities) {
+			if (StringUtil.isNotNullAndNotEmpty(activity.getResponsibleIdentifier())) {
+				if (activity.getResponsibleIdentifier().equals(roleIdentifierOld)) {
+					activity.setResponsibleIdentifier(roleIdentifierNew);
+				}
+			}
+			if (StringUtil.isNotNullAndNotEmpty(activity.getAccountableIdentifier())) {
+				if (activity.getAccountableIdentifier().equals(roleIdentifierOld)) {
+					activity.setAccountableIdentifier(roleIdentifierNew);
+				}
+			}
+			if (ObjectUtil.isListNotNullAndEmpty(activity.getSupplierIdentifiers())) {
+				
+				for (String s : activity.getSupplierIdentifiers()) {
+					
+				}
+				if (activity.getAccountableIdentifier().equals(roleIdentifierOld)) {
+					activity.setAccountableIdentifier(roleIdentifierNew);
+				}
+			}
+		}
+	}*/
 
 	/**
 	 * Gets the names of all roles.
@@ -1028,6 +1072,10 @@ public final class Repository {
 	 * @return the teams with role in team
 	 */
 	public List<Team> getTeamsWithRole(Role role) {
+		return getTeamsWithRole(role.getTitle());
+	}
+	
+	public List<Team> getTeamsWithRole(String roleIdentifier) {
 		List<Team> list = new ArrayList<Team>();
 
 		for (Team team : this.getTeams()) {
@@ -1035,7 +1083,7 @@ public final class Repository {
 			if (ObjectUtil.isListNotNullAndEmpty(entries)) {
 				for (TeamEntry entry : entries) {
 					if (StringUtil.isNotNullAndNotEmpty(entry.getRoleIdentifier())) {
-						if (entry.getRoleIdentifier().equals(role.getTitle())) {
+						if (entry.getRoleIdentifier().equals(roleIdentifier)) {
 							list.add(team);
 						}
 					}
@@ -1118,7 +1166,7 @@ public final class Repository {
 
 		return foundRoles;
 	}
-	
+
 	/**
 	 * Gets the teams with the person in team.
 	 *
@@ -1301,7 +1349,7 @@ public final class Repository {
 		}
 		return rootRoles;
 	}
-	
+
 	/**
 	 * Gets the root roles.
 	 *
@@ -1315,9 +1363,9 @@ public final class Repository {
 				rootRoles.add(role);
 			}
 		}
-		
+
 		Collections.sort(rootRoles, comparator);
-		
+
 		return rootRoles;
 	}
 
@@ -1388,12 +1436,12 @@ public final class Repository {
 
 		return childRoles;
 	}
-	
+
 	/**
 	 * Gets the role children.
 	 *
 	 * @param roleIdentifier the role identifier
-	 * @param comparator the comparator
+	 * @param comparator     the comparator
 	 * @return the role children
 	 */
 	public List<Role> getRoleChildren(String roleIdentifier, Comparator<Role> comparator) {
@@ -1412,7 +1460,7 @@ public final class Repository {
 		}
 
 		Collections.sort(childRoles, comparator);
-		
+
 		return childRoles;
 	}
 

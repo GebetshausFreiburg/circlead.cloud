@@ -702,6 +702,9 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 
 		List<Team> foundTeams = R.getTeamsWithMember(this);
 		if (!ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
+			
+			// TODO EERGÄNZEN das Rollenträger keinen Fehler werfen die Inaktiv und Pausiert sind.
+			
 			ValidationMessage m = new ValidationMessage(this);
 			m.warning("Person has no team-role", "Person '" + this.getFullname() + "' has no related team-role");
 			messages.add(m);

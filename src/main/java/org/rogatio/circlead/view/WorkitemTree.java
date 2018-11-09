@@ -70,14 +70,15 @@ public class WorkitemTree {
 		setRoot(root);
 
 		Competence rootCompetence = Repository.getInstance().getRootCompetence();
+		if (rootCompetence != null) {
+			for (Competence r : rootCompetence.getRootCompetencies()) {
+				addChildNodeCompetence(root, r);
+			}
 
-		for (Competence r : rootCompetence.getRootCompetencies()) {
-			addChildNodeCompetence(root, r);
-		}
-
-		createLeafColorMap();
-		for (Competence c : Repository.getInstance().getCompetencies()) {
-			createTrunkColorMap(c);
+			createLeafColorMap();
+			for (Competence c : Repository.getInstance().getCompetencies()) {
+				createTrunkColorMap(c);
+			}
 		}
 	}
 

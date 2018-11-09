@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer;
@@ -23,6 +25,7 @@ import org.rogatio.circlead.control.synchronizer.atlassian.parser.ListParserElem
 import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
+import org.rogatio.circlead.main.SyncCirclead;
 import org.rogatio.circlead.model.Parameter;
 import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.data.ActivityDataitem;
@@ -43,6 +46,8 @@ import org.rogatio.circlead.view.SvgBuilder;
  */
 public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidator, IDataRow {
 
+	final static Logger LOGGER = LogManager.getLogger(Role.class);
+	
 	/**
 	 * Instantiates a new emtpy role.
 	 */
@@ -476,7 +481,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		renderer.addItem(element, SYNONYMS.toString(), this.getSynonyms());
 
 		List<Role> childRoles = R.getRoleChildren(this.getTitle());
-		if (childRoles != null) {
+		if (childRoles != null) { 
 			if (childRoles.size() > 0) {
 				renderer.addH2(element, CHILDS.toString());
 				renderer.addRoleList(element, childRoles);
@@ -521,7 +526,6 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 					List<TeamEntry> x = team.getTeamEntries();
 					Element ul2 = li.appendElement("ul");
 					for (TeamEntry e : x) {
-						// this.addTeamPerson(ul2, team, e, renderer);
 						if (e.getRoleIdentifier().equals(this.getTitle())) {
 							List<String> pi = e.getPersons();
 							if (ObjectUtil.isListNotNullAndEmpty(pi)) {
@@ -533,12 +537,11 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 							}
 						}
 					}
-				}
+				} 
 			}
 		}
 
 		if (!foundSomeRoleResponsible) {
-
 			if (this.isSituational()) {
 				renderer.addH2(element, ROLEPERSONS.toString());
 				renderer.addStatus(element, SITUATIONAL.toString());
@@ -554,7 +557,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		}
 
 		renderer.addH2(element, TASKS.toString());
-
+		
 		List<String> divActivities = getActivitiesNotGlobal();
 		if (ObjectUtil.isListNotNullAndEmpty(divActivities)) {
 			renderer.addList(element, divActivities);
@@ -587,21 +590,13 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		if (ObjectUtil.isListNotNullAndEmpty(ga)) {
 			renderer.addActivityList(element, ga);
 		}
-
+		
 		for (Activity activity : map.keySet()) {
 			List<ActivityDataitem> subactivities = map.get(activity);
 			if (ObjectUtil.isListNotNullAndEmpty(subactivities)) {
 				renderer.addSubActivityList(element, subactivities, activity, this);
 			}
 		}
-
-		/*
-		 * List<Activity> allA = R.getActivities(); for (Activity activity : allA) {
-		 * List<ActivityDataitem> ac =
-		 * activity.getSubactivitiesWithResponsible(this.getTitle()); if
-		 * (ObjectUtil.isListNotNullAndEmpty(ac)) { renderer.addSubActivityList(element,
-		 * ac, activity); } }
-		 */
 
 		if (ObjectUtil.isListNotNullAndEmpty(this.getResponsibilities())) {
 			renderer.addH2(element, RESPONSIBILITIES.toString());
@@ -644,14 +639,11 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 				if (entry.getRoleIdentifier().equals(this.getTitle())) {
 					int skillValue = 0;
 					try {
-						// System.out.println(entry.getLevel());
 						skillValue = Integer.parseInt(entry.getLevel());
 					} catch (Exception e) {
 						skillValue = 0;
 					}
-					// System.out.println(skillValue);
 					val += ((double) skillValue) * entry.getPersonIdentifiers().size();
-					// System.out.println(val);
 				}
 			}
 

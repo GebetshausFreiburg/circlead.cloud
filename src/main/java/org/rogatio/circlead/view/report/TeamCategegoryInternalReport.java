@@ -10,11 +10,18 @@ package org.rogatio.circlead.view.report;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dmfs.rfc5545.Weekday;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.CircleadRecurrenceRule;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
+import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer;
+import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
+import org.rogatio.circlead.main.SyncCirclead;
 import org.rogatio.circlead.model.work.Team;
+import org.rogatio.circlead.util.ObjectUtil;
+import org.rogatio.circlead.util.PropertyUtil;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
@@ -23,6 +30,8 @@ import org.rogatio.circlead.view.ISynchronizerRendererEngine;
  */
 public class TeamCategegoryInternalReport extends DefaultReport {
 
+	final static Logger LOGGER = LogManager.getLogger(TeamCategegoryInternalReport.class);
+	
 	/** The category. */
 	private String category;
 
@@ -32,6 +41,7 @@ public class TeamCategegoryInternalReport extends DefaultReport {
 	 * @param category the category
 	 */
 	public TeamCategegoryInternalReport(String category) {
+		LOGGER.debug("Create Team Category Analysis Report for  '"+category+"'");
 		this.setName("Team Category Analysis Report");
 		this.category = category;
 		this.setDescription("Zeigt alle Teams der Kategorie '"+category+"' an bedarfsorientierten Wochenbericht.");
@@ -49,6 +59,12 @@ public class TeamCategegoryInternalReport extends DefaultReport {
 		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 		Element element = new Element("p");
 
+		List<Team> teams = R.getTeamsWithCategory(category);
+		if (!ObjectUtil.isListNotNullAndEmpty(teams)) {
+			element.appendText("Report not created, because not team found with category '"+category+"'");
+			return element;
+		}
+		
 		Element table = new Element("table");
 		table.attr("class", "wrapped");
 		Element tbody = table.appendElement("tbody");
@@ -80,7 +96,6 @@ public class TeamCategegoryInternalReport extends DefaultReport {
 					tr.appendElement("th").attr("colspan", "1").appendText(s);
 				} else {
 					boolean found = false;
-					List<Team> teams = R.getTeamsWithCategory(category);
 					for (Team team : teams) {
 						if (team.getRecurrenceRule() != null) {
 							CircleadRecurrenceRule crr = new CircleadRecurrenceRule(team.getRecurrenceRule());
@@ -100,13 +115,27 @@ public class TeamCategegoryInternalReport extends DefaultReport {
 								}
 
 								Element p = td.appendElement("p");
-								p.appendElement("b").appendText(team.getTeamType());
+//								p.appendElement("b").appendText(team.getTeamType());
+								
+								if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
+									p.appendElement("b").append("<ac:link><ri:page ri:content-title=\"" + team.getTitle()
+											+ "\" ri:version-at-save=\"1\"/><ac:plain-text-link-body><![CDATA[" + team.getTeamType()
+											+ ""  + "]]></ac:plain-text-link-body></ac:link>");
+								} else if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
+									p.appendElement("b").appendElement("a").attr("href", "" + team.getId(synchronizer) + ".html")
+											.appendText(team.getTeamType() );
+								}
+								
+								if (team.isSpecialized()) {
+									p.appendText(PropertyUtil.getInstance().getApplicationSpecializedChar());
+								}
+								
 								if (team.getTeamSubtype() != null) {
 									p = td.appendElement("p");
 									p.appendText(team.getTeamSubtype());
 								}
 								p = td.appendElement("p");
-								if (team.getTeamSize() == 1) {
+								if (team.getTeamSize() == 1&&(!team.isSpecialized())) {
 									renderer.addStatus(p, "Intern");
 								} else {
 									renderer.addStatus(p, "Extern");

@@ -45,7 +45,7 @@ import com.dropbox.core.v2.DbxTeamClientV2;
  * as actual "copy" of Atlassian-Storage
  */
 public class SyncCirclead {
-	// TODO BUGFIX for activities and subactivities, see Kanban-Ablauf
+	// TODO Rollenname erstezen als Agorithmus einbauen, Bsp. Gebetstundenleiter ist falsch
 	// TODO Comment for person in team
 	// TODO Validation role status vs. person-holder status (i.e. paused, closed)
 	// TODO Validation "empty" (<10 chars) text in role

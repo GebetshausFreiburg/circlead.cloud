@@ -3,8 +3,6 @@ package org.rogatio.circlead.main;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -156,6 +154,11 @@ public class Launcher {
 		} else {
 			LOGGER.info("FileSynchronizer disabled");
 		}
+		
+		// Force Deletion of json-data for FileSynchronizer if AtlassianSynchronizer is used
+		if (PropertyUtil.getInstance().isAtlassianSynchronizerEnabled()&&PropertyUtil.getInstance().isFileSynchronizerEnabled()) {
+			fsynchronizer.deleteAll();
+		}
 
 		if (StringUtil.isNotNullAndNotEmpty(pojoJqlArgs) && StringUtil.isNotNullAndNotEmpty(pojoRoleArgs)) {
 			String roleId = pojoRoleArgs.trim();
@@ -220,6 +223,7 @@ public class Launcher {
 
 		}
 
+		@SuppressWarnings("unused")
 		List<SynchronizerResult> results = repository.updateWorkitems();
 
 		if (reports) {

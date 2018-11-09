@@ -299,7 +299,7 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			for (TeamEntry teamEntry : list) {
 				List<String> p = teamEntry.getPersons();
 				if (ObjectUtil.isListNotNullAndEmpty(p)) {
-					if (teamEntry.getNeeded() >= 0.0) {
+					if (teamEntry.getNeeded() > 0.0) {
 						sum += ((double) p.size()) / ((double) teamEntry.getNeeded());
 					} else {
 						sum += ((double) p.size());
