@@ -127,7 +127,7 @@ public class Competence extends DefaultWorkitem implements IWorkitemRenderer, IV
 
 	/**
 	 * Check if root competence contains a competence named by identifier in
-	 * competence-tree
+	 * competence-tree.
 	 *
 	 * @param competence the competenceIdentifier of the searched competence
 	 * @return true, if successful found competence in tree
@@ -141,7 +141,7 @@ public class Competence extends DefaultWorkitem implements IWorkitemRenderer, IV
 		return false;
 	}
 
-	/** Map CompetenceDataitem to correlated Competence-Workitem */
+	/**  Map CompetenceDataitem to correlated Competence-Workitem. */
 	private Map<CompetenceDataitem, Competence> map = new HashMap<CompetenceDataitem, Competence>();
 
 	/**
@@ -162,7 +162,7 @@ public class Competence extends DefaultWorkitem implements IWorkitemRenderer, IV
 	}
 
 	/**
-	 * Gets the competencies
+	 * Gets the competencies.
 	 *
 	 * @return the competencies
 	 */
@@ -242,7 +242,7 @@ public class Competence extends DefaultWorkitem implements IWorkitemRenderer, IV
 	}
 
 	/**
-	 * Gets the child competences
+	 * Gets the child competences.
 	 *
 	 * @param competence the competenceIdentifier
 	 * @return the children of the competence with named competenceIdentifier

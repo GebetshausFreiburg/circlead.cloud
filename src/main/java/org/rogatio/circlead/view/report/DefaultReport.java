@@ -20,6 +20,7 @@ import org.rogatio.circlead.control.synchronizer.ISynchronizer;
  */
 public class DefaultReport implements IReport {
 
+	/** The r. */
 	protected final Repository R = Repository.getInstance();
 
 	/** The name. */
@@ -67,6 +68,9 @@ public class DefaultReport implements IReport {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.report.IReport#getHead()
+	 */
 	@Override
 	public List<String> getHead() {
 		List<String> head = new ArrayList<String>();
@@ -74,6 +78,9 @@ public class DefaultReport implements IReport {
 		return head;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.report.IReport#getDescription()
+	 */
 	@Override
 	public String getDescription() {
 		return description;

@@ -75,7 +75,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class AtlassianSynchronizer extends DefaultSynchronizer {
 
+	/** The urlconfluence. */
 	private final String URLCONFLUENCE = PropertyUtil.getInstance().getValue(PropertyUtil.ATLASSIAN_CONFLUENCE_URL);
+	
+	/** The dedicatedserver. */
 	private final boolean DEDICATEDSERVER = PropertyUtil.getInstance()
 			.getBooleanValue(PropertyUtil.ATLASSIAN_SERVER_DEDICATED);
 
@@ -434,7 +437,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	private Map<String, String> acestorPages = new HashMap<String, String>();
 
 	/**
-	 * Delete old page versions of an workitem
+	 * Delete old page versions of an workitem.
 	 *
 	 * @param type the type of the workitem
 	 */
@@ -487,7 +490,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	private int deleteVersionCounterMax = 0;
 
 	/**
-	 * Delete all versions of a page by given id
+	 * Delete all versions of a page by given id.
 	 *
 	 * @param pageId the page id
 	 * @return true, if successful
@@ -588,7 +591,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	}
 
 	/**
-	 * Loads the acestor page-id for the page as workitem-representation
+	 * Loads the acestor page-id for the page as workitem-representation.
 	 *
 	 * @param type the type of a workitem as string
 	 * @return the acestor id

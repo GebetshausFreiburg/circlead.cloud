@@ -13,26 +13,26 @@ import java.util.List;
 import org.rogatio.circlead.view.IWorkitemRenderer;
 
 /**
- * The Interface IReport
+ * The Interface IReport.
  */
 public interface IReport extends IWorkitemRenderer {
 
 	/**
-	 * Gets the name of the report
+	 * Gets the name of the report.
 	 *
 	 * @return the name of the report
 	 */
 	public String getName();
 	
 	/**
-	 * Gets the description of the report
+	 * Gets the description of the report.
 	 *
 	 * @return the description of the report
 	 */
 	public String getDescription();
 	
 	/**
-	 * Gets the head of html-page
+	 * Gets the head of html-page.
 	 *
 	 * @return the head of the page
 	 */

@@ -266,7 +266,11 @@ public final class Repository {
 		return list;
 	}
 	
-	/**Unfinished*/
+	/**
+	 * Unfinished.
+	 *
+	 * @return the role names
+	 */
 /*	public void changeNameOfRole(String roleIdentifierOld, String roleIdentifierNew) {
 		Role role = this.getRole(roleIdentifierOld);
 		if (role!=null) {
@@ -1075,6 +1079,12 @@ public final class Repository {
 		return getTeamsWithRole(role.getTitle());
 	}
 	
+	/**
+	 * Gets the teams with role.
+	 *
+	 * @param roleIdentifier the role identifier
+	 * @return the teams with role
+	 */
 	public List<Team> getTeamsWithRole(String roleIdentifier) {
 		List<Team> list = new ArrayList<Team>();
 

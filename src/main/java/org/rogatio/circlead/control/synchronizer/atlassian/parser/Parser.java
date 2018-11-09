@@ -228,6 +228,14 @@ public class Parser {
 		return table;
 	}
 
+	/**
+	 * Creates the competence table.
+	 *
+	 * @param competencies the competencies
+	 * @param synchronizer the synchronizer
+	 * @param activatedLinks the activated links
+	 * @return the element
+	 */
 	public static Element createCompetenceTable(List<CompetenceDataitem> competencies, ISynchronizer synchronizer,
 			boolean activatedLinks) {
 

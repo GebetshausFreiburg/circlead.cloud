@@ -46,6 +46,7 @@ import org.rogatio.circlead.view.SvgBuilder;
  */
 public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidator, IDataRow {
 
+	/** The Constant LOGGER. */
 	final static Logger LOGGER = LogManager.getLogger(Role.class);
 	
 	/**

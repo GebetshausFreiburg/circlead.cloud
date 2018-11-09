@@ -12,22 +12,22 @@ import org.dmfs.rfc5545.recur.Freq;
  */
 public class Timeslice {
 
-	/** The freqquence of the timeslice */
+	/**  The freqquence of the timeslice. */
 	private String freq;
 
-	/** The start of the timeslice */
+	/**  The start of the timeslice. */
 	private Calendar start;
 
-	/** The end of the timeslice */
+	/**  The end of the timeslice. */
 	private Calendar end;
 
 	/** The slice start. */
 	private String sliceStart;
 
-	/** The unit value of the slice */
+	/**  The unit value of the slice. */
 	private int unitValue;
 
-	/** The allokation of the slice */
+	/**  The allokation of the slice. */
 	private double allokation;
 
 	/**
@@ -140,7 +140,7 @@ public class Timeslice {
 	}
 
 	/**
-	 * Gets the allokation of the timeslice
+	 * Gets the allokation of the timeslice.
 	 *
 	 * @return the allokation
 	 */
@@ -149,7 +149,7 @@ public class Timeslice {
 	}
 
 	/**
-	 * Sets the allokation of a timeslice
+	 * Sets the allokation of a timeslice.
 	 *
 	 * @param allokation the new allokation
 	 */

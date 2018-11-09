@@ -19,7 +19,6 @@ import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.util.PropertyUtil;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class DefaultWorkitem is the default working item for all other workitems.
  * 

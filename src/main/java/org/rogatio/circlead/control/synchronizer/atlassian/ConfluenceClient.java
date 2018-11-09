@@ -30,6 +30,7 @@ import org.rogatio.circlead.util.PropertyUtil;
  */
 public class ConfluenceClient extends HttpClient {
 
+	/** The limit. */
 	private final int LIMIT = PropertyUtil.getInstance().getIntValue(PropertyUtil.ATLASSIAN_QUERY_LIMIT);
 	
 	/** The rest prefix. Is different for cloud to dedicated server */
@@ -60,6 +61,9 @@ public class ConfluenceClient extends HttpClient {
 		}
 	}
 	
+	/**
+	 * Instantiates a new confluence client.
+	 */
 	public ConfluenceClient() {
 		this.baseUrl = PropertyUtil.getInstance().getConfluenceUrl();
 		this.user = PropertyUtil.getInstance().getAtlassianUser();

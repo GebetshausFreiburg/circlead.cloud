@@ -32,13 +32,13 @@ public class ValidationMessage {
 		DEBUG
 	};
 
-	/** The type validation type of message */
+	/**  The type validation type of message. */
 	private Type type;
 
-	/** The cause of the validation-incident */
+	/**  The cause of the validation-incident. */
 	private String cause;
 
-	/** The message of the validation */
+	/**  The message of the validation. */
 	private String message;
 
 	/** The possible solution of the message. Is optional.*/
@@ -119,7 +119,7 @@ public class ValidationMessage {
 	}
 
 	/**
-	 * Gets the cause of the message
+	 * Gets the cause of the message.
 	 *
 	 * @return the cause
 	 */
@@ -137,7 +137,7 @@ public class ValidationMessage {
 	}
 
 	/**
-	 * Gets the solution of the message
+	 * Gets the solution of the message.
 	 *
 	 * @return the solution
 	 */
@@ -156,10 +156,9 @@ public class ValidationMessage {
 	}
 
 	/**
-	 * Sets debug message
+	 * Sets debug message.
 	 *
-	 * @param message
-	 *            the message
+	 * @param message            the message
 	 * @return the validation message
 	 */
 	public ValidationMessage debug(String message) {
@@ -169,10 +168,9 @@ public class ValidationMessage {
 	}
 
 	/**
-	 * Sets info message
+	 * Sets info message.
 	 *
-	 * @param message
-	 *            the message
+	 * @param message            the message
 	 * @return the validation message
 	 */
 	public ValidationMessage info(String message) {
@@ -191,12 +189,10 @@ public class ValidationMessage {
 	}
 
 	/**
-	 * Sets Warning-Message
+	 * Sets Warning-Message.
 	 *
-	 * @param cause
-	 *            the cause
-	 * @param message
-	 *            the message
+	 * @param cause            the cause
+	 * @param message            the message
 	 * @return the validation message
 	 */
 	public ValidationMessage warning(String cause, String message) {
@@ -226,12 +222,10 @@ public class ValidationMessage {
 	}
 
 	/**
-	 * Sets Error-Message
+	 * Sets Error-Message.
 	 *
-	 * @param cause
-	 *            the cause
-	 * @param message
-	 *            the message
+	 * @param cause            the cause
+	 * @param message            the message
 	 * @return the validation message
 	 */
 	public ValidationMessage error(String cause, String message) {

@@ -139,6 +139,9 @@ public class DefaultSynchronizer implements ISynchronizer {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.control.synchronizer.ISynchronizer#writeIndex()
+	 */
 	@Override
 	public void writeIndex() {
 	}

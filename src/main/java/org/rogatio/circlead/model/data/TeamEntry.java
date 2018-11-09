@@ -12,7 +12,6 @@ import org.rogatio.circlead.util.StringUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class TeamEntry is a subclass of the
  * {@link org.rogatio.circlead.model.data.TeamDataitem}.
@@ -209,7 +208,7 @@ public class TeamEntry {
 	}
 
 	/**
-	 * Gets the recurrence rule of a person set by personIdentifier
+	 * Gets the recurrence rule of a person set by personIdentifier.
 	 *
 	 * @param personIdentifier the person identifier
 	 * @return the recurrence rule of the person. If not set empty string "" is
@@ -225,7 +224,7 @@ public class TeamEntry {
 	}
 
 	/**
-	 * Checks for personal recurrence rule
+	 * Checks for personal recurrence rule.
 	 *
 	 * @param personIdentifier the person identifier
 	 * @return true, if successful

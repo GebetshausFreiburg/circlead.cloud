@@ -117,7 +117,7 @@ public final class SynchronizerFactory {
 	}
 
 	/**
-	 * Gets the synchronizers as collection
+	 * Gets the synchronizers as collection.
 	 *
 	 * @return the synchronizer
 	 */

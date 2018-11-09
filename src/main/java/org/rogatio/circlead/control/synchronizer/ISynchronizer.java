@@ -23,17 +23,20 @@ import org.rogatio.circlead.view.report.IReport;
 public interface ISynchronizer {
 	
 	/**
-	 * Load index for all workitems which where found by synchronizer of named workitem-type
+	 * Load index for all workitems which where found by synchronizer of named workitem-type.
 	 *
 	 * @param workitemType the workitem type
 	 * @return the list of query results of found items
 	 */
 	public List<String> loadIndex(WorkitemType workitemType);
 	
+	/**
+	 * Write index.
+	 */
 	public void writeIndex();
 	
 	/**
-	 * Gets the workitem of named id
+	 * Gets the workitem of named id.
 	 *
 	 * @param id the workitem of specific synchronizer. Every synchronizer could have own id-logic
 	 * @return the loaded workitem
@@ -42,7 +45,7 @@ public interface ISynchronizer {
 	public IWorkitem get(String id) throws SynchronizerException;
 	
 	/**
-	 * Delete workitem in system which is connected through synchronizer
+	 * Delete workitem in system which is connected through synchronizer.
 	 *
 	 * @param workitem the workitem to delete
 	 * @return the result and response of deletion
@@ -51,7 +54,7 @@ public interface ISynchronizer {
 	public String delete(IWorkitem workitem) throws SynchronizerException ;
 	
 	/**
-	 * Adds workitem to synchronized system
+	 * Adds workitem to synchronized system.
 	 *
 	 * @param workitem the workitem to add
 	 * @return the synchronizer result of adding item
@@ -60,7 +63,7 @@ public interface ISynchronizer {
 	public SynchronizerResult add(IWorkitem workitem) throws SynchronizerException ;
 	
 	/**
-	 * Adds the report to synchronized system
+	 * Adds the report to synchronized system.
 	 *
 	 * @param report the report to add
 	 * @return the synchronizer result
@@ -69,7 +72,7 @@ public interface ISynchronizer {
 	public SynchronizerResult add(IReport report) throws SynchronizerException;
 	
 	/**
-	 * Update report on synchronized system
+	 * Update report on synchronized system.
 	 *
 	 * @param report the report to update
 	 * @return the synchronizer result for update
@@ -78,7 +81,7 @@ public interface ISynchronizer {
 	public SynchronizerResult update(IReport report) throws SynchronizerException;
 	
 	/**
-	 * Update workitem on synchronized system
+	 * Update workitem on synchronized system.
 	 *
 	 * @param workitem the workitem to update
 	 * @return the synchronizer result
@@ -87,7 +90,7 @@ public interface ISynchronizer {
 	public SynchronizerResult update(IWorkitem workitem) throws SynchronizerException ;
 	
 	/**
-	 * Gets the pattern for valid id as regular expression which is allowed for synchronized system
+	 * Gets the pattern for valid id as regular expression which is allowed for synchronized system.
 	 *
 	 * @return the id pattern
 	 */

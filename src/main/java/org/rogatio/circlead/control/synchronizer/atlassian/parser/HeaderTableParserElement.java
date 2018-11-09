@@ -32,8 +32,14 @@ public class HeaderTableParserElement implements IParserElement {
 		parse(text);
 	}
 
+	/** The data list. */
 	private List<Map<String, String>> dataList = new ArrayList<Map<String, String>>();
 	
+	/**
+	 * Gets the data list.
+	 *
+	 * @return the data list
+	 */
 	public List<Map<String, String>> getDataList() {
 		return dataList;
 	}

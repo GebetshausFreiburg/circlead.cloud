@@ -75,6 +75,12 @@ public class DropboxUtil {
 
 	}
 	
+	/**
+	 * Gets the client from access token.
+	 *
+	 * @param accessToken the access token
+	 * @return the client from access token
+	 */
 	public static DbxClientV2 getClientFromAccessToken(String accessToken) {
 
 		DbxRequestConfig requestConfig = new DbxRequestConfig("circlead-cloud");
@@ -134,6 +140,12 @@ public class DropboxUtil {
 
 	}
 	
+	/**
+	 * Gets the team client from access token.
+	 *
+	 * @param accessToken the access token
+	 * @return the team client from access token
+	 */
 	public static DbxTeamClientV2 getTeamClientFromAccessToken(String accessToken) {
 		
 		DbxRequestConfig requestConfig = new DbxRequestConfig("circlead-cloud");
@@ -155,7 +167,7 @@ public class DropboxUtil {
 	}
 
 	/**
-	 * Prints the upload-progress in bytes to logger
+	 * Prints the upload-progress in bytes to logger.
 	 *
 	 * @param uploaded the uploaded bytes from a file
 	 * @param size the byte-size of a file
@@ -192,6 +204,13 @@ public class DropboxUtil {
 		}
 	}
 
+	/**
+	 * Upload file to team folder.
+	 *
+	 * @param dbxClient the dbx client
+	 * @param localFile the local file
+	 * @param targetPath the target path
+	 */
 	public static void uploadFileToTeamFolder(DbxTeamClientV2 dbxClient, File localFile, String targetPath) {
 		uploadFileToTeamFolder(dbxClient, localFile, targetPath, PropertyUtil.getInstance().getDropboxTeamUsername());
 	}

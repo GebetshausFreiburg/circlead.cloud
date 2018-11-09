@@ -26,9 +26,16 @@ import org.rogatio.circlead.util.PropertyUtil;
  */
 public class RoleIssueReport extends DefaultReport {
 
+	/** The urljira. */
 	private final String URLJIRA = PropertyUtil.getInstance().getValue(PropertyUtil.ATLASSIAN_JIRA_URL);
+	
+	/** The user. */
 	private final String USER = PropertyUtil.getInstance().getValue(PropertyUtil.ATLASSIAN_LOGIN_USER);
+	
+	/** The password. */
 	private final String PASSWORD = PropertyUtil.getInstance().getValue(PropertyUtil.ATLASSIAN_LOGIN_PASSWORD);
+	
+	/** The dedicatedserver. */
 	private final boolean DEDICATEDSERVER = PropertyUtil.getInstance().getBooleanValue(PropertyUtil.ATLASSIAN_SERVER_DEDICATED);
 	
 	/** The Constant LOGGER. */

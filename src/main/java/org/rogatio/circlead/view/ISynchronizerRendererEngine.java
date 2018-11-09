@@ -55,12 +55,36 @@ public interface ISynchronizerRendererEngine {
 	 */
 	public void addRolegroupList(Element element, List<Rolegroup> list);
 
+	/**
+	 * Adds the team list.
+	 *
+	 * @param element the element
+	 * @param list the list
+	 */
 	public void addTeamList(Element element, List<Team> list);
 
+	/**
+	 * Adds the person list.
+	 *
+	 * @param element the element
+	 * @param list the list
+	 */
 	public void addPersonList(Element element, List<Person> list);
 
+	/**
+	 * Adds the report list.
+	 *
+	 * @param element the element
+	 * @param list the list
+	 */
 	public void addReportList(Element element, List<IReport> list);
 
+	/**
+	 * Adds the how to list.
+	 *
+	 * @param element the element
+	 * @param list the list
+	 */
 	public void addHowToList(Element element, List<HowTo> list);
 
 	/**

@@ -23,6 +23,9 @@ import org.rogatio.circlead.view.ISynchronizerRendererEngine;
  */
 public class PersonListReport extends DefaultReport {
 
+	/**
+	 * Instantiates a new person list report.
+	 */
 	public PersonListReport() {
 		this.setName("PersonList Report");
 		this.setDescription("Adressliste aller Mitarbeiter in der Organisation");

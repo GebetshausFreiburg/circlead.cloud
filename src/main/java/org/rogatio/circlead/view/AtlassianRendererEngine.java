@@ -713,6 +713,9 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addTeamList(org.jsoup.nodes.Element, java.util.List)
+	 */
 	@Override
 	public void addTeamList(Element element, List<Team> list) {
 		if (ObjectUtil.isListNotNullAndEmpty(list)) {
@@ -725,6 +728,9 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addPersonList(org.jsoup.nodes.Element, java.util.List)
+	 */
 	@Override
 	public void addPersonList(Element element, List<Person> list) {
 		if (ObjectUtil.isListNotNullAndEmpty(list)) {
@@ -737,6 +743,9 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addReportList(org.jsoup.nodes.Element, java.util.List)
+	 */
 	@Override
 	public void addReportList(Element element, List<IReport> list) {
 		if (ObjectUtil.isListNotNullAndEmpty(list)) {
@@ -749,6 +758,9 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addHowToList(org.jsoup.nodes.Element, java.util.List)
+	 */
 	@Override
 	public void addHowToList(Element element, List<HowTo> list) {
 		if (ObjectUtil.isListNotNullAndEmpty(list)) {

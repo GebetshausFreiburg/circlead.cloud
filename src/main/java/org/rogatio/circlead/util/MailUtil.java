@@ -19,8 +19,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * The Class MailUtil allows to send a mail with or without attachment
- * 
+ * The Class MailUtil allows to send a mail with or without attachment.
+ *
  * @author Matthias Wegner
  */
 public class MailUtil {
@@ -40,6 +40,9 @@ public class MailUtil {
 	/** The password. */
 	private String password = "";
 
+	/**
+	 * Instantiates a new mail util.
+	 */
 	public MailUtil() {
 		this.host = PropertyUtil.getInstance().getMailHost();
 		this.port = PropertyUtil.getInstance().getMailPort();
@@ -63,14 +66,35 @@ public class MailUtil {
 		this.password = password;
 	}
 
+	/**
+	 * Send mail.
+	 *
+	 * @param to the to
+	 * @param subject the subject
+	 */
 	public void sendMail(String to, String subject) {
 		sendMail(PropertyUtil.getInstance().getMailSender(), to, subject, "", null);
 	}
 	
+	/**
+	 * Send mail.
+	 *
+	 * @param to the to
+	 * @param subject the subject
+	 * @param msg the msg
+	 */
 	public void sendMail(String to, String subject, String msg) {
 		sendMail(PropertyUtil.getInstance().getMailSender(), to, subject, msg, null);
 	}
 	
+	/**
+	 * Send mail.
+	 *
+	 * @param to the to
+	 * @param subject the subject
+	 * @param msg the msg
+	 * @param attachment the attachment
+	 */
 	public void sendMail(String to, String subject, String msg, File attachment) {
 		sendMail(PropertyUtil.getInstance().getMailSender(), to, subject, msg, attachment);
 	}

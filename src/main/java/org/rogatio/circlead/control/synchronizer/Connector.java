@@ -26,8 +26,8 @@ import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.report.IReport;
 
 /**
- * The Class Connector is used to bind all set synchronizers to the repository
- * 
+ * The Class Connector is used to bind all set synchronizers to the repository.
+ *
  * @author Matthias Wegner
  */
 public class Connector {
@@ -35,6 +35,11 @@ public class Connector {
 	/** The Constant logger. */
 	private final static Logger LOGGER = LogManager.getLogger(Connector.class);
 
+	/**
+	 * Gets the synchronizer.
+	 *
+	 * @return the synchronizer
+	 */
 	public Collection<ISynchronizer> getSynchronizer() {
 		return SynchronizerFactory.getInstance().getSynchronizer();
 	}
@@ -104,7 +109,7 @@ public class Connector {
 	}
 
 	/**
-	 * Load workitems of given type
+	 * Load workitems of given type.
 	 *
 	 * @param type the type
 	 * @return the list
@@ -280,7 +285,7 @@ public class Connector {
 	}
 
 	/**
-	 * Adds workitem to synchronized systems
+	 * Adds workitem to synchronized systems.
 	 *
 	 * @param workitem the workitem
 	 * @return the list
@@ -302,7 +307,7 @@ public class Connector {
 	}
 
 	/**
-	 * Adds report to synchronizes systems
+	 * Adds report to synchronizes systems.
 	 *
 	 * @param report the report
 	 * @return the list
@@ -324,7 +329,7 @@ public class Connector {
 	}
 
 	/**
-	 * Update workitem to synchronized system
+	 * Update workitem to synchronized system.
 	 *
 	 * @param workitem the workitem
 	 * @return the list
@@ -357,6 +362,9 @@ public class Connector {
 		return results;
 	}
 
+	/**
+	 * Write index.
+	 */
 	public void writeIndex() {
 		List<ISynchronizer> synchronizers = SynchronizerFactory.getInstance().getSynchronizers();
 		for (ISynchronizer synchronizer : synchronizers) {
@@ -385,7 +393,7 @@ public class Connector {
 	}
 
 	/**
-	 * Delete workitem in every synchronized system
+	 * Delete workitem in every synchronized system.
 	 *
 	 * @param workitem the workitem
 	 * @return the list
@@ -427,7 +435,7 @@ public class Connector {
 	}
 
 	/**
-	 * Load index of workitemtype in all synchronizes systems
+	 * Load index of workitemtype in all synchronizes systems.
 	 *
 	 * @param workitemType the workitem type
 	 * @return the list

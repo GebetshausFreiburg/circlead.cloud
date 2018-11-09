@@ -44,12 +44,13 @@ import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.IWorkitemRenderer;
 
 /**
- * The Class Activity is the working item for a activity
- * 
+ * The Class Activity is the working item for a activity.
+ *
  * @author Matthias Wegner
  */
 public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IValidator {
 
+	/** The Constant LOGGER. */
 	final static Logger LOGGER = LogManager.getLogger(Activity.class);
 
 	/**
@@ -300,7 +301,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	}
 
 	/**
-	 * Sets the subactivities from html-parser
+	 * Sets the subactivities from html-parser.
 	 *
 	 * @param table the new subactivities
 	 */

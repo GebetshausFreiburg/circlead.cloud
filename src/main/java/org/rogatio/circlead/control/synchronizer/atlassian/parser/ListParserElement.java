@@ -37,6 +37,11 @@ public class ListParserElement implements IParserElement {
 		parse(text);
 	}
 
+	/**
+	 * Checks if is situational.
+	 *
+	 * @return true, if is situational
+	 */
 	public boolean isSituational() {
 		if (ObjectUtil.isListNotNullAndEmpty(list)) {
 			if (list.size()==1) {

@@ -28,10 +28,9 @@ import org.rogatio.circlead.util.StringUtil;
 
 /**
  * The Class CircleadRecurrenceRule allows reccurence-rule-manipulation.
- * 
- * @see https://www.textmagic.com/free-tools/rrule-generator
- * 
+ *
  * @author Matthias Wegner
+ * @see https://www.textmagic.com/free-tools/rrule-generator
  */
 public class CircleadRecurrenceRule {
 
@@ -115,7 +114,7 @@ public class CircleadRecurrenceRule {
 	}
 
 	/**
-	 * Gets the human readable rule
+	 * Gets the human readable rule.
 	 *
 	 * @return the readable rule
 	 */
@@ -196,7 +195,7 @@ public class CircleadRecurrenceRule {
 	}
 
 	/**
-	 * Clean the recurrence-rule-representation from the prefix R or RRULE
+	 * Clean the recurrence-rule-representation from the prefix R or RRULE.
 	 *
 	 * @param rule the rule
 	 * @return the string

@@ -17,16 +17,16 @@ package org.rogatio.circlead.control.synchronizer;
  */
 public class SynchronizerResult {
 
-	/** The code of the response */
+	/**  The code of the response. */
 	private int code;
 
-	/** The message of the response (if available) */
+	/**  The message of the response (if available). */
 	private String message;
 
 	/** The used source. Could be a filepath, rest-url, ... */
 	private String source;
 
-	/** The content of the result of the synchronizer */
+	/**  The content of the result of the synchronizer. */
 	private String content;
 
 	/**

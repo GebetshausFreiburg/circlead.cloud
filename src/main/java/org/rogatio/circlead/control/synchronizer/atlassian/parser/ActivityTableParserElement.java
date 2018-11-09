@@ -21,12 +21,13 @@ import org.rogatio.circlead.model.data.ActivityDataitem;
 import org.rogatio.circlead.model.work.Activity;
 
 /**
- * The Class ActivityTableParserElement parses the html-table of an activity
- * 
+ * The Class ActivityTableParserElement parses the html-table of an activity.
+ *
  * @author Matthias Wegner
  */
 public class ActivityTableParserElement implements IParserElement {
 
+	/** The Constant LOGGER. */
 	final static Logger LOGGER = LogManager.getLogger(ActivityTableParserElement.class);
 
 	/**
@@ -51,7 +52,7 @@ public class ActivityTableParserElement implements IParserElement {
 	}
 
 	/**
-	 * Parses the html-activity-table
+	 * Parses the html-activity-table.
 	 *
 	 * @param text the text
 	 */

@@ -6,7 +6,6 @@ import org.rogatio.circlead.control.synchronizer.atlassian.JiraClient;
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.util.ObjectUtil;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class AtlassianPojoCreator creates POJO-Classes from found response to
  * atlassian-server. All sources are saved in folder "lib" in classpath.
@@ -20,7 +19,13 @@ public class AtlassianPojoCreator {
 	// "264700209", "CIRCLEAD");
 //	}
 
-	public static void createAtlassianPojos(String jiraJQL, String roleID) {
+	/**
+ * Creates the atlassian pojos.
+ *
+ * @param jiraJQL the jira JQL
+ * @param roleID the role ID
+ */
+public static void createAtlassianPojos(String jiraJQL, String roleID) {
 		createAtlassianPojos(jiraJQL, roleID, null);
 	}
 	

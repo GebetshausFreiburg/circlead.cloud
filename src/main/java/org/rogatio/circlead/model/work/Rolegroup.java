@@ -36,8 +36,8 @@ import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.IWorkitemRenderer;
 
 /**
- * The Class Rolegroup is the working item for a Rolegroup
- * 
+ * The Class Rolegroup is the working item for a Rolegroup.
+ *
  * @author Matthias Wegner
  */
 public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IValidator, IDataRow {

@@ -46,6 +46,11 @@ public class RolegroupReport extends DefaultReport {
 		return reports;
 	}
 
+	/**
+	 * Instantiates a new rolegroup report.
+	 *
+	 * @param rolegroupIdentifier the rolegroup identifier
+	 */
 	public RolegroupReport(String rolegroupIdentifier) {
 		Rolegroup rolegroup = Repository.getInstance().getRolegroup(rolegroupIdentifier);
 		if (rolegroup != null) { 

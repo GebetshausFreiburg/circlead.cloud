@@ -20,21 +20,22 @@ import java.util.List;
  */
 public enum WorkitemParameter {
 
-	/** The activity-parameter for a workitem*/
+	/**  The activity-parameter for a workitem. */
 	ACTIVITY(Parameter.ACTIVITY, "Aktivitäten", "Activity", "Activities", "Aufgaben"),
 
-	/** The howtos-parameter for a workitem */
+	/**  The howtos-parameter for a workitem. */
 	HOWTOS(Parameter.HOWTOS, "Arbeitsanweisungen", "Anleitungen", "Erläuterungen", "Knowledgebase"),
 
-	/** The teamroles-parameter for a workitem */
+	/**  The teamroles-parameter for a workitem. */
 	TEAMROLES(Parameter.TEAMROLES, "Teamroles", "Team"),
 	
-	/** The subactivity-parameter for a activity-workitem */
+	/**  The subactivity-parameter for a activity-workitem. */
 	SUBACTIVITY(Parameter.SUBACTIVITIES, "Subactivities"),
 
-	/** The activityid-parameter for a activity-workitem */
+	/**  The activityid-parameter for a activity-workitem. */
 	ACTIVITYID(Parameter.ACTIVITYID, "Activity-ID", "Aid", "Alternative Id"),
 
+	/** The competencetree. */
 	COMPETENCETREE(Parameter.COMPETENCETREE, "Kompetenzbaum", "Competency-Tree"),
 	
 	/** The description. */

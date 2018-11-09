@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The Class CompetenceDataitem hold the data of competence
- * 
+ * The Class CompetenceDataitem hold the data of competence.
+ *
  * @author Matthias Wegner
  */
 public class CompetenceDataitem extends DefaultDataitem {

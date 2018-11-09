@@ -44,6 +44,7 @@ import com.sun.codemodel.JCodeModel;
  */
 public class ObjectUtil {
 
+	/** The Constant LOGGER. */
 	private final static Logger LOGGER = LogManager.getLogger(ObjectUtil.class);
 
 	/**
@@ -225,6 +226,14 @@ public class ObjectUtil {
 		return "#" + Integer.toHexString(color.getRGB()).substring(2) + "";
 	}
 
+	/**
+	 * Creates the pojo zip from json.
+	 *
+	 * @param jsonSource the json source
+	 * @param className the class name
+	 * @param packageDir the package dir
+	 * @param zipFile the zip file
+	 */
 	public static void createPojoZipFromJson(String jsonSource, String className, String packageDir, String zipFile) {
 		JCodeModel codeModel = new JCodeModel();
 		GenerationConfig config = new DefaultGenerationConfig() {
@@ -253,6 +262,14 @@ public class ObjectUtil {
 
 	}
 
+	/**
+	 * Creates the pojo dir from json.
+	 *
+	 * @param jsonSource the json source
+	 * @param className the class name
+	 * @param packageDir the package dir
+	 * @param targetDir the target dir
+	 */
 	public static void createPojoDirFromJson(String jsonSource, String className, String packageDir, String targetDir) {
 		JCodeModel codeModel = new JCodeModel();
 		GenerationConfig config = new DefaultGenerationConfig() {

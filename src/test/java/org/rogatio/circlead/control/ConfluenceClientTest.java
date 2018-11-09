@@ -11,13 +11,19 @@ import org.rogatio.circlead.util.PropertyUtil;
 
 import junit.framework.TestCase;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class ConfluenceClientTest.
  */
 public class ConfluenceClientTest extends TestCase {
 
+	/** The urlconfluence. */
 	private final String URLCONFLUENCE = PropertyUtil.getInstance().getValue(PropertyUtil.ATLASSIAN_CONFLUENCE_URL);
+	
+	/** The user. */
 	private final String USER = PropertyUtil.getInstance().getValue(PropertyUtil.ATLASSIAN_LOGIN_USER);
+	
+	/** The password. */
 	private final String PASSWORD = PropertyUtil.getInstance().getValue(PropertyUtil.ATLASSIAN_LOGIN_PASSWORD);
 	
 	/** The client. */

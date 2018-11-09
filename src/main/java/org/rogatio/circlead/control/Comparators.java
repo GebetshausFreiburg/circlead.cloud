@@ -14,13 +14,13 @@ import org.rogatio.circlead.model.work.DefaultWorkitem;
 import org.rogatio.circlead.model.work.Role;
 
 /**
- * Comparators for workitems
- * 
+ * Comparators for workitems.
+ *
  * @author Matthias Wegner
  */
 public class Comparators {
 
-	/** Sorts workitems by title */
+	/**  Sorts workitems by title. */
 	public final static Comparator<DefaultWorkitem> TITLE = new Comparator<DefaultWorkitem>() {
 		@Override
 		public int compare(DefaultWorkitem o1, DefaultWorkitem o2) {
@@ -28,7 +28,7 @@ public class Comparators {
 		}
 	};
 
-	/** Sorts workitems by status */
+	/**  Sorts workitems by status. */
 	public final static Comparator<DefaultWorkitem> STATUS = new Comparator<DefaultWorkitem>() {
 		@Override
 		public int compare(DefaultWorkitem o1, DefaultWorkitem o2) {
@@ -36,7 +36,7 @@ public class Comparators {
 		}
 	};
 	
-	/** Sorts roles by redundance */
+	/**  Sorts roles by redundance. */
 	public final static Comparator<Role> REDUNDANCE = new Comparator<Role>() {
 		@Override
 		public int compare(Role o1, Role o2) {

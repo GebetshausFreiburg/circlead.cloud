@@ -28,8 +28,8 @@ import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.resource.Resource;
 
 /**
- * The Class Webserver to run a embedded jetty-webserver
- * 
+ * The Class Webserver to run a embedded jetty-webserver.
+ *
  * @author Matthias Wegner
  */
 public class Webserver extends Server {

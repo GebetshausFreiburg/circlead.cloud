@@ -30,11 +30,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class JiraClient extends HttpClient {
 
+	/** The limit. */
 	private final int LIMIT = PropertyUtil.getInstance().getIntValue(PropertyUtil.ATLASSIAN_QUERY_LIMIT);
 	
 	/** The rest prefix. Is different for cloud to dedicated server */
 	private String restPrefix = null;
 
+	/**
+	 * Instantiates a new jira client.
+	 */
 	public JiraClient() {
 		this.baseUrl = PropertyUtil.getInstance().getJiraUrl();
 		this.user = PropertyUtil.getInstance().getAtlassianUser();
