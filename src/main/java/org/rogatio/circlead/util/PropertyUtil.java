@@ -3,12 +3,21 @@ package org.rogatio.circlead.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class PropertyUtil.
  */
@@ -16,96 +25,110 @@ public class PropertyUtil {
 
 	/** The application version. */
 	public static String APPLICATION_VERSION = "application.version";
-	
+
 	/** The application name. */
 	public static String APPLICATION_NAME = "application.name";
-	
+
 	/** The dropbox credentials key. */
 	public static String DROPBOX_CREDENTIALS_KEY = "dropbox.credentials.key";
-	
+
 	/** The dropbox credentials secret. */
 	public static String DROPBOX_CREDENTIALS_SECRET = "dropbox.credentials.secret";
-	
+
 	/** The dropbox credentials accesstoken. */
 	public static String DROPBOX_CREDENTIALS_ACCESSTOKEN = "dropbox.credentials.accesstoken";
-	
+
 	/** The dropbox team displayusername. */
 	public static String DROPBOX_TEAM_DISPLAYUSERNAME = "dropbox.credentials.team.username";
-	
+
 	/** The application default rolegroup. */
 	public static String APPLICATION_DEFAULT_ROLEGROUP = "application.default.rolegroup";
-	
+
 	/** The application default teamcategory. */
 	public static String APPLICATION_DEFAULT_TEAMCATEGORY = "application.default.team.category";
 
+	/** The application default role. */
+	public static String APPLICATION_DEFAULT_ROLE = "application.default.role";
+
+	/** The runtime lastmodified date. */
+	public static String RUNTIME_LASTMODIFIED_DATE = "application.lastmodified";
+
 	/** The mail host. */
 	public static String MAIL_HOST = "mail.host";
-	
+
 	/** The mail port. */
 	public static String MAIL_PORT = "mail.port";
-	
+
 	/** The mail sender. */
 	public static String MAIL_SENDER = "mail.sender";
+
+	/** The application update mode. */
+	public static String APPLICATION_UPDATE_MODE = "application.mode.update";
 	
 	/** The mail username. */
 	public static String MAIL_USERNAME = "mail.username";
-	
+
 	/** The mail password. */
 	public static String MAIL_PASSWORD = "mail.password";
 
 	/** The file synchronizer enabled. */
 	public static String FILE_SYNCHRONIZER_ENABLED = "file.synchronizer.enabled";
-	
+
 	/** The file synchronizer read. */
 	public static String FILE_SYNCHRONIZER_READ = "file.synchronizer.read";
-	
+
 	/** The file synchronizer write. */
 	public static String FILE_SYNCHRONIZER_WRITE = "file.synchronizer.write";
 
 	/** The atlassian synchronizer enabled. */
 	public static String ATLASSIAN_SYNCHRONIZER_ENABLED = "atlassian.synchronizer.enabled";
-	
+
 	/** The atlassian synchronizer read. */
 	public static String ATLASSIAN_SYNCHRONIZER_READ = "atlassian.synchronizer.read";
-	
+
 	/** The atlassian synchronizer write. */
 	public static String ATLASSIAN_SYNCHRONIZER_WRITE = "atlassian.synchronizer.write";
 
 	/** The atlassian confluence url. */
 	public static String ATLASSIAN_CONFLUENCE_URL = "atlassian.confluence.url";
-	
+
 	/** The atlassian jira url. */
 	public static String ATLASSIAN_JIRA_URL = "atlassian.jira.url";
-	
+
 	/** The atlassian login user. */
 	public static String ATLASSIAN_LOGIN_USER = "atlassian.login.user";
-	
+
 	/** The atlassian login password. */
 	public static String ATLASSIAN_LOGIN_PASSWORD = "atlassian.login.password";
-	
+
 	/** The atlassian server dedicated. */
 	public static String ATLASSIAN_SERVER_DEDICATED = "atlassian.server.dedicated";
-	
+
 	/** The atlassian query limit. */
 	public static String ATLASSIAN_QUERY_LIMIT = "atlassian.query.limit";
 
+	/** The application specialized char. */
 	public static String APPLICATION_SPECIALIZED_CHAR = "application.specialized.char";
-	
+
 	/** The Constant LOGGER. */
 	private final static Logger LOGGER = LogManager.getLogger(PropertyUtil.class);
 
 	/** The instance. */
 	private static PropertyUtil instance = null;
 
-	/** The props. */
-	private Properties props = new Properties();
+	/** The ApplicationProperties. */
+	private Properties applicationProperties = new Properties();
+
+	/** The runtime properties. */
+	private Properties runtimeProperties = new Properties();
 
 	static {
-		LOGGER.info("" + PropertyUtil.getInstance().getValue(APPLICATION_NAME) + " (v"
-				+ PropertyUtil.getInstance().getValue(APPLICATION_VERSION) + ")");
+		LOGGER.info("" + PropertyUtil.getInstance().getApplicationValue(APPLICATION_NAME) + " (v"
+				+ PropertyUtil.getInstance().getApplicationValue(APPLICATION_VERSION) + ")");
 		LOGGER.info("Default Rolegroup: " + PropertyUtil.getInstance().getApplicationDefaultRolegroup());
 		LOGGER.info("Default Teamcategory: " + PropertyUtil.getInstance().getApplicationDefaultTeamcategory());
-
+		LOGGER.info("Application-Update-Mode is '"+PropertyUtil.getInstance().getApplicationUpdateMode()+"'");
+		
 		if (PropertyUtil.getInstance().isAtlassianSynchronizerEnabled()) {
 			LOGGER.info("URL of Jira is set to '" + PropertyUtil.getInstance().getJiraUrl() + "'");
 			LOGGER.info("URL of Confluence is set to '" + PropertyUtil.getInstance().getConfluenceUrl() + "'");
@@ -133,8 +156,10 @@ public class PropertyUtil {
 	private PropertyUtil() {
 		String currentDir = System.getProperty("user.dir");
 		String appConfigPath = currentDir + File.separatorChar + "circlead.properties";
+		String runtimeConfigPath = currentDir + File.separatorChar + "runtime.properties";
 		try {
-			props.load(new FileInputStream(appConfigPath));
+			applicationProperties.load(new FileInputStream(appConfigPath));
+			runtimeProperties.load(new FileInputStream(runtimeConfigPath));
 		} catch (FileNotFoundException e) {
 			LOGGER.error(e);
 		} catch (IOException e) {
@@ -155,15 +180,91 @@ public class PropertyUtil {
 	}
 
 	/**
+	 * Gets the runtime modified date.
+	 *
+	 * @return the runtime modified date
+	 */
+	public Date getRuntimeModifiedDate() {
+		String sDate = getRuntimeValue(RUNTIME_LASTMODIFIED_DATE);
+		
+		if (sDate != null) {
+			sDate = sDate.trim();
+		}
+
+		try {
+			if (Pattern.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}", sDate)) {
+				Date date = new SimpleDateFormat("yyyy-MM-dd").parse(sDate);
+				return date;
+			}
+			if (Pattern.matches("[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}", sDate)) {
+				Date date = new SimpleDateFormat("yyyy-MM-dd kk:mm").parse(sDate);
+				return date;
+			}
+			if (Pattern.matches("[0-9]{4}.[0-9]{2}.[0-9]{2}", sDate)) {
+				Date date = new SimpleDateFormat("yyyy.MM.dd").parse(sDate);
+				return date;
+			}
+			if (Pattern.matches("[0-9]{4}.[0-9]{2}.[0-9]{2} [0-9]{2}:[0-9]{2}", sDate)) {
+				Date date = new SimpleDateFormat("yyyy.MM.dd kk:mm").parse(sDate);
+				return date;
+			}
+		} catch (ParseException e) {
+			LOGGER.error("Last Modified Runtime Date '" + sDate + "' could not be parsed.");
+		}
+		return null;
+	}
+
+	/**
+	 * Gets the runtime value.
+	 *
+	 * @param propKey the prop key
+	 * @return the runtime value
+	 */
+	public String getRuntimeValue(String propKey) {
+		return this.runtimeProperties.getProperty(propKey);
+	}
+	
+	/**
+	 * Sets the runtime modified date to actual date (+1 minute).
+	 */
+	public void setRuntimeModifiedDateToActual() {
+		Calendar c = Calendar.getInstance();
+		c.add(Calendar.MINUTE, 1);
+		setRuntimeModifiedDate(c.getTime());
+	}
+	
+	/**
+	 * Sets the runtime modified date.
+	 *
+	 * @param date the new runtime modified date
+	 */
+	public void setRuntimeModifiedDate(Date date) {
+		DateFormat form = new SimpleDateFormat("yyyy.MM.dd kk':'mm");
+		String s = form.format(date);
+//		System.out.println(s);
+		    try {
+		        Properties props = new Properties();
+		        props.setProperty(RUNTIME_LASTMODIFIED_DATE, s);
+		        File f = new File("runtime.properties");
+		        OutputStream out = new FileOutputStream( f );
+		        props.store(out, "Application Runtime Properties - Generated from Circlead");
+		    }
+		    catch (Exception e ) {
+		        e.printStackTrace();
+		    }
+		
+	}
+
+	/**
 	 * Gets the value.
 	 *
 	 * @param propKey the prop key
 	 * @return the value
 	 */
-	public String getValue(String propKey) {
-		return this.props.getProperty(propKey);
+	public String getApplicationValue(String propKey) {
+		return this.applicationProperties.getProperty(propKey);
 	}
-
+	
 	/**
 	 * Gets the int value.
 	 *
@@ -171,7 +272,7 @@ public class PropertyUtil {
 	 * @return the int value
 	 */
 	public Integer getIntValue(String propKey) {
-		String val = this.props.getProperty(propKey);
+		String val = this.applicationProperties.getProperty(propKey);
 		try {
 			return Integer.parseInt(val);
 		} catch (Exception e) {
@@ -187,7 +288,7 @@ public class PropertyUtil {
 	 * @return the boolean value
 	 */
 	public Boolean getBooleanValue(String propKey) {
-		String val = this.props.getProperty(propKey);
+		String val = this.applicationProperties.getProperty(propKey);
 		try {
 			return Boolean.parseBoolean(val);
 		} catch (Exception e) {
@@ -265,7 +366,7 @@ public class PropertyUtil {
 	 * @return the confluence url
 	 */
 	public String getConfluenceUrl() {
-		return getValue(ATLASSIAN_CONFLUENCE_URL);
+		return getApplicationValue(ATLASSIAN_CONFLUENCE_URL);
 	}
 
 	/**
@@ -274,7 +375,7 @@ public class PropertyUtil {
 	 * @return the jira url
 	 */
 	public String getJiraUrl() {
-		return getValue(ATLASSIAN_JIRA_URL);
+		return getApplicationValue(ATLASSIAN_JIRA_URL);
 	}
 
 	/**
@@ -287,17 +388,70 @@ public class PropertyUtil {
 	}
 
 	/**
+	 * Checks if is application update mode full.
+	 *
+	 * @return true, if is application update mode full
+	 */
+	public boolean isApplicationUpdateModeFull() {
+		String s = getApplicationUpdateMode();
+		if (s!=null) {
+			if (s.equalsIgnoreCase("FULL")) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Checks if is application update mode O incremental.
+	 *
+	 * @return true, if is application update mode O incremental
+	 */
+	public boolean isApplicationUpdateModeIncremental() {
+		String s = getApplicationUpdateMode();
+		if (s!=null) {
+			if (s.equalsIgnoreCase("INCREMENTAL")) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Gets the application update mode.
+	 *
+	 * @return the application update mode
+	 */
+	public String getApplicationUpdateMode() {
+		return getApplicationValue(APPLICATION_UPDATE_MODE);
+	}
+	
+	/**
 	 * Gets the application default teamcategory.
 	 *
 	 * @return the application default teamcategory
 	 */
 	public String getApplicationDefaultTeamcategory() {
-		return getValue(APPLICATION_DEFAULT_TEAMCATEGORY);
+		return getApplicationValue(APPLICATION_DEFAULT_TEAMCATEGORY);
 	}
-	
+
+	/**
+	 * Gets the application default Role.
+	 *
+	 * @return the application default Role
+	 */
+	public String getApplicationDefaultRole() {
+		return getApplicationValue(APPLICATION_DEFAULT_ROLE);
+	}
+
+	/**
+	 * Gets the application specialized char.
+	 *
+	 * @return the application specialized char
+	 */
 	public String getApplicationSpecializedChar() {
-		String c = getValue(APPLICATION_SPECIALIZED_CHAR);
-		if (c==null) {
+		String c = getApplicationValue(APPLICATION_SPECIALIZED_CHAR);
+		if (c == null) {
 			return "UNKNOWN_SPECIALIZED_CHAR";
 		}
 		return c.trim();
@@ -309,7 +463,7 @@ public class PropertyUtil {
 	 * @return the application default rolegroup
 	 */
 	public String getApplicationDefaultRolegroup() {
-		return getValue(APPLICATION_DEFAULT_ROLEGROUP);
+		return getApplicationValue(APPLICATION_DEFAULT_ROLEGROUP);
 	}
 
 	/**
@@ -318,7 +472,7 @@ public class PropertyUtil {
 	 * @return the dropbox team username
 	 */
 	public String getDropboxTeamUsername() {
-		return getValue(DROPBOX_TEAM_DISPLAYUSERNAME);
+		return getApplicationValue(DROPBOX_TEAM_DISPLAYUSERNAME);
 	}
 
 	/**
@@ -327,7 +481,7 @@ public class PropertyUtil {
 	 * @return the atlassian user
 	 */
 	public String getAtlassianUser() {
-		return getValue(ATLASSIAN_LOGIN_USER);
+		return getApplicationValue(ATLASSIAN_LOGIN_USER);
 	}
 
 	/**
@@ -336,7 +490,7 @@ public class PropertyUtil {
 	 * @return the atlassian password
 	 */
 	public String getAtlassianPassword() {
-		return getValue(ATLASSIAN_LOGIN_PASSWORD);
+		return getApplicationValue(ATLASSIAN_LOGIN_PASSWORD);
 	}
 
 	/**
@@ -345,7 +499,7 @@ public class PropertyUtil {
 	 * @return the dropbox accesstoken
 	 */
 	public String getDropboxAccesstoken() {
-		return getValue(DROPBOX_CREDENTIALS_ACCESSTOKEN);
+		return getApplicationValue(DROPBOX_CREDENTIALS_ACCESSTOKEN);
 	}
 
 	/**
@@ -362,8 +516,8 @@ public class PropertyUtil {
 	 *
 	 * @return the mail password
 	 */
-	public String getMailPassword() { 
-		return getValue(MAIL_PASSWORD); 
+	public String getMailPassword() {
+		return getApplicationValue(MAIL_PASSWORD);
 	}
 
 	/**
@@ -372,7 +526,7 @@ public class PropertyUtil {
 	 * @return the mail user
 	 */
 	public String getMailUser() {
-		return getValue(MAIL_USERNAME);
+		return getApplicationValue(MAIL_USERNAME);
 	}
 
 	/**
@@ -381,7 +535,7 @@ public class PropertyUtil {
 	 * @return the mail host
 	 */
 	public String getMailHost() {
-		return getValue(MAIL_HOST);
+		return getApplicationValue(MAIL_HOST);
 	}
 
 	/**
@@ -390,7 +544,7 @@ public class PropertyUtil {
 	 * @return the mail sender
 	 */
 	public String getMailSender() {
-		return getValue(MAIL_SENDER);
+		return getApplicationValue(MAIL_SENDER);
 	}
 
 }

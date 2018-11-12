@@ -11,6 +11,8 @@ package org.rogatio.circlead.control.synchronizer.atlassian;
 import static org.rogatio.circlead.model.WorkitemType.*;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -76,7 +78,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class AtlassianSynchronizer extends DefaultSynchronizer {
 
 	/** The urlconfluence. */
-	private final String URLCONFLUENCE = PropertyUtil.getInstance().getValue(PropertyUtil.ATLASSIAN_CONFLUENCE_URL);
+	private final String URLCONFLUENCE = PropertyUtil.getInstance().getApplicationValue(PropertyUtil.ATLASSIAN_CONFLUENCE_URL);
 	
 	/** The dedicatedserver. */
 	private final boolean DEDICATEDSERVER = PropertyUtil.getInstance()
@@ -795,8 +797,9 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 				wi = setData(pairs, type, indexId);
 				wi.setTitle(p.getTitle());
 
+				DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 				LOGGER.debug("Load: code=" + page.getCode() + ", message=" + page.getMessage() + ", source="
-						+ page.getSource() + ", title=" + p.getTitle());
+						+ page.getSource() + ", title=" + p.getTitle() +"(modified="+formatter.format(wi.getModified())+")");
 
 			} catch (JsonParseException e) {
 				throw new SynchronizerException("Error (JsonParse) loading item '" + indexId + "'. " + e.getMessage(),

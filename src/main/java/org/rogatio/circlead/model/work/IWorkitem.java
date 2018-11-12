@@ -13,6 +13,7 @@ import java.util.HashMap;
 
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Interface IWorkitem.
  * 
@@ -65,6 +66,20 @@ public interface IWorkitem {
 	 */
 	public void setCreated(String xmlDate);
 
+	/**
+	 * Gets the updateable.
+	 *
+	 * @return the updateable
+	 */
+	public boolean getUpdateable();
+	
+	/**
+	 * Sets the updateable.
+	 *
+	 * @param updateFlag the new updateable
+	 */
+	public void setUpdateable(boolean updateFlag);
+	
 	/**
 	 * Gets the modified.
 	 *

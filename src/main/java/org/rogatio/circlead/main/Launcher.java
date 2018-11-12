@@ -18,6 +18,7 @@ import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.report.OverviewReport;
 import org.rogatio.circlead.view.report.PersonListReport;
 import org.rogatio.circlead.view.report.PersonListReportDetails;
+import org.rogatio.circlead.view.report.PersonRoleReport;
 import org.rogatio.circlead.view.report.ReworkReport;
 import org.rogatio.circlead.view.report.RoleHolderReport;
 import org.rogatio.circlead.view.report.RoleListReportDetails;
@@ -236,6 +237,7 @@ public class Launcher {
 			repository.addReport(new PersonListReportDetails());
 			repository.addReport(new RoleTreeReport());
 			repository.addReport(new RoleListReportDetails());
+			repository.addReport(new PersonRoleReport(PropertyUtil.getInstance().getApplicationDefaultRole()));
 			repository.addReport(new RolegroupSummaryReport());
 			repository
 					.addReport(new TeamCategoryReport(PropertyUtil.getInstance().getApplicationDefaultTeamcategory()));
@@ -245,7 +247,10 @@ public class Launcher {
 			repository.addReports();
 			results = repository.updateReports();
 		}
-
+		
+		// Set last modified Date
+		PropertyUtil.getInstance().setRuntimeModifiedDateToActual();
+		
 		if (StringUtil.isNotNullAndNotEmpty(cleanArgs)) {
 			if (cleanArgs.contains("a")) {
 				LOGGER.info("Clean Atlassian History of Activitites");

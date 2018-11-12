@@ -22,6 +22,7 @@ import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
+import org.rogatio.circlead.util.PropertyUtil;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.report.IReport;
 
@@ -109,7 +110,8 @@ public class Connector {
 	}
 
 	/**
-	 * Load workitems of given type.
+	 * Load workitems of given type. Write last modified date of latest modified
+	 * workitem for runtime application.
 	 *
 	 * @param type the type
 	 * @return the list
@@ -117,9 +119,21 @@ public class Connector {
 	public List<IWorkitem> load(WorkitemType type) {
 		List<IWorkitem> workitems = new ArrayList<IWorkitem>();
 		List<String> list = loadIndex(type);
+
+		Date lastModified = PropertyUtil.getInstance().getRuntimeModifiedDate();
+
 		for (String index : list) {
 			IWorkitem wi = null;
 			wi = get(index);
+
+			if (lastModified == null) {
+				wi.setUpdateable(true);
+			} else {
+				if (lastModified.before(wi.getModified())) {
+					wi.setUpdateable(true);
+				}
+			}
+
 			if (wi != null) {
 				if (!workitems.contains(wi)) {
 					workitems.add(wi);
@@ -133,6 +147,7 @@ public class Connector {
 				}
 			}
 		}
+
 		return workitems;
 	}
 
@@ -337,28 +352,31 @@ public class Connector {
 	public List<SynchronizerResult> update(IWorkitem workitem) {
 		List<SynchronizerResult> results = new ArrayList<SynchronizerResult>();
 
-		List<ISynchronizer> synchronizers = SynchronizerFactory.getInstance().getSynchronizers();
+		if (workitem.getUpdateable()||PropertyUtil.getInstance().isApplicationUpdateModeFull()) {
+			List<ISynchronizer> synchronizers = SynchronizerFactory.getInstance().getSynchronizers();
 
-		/*
-		 * It is necessary to add a id to filesynchronizer if it has none. The id must
-		 * be set before the atlassian-synhronizer writes the update, so the correlated
-		 * file is set with the right uuid
-		 */
-		for (ISynchronizer synchronizer : synchronizers) {
-			if (synchronizer.toString().equals("FileSynchronizer")) {
-				if (workitem.getId(synchronizer) == null) {
-					workitem.setId(UUID.randomUUID().toString(), synchronizer);
+			/*
+			 * It is necessary to add a id to filesynchronizer if it has none. The id must
+			 * be set before the atlassian-synhronizer writes the update, so the correlated
+			 * file is set with the right uuid
+			 */
+			for (ISynchronizer synchronizer : synchronizers) {
+				if (synchronizer.toString().equals("FileSynchronizer")) {
+					if (workitem.getId(synchronizer) == null) {
+						workitem.setId(UUID.randomUUID().toString(), synchronizer);
+					}
+				}
+			}
+
+			for (ISynchronizer synchronizer : synchronizers) {
+				try {
+					results.add(synchronizer.update(workitem));
+				} catch (SynchronizerException e) {
+					LOGGER.error(e);
 				}
 			}
 		}
 
-		for (ISynchronizer synchronizer : synchronizers) {
-			try {
-				results.add(synchronizer.update(workitem));
-			} catch (SynchronizerException e) {
-				LOGGER.error(e);
-			}
-		}
 		return results;
 	}
 

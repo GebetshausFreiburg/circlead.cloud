@@ -8,7 +8,23 @@
  */
 package org.rogatio.circlead.model.work;
 
-import static org.rogatio.circlead.model.Parameter.*;
+import static org.rogatio.circlead.model.Parameter.ABBREVIATION;
+import static org.rogatio.circlead.model.Parameter.CARRYROLEGROUP;
+import static org.rogatio.circlead.model.Parameter.CHILDS;
+import static org.rogatio.circlead.model.Parameter.COMPETENCIES;
+import static org.rogatio.circlead.model.Parameter.OPPORTUNITIES;
+import static org.rogatio.circlead.model.Parameter.ORGANISATION;
+import static org.rogatio.circlead.model.Parameter.PARENT;
+import static org.rogatio.circlead.model.Parameter.PURPOSE;
+import static org.rogatio.circlead.model.Parameter.RESPONSIBILITIES;
+import static org.rogatio.circlead.model.Parameter.ROLEPERSONS;
+import static org.rogatio.circlead.model.Parameter.ROLEPERSONSINORGANISATION;
+import static org.rogatio.circlead.model.Parameter.ROLEPERSONSINTEAM;
+import static org.rogatio.circlead.model.Parameter.RULES;
+import static org.rogatio.circlead.model.Parameter.SITUATIONAL;
+import static org.rogatio.circlead.model.Parameter.SYNONYMS;
+import static org.rogatio.circlead.model.Parameter.TASKS;
+import static org.rogatio.circlead.model.Parameter.UNRELATED;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,7 +41,6 @@ import org.rogatio.circlead.control.synchronizer.atlassian.parser.ListParserElem
 import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
-import org.rogatio.circlead.main.SyncCirclead;
 import org.rogatio.circlead.model.Parameter;
 import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.data.ActivityDataitem;

@@ -26,13 +26,13 @@ import org.rogatio.circlead.util.PropertyUtil;
 public class JiraIssueLoader {
 
 	/** The Constant URLJIRA. */
-	private static final String URLJIRA = PropertyUtil.getInstance().getValue(PropertyUtil.ATLASSIAN_JIRA_URL);
+	private static final String URLJIRA = PropertyUtil.getInstance().getApplicationValue(PropertyUtil.ATLASSIAN_JIRA_URL);
 	
 	/** The Constant USER. */
-	private static final String USER = PropertyUtil.getInstance().getValue(PropertyUtil.ATLASSIAN_LOGIN_USER);
+	private static final String USER = PropertyUtil.getInstance().getApplicationValue(PropertyUtil.ATLASSIAN_LOGIN_USER);
 	
 	/** The Constant PASSWORD. */
-	private static final String PASSWORD = PropertyUtil.getInstance().getValue(PropertyUtil.ATLASSIAN_LOGIN_PASSWORD);
+	private static final String PASSWORD = PropertyUtil.getInstance().getApplicationValue(PropertyUtil.ATLASSIAN_LOGIN_PASSWORD);
 	
 	/** The Constant DEDICATEDSERVER. */
 	private static final boolean DEDICATEDSERVER = PropertyUtil.getInstance().getBooleanValue(PropertyUtil.ATLASSIAN_SERVER_DEDICATED);

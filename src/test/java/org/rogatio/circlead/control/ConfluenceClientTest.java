@@ -18,13 +18,13 @@ import junit.framework.TestCase;
 public class ConfluenceClientTest extends TestCase {
 
 	/** The urlconfluence. */
-	private final String URLCONFLUENCE = PropertyUtil.getInstance().getValue(PropertyUtil.ATLASSIAN_CONFLUENCE_URL);
+	private final String URLCONFLUENCE = PropertyUtil.getInstance().getApplicationValue(PropertyUtil.ATLASSIAN_CONFLUENCE_URL);
 	
 	/** The user. */
-	private final String USER = PropertyUtil.getInstance().getValue(PropertyUtil.ATLASSIAN_LOGIN_USER);
+	private final String USER = PropertyUtil.getInstance().getApplicationValue(PropertyUtil.ATLASSIAN_LOGIN_USER);
 	
 	/** The password. */
-	private final String PASSWORD = PropertyUtil.getInstance().getValue(PropertyUtil.ATLASSIAN_LOGIN_PASSWORD);
+	private final String PASSWORD = PropertyUtil.getInstance().getApplicationValue(PropertyUtil.ATLASSIAN_LOGIN_PASSWORD);
 	
 	/** The client. */
 	private ConfluenceClient client;
