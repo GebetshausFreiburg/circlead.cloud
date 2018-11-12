@@ -26,6 +26,7 @@ import org.rogatio.circlead.util.PropertyUtil;
 import org.rogatio.circlead.view.report.OverviewReport;
 import org.rogatio.circlead.view.report.PersonListReport;
 import org.rogatio.circlead.view.report.PersonListReportDetails;
+import org.rogatio.circlead.view.report.PersonRoleReport;
 import org.rogatio.circlead.view.report.ReworkReport;
 import org.rogatio.circlead.view.report.RoleHolderReport;
 import org.rogatio.circlead.view.report.RoleListReportDetails;
@@ -164,6 +165,7 @@ public class SyncCirclead {
 			repository.addReport(new PersonListReport());
 			repository.addReport(new PersonListReportDetails());
 			repository.addReport(new RoleTreeReport());
+			repository.addReport(new PersonRoleReport(PropertyUtil.getInstance().getApplicationDefaultRole()));
 			repository.addReport(new RoleListReportDetails());
 			repository.addReport(new RolegroupSummaryReport());
 			repository.addReport(new TeamCategoryReport(PropertyUtil.getInstance().getApplicationDefaultTeamcategory()));

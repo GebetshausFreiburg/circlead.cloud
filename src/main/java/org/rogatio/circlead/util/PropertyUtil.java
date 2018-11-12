@@ -9,6 +9,7 @@ import java.util.Properties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class PropertyUtil.
  */
@@ -38,6 +39,9 @@ public class PropertyUtil {
 	/** The application default teamcategory. */
 	public static String APPLICATION_DEFAULT_TEAMCATEGORY = "application.default.team.category";
 
+	/** The application default role. */
+	public static String APPLICATION_DEFAULT_ROLE = "application.default.role";
+	
 	/** The mail host. */
 	public static String MAIL_HOST = "mail.host";
 	
@@ -89,6 +93,7 @@ public class PropertyUtil {
 	/** The atlassian query limit. */
 	public static String ATLASSIAN_QUERY_LIMIT = "atlassian.query.limit";
 
+	/** The application specialized char. */
 	public static String APPLICATION_SPECIALIZED_CHAR = "application.specialized.char";
 	
 	/** The Constant LOGGER. */
@@ -295,6 +300,20 @@ public class PropertyUtil {
 		return getValue(APPLICATION_DEFAULT_TEAMCATEGORY);
 	}
 	
+	/**
+	 * Gets the application default Role.
+	 *
+	 * @return the application default Role
+	 */
+	public String getApplicationDefaultRole() {
+		return getValue(APPLICATION_DEFAULT_ROLE);
+	}
+	
+	/**
+	 * Gets the application specialized char.
+	 *
+	 * @return the application specialized char
+	 */
 	public String getApplicationSpecializedChar() {
 		String c = getValue(APPLICATION_SPECIALIZED_CHAR);
 		if (c==null) {
