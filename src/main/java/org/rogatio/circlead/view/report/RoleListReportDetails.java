@@ -19,6 +19,8 @@ import org.rogatio.circlead.view.SvgBuilder;
 
 /**
  * The Class RoleListReportDetails.
+ * 
+ * @author Matthias Wegner
  */
 public class RoleListReportDetails extends DefaultReport {
 

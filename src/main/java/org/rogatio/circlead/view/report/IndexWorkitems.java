@@ -23,6 +23,8 @@ import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
 /**
  * The Class IndexWorkitems.
+ * 
+ * @author Matthias Wegner
  */
 public class IndexWorkitems extends DefaultReport {
 

@@ -23,6 +23,8 @@ import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 /**
  * The Class RolegroupReport shows for every rolegroup the included data with
  * all coresponding roles. Pagebreak is included after every item.
+ * 
+ * @author Matthias Wegner
  */
 public class RolegroupReport extends DefaultReport {
 
@@ -53,10 +55,11 @@ public class RolegroupReport extends DefaultReport {
 	 */
 	public RolegroupReport(String rolegroupIdentifier) {
 		Rolegroup rolegroup = Repository.getInstance().getRolegroup(rolegroupIdentifier);
-		if (rolegroup != null) { 
+		if (rolegroup != null) {
 			this.setName("Report '" + rolegroup.getTitle() + "'");
 			this.rolegroup = rolegroup;
-			this.setDescription("(Druckfähige) Zusammenfassung der Rollengruppe '"+rolegroupIdentifier+"' mit allen enthaltenen Rollen"); 
+			this.setDescription("(Druckfähige) Zusammenfassung der Rollengruppe '" + rolegroupIdentifier
+					+ "' mit allen enthaltenen Rollen");
 		}
 	}
 

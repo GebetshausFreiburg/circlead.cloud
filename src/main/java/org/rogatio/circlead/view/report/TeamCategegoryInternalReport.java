@@ -26,6 +26,8 @@ import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
 /**
  * The Class TeamCategegoryInternalReport.
+ * 
+ * @author Matthias Wegner
  */
 public class TeamCategegoryInternalReport extends DefaultReport {
 

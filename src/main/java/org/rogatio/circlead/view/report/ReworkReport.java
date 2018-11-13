@@ -22,6 +22,8 @@ import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
 /**
  * The Class ReworkReport.
+ * 
+ * @author Matthias Wegner
  */
 public class ReworkReport extends DefaultReport {
 

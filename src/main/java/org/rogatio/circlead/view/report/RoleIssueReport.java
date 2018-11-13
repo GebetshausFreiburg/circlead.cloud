@@ -1,10 +1,5 @@
 package org.rogatio.circlead.view.report;
 
-//import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.DEDICATEDSERVER;
-//import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.PASSWORD;
-//import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.URLJIRA;
-//import static org.rogatio.circlead.control.synchronizer.atlassian.Constant.USER;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -23,6 +18,8 @@ import org.rogatio.circlead.util.PropertyUtil;
 
 /**
  * The Class RoleIssueReport.
+ * 
+ * @author Matthias Wegner
  */
 public class RoleIssueReport extends DefaultReport {
 

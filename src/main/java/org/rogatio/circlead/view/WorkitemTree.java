@@ -37,7 +37,6 @@ import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class WorkitemTree renders the phylogenetic tree of roles. Creates valid
  * links to roles and displays the purpose of the role if it is set.

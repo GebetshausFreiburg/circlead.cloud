@@ -20,6 +20,8 @@ import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
 /**
  * The Class RoleTreeReport.
+ * 
+ * @author Matthias Wegner
  */
 public class RoleTreeReport extends DefaultReport {
 

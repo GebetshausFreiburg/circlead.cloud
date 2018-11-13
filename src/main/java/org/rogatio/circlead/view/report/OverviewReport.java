@@ -21,6 +21,8 @@ import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
 /**
  * The Class OverviewReport.
+ * 
+ * @author Matthias Wegner
  */
 public class OverviewReport extends DefaultReport {
 

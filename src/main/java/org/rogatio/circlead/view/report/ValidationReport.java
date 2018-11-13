@@ -17,6 +17,8 @@ import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
 /**
  * The ValidationReport shows all Messages which are thrown from the validation engine, so the consistence of the role-model could be optimized.
+ * 
+ * @author Matthias Wegner
  */
 public class ValidationReport extends DefaultReport {
 

@@ -20,6 +20,8 @@ import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
 /**
  * The Class PersonListReport.
+ * 
+ * @author Matthias Wegner
  */
 public class PersonListReport extends DefaultReport {
 

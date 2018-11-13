@@ -24,6 +24,8 @@ import org.rogatio.circlead.view.SvgBuilder;
 
 /**
  * The Class PersonListReportDetails.
+ * 
+ * @author Matthias Wegner
  */
 public class PersonListReportDetails extends DefaultReport {
 

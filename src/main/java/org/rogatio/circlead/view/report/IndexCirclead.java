@@ -18,6 +18,8 @@ import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
 /**
  * The Class IndexCirclead.
+ * 
+ * @author Matthias Wegner
  */
 public class IndexCirclead extends DefaultReport {
 

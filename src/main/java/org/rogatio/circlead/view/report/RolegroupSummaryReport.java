@@ -22,6 +22,8 @@ import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
 /**
  * The Class RolegroupSummaryReport.
+ * 
+ * @author Matthias Wegner
  */
 public class RolegroupSummaryReport extends DefaultReport {
 

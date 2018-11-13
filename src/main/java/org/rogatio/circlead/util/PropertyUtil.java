@@ -19,6 +19,8 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * The Class PropertyUtil.
+ * 
+ * @author Matthias Wegner
  */
 public class PropertyUtil {
 

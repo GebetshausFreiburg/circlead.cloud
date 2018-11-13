@@ -22,6 +22,8 @@ import org.rogatio.circlead.util.StringUtil;
 
 /**
  * The Class TeamCategoryReport.
+ * 
+ * @author Matthias Wegner
  */
 public class TeamCategoryReport extends DefaultReport {
 

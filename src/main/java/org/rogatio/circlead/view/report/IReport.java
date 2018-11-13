@@ -14,6 +14,8 @@ import org.rogatio.circlead.view.IWorkitemRenderer;
 
 /**
  * The Interface IReport.
+ * 
+ * @author Matthias Wegner
  */
 public interface IReport extends IWorkitemRenderer {
 

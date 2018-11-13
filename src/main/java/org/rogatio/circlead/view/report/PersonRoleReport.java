@@ -21,6 +21,8 @@ import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
 /**
  * The Class PersonRoleReport.
+ * 
+ * @author Matthias Wegner
  */
 public class PersonRoleReport extends DefaultReport {
 

@@ -24,6 +24,8 @@ import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 
 /**
  * The Class RoleHolderReport.
+ * 
+ * @author Matthias Wegner
  */
 public class RoleHolderReport extends DefaultReport {
 
