@@ -114,6 +114,8 @@ public class PropertyUtil {
 	/** The Constant LOGGER. */
 	private final static Logger LOGGER = LogManager.getLogger(PropertyUtil.class);
 
+	private static final String APPLICATION_DISPLAY_TEAM_LEVEL = "application.display.team.level";
+	
 	/** The instance. */
 	private static PropertyUtil instance = null;
 
@@ -187,6 +189,10 @@ public class PropertyUtil {
 	 */
 	public Date getRuntimeModifiedDate() {
 		String sDate = getRuntimeValue(RUNTIME_LASTMODIFIED_DATE);
+		
+		if (sDate==null) {
+			return null;
+		}
 		
 		if (sDate != null) {
 			sDate = sDate.trim();
@@ -298,13 +304,12 @@ public class PropertyUtil {
 		}
 	}
 
-	/**
-	 * Checks if is file synchronizer enabled.
-	 *
-	 * @return the boolean
-	 */
 	public Boolean isFileSynchronizerEnabled() {
 		return getBooleanValue(FILE_SYNCHRONIZER_ENABLED);
+	}
+	
+	public Boolean isApplicationDisplayTeamLevel() {
+		return getBooleanValue(APPLICATION_DISPLAY_TEAM_LEVEL);
 	}
 
 	/**

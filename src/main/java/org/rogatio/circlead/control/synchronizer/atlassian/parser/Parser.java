@@ -47,6 +47,7 @@ import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.ObjectUtil;
+import org.rogatio.circlead.util.PropertyUtil;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.IWorkitemRenderer;
 import org.rogatio.circlead.view.report.IReport;
@@ -175,6 +176,10 @@ public class Parser {
 			}
 		}
 
+		if (activatedLinks&&!PropertyUtil.getInstance().isApplicationDisplayTeamLevel()) {
+			containsLevel = false;
+		}
+		
 		Element tr = tbody.appendElement("tr");
 		tr.appendElement("th").attr("colspan", "1").appendText(ROLE.toString());
 		tr.appendElement("th").attr("colspan", "1").appendText(NEEDED.toString());
