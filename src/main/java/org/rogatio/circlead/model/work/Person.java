@@ -45,8 +45,8 @@ import org.rogatio.circlead.view.IWorkitemRenderer;
 import org.rogatio.circlead.view.SvgBuilder;
 
 /**
- * The Class Person is the working item for a person
- * 
+ * The Class Person is the working item for a person.
+ *
  * @author Matthias Wegner
  */
 public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValidator, IDataRow {
@@ -124,8 +124,17 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		this.getDataitem().setTeamFraction(fte);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.model.work.DefaultWorkitem#getReferencedItems()
+	 */
+	@Override
+	public List<IWorkitem> getReferencedItems() {
+		List<IWorkitem> references = new ArrayList<IWorkitem>();
+		return references;
+	}
+
 	/**
-	 * Gets the organisational workload of the person
+	 * Gets the organisational workload of the person.
 	 *
 	 * @return the organisational workload
 	 */
@@ -146,7 +155,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	}
 
 	/**
-	 * Gets the team workload of a person
+	 * Gets the team workload of a person.
 	 *
 	 * @return the team workload
 	 */
@@ -230,7 +239,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	}
 
 	/**
-	 * Gets the firstname of a person
+	 * Gets the firstname of a person.
 	 *
 	 * @return the firstname
 	 */
@@ -239,7 +248,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	}
 
 	/**
-	 * Gets the secondname of a person
+	 * Gets the secondname of a person.
 	 *
 	 * @return the secondname
 	 */
@@ -248,7 +257,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	}
 
 	/**
-	 * Checks if person takes a specific role defined by roleIdentifier
+	 * Checks if person takes a specific role defined by roleIdentifier.
 	 *
 	 * @param roleIdentifier the role identifier
 	 * @return true, if person takes role
@@ -266,7 +275,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	}
 
 	/**
-	 * Gets the fullname of a person
+	 * Gets the fullname of a person.
 	 *
 	 * @return the fullname
 	 */
@@ -275,7 +284,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	}
 
 	/**
-	 * Sets the fullname of a person
+	 * Sets the fullname of a person.
 	 *
 	 * @param name the new fullname
 	 */
@@ -702,9 +711,10 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 
 		List<Team> foundTeams = R.getTeamsWithMember(this);
 		if (!ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
-			
-			// TODO EERGÄNZEN das Rollenträger keinen Fehler werfen die Inaktiv und Pausiert sind.
-			
+
+			// TODO EERGÄNZEN das Rollenträger keinen Fehler werfen die Inaktiv und Pausiert
+			// sind.
+
 			ValidationMessage m = new ValidationMessage(this);
 			m.warning("Person has no team-role", "Person '" + this.getFullname() + "' has no related team-role");
 			messages.add(m);

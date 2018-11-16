@@ -45,6 +45,7 @@ import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.ExcelUtil;
 import org.rogatio.circlead.util.ObjectUtil;
+import org.rogatio.circlead.util.PropertyUtil;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.report.IReport;
 
@@ -265,53 +266,39 @@ public final class Repository {
 
 		return list;
 	}
-	
+
 	/**
 	 * Unfinished.
 	 *
 	 * @return the role names
 	 */
-/*	public void changeNameOfRole(String roleIdentifierOld, String roleIdentifierNew) {
-		Role role = this.getRole(roleIdentifierOld);
-		if (role!=null) {
-			role.setTitle(roleIdentifierNew);
-		}
-		
-		List<Team> teams = this.getTeamsWithRole(roleIdentifierOld);
-		for (Team team : teams) {
-			List<TeamEntry> entries = team.getTeamEntries();
-			for (TeamEntry entry : entries) {
-				if  (StringUtil.isNotNullAndNotEmpty(entry.getRoleIdentifier())) {
-					if (entry.getRoleIdentifier().equals(roleIdentifierOld)) {
-						entry.setRoleIdentifier(roleIdentifierNew);
-					}
-				}
-			}
-		}
-		
-		List<Activity> activities = this.getActivities();
-		for (Activity activity : activities) {
-			if (StringUtil.isNotNullAndNotEmpty(activity.getResponsibleIdentifier())) {
-				if (activity.getResponsibleIdentifier().equals(roleIdentifierOld)) {
-					activity.setResponsibleIdentifier(roleIdentifierNew);
-				}
-			}
-			if (StringUtil.isNotNullAndNotEmpty(activity.getAccountableIdentifier())) {
-				if (activity.getAccountableIdentifier().equals(roleIdentifierOld)) {
-					activity.setAccountableIdentifier(roleIdentifierNew);
-				}
-			}
-			if (ObjectUtil.isListNotNullAndEmpty(activity.getSupplierIdentifiers())) {
-				
-				for (String s : activity.getSupplierIdentifiers()) {
-					
-				}
-				if (activity.getAccountableIdentifier().equals(roleIdentifierOld)) {
-					activity.setAccountableIdentifier(roleIdentifierNew);
-				}
-			}
-		}
-	}*/
+	/*
+	 * public void changeNameOfRole(String roleIdentifierOld, String
+	 * roleIdentifierNew) { Role role = this.getRole(roleIdentifierOld); if
+	 * (role!=null) { role.setTitle(roleIdentifierNew); }
+	 * 
+	 * List<Team> teams = this.getTeamsWithRole(roleIdentifierOld); for (Team team :
+	 * teams) { List<TeamEntry> entries = team.getTeamEntries(); for (TeamEntry
+	 * entry : entries) { if
+	 * (StringUtil.isNotNullAndNotEmpty(entry.getRoleIdentifier())) { if
+	 * (entry.getRoleIdentifier().equals(roleIdentifierOld)) {
+	 * entry.setRoleIdentifier(roleIdentifierNew); } } } }
+	 * 
+	 * List<Activity> activities = this.getActivities(); for (Activity activity :
+	 * activities) { if
+	 * (StringUtil.isNotNullAndNotEmpty(activity.getResponsibleIdentifier())) { if
+	 * (activity.getResponsibleIdentifier().equals(roleIdentifierOld)) {
+	 * activity.setResponsibleIdentifier(roleIdentifierNew); } } if
+	 * (StringUtil.isNotNullAndNotEmpty(activity.getAccountableIdentifier())) { if
+	 * (activity.getAccountableIdentifier().equals(roleIdentifierOld)) {
+	 * activity.setAccountableIdentifier(roleIdentifierNew); } } if
+	 * (ObjectUtil.isListNotNullAndEmpty(activity.getSupplierIdentifiers())) {
+	 * 
+	 * for (String s : activity.getSupplierIdentifiers()) {
+	 * 
+	 * } if (activity.getAccountableIdentifier().equals(roleIdentifierOld)) {
+	 * activity.setAccountableIdentifier(roleIdentifierNew); } } } }
+	 */
 
 	/**
 	 * Gets the names of all roles.
@@ -767,6 +754,29 @@ public final class Repository {
 	 */
 	public List<SynchronizerResult> updateWorkitems() {
 		List<SynchronizerResult> results = new ArrayList<SynchronizerResult>();
+
+		if (PropertyUtil.getInstance().isApplicationUpdateModeIncremental()) {
+			List<IWorkitem> workitemsToUpdate = new ArrayList<IWorkitem>();
+			for (IWorkitem workitem : getWorkitems()) {
+				if (workitem.getUpdateable()) {
+					workitemsToUpdate.add(workitem);
+				}
+			}
+			
+//			List<IWorkitem> set = new ArrayList<IWorkitem>();
+			for (IWorkitem workitem : workitemsToUpdate) {
+//				if (workitem.getUpdateable()&&(!set.contains(workitem))) {
+					List<IWorkitem> workitems = workitem.getReferencedItems();
+					if (ObjectUtil.isListNotNullAndEmpty(workitems)) {
+						for (IWorkitem w : workitems) {
+							w.setUpdateable(true);
+						}
+//						set.addAll(workitems);
+					}
+//				}
+			}
+		}
+
 		for (IWorkitem workitem : getWorkitems()) {
 			results.addAll(getConnector().update(workitem));
 		}
@@ -1078,7 +1088,7 @@ public final class Repository {
 	public List<Team> getTeamsWithRole(Role role) {
 		return getTeamsWithRole(role.getTitle());
 	}
-	
+
 	/**
 	 * Gets the teams with role.
 	 *

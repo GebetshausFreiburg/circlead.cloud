@@ -101,6 +101,34 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 	public void setParentIdentifier(String parentIdentifier) {
 		this.getDataitem().setParent(parentIdentifier);
 	}
+	
+	@Override
+	public List<IWorkitem> getReferencedItems() {
+		List<IWorkitem> references = new ArrayList<IWorkitem>();
+		
+		if (StringUtil.isNotNullAndNotEmpty(this.getParentIdentifier())) {
+			Rolegroup rolegroup = R.getRolegroup(this.getParentIdentifier());
+			if (rolegroup!=null) {
+				references.add(rolegroup);
+			}
+		}
+		
+		if (StringUtil.isNotNullAndNotEmpty(this.getResponsibleIdentifier())) {
+			Role role = R.getRole(this.getResponsibleIdentifier());
+			if (role!=null) {
+				references.add(role);
+			}
+		}
+		
+		if (StringUtil.isNotNullAndNotEmpty(this.getLeadIdentifier())) {
+			Person person = R.getPerson(this.getLeadIdentifier());
+			if (person!=null) {
+				references.add(person);
+			}
+		}
+		
+		return references;
+	}
 
 	/**
 	 * Gets the summary.

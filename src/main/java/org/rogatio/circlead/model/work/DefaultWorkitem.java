@@ -9,8 +9,10 @@
 package org.rogatio.circlead.model.work;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 
 import org.rogatio.circlead.control.Comparators;
@@ -19,7 +21,6 @@ import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.util.PropertyUtil;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class DefaultWorkitem is the default working item for all other workitems.
  * 
@@ -351,7 +352,7 @@ public class DefaultWorkitem implements IWorkitem, Comparable<DefaultWorkitem> {
 		return Comparators.TITLE.compare(this, o);
 	}
 
-	/** The updateable flag */
+	/**  The updateable flag. */
 	private boolean updateable = false;
 	
 	/* (non-Javadoc)
@@ -368,6 +369,15 @@ public class DefaultWorkitem implements IWorkitem, Comparable<DefaultWorkitem> {
 	@Override
 	public void setUpdateable(boolean updateFlag) {
 		this.updateable = updateFlag;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.model.work.IWorkitem#getReferencedItems()
+	 */
+	@Override
+	public List<IWorkitem> getReferencedItems() {
+		List<IWorkitem> references = new ArrayList<IWorkitem>();
+		return references;
 	}
 
 }

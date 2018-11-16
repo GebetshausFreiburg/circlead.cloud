@@ -34,7 +34,10 @@ import org.rogatio.circlead.util.StringUtil;
  */
 public class CircleadRecurrenceRule {
 
-	/** The Constant WEEKDAYS contains the enum Weekday as ordered list, beginning on monday. */
+	/**
+	 * The Constant WEEKDAYS contains the enum Weekday as ordered list, beginning on
+	 * monday.
+	 */
 	final static public List<Weekday> WEEKDAYS = new ArrayList<Weekday>();
 
 	/** The Constant DAYOFWEEK2WEEKDAY maps 1 to monday, 2 to tuesday, .... */
@@ -46,7 +49,7 @@ public class CircleadRecurrenceRule {
 	 */
 	final static public Map<Weekday, Integer> WEEKDAY2DAYOFWEEK = new HashMap<Weekday, Integer>();
 
-	/**  The Constant WEEKDAYS2GERMAN map enum weekday to german name of weekday. */
+	/** The Constant WEEKDAYS2GERMAN map enum weekday to german name of weekday. */
 	final static public Map<Weekday, String> WEEKDAYS2GERMAN = new HashMap<Weekday, String>();
 
 	static {
@@ -660,6 +663,8 @@ public class CircleadRecurrenceRule {
 		return null;
 	}
 
+	private Boolean oddRecurrence = null;
+
 	/**
 	 * Convert.
 	 *
@@ -671,7 +676,7 @@ public class CircleadRecurrenceRule {
 		s = clean(s);
 
 		rawRule = s;
-
+		
 		if (getType(s).equals(TYPE_CIRCLEAD)) {
 
 			RecurrenceRule rule = null;
@@ -724,6 +729,12 @@ public class CircleadRecurrenceRule {
 			}
 			if (period.contains("W")) {
 				rule = new RecurrenceRule(Freq.WEEKLY);
+				if (period.toUpperCase().contains("O")||period.toUpperCase().contains("U")) {
+					oddRecurrence = true;
+				}
+				if (period.toUpperCase().contains("E")||period.toUpperCase().contains("G")) {
+					oddRecurrence = false;
+				}
 			}
 			if (period.contains("M")) {
 				rule = new RecurrenceRule(Freq.MONTHLY);
@@ -776,11 +787,31 @@ public class CircleadRecurrenceRule {
 
 		if (getType(s).equals(TYPE_RFC5545)) {
 
+			String oddRecurrencePattern = "(ODDWEEK|EVENWEEK)=(true|TRUE|false|FALSE)";
+			Pattern pattern = Pattern.compile(oddRecurrencePattern);
+			Matcher matcher = pattern.matcher(s);
+
+			String foundOddPattern = null;
+			while (matcher.find()) {
+				foundOddPattern = s.substring(matcher.start(), matcher.end());
+			}
+
+			if (foundOddPattern != null) {
+				if (foundOddPattern.contains("ODDWEEK")) {
+					String val = foundOddPattern.replace("ODDWEEK=", "").replace("ODDWEEK =", "").trim();
+					this.oddRecurrence = Boolean.parseBoolean(val);
+				}
+				if (foundOddPattern.contains("EVENWEEK")) {
+					String val = foundOddPattern.replace("EVENWEEK=", "").replace("EVENWEEK =", "").trim();
+					this.oddRecurrence = !Boolean.parseBoolean(val);
+				}
+			}
+
 			String durationPattern = "(" + DURATIONBYHOUR + "|" + DURATIONBYDAY + "|" + DURATIONBYWEEK + "|"
 					+ DURATIONBYMONTH + "|" + DURATIONBYQUARTER + ")=[0-9]+";
 
-			Pattern pattern = Pattern.compile(durationPattern);
-			Matcher matcher = pattern.matcher(s);
+			pattern = Pattern.compile(durationPattern);
+			matcher = pattern.matcher(s);
 
 			String foundDuration = null;
 			while (matcher.find()) {
@@ -882,7 +913,7 @@ public class CircleadRecurrenceRule {
 	 * @return the type
 	 */
 	private String getType(String rule) {
-		final String circleadTypeRegex = "([0-9]+)?(SU|MO|TU|WE|TH|FR|SA)?([0-9]+)(H|D|W|M|Q)(/(D|W|M|Q|Y))?";
+		final String circleadTypeRegex = "([0-9]+)?(SU|MO|TU|WE|TH|FR|SA)?([0-9]+)(H|D|W|M|Q)(/(D|(u|g|e|o|U|G|E|O)*W|M|Q|Y))?";
 
 		if (clean(rule).matches(circleadTypeRegex)) {
 			type = TYPE_CIRCLEAD;
@@ -894,8 +925,11 @@ public class CircleadRecurrenceRule {
 			type = TYPE_RFC5545;
 			return TYPE_RFC5545;
 		}
-
+		
 		type = TYPE_UNDEFINED;
+
+		LOGGER.debug("RecurrenceRule '"+rule+"' is of type "+ type);
+		
 		return TYPE_UNDEFINED;
 	}
 
@@ -1297,7 +1331,21 @@ public class CircleadRecurrenceRule {
 		RecurrenceRuleIterator it = startDateIterator(startDateTime);
 		while (it.hasNext() && (!recurrenceRule.isInfinite() || maxInstances-- > 0)) {
 			DateTime nextInstance = it.nextDateTime();
-			list.add(nextInstance);
+
+			if (this.oddRecurrence != null) {
+				Date d = this.convertDate(nextInstance);
+				Calendar c = Calendar.getInstance();
+				c.setTime(d);
+				int weekOfYear = c.get(Calendar.WEEK_OF_YEAR);
+				if (((weekOfYear%2)==0)&&!this.oddRecurrence) {
+					list.add(nextInstance);
+				}
+				if (((weekOfYear%2)==1)&&this.oddRecurrence) {
+					list.add(nextInstance);
+				} 
+			} else {
+				list.add(nextInstance);
+			}
 		}
 		return list;
 	}

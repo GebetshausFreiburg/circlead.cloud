@@ -124,6 +124,15 @@ public class Competence extends DefaultWorkitem implements IWorkitemRenderer, IV
 		}
 
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.model.work.DefaultWorkitem#getReferencedItems()
+	 */
+	@Override
+	public List<IWorkitem> getReferencedItems() {
+		List<IWorkitem> references = new ArrayList<IWorkitem>();
+		return references;
+	}
 
 	/**
 	 * Check if root competence contains a competence named by identifier in

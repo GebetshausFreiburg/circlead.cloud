@@ -127,6 +127,37 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		return this.getDataitem().getEnd();
 	}
 
+	@Override
+	public List<IWorkitem> getReferencedItems() {
+		List<IWorkitem> references = new ArrayList<IWorkitem>();
+		List<TeamEntry> x = getTeamEntries();
+		if (ObjectUtil.isListNotNullAndEmpty(x)) {
+			for (TeamEntry e : x) {
+				List<String> pi = e.getPersons();
+				if (ObjectUtil.isListNotNullAndEmpty(pi)) {
+					for (String p : pi) {
+						Person person = R.getPerson(p);
+						if (person != null) {
+							if (!references.contains(person)) {
+								references.add(person);
+							}
+						}
+					}
+				}
+				String ri = e.getRoleIdentifier();
+				if (StringUtil.isNotNullAndNotEmpty(ri)) {
+					Role role = R.getRole(ri);
+					if (role != null) {
+						if (!references.contains(role)) {
+							references.add(role);
+						}
+					}
+				}
+			}
+		}
+		return references;
+	}
+
 	/**
 	 * Sets the start.
 	 *

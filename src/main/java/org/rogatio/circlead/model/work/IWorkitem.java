@@ -10,10 +10,10 @@ package org.rogatio.circlead.model.work;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface IWorkitem.
  * 
@@ -117,6 +117,13 @@ public interface IWorkitem {
 	 *            the id
 	 */
 	public void removeId(String id);
+	
+	/**
+	 * Gets the referenced items.
+	 *
+	 * @return the referenced items
+	 */
+	public List<IWorkitem> getReferencedItems();
 
 	/**
 	 * Gets the id.

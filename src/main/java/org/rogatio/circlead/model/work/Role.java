@@ -63,7 +63,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 
 	/** The Constant LOGGER. */
 	final static Logger LOGGER = LogManager.getLogger(Role.class);
-	
+
 	/**
 	 * Instantiates a new emtpy role.
 	 */
@@ -74,15 +74,15 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	/**
 	 * Instantiates a new role from a RoleDataitem.
 	 *
-	 * @param dataitem the dataitem of the role of class  
-	 * {@link org.rogatio.circlead.model.data.RoleDataitem}
+	 * @param dataitem the dataitem of the role of class
+	 *                 {@link org.rogatio.circlead.model.data.RoleDataitem}
 	 */
 	public Role(IDataitem dataitem) {
 		super(dataitem);
-		
+
 		if (!(dataitem instanceof RoleDataitem)) {
 			throw new IllegalArgumentException("IDataitem must be of type RoleDataitem");
-		} 
+		}
 	}
 
 	/**
@@ -479,6 +479,82 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		return this.getDataitem().getRecurrenceRule(person.getFullname());
 	}
 
+	@Override
+	public List<IWorkitem> getReferencedItems() {
+		List<IWorkitem> references = new ArrayList<IWorkitem>();
+
+		/*List<Role> childRoles = R.getRoleChildren(this.getTitle());
+		if (ObjectUtil.isListNotNullAndEmpty(childRoles)) {
+			references.addAll(childRoles);
+		}*/
+
+		if (ObjectUtil.isListNotNullAndEmpty(this.getPersonIdentifiers())) {
+			List<Person> persons = new ArrayList<Person>();
+			for (String personIdentifier : this.getPersonIdentifiers()) {
+				Person p = R.getPerson(personIdentifier);
+				if (p != null) {
+					persons.add(p);
+				}
+			}
+			references.addAll(persons);
+		}
+		
+		//List<Team> foundTeams = R.getTeamsWithRole(this);
+		//if (ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
+		//	references.addAll(foundTeams);
+			/*for (Team team : foundTeams) {
+				List<TeamEntry> x = team.getTeamEntries();
+				for (TeamEntry e : x) {
+					if (e.getRoleIdentifier().equals(this.getTitle())) {
+						List<String> pi = e.getPersons();
+						if (ObjectUtil.isListNotNullAndEmpty(pi)) {
+							for (String p : pi) {
+								Person person = R.getPerson(p);
+								if (person != null) {
+									if (!references.contains(person)) {
+										references.add(person);	
+									}
+								}
+							}
+						}
+					}
+				}
+			}*/
+//		}
+		
+		List<Activity> globalActivities = R.getActivities(this.getTitle());
+		List<Activity> ga = new ArrayList<Activity>();
+		for (Activity activity : globalActivities) {
+			if (!containsActivityInSubactivities(activity)) {
+				ga.add(activity);
+			}
+		}
+
+		if (ObjectUtil.isListNotNullAndEmpty(ga)) {
+			references.addAll(ga);
+		}
+		
+		if (StringUtil.isNotNullAndNotEmpty(this.getParentIdentifier())) {
+			Role r = R.getRole(this.getParentIdentifier());
+			if (r!=null) {
+				if (!references.contains(r)) {
+					references.add(r);
+				}
+			}
+		}
+		
+		if (StringUtil.isNotNullAndNotEmpty(this.getRolegroupIdentifier())) {
+			Rolegroup r = R.getRolegroup(this.getRolegroupIdentifier());
+			if (r!=null) {
+				if (!references.contains(r)) {
+					references.add(r);
+				}
+			}
+		}
+
+		return references;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -497,7 +573,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		renderer.addItem(element, SYNONYMS.toString(), this.getSynonyms());
 
 		List<Role> childRoles = R.getRoleChildren(this.getTitle());
-		if (childRoles != null) { 
+		if (childRoles != null) {
 			if (childRoles.size() > 0) {
 				renderer.addH2(element, CHILDS.toString());
 				renderer.addRoleList(element, childRoles);
@@ -512,8 +588,9 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			foundSomeRoleResponsible = true;
 		}
 
+//		TODO Add Hide-Option to properties, because this should not be hard-coded
 		// Only show teamroles in atlassian, not in files because print is to big
-		if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
+//		if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
 			List<Team> foundTeams = R.getTeamsWithRole(this);
 			if (ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
 				renderer.addH2(element,
@@ -553,8 +630,8 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 							}
 						}
 					}
-				} 
-			}
+				}
+//			}
 		}
 
 		if (!foundSomeRoleResponsible) {
@@ -573,7 +650,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		}
 
 		renderer.addH2(element, TASKS.toString());
-		
+
 		List<String> divActivities = getActivitiesNotGlobal();
 		if (ObjectUtil.isListNotNullAndEmpty(divActivities)) {
 			renderer.addList(element, divActivities);
@@ -606,7 +683,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		if (ObjectUtil.isListNotNullAndEmpty(ga)) {
 			renderer.addActivityList(element, ga);
 		}
-		
+
 		for (Activity activity : map.keySet()) {
 			List<ActivityDataitem> subactivities = map.get(activity);
 			if (ObjectUtil.isListNotNullAndEmpty(subactivities)) {

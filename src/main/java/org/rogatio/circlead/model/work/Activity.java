@@ -30,6 +30,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Element;
+import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.ActivityTableParserElement;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
@@ -154,6 +155,138 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	 */
 	public String getResults() {
 		return this.getDataitem().getResults();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.rogatio.circlead.model.work.DefaultWorkitem#getReferencedItems()
+	 */
+	@Override
+	public List<IWorkitem> getReferencedItems() {
+		List<IWorkitem> references = new ArrayList<IWorkitem>();
+
+		if (StringUtil.isNotNullAndNotEmpty(this.getResponsibleIdentifier())) {
+			Role role = R.getRole(getResponsibleIdentifier());
+			if (role != null) {
+				if (!references.contains(role)) {
+					references.add(role);
+				}
+			}
+		}
+
+		if (StringUtil.isNotNullAndNotEmpty(this.getAccountableIdentifier())) {
+			Role role = R.getRole(getAccountableIdentifier());
+			if (role != null) {
+				if (!references.contains(role)) {
+					references.add(role);
+				}
+			}
+		}
+
+		List<String> ri = this.getSupplierIdentifiers();
+		if (ObjectUtil.isListNotNullAndEmpty(ri)) {
+			for (String r : ri) {
+				Role role = R.getRole(r);
+				if (role != null) {
+					if (!references.contains(role)) {
+						references.add(role);
+					}
+				}
+			}
+		}
+
+		ri = this.getConsultantIdentifiers();
+		if (ObjectUtil.isListNotNullAndEmpty(ri)) {
+			for (String r : ri) {
+				Role role = R.getRole(r);
+				if (role != null) {
+					if (!references.contains(role)) {
+						references.add(role);
+					}
+				}
+			}
+		}
+
+		ri = this.getInformedIdentifiers();
+		if (ObjectUtil.isListNotNullAndEmpty(ri)) {
+			for (String r : ri) {
+				Role role = R.getRole(r);
+				if (role != null) {
+					if (!references.contains(role)) {
+						references.add(role);
+					}
+				}
+			}
+		}
+
+		List<ActivityDataitem> sa = this.getSubactivities();
+		for (ActivityDataitem activityDataitem : sa) {
+			
+			Activity a = R.getActivity(activityDataitem.getTitle());
+			if (a!=null) {
+				if (!references.contains(a)) {
+					references.add(a);
+				}
+			}
+			
+			if (StringUtil.isNotNullAndNotEmpty(activityDataitem.getResponsible())) {
+				Role role = R.getRole(activityDataitem.getResponsible());
+				if (role != null) {
+					if (!references.contains(role)) {
+						references.add(role);
+					}
+				}
+			}
+
+			if (StringUtil.isNotNullAndNotEmpty(activityDataitem.getAccountable())) {
+				Role role = R.getRole(activityDataitem.getAccountable());
+				if (role != null) {
+					if (!references.contains(role)) {
+						references.add(role);
+					}
+				}
+			}
+
+			ri = activityDataitem.getConsultant();
+			if (ObjectUtil.isListNotNullAndEmpty(ri)) {
+				for (String r : ri) {
+					Role role = R.getRole(r);
+					if (role != null) {
+						if (!references.contains(role)) {
+							references.add(role);
+						}
+					}
+				}
+			}
+
+			ri = activityDataitem.getSupplier();
+			if (ObjectUtil.isListNotNullAndEmpty(ri)) {
+				for (String r : ri) {
+					Role role = R.getRole(r);
+					if (role != null) {
+						if (!references.contains(role)) {
+							references.add(role);
+						}
+					}
+				}
+			}
+
+			ri = activityDataitem.getInformed();
+			if (ObjectUtil.isListNotNullAndEmpty(ri)) {
+				for (String r : ri) {
+					Role role = R.getRole(r);
+					if (role != null) {
+						if (!references.contains(role)) {
+							references.add(role);
+						}
+					}
+				}
+			}
+
+		}
+		
+		return references;
 	}
 
 	/**
@@ -528,8 +661,8 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 						|| ObjectUtil.isListNotNullAndEmpty(activity.getInformed())) {
 					if (!StringUtil.isNotNullAndNotEmpty(activity.getResponsible())) {
 						ValidationMessage m = new ValidationMessage(this);
-						m.error("Responsible missing", "Subactivity '" + activity.getTitle()
-								+ "' has no named responsible");
+						m.error("Responsible missing",
+								"Subactivity '" + activity.getTitle() + "' has no named responsible");
 						messages.add(m);
 					}
 				}
