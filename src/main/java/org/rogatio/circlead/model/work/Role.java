@@ -1056,7 +1056,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 							"Person '" + identifier + "' in role '" + this.getTitle() + "' not found.");
 					messages.add(m);
 				} else {
-					if (this.getDataitem().hasRepresentation(identifier)) {
+					/*if (this.getDataitem().hasRepresentation(identifier)) {
 						String representation = this.getDataitem().getRepresentation(identifier);
 						WorkitemStatusParameter status = WorkitemStatusParameter.get(representation);
 						if (status != null) {
@@ -1066,7 +1066,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 								messages.add(m);
 							}
 						}
-					}
+					}*/
 				}
 			}
 		}

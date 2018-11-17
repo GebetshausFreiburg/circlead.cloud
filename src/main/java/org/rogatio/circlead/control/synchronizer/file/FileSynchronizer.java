@@ -310,7 +310,7 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 	 *
 	 * @param report the report
 	 */
-	private void writeReportRendered(IReport report) {
+	public void writeReportRendered(IReport report) {
 		if (report instanceof IWorkitemRenderer) {
 			
 			if (report.getName()==null) {

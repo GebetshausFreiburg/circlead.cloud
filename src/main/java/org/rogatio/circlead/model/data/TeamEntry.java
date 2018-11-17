@@ -262,7 +262,7 @@ public class TeamEntry {
 	 */
 	@JsonProperty("persons")
 	public void setPersonIdentifiers(List<String> personIdentifiers) {
-		this.personIdentifiers = personIdentifiers;
+		setPersonIdentifiers(StringUtil.join(personIdentifiers));
 	}
 
 	/**

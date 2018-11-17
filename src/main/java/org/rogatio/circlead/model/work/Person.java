@@ -39,6 +39,7 @@ import org.rogatio.circlead.model.data.PersonDataitem;
 import org.rogatio.circlead.model.data.TeamEntry;
 import org.rogatio.circlead.model.data.Timeslice;
 import org.rogatio.circlead.util.ObjectUtil;
+import org.rogatio.circlead.util.PropertyUtil;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.IWorkitemRenderer;
@@ -124,7 +125,9 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		this.getDataitem().setTeamFraction(fte);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.model.work.DefaultWorkitem#getReferencedItems()
 	 */
 	@Override
@@ -702,22 +705,41 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	public List<ValidationMessage> validate() {
 		List<ValidationMessage> messages = new ArrayList<ValidationMessage>();
 
+		boolean ignoreReprepresentationMessage = false;
+		String roleIdentifier = PropertyUtil.getInstance().getApplicationDefaultRoleCoreMember();
+		Role r = R.getRole(roleIdentifier);
+		if (r != null) {
+			if (r.getDataitem().getRepresentation(this.getTitle()).equalsIgnoreCase("Inaktiv")
+					|| r.getDataitem().getRepresentation(this.getTitle()).equalsIgnoreCase("Pausiert")) {
+				ignoreReprepresentationMessage = true;
+			}
+		}
+		
+		if (r != null) {
+			if (this.getStatus().equalsIgnoreCase("Inaktiv")
+					|| this.getStatus().equalsIgnoreCase("Pausiert")) {
+				ignoreReprepresentationMessage = true;
+			}
+		}
+		
+//		System.out.println(r.getTitle() +" - "+ this.getFullname()+" "+r.getDataitem().getRepresentation(this.getFullname())+" - "+ignoreReprepresentationMessage);
+
 		ArrayList<Role> roles = R.getOrganisationalRolesWithPerson(this.getFullname());
 		if (roles.size() == 0) {
-			ValidationMessage m = new ValidationMessage(this);
-			m.error("Person has no role", "Person '" + this.getFullname() + "' has no related role");
-			messages.add(m);
+			if (!ignoreReprepresentationMessage) {
+				ValidationMessage m = new ValidationMessage(this);
+				m.error("Person has no role", "Person '" + this.getFullname() + "' has no related role");
+				messages.add(m);
+			}
 		}
 
 		List<Team> foundTeams = R.getTeamsWithMember(this);
 		if (!ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
-
-			// TODO EERGÄNZEN das Rollenträger keinen Fehler werfen die Inaktiv und Pausiert
-			// sind.
-
-			ValidationMessage m = new ValidationMessage(this);
-			m.warning("Person has no team-role", "Person '" + this.getFullname() + "' has no related team-role");
-			messages.add(m);
+			if (!ignoreReprepresentationMessage) {
+				ValidationMessage m = new ValidationMessage(this);
+				m.warning("Person has no team-role", "Person '" + this.getFullname() + "' has no related team-role");
+				messages.add(m);
+			}
 		}
 
 		/*

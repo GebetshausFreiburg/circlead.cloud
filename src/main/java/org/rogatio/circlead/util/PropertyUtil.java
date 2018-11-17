@@ -49,7 +49,7 @@ public class PropertyUtil {
 	public static String APPLICATION_DEFAULT_TEAMCATEGORY = "application.default.team.category";
 
 	/** The application default role. */
-	public static String APPLICATION_DEFAULT_ROLE = "application.default.role";
+	public static String APPLICATION_DEFAULT_ROLE_REPORT = "application.default.role.report";
 
 	/** The runtime lastmodified date. */
 	public static String RUNTIME_LASTMODIFIED_DATE = "application.lastmodified";
@@ -108,6 +108,8 @@ public class PropertyUtil {
 	/** The atlassian query limit. */
 	public static String ATLASSIAN_QUERY_LIMIT = "atlassian.query.limit";
 
+	public static String APPLICATION_DEFAULT_ROLE_COREMEMBERORGANISATION = "application.default.role.core";
+	
 	/** The application specialized char. */
 	public static String APPLICATION_SPECIALIZED_CHAR = "application.specialized.char";
 
@@ -446,8 +448,12 @@ public class PropertyUtil {
 	 *
 	 * @return the application default Role
 	 */
-	public String getApplicationDefaultRole() {
-		return getApplicationValue(APPLICATION_DEFAULT_ROLE);
+	public String getApplicationDefaultRoleReport() {
+		return getApplicationValue(APPLICATION_DEFAULT_ROLE_REPORT);
+	}
+	
+	public String getApplicationDefaultRoleCoreMember() {
+		return getApplicationValue(APPLICATION_DEFAULT_ROLE_COREMEMBERORGANISATION);
 	}
 
 	/**

@@ -165,7 +165,7 @@ public class SyncCirclead {
 			repository.addReport(new PersonListReport());
 			repository.addReport(new PersonListReportDetails());
 			repository.addReport(new RoleTreeReport());
-			repository.addReport(new PersonRoleReport(PropertyUtil.getInstance().getApplicationDefaultRole()));
+			repository.addReport(new PersonRoleReport(PropertyUtil.getInstance().getApplicationDefaultRoleReport()));
 			repository.addReport(new RoleListReportDetails());
 			repository.addReport(new RolegroupSummaryReport());
 			repository.addReport(new TeamCategoryReport(PropertyUtil.getInstance().getApplicationDefaultTeamcategory()));

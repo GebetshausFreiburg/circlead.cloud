@@ -367,6 +367,43 @@ public final class Repository {
 	private List<IWorkitem> workitems = new ArrayList<IWorkitem>();
 
 	/**
+	 * Adds the role items.
+	 *
+	 * @param workitems the workitems
+	 */
+	public void addRoleItems(List<Role> workitems) {
+		for (Role workitem : workitems) {
+			if (!this.workitems.contains(workitem)) {
+				this.workitems.add(workitem);
+			}
+		}
+	}
+
+	/**
+	 * Adds the role item.
+	 *
+	 * @param workitem the workitem
+	 */
+	public void addRoleItem(Role workitem) {
+		if (!this.workitems.contains(workitem)) {
+			this.workitems.add(workitem);
+		}
+	}
+
+	/**
+	 * Adds the activity items.
+	 *
+	 * @param workitems the workitems
+	 */
+	public void addActivityItems(List<Activity> workitems) {
+		for (Activity workitem : workitems) {
+			if (!this.workitems.contains(workitem)) {
+				this.workitems.add(workitem);
+			}
+		}
+	}
+
+	/**
 	 * Adds the items.
 	 *
 	 * @param workitems the workitems
@@ -762,17 +799,17 @@ public final class Repository {
 					workitemsToUpdate.add(workitem);
 				}
 			}
-			
+
 //			List<IWorkitem> set = new ArrayList<IWorkitem>();
 			for (IWorkitem workitem : workitemsToUpdate) {
 //				if (workitem.getUpdateable()&&(!set.contains(workitem))) {
-					List<IWorkitem> workitems = workitem.getReferencedItems();
-					if (ObjectUtil.isListNotNullAndEmpty(workitems)) {
-						for (IWorkitem w : workitems) {
-							w.setUpdateable(true);
-						}
-//						set.addAll(workitems);
+				List<IWorkitem> workitems = workitem.getReferencedItems();
+				if (ObjectUtil.isListNotNullAndEmpty(workitems)) {
+					for (IWorkitem w : workitems) {
+						w.setUpdateable(true);
 					}
+//						set.addAll(workitems);
+				}
 //				}
 			}
 		}
