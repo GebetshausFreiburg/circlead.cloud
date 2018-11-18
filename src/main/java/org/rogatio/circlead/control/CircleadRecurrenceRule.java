@@ -1505,7 +1505,7 @@ public class CircleadRecurrenceRule {
 	 * @param date the date
 	 * @return the date
 	 */
-	private Date convertDate(DateTime date) {
+	public static Date convertDate(DateTime date) {
 		String startRepresentation = date.toString();
 
 		DateFormat df = null;

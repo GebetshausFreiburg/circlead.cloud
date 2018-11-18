@@ -20,6 +20,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.TreeMap;
 import java.util.Vector;
 
@@ -227,12 +228,58 @@ public class ObjectUtil {
 	}
 
 	/**
+	 * Creates the random html color.
+	 *
+	 * @return the string
+	 */
+	public static String createRandomHtmlColor() {
+		return convertToHtmlColor(createRandomColor());
+	}
+	
+	/**
+	 * Creates the random html grey color.
+	 *
+	 * @return the string
+	 */
+	public static String createRandomHtmlGreyColor() {
+		return convertToHtmlColor(createRandomGreyColor());
+	}
+
+	/**
+	 * Creates the random color.
+	 *
+	 * @return the color
+	 */
+	public static Color createRandomColor() {
+		Random randomGenerator = new Random();
+		int red = randomGenerator.nextInt(256);
+		int green = randomGenerator.nextInt(256);
+		int blue = randomGenerator.nextInt(256);
+
+		Color randomColour = new Color(red, green, blue);
+		return randomColour;
+	}
+	
+	/**
+	 * Creates the random grey color.
+	 *
+	 * @return the color
+	 */
+	public static Color createRandomGreyColor() {
+		Random randomGenerator = new Random();
+		int rgb = randomGenerator.nextInt(256);
+	
+		Color randomColour = new Color(rgb, rgb, rgb);
+		return randomColour;
+	}
+
+	/**
 	 * Creates the pojo zip from json.
 	 *
 	 * @param jsonSource the json source
-	 * @param className the class name
+	 * @param className  the class name
 	 * @param packageDir the package dir
-	 * @param zipFile the zip file
+	 * @param zipFile    the zip file
 	 */
 	public static void createPojoZipFromJson(String jsonSource, String className, String packageDir, String zipFile) {
 		JCodeModel codeModel = new JCodeModel();
@@ -266,9 +313,9 @@ public class ObjectUtil {
 	 * Creates the pojo dir from json.
 	 *
 	 * @param jsonSource the json source
-	 * @param className the class name
+	 * @param className  the class name
 	 * @param packageDir the package dir
-	 * @param targetDir the target dir
+	 * @param targetDir  the target dir
 	 */
 	public static void createPojoDirFromJson(String jsonSource, String className, String packageDir, String targetDir) {
 		JCodeModel codeModel = new JCodeModel();

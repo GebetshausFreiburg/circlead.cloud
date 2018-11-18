@@ -56,6 +56,8 @@ import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.IWorkitemRenderer;
 import org.rogatio.circlead.view.report.IReport;
 import org.rogatio.circlead.view.report.IndexCirclead;
+import org.rogatio.circlead.view.report.IndexRbs;
+import org.rogatio.circlead.view.report.IndexRrgs;
 import org.rogatio.circlead.view.report.IndexWorkitems;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -749,6 +751,8 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 				&& PropertyUtil.getInstance().isFileSynchronizerWriteMode()) {
 			LOGGER.info("Write Index");
 			writeReportRendered(new IndexCirclead());
+			writeReportRendered(new IndexRbs());
+			writeReportRendered(new IndexRrgs());
 			writeReportRendered(new IndexWorkitems(WorkitemType.ROLE));
 			writeReportRendered(new IndexWorkitems(WorkitemType.ROLEGROUP));
 			writeReportRendered(new IndexWorkitems(WorkitemType.PERSON));

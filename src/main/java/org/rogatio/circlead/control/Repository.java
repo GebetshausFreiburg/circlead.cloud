@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,7 @@ import org.rogatio.circlead.model.data.CompetenceDataitem;
 import org.rogatio.circlead.model.data.HowTo;
 import org.rogatio.circlead.model.data.IDataRow;
 import org.rogatio.circlead.model.data.Report;
+import org.rogatio.circlead.model.data.RoleBreakdownElement;
 import org.rogatio.circlead.model.data.TeamEntry;
 import org.rogatio.circlead.model.work.Activity;
 import org.rogatio.circlead.model.work.Competence;
@@ -154,6 +156,45 @@ public final class Repository {
 		}
 
 		return map;
+	}
+
+	public RoleBreakdownElement getRoleRolegroupStructure(ISynchronizer synchronizer) {
+		Map<String, String> colors = new HashMap<String, String>();
+		List<Rolegroup> rolegroups = this.getRolegroups();
+		for (Rolegroup rolegroup : rolegroups) {
+			colors.put(rolegroup.getTitle(), ObjectUtil.createRandomHtmlGreyColor());
+		}
+
+		RoleBreakdownElement rbs = new RoleBreakdownElement();
+		rbs.setName("Role Rolegroup Structure");
+
+		List<Role> roles = this.getRoles();
+		for (Role role : roles) {
+			RoleBreakdownElement child = new RoleBreakdownElement();
+			child.setId(role.getId(synchronizer));
+			if (role.getRolegroupIdentifier() != null) {
+				child.setColor(colors.get(role.getRolegroupIdentifier()));
+				child.setCategory(role.getRolegroupIdentifier());
+			}
+			child.setName(role.getTitle());
+			child.setSize(role.getPersonIdentifiers().size()+ Repository.getInstance().getTeamsWithRole(role).size());
+
+			rbs.addChild(child);
+		}
+
+		return rbs;
+	}
+
+	public RoleBreakdownElement getRoleBreakdownStructure(ISynchronizer synchronizer) {
+		RoleBreakdownElement rbs = new RoleBreakdownElement();
+		rbs.setName("Role Breakdown Structure");
+		List<Role> roots = getRootRoles(Comparators.REDUNDANCE);
+		if (ObjectUtil.isListNotNullAndEmpty(roots)) {
+			for (Role role : roots) {
+				rbs.addChild(role, synchronizer);
+			}
+		}
+		return rbs;
 	}
 
 	/**

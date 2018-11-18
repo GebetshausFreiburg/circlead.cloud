@@ -50,6 +50,8 @@ public class IndexCirclead extends DefaultReport {
 
 		if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
 			Element ul = element.appendElement("ul");
+			ul.appendElement("li").append("<a href=\"Index RBS.html\">RBS</a>");
+			ul.appendElement("li").append("<a href=\"Index RRGS.html\">RRGS</a>");
 			ul.appendElement("li").append("<a href=\"Index " + WorkitemType.ROLE.getName() + ".html\">" + Parameter.ROLES + "</a>");
 			ul.appendElement("li").append(
 					"<a href=\"Index " + WorkitemType.ROLEGROUP.getName() + ".html\">" + Parameter.ROLEGROUPS + "</a>");

@@ -33,11 +33,13 @@ import org.xml.sax.SAXException;
 
 /**
  * The Class YedGraphImporter.
+ * 
+ * @author Matthias Wegner
  */
 public class YedGraphImporter {
 	
 	/** The Constant logger. */
-	final static Logger logger = LogManager.getLogger(YedGraphImporter.class);
+	final static Logger LOGGER = LogManager.getLogger(YedGraphImporter.class);
 
 	/**
 	 * The main method.
@@ -61,16 +63,16 @@ public class YedGraphImporter {
 		fsynchronizer.writeReportRendered(new IndexWorkitems(WorkitemType.ACTIVITY));
 	}
 
-	/** The Constant ns. */
+	/** The Constant Default Namespace of GraphML */
 	private static final Namespace ns = Namespace.getNamespace("http://graphml.graphdrawing.org/xmlns");
 
-	/** The Constant y. */
+	/** The Constant Namespace of yWorks-Graph */
 	private static final Namespace y = Namespace.getNamespace("http://www.yworks.com/xml/graphml");
 
-	/** The table rows. */
+	/** The table rows, which are process-swimlanes */
 	private List<TableRow> tableRows = new ArrayList<TableRow>();
 
-	/** The home dir. */
+	/** The home dir of the GraphML-Files */
 	private String homeDir;
 
 	/**
@@ -83,7 +85,7 @@ public class YedGraphImporter {
 	}
 
 	/**
-	 * Iterate dir.
+	 * Iterate for graphML-Files through homeDir
 	 *
 	 * @return the list
 	 */
@@ -97,7 +99,7 @@ public class YedGraphImporter {
 	}
 
 	/**
-	 * Gets the file.
+	 * Reccursive method to scan for graphML-Files
 	 *
 	 * @param files the files
 	 * @param activities the activities
@@ -181,16 +183,16 @@ public class YedGraphImporter {
 			TableNode tn = tableEdge.getTarget();
 
 			if (sn == null) {
-				logger.error("Source '" + tableEdge.getSourceId() + "' could not resolved in Edge '" + tableEdge.getId()
+				LOGGER.error("Source '" + tableEdge.getSourceId() + "' could not resolved in Edge '" + tableEdge.getId()
 						+ "' of file '" + rawname + "'");
 			}
 			if (tn == null) {
-				logger.error("Target '" + tableEdge.getTargetId() + "' could not resolved in Edge '" + tableEdge.getId()
+				LOGGER.error("Target '" + tableEdge.getTargetId() + "' could not resolved in Edge '" + tableEdge.getId()
 						+ "' of file '" + rawname + "'");
 			}
 
 			ActivityDataitem source = map.get(sn);
-			ActivityDataitem target = map.get(tn);
+//			ActivityDataitem target = map.get(tn);
 
 			if (source != null) {
 				if (source.getChild() != null) {
@@ -227,11 +229,15 @@ public class YedGraphImporter {
 	 * @param node the node
 	 * @return the edge
 	 */
+	@SuppressWarnings("unused")
 	private TableEdge getEdge(TableNode node) {
 		for (TableEdge tableEdge : tableEdges) {
 			TableNode sn = tableEdge.getSource();
 			TableNode tn = tableEdge.getTarget();
 			if (node.getId().equals(tableEdge.getTargetId())) {
+				return tableEdge;
+			}
+			if (node.getId().equals(tableEdge.getSourceId())) {
 				return tableEdge;
 			}
 		}
@@ -264,7 +270,7 @@ public class YedGraphImporter {
 	}
 
 	/**
-	 * Parses the.
+	 * Parses the Graph-XML
 	 */
 	public void parse() {
 
@@ -302,8 +308,7 @@ public class YedGraphImporter {
 			if (tableRow != null) {
 				tableRow.setHeight(height);
 			} else {
-				logger.error("Could not find swimlane with id '" + id + "'");
-				// System.out.println("ERROR - TableRow NOT found");
+				LOGGER.error("Could not find swimlane with id '" + id + "'");
 			}
 		}
 
@@ -397,10 +402,10 @@ public class YedGraphImporter {
 		}
 	}
 
-	/** The table nodes. */
+	/** The nodes of the graph */
 	private List<TableNode> tableNodes = new ArrayList<TableNode>();
 	
-	/** The table edges. */
+	/** The edges of the graph */
 	private List<TableEdge> tableEdges = new ArrayList<TableEdge>();
 
 	/**
@@ -1030,7 +1035,7 @@ public class YedGraphImporter {
 
 		File f = new File(filename);
 		if (f.exists()) {
-			logger.debug("Import file '" + filename + "'");
+			LOGGER.debug("Import file '" + filename + "'");
 
 			try {
 				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -1039,10 +1044,10 @@ public class YedGraphImporter {
 				org.w3c.dom.Document w3cDocument = documentBuilder.parse(f.getAbsoluteFile());
 				document = new DOMBuilder().build(w3cDocument);
 			} catch (IOException | SAXException | ParserConfigurationException e) {
-				logger.error("ERROR - Could NOT read file '" + filename + "'", e);
+				LOGGER.error("ERROR - Could NOT read file '" + filename + "'", e);
 			}
 		} else {
-			logger.error("ERROR - Could NOT find file '" + filename + "'");
+			LOGGER.error("ERROR - Could NOT find file '" + filename + "'");
 		}
 		return null;
 	}

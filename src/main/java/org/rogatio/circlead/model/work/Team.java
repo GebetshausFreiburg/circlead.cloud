@@ -15,10 +15,13 @@ import static org.rogatio.circlead.model.Parameter.SUBTYPE;
 import static org.rogatio.circlead.model.Parameter.TYPE;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
+import org.dmfs.rfc5545.DateTime;
 import org.dmfs.rfc5545.recur.Freq;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.CircleadRecurrenceRule;
@@ -27,6 +30,7 @@ import org.rogatio.circlead.control.synchronizer.atlassian.parser.HeaderTablePar
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
+import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.TeamDataitem;
 import org.rogatio.circlead.model.data.TeamEntry;
@@ -110,7 +114,7 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Sets the end.
+	 * Sets the end date of the team-event. Is optional.
 	 *
 	 * @param end the new end
 	 */
@@ -119,9 +123,9 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Gets the end.
+	 * Gets the end date of the team-event.
 	 *
-	 * @return the end
+	 * @return the end date
 	 */
 	public String getEnd() {
 		return this.getDataitem().getEnd();
@@ -159,7 +163,7 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Sets the start.
+	 * Sets the start date of the team-event. Is optional.
 	 *
 	 * @param start the new start
 	 */
@@ -168,7 +172,7 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Gets the start.
+	 * Gets the start date of the team-event. 
 	 *
 	 * @return the start
 	 */
@@ -512,6 +516,21 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	@Override
 	public List<ValidationMessage> validate() {
 		List<ValidationMessage> messages = new ArrayList<ValidationMessage>();
+
+		if (StringUtil.isNotNullAndNotEmpty(this.getEnd())) {
+			DateTime end = DateTime.parse(TimeZone.getDefault(), this.getEnd());
+			Date d = CircleadRecurrenceRule.convertDate(end);
+
+			WorkitemStatusParameter status = WorkitemStatusParameter.get(this.getStatus());
+			if (status != null) {
+				if (d.before(new Date()) && status != WorkitemStatusParameter.CLOSED) {
+					ValidationMessage m = new ValidationMessage(this);
+					m.warning("Teamevent deprecated",
+							"Team '" + this.getTitle() + "' should be closed, because EndDate is before today");
+					messages.add(m);
+				}
+			}
+		}
 
 		List<TeamEntry> entries = this.getTeamEntries();
 		for (TeamEntry teamEntry : entries) {
