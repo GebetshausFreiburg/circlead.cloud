@@ -26,6 +26,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.resource.Resource;
+import org.rogatio.circlead.util.PropertyUtil;
 
 /**
  * The Class Webserver to run a embedded jetty-webserver.
@@ -36,40 +37,46 @@ public class Webserver extends Server {
 
 	/** The Constant logger. */
 	final static Logger LOGGER = LogManager.getLogger(Webserver.class);
-	
+
+	/** The port. */
+	final int PORT = PropertyUtil.getInstance().getWebserverPort();
+
 	/**
 	 * Instantiates a new webserver.
 	 */
 	public Webserver() {
 		// Synchronize the Jetty-Webserver-Log to Log4j
 		Log.setLog(new Jetty2Log4j2Bridge("Webserver"));
-		
+
 		LOGGER.info("Initialize Webserver");
 
 		ServerConnector connector = new ServerConnector(this);
-		connector.setPort(8090);
+		connector.setPort(PORT);
 		this.setConnectors(new Connector[] { connector });
 
 		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 
+		String webDirectory = PropertyUtil.getInstance().getWebserverDirectory();
+		String landingpage = PropertyUtil.getInstance().getWebserverLandingpage();
+
 		context.setContextPath("/");
-		context.setBaseResource(Resource.newResource(new File("web")));
-		context.setWelcomeFiles(new String[] { "Index Circlead.html" });
+		context.setBaseResource(Resource.newResource(new File(webDirectory)));
+		context.setWelcomeFiles(new String[] { landingpage });
 
 		ServletHolder holderPwd = new ServletHolder("default", DefaultServlet.class);
 		holderPwd.setInitParameter("dirAllowed", "true");
 		context.addServlet(holderPwd, "/");
-		// context.addServlet(JspServlet.class, "*.jsp");
 
 		this.setHandler(context);
 	}
-	
+
 	/**
 	 * Open in browser.
 	 */
 	public void openInBrowser() {
 		try {
-			URI openIt = new URL("http://localhost:8090/").toURI();
+			String url = PropertyUtil.getInstance().getWebserverUrl();
+			URI openIt = new URL(url).toURI();
 			java.awt.Desktop.getDesktop().browse(openIt);
 		} catch (MalformedURLException e) {
 			LOGGER.error(e);
@@ -97,7 +104,7 @@ public class Webserver extends Server {
 	 * Run.
 	 */
 	public void run() {
-		LOGGER.info("Start Webserver at http://localhost:8090/");
+		LOGGER.info("Start Webserver at http://localhost:" + PORT + "/");
 		try {
 			this.start();
 			this.join();

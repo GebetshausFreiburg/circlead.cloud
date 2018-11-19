@@ -7,9 +7,11 @@ import java.util.UUID;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.model.WorkitemType;
+import org.rogatio.circlead.model.data.TeamEntry;
 import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
+import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.ObjectUtil;
 
 /**
@@ -35,6 +37,35 @@ public class SvgBuilder {
 				.attr("height", "25").attr("fill", "gray");
 		element.appendElement("rect").attr("x", "1").attr("y", "1").attr("width", "" + (size + 2) + "")
 				.attr("height", "23").attr("fill", "white");
+		return element;
+	}
+
+	public static Element createTeamDnaProfile(Team team, int size) {
+		WorkitemTree tree = new WorkitemTree(WorkitemType.COMPETENCE);
+		Element element = createSvgElement(size);
+
+		List<TeamEntry> entries = team.getTeamEntries();
+		if (ObjectUtil.isListNotNullAndEmpty(entries)) {
+			for (TeamEntry teamEntry : entries) {
+				Role role = Repository.getInstance().getRole(teamEntry.getRoleIdentifier());
+
+				List<String> competencies = role.getCompetences();
+
+				for (String competence : competencies) {
+					SvgBuilder.addSvgCompetence(competence, size, element, tree);
+					List<Role> f = Repository.getInstance().getParentRoles(role);
+					for (Role rx : f) {
+						if (rx.getCompetences() != null) {
+							List<String> co = rx.getCompetences();
+							for (String c : co) {
+								SvgBuilder.addSvgImplicitCompetence(rx, c, size, element, tree);
+							}
+						}
+					}
+				}
+			}
+		}
+
 		return element;
 	}
 

@@ -21,10 +21,14 @@ import java.util.TreeMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dmfs.rfc5545.Weekday;
 import org.dmfs.rfc5545.recur.Freq;
+import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.synchronizer.Connector;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
+import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer;
+import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
 import org.rogatio.circlead.control.validator.ValidationMessage.Type;
@@ -36,7 +40,7 @@ import org.rogatio.circlead.model.data.CompetenceDataitem;
 import org.rogatio.circlead.model.data.HowTo;
 import org.rogatio.circlead.model.data.IDataRow;
 import org.rogatio.circlead.model.data.Report;
-import org.rogatio.circlead.model.data.RoleBreakdownElement;
+import org.rogatio.circlead.model.data.WorkitemBreakdownElement;
 import org.rogatio.circlead.model.data.TeamEntry;
 import org.rogatio.circlead.model.work.Activity;
 import org.rogatio.circlead.model.work.Competence;
@@ -158,26 +162,32 @@ public final class Repository {
 		return map;
 	}
 
-	public RoleBreakdownElement getRoleRolegroupStructure(ISynchronizer synchronizer) {
+	/**
+	 * Gets the role rolegroup structure.
+	 *
+	 * @param synchronizer the synchronizer
+	 * @return the role rolegroup structure
+	 */
+	public WorkitemBreakdownElement getRolesByRolegroupStructure(ISynchronizer synchronizer) {
 		Map<String, String> colors = new HashMap<String, String>();
 		List<Rolegroup> rolegroups = this.getRolegroups();
 		for (Rolegroup rolegroup : rolegroups) {
 			colors.put(rolegroup.getTitle(), ObjectUtil.createRandomHtmlGreyColor());
 		}
 
-		RoleBreakdownElement rbs = new RoleBreakdownElement();
+		WorkitemBreakdownElement rbs = new WorkitemBreakdownElement();
 		rbs.setName("Role Rolegroup Structure");
 
 		List<Role> roles = this.getRoles();
 		for (Role role : roles) {
-			RoleBreakdownElement child = new RoleBreakdownElement();
+			WorkitemBreakdownElement child = new WorkitemBreakdownElement();
 			child.setId(role.getId(synchronizer));
 			if (role.getRolegroupIdentifier() != null) {
 				child.setColor(colors.get(role.getRolegroupIdentifier()));
 				child.setCategory(role.getRolegroupIdentifier());
 			}
 			child.setName(role.getTitle());
-			child.setSize(role.getPersonIdentifiers().size()+ Repository.getInstance().getTeamsWithRole(role).size());
+			child.setSize(role.getPersonIdentifiers().size() + Repository.getInstance().getTeamsWithRole(role).size());
 
 			rbs.addChild(child);
 		}
@@ -185,8 +195,104 @@ public final class Repository {
 		return rbs;
 	}
 
-	public RoleBreakdownElement getRoleBreakdownStructure(ISynchronizer synchronizer) {
-		RoleBreakdownElement rbs = new RoleBreakdownElement();
+	public List<Team> getTeamsWithSize(int size) {
+		List<Team> found = new ArrayList<Team>();
+		for (Team team : getTeams()) {
+			if (team.getTeamSize() == size) {
+				found.add(team);
+			}
+		}
+		return found;
+	}
+
+	public List<String> getTeamsNotinweek(String category) {
+		List<String> foundList = new ArrayList<String>();
+
+		boolean writeable[][] = new boolean[24][8];
+		for (int i = 0; i < 24; i++) {
+			for (int j = 1; j <= 7; j++) {
+				writeable[i][j] = true;
+			}
+		}
+
+		for (int i = 0; i < 24; i++) {
+			for (int j = 1; j <= 7; j++) {
+				boolean found = false;
+				for (Team team : this.getTeamsWithCategory(category)) {
+					if (team.getRecurrenceRule() != null) {
+						CircleadRecurrenceRule crr = new CircleadRecurrenceRule(team.getRecurrenceRule());
+
+						Weekday wd = crr.getWeekday();
+						Integer hour = crr.getHour();
+						int pos = CircleadRecurrenceRule.WEEKDAY2DAYOFWEEK.get(wd);
+
+						if (hour != null) {
+							if (writeable[i][j] && (j == pos && i == hour)) {
+								if (crr.getDuration() == 2) {
+									writeable[i + 1][j] = false;
+								}
+								found = true;
+							}
+						}
+					}
+				}
+				if (writeable[i][j] && !found) {
+					String dayname = CircleadRecurrenceRule.WEEKDAYS2GERMAN
+							.get(CircleadRecurrenceRule.DAYOFWEEK2WEEKDAY.get(j));
+					if (dayname != null) {
+						if (!foundList.contains(dayname + " " + i + "h")) {
+							foundList.add(dayname + " " + i + "h");
+						}
+					}
+				}
+			}
+		}
+		return foundList;
+	}
+
+	public List<Team> getTeamsWithLowRedundance() {
+		List<Team> found = new ArrayList<Team>();
+		for (Team team : getTeams()) {
+			if (team.getRedundance() < 1.0) {
+				found.add(team);
+			}
+		}
+		return found;
+	}
+
+	public List<Role> getRolesWithPersonRepresentation(WorkitemStatusParameter statusParameter) {
+		List<Role> found = new ArrayList<Role>();
+		for (Role role : getRoles()) {
+			if (ObjectUtil.isListNotNullAndEmpty(role.getPersonIdentifiers())) {
+				for (String personIdentifier : role.getPersonIdentifiers()) {
+					Person person = getPerson(personIdentifier);
+					if (person != null) {
+						if (role.getDataitem().hasRepresentation(personIdentifier)) {
+							String representation = role.getDataitem().getRepresentation(personIdentifier);
+							WorkitemStatusParameter status = WorkitemStatusParameter.get(representation);
+							if (status != null) {
+								if (status == statusParameter) {
+									if (!found.contains(role)) {
+										found.add(role);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return found;
+	}
+
+	/**
+	 * Gets the role breakdown structure.
+	 *
+	 * @param synchronizer the synchronizer
+	 * @return the role breakdown structure
+	 */
+	public WorkitemBreakdownElement getRoleBreakdownStructure(ISynchronizer synchronizer) {
+		WorkitemBreakdownElement rbs = new WorkitemBreakdownElement();
 		rbs.setName("Role Breakdown Structure");
 		List<Role> roots = getRootRoles(Comparators.REDUNDANCE);
 		if (ObjectUtil.isListNotNullAndEmpty(roots)) {
@@ -196,6 +302,20 @@ public final class Repository {
 		}
 		return rbs;
 	}
+
+//	public List<Role> x() {
+//		for (Role role : getRoles()) {
+//			
+//			List<String> pi = role.getPersonIdentifiers();
+//			if (ObjectUtil.isListNotNullAndEmpty(pi)) {
+//				for (String p : pi) {
+//					String skill = role.getDataitem().getSkill(p);
+//							
+//				}
+//							
+//			}
+//		}
+//	}
 
 	/**
 	 * Gets the roles with competence.

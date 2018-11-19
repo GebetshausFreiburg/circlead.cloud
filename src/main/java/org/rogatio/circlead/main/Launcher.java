@@ -22,6 +22,7 @@ import org.rogatio.circlead.view.report.PersonRoleReport;
 import org.rogatio.circlead.view.report.ReworkReport;
 import org.rogatio.circlead.view.report.RoleHolderReport;
 import org.rogatio.circlead.view.report.RoleListReportDetails;
+import org.rogatio.circlead.view.report.RoleNeedReport;
 import org.rogatio.circlead.view.report.RoleTreeReport;
 import org.rogatio.circlead.view.report.RolegroupReport;
 import org.rogatio.circlead.view.report.RolegroupSummaryReport;
@@ -236,6 +237,7 @@ public class Launcher {
 			repository.addReport(new PersonListReport());
 			repository.addReport(new PersonListReportDetails());
 			repository.addReport(new RoleTreeReport());
+			repository.addReport(new RoleNeedReport());
 			repository.addReport(new RoleListReportDetails());
 			repository.addReport(new PersonRoleReport(PropertyUtil.getInstance().getApplicationDefaultRoleReport()));
 			repository.addReport(new RolegroupSummaryReport());

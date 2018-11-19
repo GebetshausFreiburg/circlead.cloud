@@ -107,7 +107,20 @@ public class PropertyUtil {
 
 	/** The atlassian query limit. */
 	public static String ATLASSIAN_QUERY_LIMIT = "atlassian.query.limit";
-
+	
+	/** The webserver port. */
+	public static String WEBSERVER_PORT = "webserver.port";
+	
+	/** The webserver url. */
+	public static String WEBSERVER_URL = "webserver.url";
+	
+	/** The webserver landingpage. */
+	public static String WEBSERVER_LANDINGPAGE = "webserver.landingpage";
+	
+	/** The webserver directory. */
+	public static String WEBSERVER_DIRECTORY = "webserver.directory";
+	
+	/** The application default role corememberorganisation. */
 	public static String APPLICATION_DEFAULT_ROLE_COREMEMBERORGANISATION = "application.default.role.core";
 	
 	/** The application specialized char. */
@@ -116,6 +129,7 @@ public class PropertyUtil {
 	/** The Constant LOGGER. */
 	private final static Logger LOGGER = LogManager.getLogger(PropertyUtil.class);
 
+	/** The Constant APPLICATION_DISPLAY_TEAM_LEVEL. */
 	private static final String APPLICATION_DISPLAY_TEAM_LEVEL = "application.display.team.level";
 	
 	/** The instance. */
@@ -306,10 +320,20 @@ public class PropertyUtil {
 		}
 	}
 
+	/**
+	 * Checks if is file synchronizer enabled.
+	 *
+	 * @return the boolean
+	 */
 	public Boolean isFileSynchronizerEnabled() {
 		return getBooleanValue(FILE_SYNCHRONIZER_ENABLED);
 	}
 	
+	/**
+	 * Checks if is application display team level.
+	 *
+	 * @return the boolean
+	 */
 	public Boolean isApplicationDisplayTeamLevel() {
 		return getBooleanValue(APPLICATION_DISPLAY_TEAM_LEVEL);
 	}
@@ -452,6 +476,11 @@ public class PropertyUtil {
 		return getApplicationValue(APPLICATION_DEFAULT_ROLE_REPORT);
 	}
 	
+	/**
+	 * Gets the application default role core member.
+	 *
+	 * @return the application default role core member
+	 */
 	public String getApplicationDefaultRoleCoreMember() {
 		return getApplicationValue(APPLICATION_DEFAULT_ROLE_COREMEMBERORGANISATION);
 	}
@@ -512,6 +541,42 @@ public class PropertyUtil {
 	 */
 	public String getDropboxAccesstoken() {
 		return getApplicationValue(DROPBOX_CREDENTIALS_ACCESSTOKEN);
+	}
+	
+	/**
+	 * Gets the webserver directory.
+	 *
+	 * @return the webserver directory
+	 */
+	public String getWebserverDirectory() {
+		return getApplicationValue(WEBSERVER_DIRECTORY);
+	}
+	
+	/**
+	 * Gets the webserver landingpage.
+	 *
+	 * @return the webserver landingpage
+	 */
+	public String getWebserverLandingpage() {
+		return getApplicationValue(WEBSERVER_LANDINGPAGE);
+	}
+	
+	/**
+	 * Gets the webserver url.
+	 *
+	 * @return the webserver url
+	 */
+	public String getWebserverUrl() {
+		return getApplicationValue(WEBSERVER_URL);
+	}
+	
+	/**
+	 * Gets the webserver port.
+	 *
+	 * @return the webserver port
+	 */
+	public int getWebserverPort() {
+		return getIntValue(WEBSERVER_PORT);
 	}
 
 	/**

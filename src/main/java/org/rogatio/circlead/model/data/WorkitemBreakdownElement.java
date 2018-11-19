@@ -10,9 +10,9 @@ import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.util.ObjectUtil;
 
 /**
- * The Class RoleBreakdownElement is used for JSON-Export of Roles (for D3-Library)
+ * The Class WorkitemBreakdownElement is used for JSON-Export (for D3-Library)
  */
-public class RoleBreakdownElement {
+public class WorkitemBreakdownElement {
 
 	/** The name. */
 	private String name;
@@ -45,7 +45,7 @@ public class RoleBreakdownElement {
 	private String color = "#FFFFFF";
 
 	/** The children. */
-	private List<RoleBreakdownElement> children = new ArrayList<RoleBreakdownElement>();
+	private List<WorkitemBreakdownElement> children = new ArrayList<WorkitemBreakdownElement>();
 
 	/** The size. */
 	private int size = 1;
@@ -109,7 +109,7 @@ public class RoleBreakdownElement {
 	 *
 	 * @return the children
 	 */
-	public List<RoleBreakdownElement> getChildren() {
+	public List<WorkitemBreakdownElement> getChildren() {
 		return children;
 	}
 
@@ -118,7 +118,7 @@ public class RoleBreakdownElement {
 	 *
 	 * @param children the new children
 	 */
-	public void setChildren(List<RoleBreakdownElement> children) {
+	public void setChildren(List<WorkitemBreakdownElement> children) {
 		this.children = children;
 	}
 
@@ -131,7 +131,7 @@ public class RoleBreakdownElement {
 	public void addChild(Role role, ISynchronizer synchronizer) {
 		List<Role> children = Repository.getInstance().getRoleChildren(role.getTitle(), Comparators.REDUNDANCE);
 
-		RoleBreakdownElement e = new RoleBreakdownElement();
+		WorkitemBreakdownElement e = new WorkitemBreakdownElement();
 		e.setName(role.getTitle());
 		e.setCategory(role.getRolegroupIdentifier());
 		e.setId(role.getId(synchronizer));
@@ -151,7 +151,7 @@ public class RoleBreakdownElement {
 	 *
 	 * @param child the child
 	 */
-	public void addChild(RoleBreakdownElement child) {
+	public void addChild(WorkitemBreakdownElement child) {
 		this.children.add(child);
 	}
 

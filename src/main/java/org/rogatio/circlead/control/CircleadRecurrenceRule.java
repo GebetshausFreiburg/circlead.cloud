@@ -657,8 +657,10 @@ public class CircleadRecurrenceRule {
 	 */
 	public Integer getHour() {
 		List<Integer> hours = this.recurrenceRule.getByPart(Part.BYHOUR);
-		if (hours.size() > 0) {
-			return hours.get(0);
+		if (hours != null) {
+			if (hours.size() > 0) {
+				return hours.get(0);
+			}
 		}
 		return null;
 	}
@@ -676,7 +678,7 @@ public class CircleadRecurrenceRule {
 		s = clean(s);
 
 		rawRule = s;
-		
+
 		if (getType(s).equals(TYPE_CIRCLEAD)) {
 
 			RecurrenceRule rule = null;
@@ -729,10 +731,10 @@ public class CircleadRecurrenceRule {
 			}
 			if (period.contains("W")) {
 				rule = new RecurrenceRule(Freq.WEEKLY);
-				if (period.toUpperCase().contains("O")||period.toUpperCase().contains("U")) {
+				if (period.toUpperCase().contains("O") || period.toUpperCase().contains("U")) {
 					oddRecurrence = true;
 				}
-				if (period.toUpperCase().contains("E")||period.toUpperCase().contains("G")) {
+				if (period.toUpperCase().contains("E") || period.toUpperCase().contains("G")) {
 					oddRecurrence = false;
 				}
 			}
@@ -925,11 +927,11 @@ public class CircleadRecurrenceRule {
 			type = TYPE_RFC5545;
 			return TYPE_RFC5545;
 		}
-		
+
 		type = TYPE_UNDEFINED;
 
-		LOGGER.debug("RecurrenceRule '"+rule+"' is of type "+ type);
-		
+		LOGGER.debug("RecurrenceRule '" + rule + "' is of type " + type);
+
 		return TYPE_UNDEFINED;
 	}
 
@@ -1337,12 +1339,12 @@ public class CircleadRecurrenceRule {
 				Calendar c = Calendar.getInstance();
 				c.setTime(d);
 				int weekOfYear = c.get(Calendar.WEEK_OF_YEAR);
-				if (((weekOfYear%2)==0)&&!this.oddRecurrence) {
+				if (((weekOfYear % 2) == 0) && !this.oddRecurrence) {
 					list.add(nextInstance);
 				}
-				if (((weekOfYear%2)==1)&&this.oddRecurrence) {
+				if (((weekOfYear % 2) == 1) && this.oddRecurrence) {
 					list.add(nextInstance);
-				} 
+				}
 			} else {
 				list.add(nextInstance);
 			}

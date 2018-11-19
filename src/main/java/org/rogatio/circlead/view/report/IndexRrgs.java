@@ -14,7 +14,7 @@ import java.io.IOException;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
-import org.rogatio.circlead.model.data.RoleBreakdownElement;
+import org.rogatio.circlead.model.data.WorkitemBreakdownElement;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,7 +46,7 @@ public class IndexRrgs extends DefaultReport {
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.setSerializationInclusion(Include.NON_NULL);
 			mapper.enable(SerializationFeature.INDENT_OUTPUT);
-			RoleBreakdownElement rbs = Repository.getInstance().getRoleRolegroupStructure(synchronizer);
+			WorkitemBreakdownElement rbs = Repository.getInstance().getRolesByRolegroupStructure(synchronizer);
 			File f = new File("web" + File.separatorChar + "rolerolegroupstructure.json");
 			if (f.exists()) {
 				f.delete();
