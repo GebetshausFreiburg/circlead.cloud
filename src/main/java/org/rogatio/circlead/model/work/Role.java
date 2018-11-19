@@ -282,6 +282,45 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
+	 * Gets the organisational skill level.
+	 *
+	 * @return the organisational skill level
+	 */
+	@Deprecated
+	public int getOrganisationalSkillLevel() {
+		double sum = 0;
+		int counter = 0;
+		List<String> pi = getPersonIdentifiers();
+		if (ObjectUtil.isListNotNullAndEmpty(pi)) {
+			for (String p : pi) {
+				boolean ignoreReprepresentation = false;
+				if (getDataitem().getRepresentation(this.getTitle()).equalsIgnoreCase("Inaktiv")
+						|| getDataitem().getRepresentation(this.getTitle()).equalsIgnoreCase("Pausiert")) {
+					ignoreReprepresentation = true;
+				}
+
+				if (!ignoreReprepresentation) {
+					String skill = getDataitem().getSkill(p);
+					double s = 0;
+					try {
+						s = Double.parseDouble(skill);
+					//	System.out.println( "   "+s + " "+p);
+						counter++;
+					} catch (Exception e) {
+					}
+					sum += s;
+				}
+			}
+
+		}
+		if (counter ==0) {
+			return 0;
+		}
+		
+		return (int)(sum/counter);
+	}
+
+	/**
 	 * Gets the competences.
 	 *
 	 * @return the competences
@@ -479,14 +518,18 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		return this.getDataitem().getRecurrenceRule(person.getFullname());
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.model.work.DefaultWorkitem#getReferencedItems()
+	 */
 	@Override
 	public List<IWorkitem> getReferencedItems() {
 		List<IWorkitem> references = new ArrayList<IWorkitem>();
 
-		/*List<Role> childRoles = R.getRoleChildren(this.getTitle());
-		if (ObjectUtil.isListNotNullAndEmpty(childRoles)) {
-			references.addAll(childRoles);
-		}*/
+		/*
+		 * List<Role> childRoles = R.getRoleChildren(this.getTitle()); if
+		 * (ObjectUtil.isListNotNullAndEmpty(childRoles)) {
+		 * references.addAll(childRoles); }
+		 */
 
 		if (ObjectUtil.isListNotNullAndEmpty(this.getPersonIdentifiers())) {
 			List<Person> persons = new ArrayList<Person>();
@@ -498,30 +541,19 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			}
 			references.addAll(persons);
 		}
-		
-		//List<Team> foundTeams = R.getTeamsWithRole(this);
-		//if (ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
-		//	references.addAll(foundTeams);
-			/*for (Team team : foundTeams) {
-				List<TeamEntry> x = team.getTeamEntries();
-				for (TeamEntry e : x) {
-					if (e.getRoleIdentifier().equals(this.getTitle())) {
-						List<String> pi = e.getPersons();
-						if (ObjectUtil.isListNotNullAndEmpty(pi)) {
-							for (String p : pi) {
-								Person person = R.getPerson(p);
-								if (person != null) {
-									if (!references.contains(person)) {
-										references.add(person);	
-									}
-								}
-							}
-						}
-					}
-				}
-			}*/
+
+		// List<Team> foundTeams = R.getTeamsWithRole(this);
+		// if (ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
+		// references.addAll(foundTeams);
+		/*
+		 * for (Team team : foundTeams) { List<TeamEntry> x = team.getTeamEntries(); for
+		 * (TeamEntry e : x) { if (e.getRoleIdentifier().equals(this.getTitle())) {
+		 * List<String> pi = e.getPersons(); if (ObjectUtil.isListNotNullAndEmpty(pi)) {
+		 * for (String p : pi) { Person person = R.getPerson(p); if (person != null) {
+		 * if (!references.contains(person)) { references.add(person); } } } } } } }
+		 */
 //		}
-		
+
 		List<Activity> globalActivities = R.getActivities(this.getTitle());
 		List<Activity> ga = new ArrayList<Activity>();
 		for (Activity activity : globalActivities) {
@@ -533,19 +565,19 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		if (ObjectUtil.isListNotNullAndEmpty(ga)) {
 			references.addAll(ga);
 		}
-		
+
 		if (StringUtil.isNotNullAndNotEmpty(this.getParentIdentifier())) {
 			Role r = R.getRole(this.getParentIdentifier());
-			if (r!=null) {
+			if (r != null) {
 				if (!references.contains(r)) {
 					references.add(r);
 				}
 			}
 		}
-		
+
 		if (StringUtil.isNotNullAndNotEmpty(this.getRolegroupIdentifier())) {
 			Rolegroup r = R.getRolegroup(this.getRolegroupIdentifier());
-			if (r!=null) {
+			if (r != null) {
 				if (!references.contains(r)) {
 					references.add(r);
 				}
@@ -591,46 +623,45 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 //		TODO Add Hide-Option to properties, because this should not be hard-coded
 		// Only show teamroles in atlassian, not in files because print is to big
 //		if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
-			List<Team> foundTeams = R.getTeamsWithRole(this);
-			if (ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
-				renderer.addH2(element,
-						ROLEPERSONSINTEAM.toString() + " (" + R.getTeamPersonsWithRole(this).size() + ")");
+		List<Team> foundTeams = R.getTeamsWithRole(this);
+		if (ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
+			renderer.addH2(element, ROLEPERSONSINTEAM.toString() + " (" + R.getTeamPersonsWithRole(this).size() + ")");
 
-				Element ul = element.appendElement("ul");
-				for (Team team : foundTeams) {
-					Element li = ul.appendElement("li");
-					String c = "";
-					if (StringUtil.isNotNullAndNotEmpty(team.getCategory())) {
-						c = " (" + team.getCategory() + ")";
-					}
+			Element ul = element.appendElement("ul");
+			for (Team team : foundTeams) {
+				Element li = ul.appendElement("li");
+				String c = "";
+				if (StringUtil.isNotNullAndNotEmpty(team.getCategory())) {
+					c = " (" + team.getCategory() + ")";
+				}
 
-					if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
-						li.append("<ac:link><ri:page ri:content-title=\"" + team.getTitle()
-								+ "\" ri:version-at-save=\"1\"/><ac:plain-text-link-body><![CDATA[" + team.getTitle()
-								+ "" + c + "]]></ac:plain-text-link-body></ac:link>");
-					} else if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
-						li.appendElement("a").attr("href", "" + team.getId(synchronizer) + ".html")
-								.appendText(team.getTitle() + c);
-					}
+				if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
+					li.append("<ac:link><ri:page ri:content-title=\"" + team.getTitle()
+							+ "\" ri:version-at-save=\"1\"/><ac:plain-text-link-body><![CDATA[" + team.getTitle() + ""
+							+ c + "]]></ac:plain-text-link-body></ac:link>");
+				} else if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
+					li.appendElement("a").attr("href", "" + team.getId(synchronizer) + ".html")
+							.appendText(team.getTitle() + c);
+				}
 
-					li.append("&nbsp;");
-					renderer.addStatus(li, team.getStatus());
+				li.append("&nbsp;");
+				renderer.addStatus(li, team.getStatus());
 
-					List<TeamEntry> x = team.getTeamEntries();
-					Element ul2 = li.appendElement("ul");
-					for (TeamEntry e : x) {
-						if (e.getRoleIdentifier().equals(this.getTitle())) {
-							List<String> pi = e.getPersons();
-							if (ObjectUtil.isListNotNullAndEmpty(pi)) {
-								for (String p : pi) {
-									Element li2 = ul2.appendElement("li");
-									renderer.addPersonItem(li2, null, p);
-									foundSomeRoleResponsible = true;
-								}
+				List<TeamEntry> x = team.getTeamEntries();
+				Element ul2 = li.appendElement("ul");
+				for (TeamEntry e : x) {
+					if (e.getRoleIdentifier().equals(this.getTitle())) {
+						List<String> pi = e.getPersons();
+						if (ObjectUtil.isListNotNullAndEmpty(pi)) {
+							for (String p : pi) {
+								Element li2 = ul2.appendElement("li");
+								renderer.addPersonItem(li2, null, p);
+								foundSomeRoleResponsible = true;
 							}
 						}
 					}
 				}
+			}
 //			}
 		}
 
@@ -1056,17 +1087,14 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 							"Person '" + identifier + "' in role '" + this.getTitle() + "' not found.");
 					messages.add(m);
 				} else {
-					/*if (this.getDataitem().hasRepresentation(identifier)) {
-						String representation = this.getDataitem().getRepresentation(identifier);
-						WorkitemStatusParameter status = WorkitemStatusParameter.get(representation);
-						if (status != null) {
-							if (status == WorkitemStatusParameter.TEMPORARY) {
-								ValidationMessage m = new ValidationMessage(this);
-								m.info("Person '" + identifier + "' holds role '" + this.getTitle() + "' temporarily.");
-								messages.add(m);
-							}
-						}
-					}*/
+					/*
+					 * if (this.getDataitem().hasRepresentation(identifier)) { String representation
+					 * = this.getDataitem().getRepresentation(identifier); WorkitemStatusParameter
+					 * status = WorkitemStatusParameter.get(representation); if (status != null) {
+					 * if (status == WorkitemStatusParameter.TEMPORARY) { ValidationMessage m = new
+					 * ValidationMessage(this); m.info("Person '" + identifier + "' holds role '" +
+					 * this.getTitle() + "' temporarily."); messages.add(m); } } }
+					 */
 				}
 			}
 		}
