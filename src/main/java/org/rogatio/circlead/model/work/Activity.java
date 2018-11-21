@@ -51,17 +51,17 @@ import org.rogatio.circlead.view.IWorkitemRenderer;
 public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IValidator {
 
 	/** The Constant LOGGER. */
-	final static Logger LOGGER = LogManager.getLogger(Activity.class);
+	private final static Logger LOGGER = LogManager.getLogger(Activity.class);
 
 	/**
-	 * Instantiates a new activity.
+	 * Instantiates a new activity. Has not set an id.
 	 */
 	public Activity() {
 		this.dataitem = new ActivityDataitem();
 	}
 
 	/**
-	 * Instantiates a new activity.
+	 * Instantiates a new activity from dataitem
 	 *
 	 * @param dataitem the dataitem of the activity of class
 	 *                 {@link org.rogatio.circlead.model.data.ActivityDataitem}
@@ -69,15 +69,19 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	public Activity(IDataitem dataitem) {
 		super(dataitem);
 
+		/*
+		 * throws exception if dataitem is not ActivityDataitem
+		 */
 		if (!(dataitem instanceof ActivityDataitem)) {
 			throw new IllegalArgumentException("IDataitem must be of type ActivityDataitem");
 		}
 	}
 
 	/**
-	 * Instantiates a new activity.
+	 * Instantiates a new activity from mapped data. Key must be a string-representation of
+	 * {@link org.rogatio.circlead.model.Parameter}.
 	 *
-	 * @param data the data
+	 * @param data the data to set the item
 	 */
 	public Activity(Map<String, String> data) {
 		this.dataitem = new ActivityDataitem();
@@ -94,7 +98,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	}
 
 	/**
-	 * Gets the role identifier.
+	 * Gets the role identifier for the responsible role of the activity
 	 *
 	 * @return the responsible role identifier
 	 */
@@ -103,43 +107,43 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	}
 
 	/**
-	 * Gets the accountable identifier.
+	 * Gets the accountable identifier for the accountable role of the activity
 	 *
-	 * @return the accountable identifier
+	 * @return the accountable role identifier
 	 */
 	public String getAccountableIdentifier() {
 		return this.getDataitem().getAccountable();
 	}
 
 	/**
-	 * Gets the informed identifiers.
+	 * Gets the informed role identifiers for the informed roles of the activity
 	 *
-	 * @return the informed identifiers
+	 * @return the informed role identifiers as list
 	 */
 	public List<String> getInformedIdentifiers() {
 		return this.getDataitem().getInformed();
 	}
 
 	/**
-	 * Gets the supplier identifiers.
+	 * Gets the supplier role identifiers.
 	 *
-	 * @return the supplier identifiers
+	 * @return the supplier role identifiers as list
 	 */
 	public List<String> getSupplierIdentifiers() {
 		return this.getDataitem().getSupplier();
 	}
 
 	/**
-	 * Gets the consultant identifiers.
+	 * Gets the consultant role identifiers for the activity
 	 *
-	 * @return the consultant identifiers
+	 * @return the consultant role identifiers of the activity
 	 */
 	public List<String> getConsultantIdentifiers() {
 		return this.getDataitem().getConsultant();
 	}
 
 	/**
-	 * Sets the role identifier.
+	 * Sets the role identifier of the responsible role for the activity.
 	 *
 	 * @param roleIdentifier the new responsible role identifier
 	 */
@@ -221,14 +225,14 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 
 		List<ActivityDataitem> sa = this.getSubactivities();
 		for (ActivityDataitem activityDataitem : sa) {
-			
+
 			Activity a = R.getActivity(activityDataitem.getTitle());
-			if (a!=null) {
+			if (a != null) {
 				if (!references.contains(a)) {
 					references.add(a);
 				}
 			}
-			
+
 			if (StringUtil.isNotNullAndNotEmpty(activityDataitem.getResponsible())) {
 				Role role = R.getRole(activityDataitem.getResponsible());
 				if (role != null) {
@@ -284,7 +288,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 			}
 
 		}
-		
+
 		return references;
 	}
 

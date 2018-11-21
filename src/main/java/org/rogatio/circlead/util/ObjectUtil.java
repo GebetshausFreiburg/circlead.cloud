@@ -89,11 +89,14 @@ public class ObjectUtil {
 	 * @return the list
 	 */
 	public static List<Timeslice> divideSlices(List<Timeslice> slices, int size) {
-		// List<Timeslice> list = new ArrayList<Timeslice>();
-		for (Timeslice timeslice : slices) {
-			timeslice.setAllokation(timeslice.getAllokation() / ((double) size));
+		if (slices != null) {
+			// List<Timeslice> list = new ArrayList<Timeslice>();
+			for (Timeslice timeslice : slices) {
+				timeslice.setAllokation(timeslice.getAllokation() / ((double) size));
+			}
 		}
 		return slices;
+
 	}
 
 	/**
@@ -235,7 +238,7 @@ public class ObjectUtil {
 	public static String createRandomHtmlColor() {
 		return convertToHtmlColor(createRandomColor());
 	}
-	
+
 	/**
 	 * Creates the random html grey color.
 	 *
@@ -259,7 +262,7 @@ public class ObjectUtil {
 		Color randomColour = new Color(red, green, blue);
 		return randomColour;
 	}
-	
+
 	/**
 	 * Creates the random grey color.
 	 *
@@ -268,7 +271,7 @@ public class ObjectUtil {
 	public static Color createRandomGreyColor() {
 		Random randomGenerator = new Random();
 		int rgb = randomGenerator.nextInt(256);
-	
+
 		Color randomColour = new Color(rgb, rgb, rgb);
 		return randomColour;
 	}

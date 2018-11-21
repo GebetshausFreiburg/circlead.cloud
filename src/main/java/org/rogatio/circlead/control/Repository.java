@@ -216,12 +216,16 @@ public final class Repository {
 			for (int j = 1; j <= 7; j++) {
 				boolean found = false;
 				for (Team team : this.getTeamsWithCategory(category)) {
-					if (team.getRecurrenceRule() != null) {
+					if (StringUtil.isNotNullAndNotEmpty(team.getRecurrenceRule())) {
 						CircleadRecurrenceRule crr = new CircleadRecurrenceRule(team.getRecurrenceRule());
 
 						Weekday wd = crr.getWeekday();
 						Integer hour = crr.getHour();
-						int pos = CircleadRecurrenceRule.WEEKDAY2DAYOFWEEK.get(wd);
+						Integer intValue = CircleadRecurrenceRule.WEEKDAY2DAYOFWEEK.get(wd);
+						int pos = 0;
+						if (intValue != null) {
+							pos = intValue;
+						}
 
 						if (hour != null) {
 							if (writeable[i][j] && (j == pos && i == hour)) {
@@ -477,22 +481,29 @@ public final class Repository {
 	 */
 	public void addOrphanedRoleCompetenciesToRootCompetence() {
 		Map<String, List<Role>> competencies = getCompetencesFromRoles();
+
+		Competence rc = getRootCompetence();
+
+		if (rc == null) {
+			LOGGER.error("No root-competence could be found!");
+			return;
+		}
+
 		for (String competence : competencies.keySet()) {
+			if (rc != null) {
+				if (!rc.containsCompetence(competence)) {
+					CompetenceDataitem cd = new CompetenceDataitem();
+					cd.setTitle(competence);
 
-			Competence rc = getRootCompetence();
-			if (!rc.containsCompetence(competence)) {
-				CompetenceDataitem cd = new CompetenceDataitem();
-				cd.setTitle(competence);
+					StringBuilder sb = new StringBuilder();
+					for (Role r : competencies.get(competence)) {
+						sb.append(r.getTitle() + ", ");
+					}
 
-				StringBuilder sb = new StringBuilder();
-				for (Role r : competencies.get(competence)) {
-					sb.append(r.getTitle() + ", ");
+					cd.setDescription(sb.toString());
+					rc.addCompetence(cd);
 				}
-
-				cd.setDescription(sb.toString());
-				rc.addCompetence(cd);
 			}
-
 		}
 	}
 
@@ -1689,14 +1700,17 @@ public final class Repository {
 	}
 
 	/**
-	 * Write index.
+	 * Write index of workitems and report through connector for every synchronizer
+	 * if it is set in synchronizer.
 	 */
 	public void writeIndex() {
 		this.getConnector().writeIndex();
 	}
 
 	/**
-	 * Update reports.
+	 * Update reports through
+	 * {@link org.rogatio.circlead.control.synchronizer.Connector} for every
+	 * {@link org.rogatio.circlead.control.synchronizer.ISynchronizer}.
 	 *
 	 * @return the list
 	 */

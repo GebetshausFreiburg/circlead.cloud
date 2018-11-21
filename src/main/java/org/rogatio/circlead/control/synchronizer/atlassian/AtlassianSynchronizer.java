@@ -1145,7 +1145,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 			SynchronizerResult results = confluenceClient
 					.search("space = \"" + circleadSpace + "\" AND label = \"" + type + "\"");
 
-			if (results.getContent() == null) {
+			if (results==null|results.getContent() == null) {
 				LOGGER.error("Error occured: Loading Index returns no content in result-set.");
 			}
 

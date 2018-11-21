@@ -714,14 +714,13 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 				ignoreReprepresentationMessage = true;
 			}
 		}
-		
+
 		if (r != null) {
-			if (this.getStatus().equalsIgnoreCase("Inaktiv")
-					|| this.getStatus().equalsIgnoreCase("Pausiert")) {
+			if (this.getStatus().equalsIgnoreCase("Inaktiv") || this.getStatus().equalsIgnoreCase("Pausiert")) {
 				ignoreReprepresentationMessage = true;
 			}
 		}
-		
+
 //		System.out.println(r.getTitle() +" - "+ this.getFullname()+" "+r.getDataitem().getRepresentation(this.getFullname())+" - "+ignoreReprepresentationMessage);
 
 		ArrayList<Role> roles = R.getOrganisationalRolesWithPerson(this.getFullname());
@@ -766,10 +765,12 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		addDataRowElement(this.getFirstname(), Parameter.FIRSTNAME, map);
 
 		ContactDataitem cdi = this.getFirstPrivateContact();
-		addDataRowElement(cdi.getMail(), Parameter.MAIL, map);
-		addDataRowElement(cdi.getMobile(), Parameter.MOBILE, map);
-		addDataRowElement(cdi.getPhone(), Parameter.PHONE, map);
-		addDataRowElement(cdi.getAddress(), Parameter.ADRESS, map);
+		if (cdi != null) {
+			addDataRowElement(cdi.getMail(), Parameter.MAIL, map);
+			addDataRowElement(cdi.getMobile(), Parameter.MOBILE, map);
+			addDataRowElement(cdi.getPhone(), Parameter.PHONE, map);
+			addDataRowElement(cdi.getAddress(), Parameter.ADRESS, map);
+		}
 
 		/*
 		 * Map<String, String> d = this.getData(); if (d != null) { if (d.size() > 0) {

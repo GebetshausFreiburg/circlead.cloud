@@ -14,6 +14,7 @@ import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.ObjectUtil;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class SvgBuilder creates a XML-DOM for and SVG.
  * 
@@ -40,6 +41,13 @@ public class SvgBuilder {
 		return element;
 	}
 
+	/**
+	 * Creates the team dna profile.
+	 *
+	 * @param team the team
+	 * @param size the size
+	 * @return the element
+	 */
 	public static Element createTeamDnaProfile(Team team, int size) {
 		WorkitemTree tree = new WorkitemTree(WorkitemType.COMPETENCE);
 		Element element = createSvgElement(size);

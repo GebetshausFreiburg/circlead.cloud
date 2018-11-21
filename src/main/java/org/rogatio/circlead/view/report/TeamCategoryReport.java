@@ -145,11 +145,17 @@ public class TeamCategoryReport extends DefaultReport {
 		int durrationTime = 0;
 		for (Team team : teams) {
 			String r = team.getRecurrenceRule();
-			CircleadRecurrenceRule crr = new CircleadRecurrenceRule(r);
-			int h = crr.getHour();
-			if (weekday == crr.getWeekday() && hour == h) {
-				durrationTime = setHour(team, weekday, hour, ul);
-				found = true;
+			if (StringUtil.isNotNullAndNotEmpty(r)) {
+				CircleadRecurrenceRule crr = new CircleadRecurrenceRule(r);
+				Integer intValue = crr.getHour();
+				int h = 0;
+				if (intValue != null) {
+					h = crr.getHour();
+				}
+				if (weekday == crr.getWeekday() && hour == h) {
+					durrationTime = setHour(team, weekday, hour, ul);
+					found = true;
+				}
 			}
 		}
 		if (!found) {

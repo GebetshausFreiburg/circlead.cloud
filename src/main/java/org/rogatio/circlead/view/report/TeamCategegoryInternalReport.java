@@ -98,7 +98,7 @@ public class TeamCategegoryInternalReport extends DefaultReport {
 				} else {
 					boolean found = false;
 					for (Team team : teams) {
-						if (team.getRecurrenceRule() != null) {
+						if (StringUtil.isNotNullAndNotEmpty(team.getRecurrenceRule())) {
 							CircleadRecurrenceRule crr = new CircleadRecurrenceRule(team.getRecurrenceRule());
 
 							Weekday wd = crr.getWeekday();

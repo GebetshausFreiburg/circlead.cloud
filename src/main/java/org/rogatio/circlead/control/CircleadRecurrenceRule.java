@@ -647,6 +647,9 @@ public class CircleadRecurrenceRule {
 	 * @return the weekday
 	 */
 	public Weekday getWeekday() {
+		if (this.recurrenceRule==null) {
+			return null;
+		}
 		return this.recurrenceRule.getWeekStart();
 	}
 
@@ -656,6 +659,9 @@ public class CircleadRecurrenceRule {
 	 * @return the hour
 	 */
 	public Integer getHour() {
+		if (recurrenceRule==null) {
+			return null;
+		}
 		List<Integer> hours = this.recurrenceRule.getByPart(Part.BYHOUR);
 		if (hours != null) {
 			if (hours.size() > 0) {

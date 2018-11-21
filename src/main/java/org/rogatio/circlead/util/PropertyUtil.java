@@ -65,7 +65,7 @@ public class PropertyUtil {
 
 	/** The application update mode. */
 	public static String APPLICATION_UPDATE_MODE = "application.mode.update";
-	
+
 	/** The mail username. */
 	public static String MAIL_USERNAME = "mail.username";
 
@@ -107,22 +107,22 @@ public class PropertyUtil {
 
 	/** The atlassian query limit. */
 	public static String ATLASSIAN_QUERY_LIMIT = "atlassian.query.limit";
-	
+
 	/** The webserver port. */
 	public static String WEBSERVER_PORT = "webserver.port";
-	
+
 	/** The webserver url. */
 	public static String WEBSERVER_URL = "webserver.url";
-	
+
 	/** The webserver landingpage. */
 	public static String WEBSERVER_LANDINGPAGE = "webserver.landingpage";
-	
+
 	/** The webserver directory. */
 	public static String WEBSERVER_DIRECTORY = "webserver.directory";
-	
+
 	/** The application default role corememberorganisation. */
 	public static String APPLICATION_DEFAULT_ROLE_COREMEMBERORGANISATION = "application.default.role.core";
-	
+
 	/** The application specialized char. */
 	public static String APPLICATION_SPECIALIZED_CHAR = "application.specialized.char";
 
@@ -131,7 +131,7 @@ public class PropertyUtil {
 
 	/** The Constant APPLICATION_DISPLAY_TEAM_LEVEL. */
 	private static final String APPLICATION_DISPLAY_TEAM_LEVEL = "application.display.team.level";
-	
+
 	/** The instance. */
 	private static PropertyUtil instance = null;
 
@@ -146,8 +146,8 @@ public class PropertyUtil {
 				+ PropertyUtil.getInstance().getApplicationValue(APPLICATION_VERSION) + ")");
 		LOGGER.info("Default Rolegroup: " + PropertyUtil.getInstance().getApplicationDefaultRolegroup());
 		LOGGER.info("Default Teamcategory: " + PropertyUtil.getInstance().getApplicationDefaultTeamcategory());
-		LOGGER.info("Application-Update-Mode is '"+PropertyUtil.getInstance().getApplicationUpdateMode()+"'");
-		
+		LOGGER.info("Application-Update-Mode is '" + PropertyUtil.getInstance().getApplicationUpdateMode() + "'");
+
 		if (PropertyUtil.getInstance().isAtlassianSynchronizerEnabled()) {
 			LOGGER.info("URL of Jira is set to '" + PropertyUtil.getInstance().getJiraUrl() + "'");
 			LOGGER.info("URL of Confluence is set to '" + PropertyUtil.getInstance().getConfluenceUrl() + "'");
@@ -178,11 +178,17 @@ public class PropertyUtil {
 		String runtimeConfigPath = currentDir + File.separatorChar + "runtime.properties";
 		try {
 			applicationProperties.load(new FileInputStream(appConfigPath));
-			runtimeProperties.load(new FileInputStream(runtimeConfigPath));
 		} catch (FileNotFoundException e) {
 			LOGGER.error(e);
 		} catch (IOException e) {
 			LOGGER.error(e);
+		}
+		try {
+			runtimeProperties.load(new FileInputStream(runtimeConfigPath));
+		} catch (FileNotFoundException e) {
+			LOGGER.info("Runtime-Properties not set yet.");
+		} catch (IOException e) {
+			LOGGER.info("Runtime-Properties not set yet.");
 		}
 
 	}
@@ -205,11 +211,11 @@ public class PropertyUtil {
 	 */
 	public Date getRuntimeModifiedDate() {
 		String sDate = getRuntimeValue(RUNTIME_LASTMODIFIED_DATE);
-		
-		if (sDate==null) {
+
+		if (sDate == null) {
 			return null;
 		}
-		
+
 		if (sDate != null) {
 			sDate = sDate.trim();
 		}
@@ -246,7 +252,7 @@ public class PropertyUtil {
 	public String getRuntimeValue(String propKey) {
 		return this.runtimeProperties.getProperty(propKey);
 	}
-	
+
 	/**
 	 * Sets the runtime modified date to actual date (+1 minute).
 	 */
@@ -255,7 +261,7 @@ public class PropertyUtil {
 		c.add(Calendar.MINUTE, 1);
 		setRuntimeModifiedDate(c.getTime());
 	}
-	
+
 	/**
 	 * Sets the runtime modified date.
 	 *
@@ -265,17 +271,16 @@ public class PropertyUtil {
 		DateFormat form = new SimpleDateFormat("yyyy.MM.dd kk':'mm");
 		String s = form.format(date);
 //		System.out.println(s);
-		    try {
-		        Properties props = new Properties();
-		        props.setProperty(RUNTIME_LASTMODIFIED_DATE, s);
-		        File f = new File("runtime.properties");
-		        OutputStream out = new FileOutputStream( f );
-		        props.store(out, "Application Runtime Properties - Generated from Circlead");
-		    }
-		    catch (Exception e ) {
-		        e.printStackTrace();
-		    }
-		
+		try {
+			Properties props = new Properties();
+			props.setProperty(RUNTIME_LASTMODIFIED_DATE, s);
+			File f = new File("runtime.properties");
+			OutputStream out = new FileOutputStream(f);
+			props.store(out, "Application Runtime Properties - Generated from Circlead");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	/**
@@ -287,7 +292,7 @@ public class PropertyUtil {
 	public String getApplicationValue(String propKey) {
 		return this.applicationProperties.getProperty(propKey);
 	}
-	
+
 	/**
 	 * Gets the int value.
 	 *
@@ -328,7 +333,7 @@ public class PropertyUtil {
 	public Boolean isFileSynchronizerEnabled() {
 		return getBooleanValue(FILE_SYNCHRONIZER_ENABLED);
 	}
-	
+
 	/**
 	 * Checks if is application display team level.
 	 *
@@ -426,14 +431,14 @@ public class PropertyUtil {
 	 */
 	public boolean isApplicationUpdateModeFull() {
 		String s = getApplicationUpdateMode();
-		if (s!=null) {
+		if (s != null) {
 			if (s.equalsIgnoreCase("FULL")) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Checks if is application update mode O incremental.
 	 *
@@ -441,14 +446,14 @@ public class PropertyUtil {
 	 */
 	public boolean isApplicationUpdateModeIncremental() {
 		String s = getApplicationUpdateMode();
-		if (s!=null) {
+		if (s != null) {
 			if (s.equalsIgnoreCase("INCREMENTAL")) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Gets the application update mode.
 	 *
@@ -457,7 +462,7 @@ public class PropertyUtil {
 	public String getApplicationUpdateMode() {
 		return getApplicationValue(APPLICATION_UPDATE_MODE);
 	}
-	
+
 	/**
 	 * Gets the application default teamcategory.
 	 *
@@ -475,7 +480,7 @@ public class PropertyUtil {
 	public String getApplicationDefaultRoleReport() {
 		return getApplicationValue(APPLICATION_DEFAULT_ROLE_REPORT);
 	}
-	
+
 	/**
 	 * Gets the application default role core member.
 	 *
@@ -542,7 +547,7 @@ public class PropertyUtil {
 	public String getDropboxAccesstoken() {
 		return getApplicationValue(DROPBOX_CREDENTIALS_ACCESSTOKEN);
 	}
-	
+
 	/**
 	 * Gets the webserver directory.
 	 *
@@ -551,7 +556,7 @@ public class PropertyUtil {
 	public String getWebserverDirectory() {
 		return getApplicationValue(WEBSERVER_DIRECTORY);
 	}
-	
+
 	/**
 	 * Gets the webserver landingpage.
 	 *
@@ -560,7 +565,7 @@ public class PropertyUtil {
 	public String getWebserverLandingpage() {
 		return getApplicationValue(WEBSERVER_LANDINGPAGE);
 	}
-	
+
 	/**
 	 * Gets the webserver url.
 	 *
@@ -569,7 +574,7 @@ public class PropertyUtil {
 	public String getWebserverUrl() {
 		return getApplicationValue(WEBSERVER_URL);
 	}
-	
+
 	/**
 	 * Gets the webserver port.
 	 *
