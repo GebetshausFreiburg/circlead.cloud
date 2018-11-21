@@ -19,4 +19,4 @@ The main-layers for the application are
 
 To understood the philosophy (and model) of circlead read the blog (only in german) at https://circleadonline.wordpress.com/.
 
-To understood the API see https://gebetshausfreiburg.github.io/circlead.cloud/index.html?overview-summary.html
+To understood the API see https://gebetshausfreiburg.github.io/circlead.cloud/index.html?overview-summary.html and https://veniversum.me/git-visualizer/?owner=GebetshausFreiburg&repo=circlead.cloud

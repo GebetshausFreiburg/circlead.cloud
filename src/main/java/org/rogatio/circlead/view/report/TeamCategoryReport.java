@@ -73,16 +73,6 @@ public class TeamCategoryReport extends DefaultReport {
 		}
 
 		if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
-//			Document doc = new Document("");
-//			doc.charset(Charset.forName("UTF-8"));
-//			Element html = doc.appendElement("html");
-//			Element head = html.appendElement("head");
-//			head.append(
-//					"<link href='http://fonts.googleapis.com/css?family=Open+Sans&subset=latin' rel='stylesheet' type='text/css'>");
-//			head.append("<link rel=\"stylesheet\" href=\"stylesPrayHour.css\">");
-//			head.append("<meta charset=\"utf-8\">");
-//			Element body = html.appendElement("body");
-
 			Element uiDiv = element.appendElement("div").attr("class", "ui");
 			uiDiv.appendElement("nav").attr("class", "navbar app").appendText(category);
 			uiDiv.appendElement("nav").attr("class", "navbar board").appendText("Wochenplan");
