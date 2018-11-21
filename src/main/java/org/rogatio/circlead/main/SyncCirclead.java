@@ -192,6 +192,7 @@ public class SyncCirclead {
 			repository.writeExcel("Mitarbeiterliste", WorkitemType.PERSON, null);
 			repository.writeExcel("Rollen", WorkitemType.ROLE, null);
 			repository.writeExcel("Rollengruppen", WorkitemType.ROLEGROUP, null);
+			repository.writeExcel("Teams", WorkitemType.TEAM, null);
 
 			PrayHourExporter phe = new PrayHourExporter();
 			phe.export("Gebetsstundenübersicht");

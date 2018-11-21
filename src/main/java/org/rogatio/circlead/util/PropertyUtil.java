@@ -51,6 +51,9 @@ public class PropertyUtil {
 	/** The application default teamcategory. */
 	public static String APPLICATION_DEFAULT_TEAMCATEGORY = "application.default.team.category";
 
+	/** The application default teammessage. */
+	public static String APPLICATION_DEFAULT_TEAMMESSAGE = "application.default.team.message";
+	
 	/** The application default role. */
 	public static String APPLICATION_DEFAULT_ROLE_REPORT = "application.default.role.report";
 
@@ -496,6 +499,15 @@ public class PropertyUtil {
 		return getApplicationValue(APPLICATION_DEFAULT_TEAMCATEGORY);
 	}
 
+	/**
+	 * Gets the application default team message.
+	 *
+	 * @return the application default team message
+	 */
+	public String getApplicationDefaultTeamMessage() {
+		return getApplicationValue(APPLICATION_DEFAULT_TEAMMESSAGE);
+	}
+	
 	/**
 	 * Gets the application default Role.
 	 *

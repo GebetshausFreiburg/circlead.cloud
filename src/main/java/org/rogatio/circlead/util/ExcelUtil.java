@@ -91,8 +91,13 @@ public class ExcelUtil {
 			HEADERSTYLE.setVerticalAlignment(org.apache.poi.ss.usermodel.VerticalAlignment.TOP);
 			ExcelUtil.addColorBackground(HEADERSTYLE, (byte) 60, (byte) 60, (byte) 60);
 			cell.setCellStyle(HEADERSTYLE);
-//			cell.setCellValue(p.toString());
-			cell.setCellValue(ExcelUtil.getRichString(p.toString(), workbook, true, 12));
+			
+			String h = p.toString();
+			if (StringUtil.isNotNullAndNotEmpty(p.getDetail())) {
+				h = p.getDetail();
+			}
+			
+			cell.setCellValue(ExcelUtil.getRichString(h, workbook, true, 12));
 		}
 
 		int maxColumn = headerRow.size();

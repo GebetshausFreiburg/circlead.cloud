@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.TreeMap;
 
 import org.dmfs.rfc5545.DateTime;
 import org.dmfs.rfc5545.recur.Freq;
@@ -30,12 +31,15 @@ import org.rogatio.circlead.control.synchronizer.atlassian.parser.HeaderTablePar
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
+import org.rogatio.circlead.model.Parameter;
 import org.rogatio.circlead.model.WorkitemStatusParameter;
+import org.rogatio.circlead.model.data.IDataRow;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.model.data.TeamDataitem;
 import org.rogatio.circlead.model.data.TeamEntry;
 import org.rogatio.circlead.model.data.Timeslice;
 import org.rogatio.circlead.util.ObjectUtil;
+import org.rogatio.circlead.util.PropertyUtil;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.IWorkitemRenderer;
@@ -45,7 +49,7 @@ import org.rogatio.circlead.view.IWorkitemRenderer;
  *
  * @author Matthias Wegner
  */
-public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidator {
+public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidator, IDataRow {
 
 	/**
 	 * Instantiates a new team.
@@ -131,7 +135,9 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		return this.getDataitem().getEnd();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.model.work.DefaultWorkitem#getReferencedItems()
 	 */
 	@Override
@@ -175,7 +181,7 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Gets the start date of the team-event. 
+	 * Gets the start date of the team-event.
 	 *
 	 * @return the start
 	 */
@@ -235,6 +241,64 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	 */
 	public String getRecurrenceRule() {
 		return this.getDataitem().getRecurrenceRule();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.model.data.IDataRow#getDataRow()
+	 */
+	@Override
+	public Map<Parameter, Object> getDataRow() {
+		Map<Parameter, Object> map = new TreeMap<Parameter, Object>();
+
+		addDataRowElement(this.getTitle(), Parameter.TITLE, map);
+		addDataRowElement(this.getTeamType(), Parameter.TYPE, map);
+		addDataRowElement(this.getTeamSubtype(), Parameter.SUBTYPE, map);
+		addDataRowElement(this.getStart(), Parameter.STARTDATE, map);
+		addDataRowElement(this.getEnd(), Parameter.ENDDATE, map);
+		addDataRowElement(this.getTeamMembers(), Parameter.PERSONS, map);
+		addDataRowElement(this.getStatus(), Parameter.STATUS, map);
+		
+		List<Timeslice> slices = this.getAllokationSlices(Freq.MONTHLY);
+		for (Timeslice timeslice : slices) {
+			Parameter p = Parameter.get(timeslice.getSliceStart());
+			if (p!=null) {
+				p.setDetail(timeslice.getSliceStart());
+				addDataRowElement(""+((int)timeslice.getAllokation()), p, map);	
+			}
+		}
+	
+		return map;
+	}
+
+	/**
+	 * Adds the data row element.
+	 *
+	 * @param value the value
+	 * @param parameter the parameter
+	 * @param map the map
+	 */
+	private void addDataRowElement(String value, Parameter parameter, Map<Parameter, Object> map) {
+		if (StringUtil.isNotNullAndNotEmpty(value)) {
+			map.put(parameter, value);
+		}
+	}
+
+	/**
+	 * Adds the data row element.
+	 *
+	 * @param values the values
+	 * @param parameter the parameter
+	 * @param map the map
+	 */
+	private void addDataRowElement(List<String> values, Parameter parameter, Map<Parameter, Object> map) {
+		if (ObjectUtil.isListNotNullAndEmpty(values)) {
+			StringBuilder sb = new StringBuilder();
+			for (String value : values) {
+				sb.append(" - ").append(value).append("\n");
+			}
+
+			map.put(parameter, sb.toString());
+		}
 	}
 
 	/**
@@ -474,10 +538,12 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		}
 
 		if (this.getCategory() != null) {
-			if (this.getCategory().equals("Gebetsstunde")) {
-				renderer.addH3(element, " ");
-				String mail = "gebetstundenorga@gebetshaus-freiburg.de";
-				element.appendText("Bitte melde Änderungen im Team oder der Gebetsstunde an " + mail + ".");
+			if (this.getCategory().equals(PropertyUtil.getInstance().getApplicationDefaultTeamcategory())) {
+				if (StringUtil.isNotNullAndNotEmpty(PropertyUtil.getInstance().getApplicationDefaultTeamMessage())) {
+					String m = PropertyUtil.getInstance().getApplicationDefaultTeamMessage(); 
+					Element p = element.appendElement("p");
+					p.appendText(m);
+				}
 			}
 		}
 
@@ -601,14 +667,14 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		List<String> personIdentifiers = this.getTeamMembers();
 		for (String personIdentifier : personIdentifiers) {
 			Person p = R.getPerson(personIdentifier);
-			if (p!=null) {
-				 List<Timeslice> tempSlices = getAllokationSlices(p, freq);
-				 slices = ObjectUtil.merge(tempSlices, slices);
+			if (p != null) {
+				List<Timeslice> tempSlices = getAllokationSlices(p, freq);
+				slices = ObjectUtil.merge(tempSlices, slices);
 			}
 		}
 		return slices;
 	}
-	
+
 	/**
 	 * Gets the allokation slices.
 	 *
@@ -620,7 +686,7 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		// System.out.println(rule.getAllokationSlices(Freq.WEEKLY));
 		List<Timeslice> slices = null;
 		List<TeamEntry> x = getTeamEntries();
-		
+
 		if (x == null) {
 			CircleadRecurrenceRule crr = this.getCircleadRecurrenceRule();
 			if (crr != null) {
