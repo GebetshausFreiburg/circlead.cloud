@@ -51,6 +51,7 @@ import org.rogatio.circlead.view.IWorkitemRenderer;
 public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IValidator {
 
 	/** The Constant LOGGER. */
+	@SuppressWarnings("unused")
 	private final static Logger LOGGER = LogManager.getLogger(Activity.class);
 
 	/**

@@ -41,8 +41,8 @@ import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.IWorkitemRenderer;
 
 /**
- * The Class Team is the working item for a Team
- * 
+ * The Class Team is the working item for a Team.
+ *
  * @author Matthias Wegner
  */
 public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidator {
@@ -131,6 +131,9 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		return this.getDataitem().getEnd();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.model.work.DefaultWorkitem#getReferencedItems()
+	 */
 	@Override
 	public List<IWorkitem> getReferencedItems() {
 		List<IWorkitem> references = new ArrayList<IWorkitem>();
@@ -590,6 +593,25 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	/**
 	 * Gets the allokation slices.
 	 *
+	 * @param freq the freq
+	 * @return the allokation slices
+	 */
+	public List<Timeslice> getAllokationSlices(Freq freq) {
+		List<Timeslice> slices = null;
+		List<String> personIdentifiers = this.getTeamMembers();
+		for (String personIdentifier : personIdentifiers) {
+			Person p = R.getPerson(personIdentifier);
+			if (p!=null) {
+				 List<Timeslice> tempSlices = getAllokationSlices(p, freq);
+				 slices = ObjectUtil.merge(tempSlices, slices);
+			}
+		}
+		return slices;
+	}
+	
+	/**
+	 * Gets the allokation slices.
+	 *
 	 * @param person the person
 	 * @param freq   the freq
 	 * @return the allokation slices
@@ -598,7 +620,7 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		// System.out.println(rule.getAllokationSlices(Freq.WEEKLY));
 		List<Timeslice> slices = null;
 		List<TeamEntry> x = getTeamEntries();
-
+		
 		if (x == null) {
 			CircleadRecurrenceRule crr = this.getCircleadRecurrenceRule();
 			if (crr != null) {

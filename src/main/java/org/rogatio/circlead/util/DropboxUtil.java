@@ -35,7 +35,13 @@ public class DropboxUtil {
 	final static Logger LOGGER = LogManager.getLogger(DropboxUtil.class);
 
 	/**
-	 * Load and authenticate dropbox-client by authentification file <pre>*.credentials</pre> in classpath
+	 * Load and authenticate dropbox-client by authentification file
+	 * 
+	 * <pre>
+	 * *.credentials
+	 * </pre>
+	 * 
+	 * in classpath
 	 *
 	 * @param authFile the auth file
 	 * @return the client
@@ -74,7 +80,7 @@ public class DropboxUtil {
 		return dbxClient;
 
 	}
-	
+
 	/**
 	 * Gets the client from access token.
 	 *
@@ -103,7 +109,14 @@ public class DropboxUtil {
 	}
 
 	/**
-     * Load and authenticate dropbox-client by authentification file <pre>*.credentials</pre> in classpath *
+	 * Load and authenticate dropbox-client by authentification file
+	 * 
+	 * <pre>
+	 * *.credentials
+	 * </pre>
+	 * 
+	 * in classpath *
+	 * 
 	 * @param authFile the auth file
 	 * @return the team client
 	 */
@@ -139,7 +152,7 @@ public class DropboxUtil {
 		return dbxClient;
 
 	}
-	
+
 	/**
 	 * Gets the team client from access token.
 	 *
@@ -147,7 +160,7 @@ public class DropboxUtil {
 	 * @return the team client from access token
 	 */
 	public static DbxTeamClientV2 getTeamClientFromAccessToken(String accessToken) {
-		
+
 		DbxRequestConfig requestConfig = new DbxRequestConfig("circlead-cloud");
 		DbxTeamClientV2 dbxClient = new DbxTeamClientV2(requestConfig, accessToken);
 
@@ -170,61 +183,65 @@ public class DropboxUtil {
 	 * Prints the upload-progress in bytes to logger.
 	 *
 	 * @param uploaded the uploaded bytes from a file
-	 * @param size the byte-size of a file
+	 * @param size     the byte-size of a file
 	 */
 	private static void printProgress(long uploaded, long size) {
-		LOGGER.info("Uploaded "+uploaded+" / "+size+" bytes ("+100 * (uploaded / (double) size)+"%)" );
+		LOGGER.info("Uploaded " + uploaded + " / " + size + " bytes (" + 100 * (uploaded / (double) size) + "%)");
 	}
 
 	/**
 	 * Upload file.
 	 *
-	 * @param dbxClient the dbx client
-	 * @param localFile the local file
+	 * @param dbxClient   the dbx client
+	 * @param localFile   the local file
 	 * @param dropboxPath the dropbox path
 	 * @see https://github.com/dropbox/dropbox-sdk-java/blob/master/examples/upload-file/src/main/java/com/dropbox/core/examples/upload_file/Main.java
 	 */
 	public static void uploadFile(DbxClientV2 dbxClient, File localFile, String dropboxPath) {
-		try (InputStream in = new FileInputStream(localFile)) {
-			ProgressListener progressListener = l -> printProgress(l, localFile.length());
+		if (PropertyUtil.getInstance().isDropboxInterfaceEnabled()) {
+			try (InputStream in = new FileInputStream(localFile)) {
+				ProgressListener progressListener = l -> printProgress(l, localFile.length());
 
-			FileMetadata metadata = dbxClient.files().uploadBuilder(dropboxPath).withMode(WriteMode.OVERWRITE)
-					.withClientModified(new Date(localFile.lastModified())).uploadAndFinish(in, progressListener);
+				FileMetadata metadata = dbxClient.files().uploadBuilder(dropboxPath).withMode(WriteMode.OVERWRITE)
+						.withClientModified(new Date(localFile.lastModified())).uploadAndFinish(in, progressListener);
 
-			LOGGER.info("File '"+metadata.getName()+"' uploaded to '"+dropboxPath+"'");
-		} catch (UploadErrorException ex) {
-			LOGGER.error("Error uploading to Dropbox: " + ex.getMessage());
-			System.exit(1);
-		} catch (DbxException ex) {
-			LOGGER.error("Error uploading to Dropbox: " + ex.getMessage());
-			System.exit(1);
-		} catch (IOException ex) {
-			LOGGER.error("Error reading from file \"" + localFile + "\": " + ex.getMessage());
-			System.exit(1);
+				LOGGER.info("File '" + metadata.getName() + "' uploaded to '" + dropboxPath + "'");
+			} catch (UploadErrorException ex) {
+				LOGGER.error("Error uploading to Dropbox: " + ex.getMessage());
+				System.exit(1);
+			} catch (DbxException ex) {
+				LOGGER.error("Error uploading to Dropbox: " + ex.getMessage());
+				System.exit(1);
+			} catch (IOException ex) {
+				LOGGER.error("Error reading from file \"" + localFile + "\": " + ex.getMessage());
+				System.exit(1);
+			}
 		}
 	}
 
 	/**
 	 * Upload file to team folder.
 	 *
-	 * @param dbxClient the dbx client
-	 * @param localFile the local file
+	 * @param dbxClient  the dbx client
+	 * @param localFile  the local file
 	 * @param targetPath the target path
 	 */
 	public static void uploadFileToTeamFolder(DbxTeamClientV2 dbxClient, File localFile, String targetPath) {
 		uploadFileToTeamFolder(dbxClient, localFile, targetPath, PropertyUtil.getInstance().getDropboxTeamUsername());
 	}
-	
+
 	/**
 	 * Upload file to team folder.
 	 *
-	 * @param dbxClient the dbx client
-	 * @param localFile the local file
-	 * @param targetPath the target path
+	 * @param dbxClient       the dbx client
+	 * @param localFile       the local file
+	 * @param targetPath      the target path
 	 * @param displayUserName the display user name
 	 */
-	public static void uploadFileToTeamFolder(DbxTeamClientV2 dbxClient, File localFile, String targetPath, String displayUserName) {
-		try {
+	public static void uploadFileToTeamFolder(DbxTeamClientV2 dbxClient, File localFile, String targetPath,
+			String displayUserName) {
+		if (PropertyUtil.getInstance().isDropboxInterfaceEnabled()) {
+			try {
 //			List<TeamFolderMetadata> folders = dbxClient.team().teamFolderList().getTeamFolders();
 //			for (TeamFolderMetadata teamFolderMetadata : folders) {
 //				System.out.println(teamFolderMetadata);
@@ -232,21 +249,21 @@ public class DropboxUtil {
 //					teamFolderId = teamFolderMetadata.getTeamFolderId();		
 //				}
 //			}
-			
-			String memberId = null; 
-			List<TeamMemberInfo> members = dbxClient.team().membersList().getMembers();
-			for (TeamMemberInfo teamMemberInfo : members) {
-				if (teamMemberInfo.getProfile().getName().getDisplayName().equals(displayUserName)) {
-					memberId = teamMemberInfo.getProfile().getTeamMemberId();
-				}
-			}
-			
-			DbxClientV2 client = dbxClient.asMember(memberId);
-			uploadFile(client, localFile, targetPath);
-		} catch (DbxException e) {
-			LOGGER.error(e);
-		}
 
+				String memberId = null;
+				List<TeamMemberInfo> members = dbxClient.team().membersList().getMembers();
+				for (TeamMemberInfo teamMemberInfo : members) {
+					if (teamMemberInfo.getProfile().getName().getDisplayName().equals(displayUserName)) {
+						memberId = teamMemberInfo.getProfile().getTeamMemberId();
+					}
+				}
+
+				DbxClientV2 client = dbxClient.asMember(memberId);
+				uploadFile(client, localFile, targetPath);
+			} catch (DbxException e) {
+				LOGGER.error(e);
+			}
+		}
 	}
 
 }

@@ -47,6 +47,12 @@ import com.dropbox.core.v2.DbxTeamClientV2;
  * as actual "copy" of Atlassian-Storage
  */
 public class SyncCirclead {
+	// TODO FIRST
+	// TODO Team-Manhours must be calculated for team-members. Should be mean-value for person
+	// TODO Export of all Teams, person, FTEs must be possible, to simulate ressource-allocation
+	
+	// TODO LATER
+	// TODO Export to Excel for GKW (Appendix to Title). Example should be "Teamstunde So 20h"
 	// TODO Rollenname erstezen als Agorithmus einbauen, Bsp. Gebetstundenleiter ist falsch
 	// TODO Comment for person in team
 	// TODO Validation role status vs. person-holder status (i.e. paused, closed)
@@ -54,6 +60,7 @@ public class SyncCirclead {
 	// TODO Atlassian User-Check (for Image-Usage or User-Link)
 	// TODO Velocity als Render-Changer nutzen
 	// TODO Activity-Process-Builder (yWorks) erzeugen
+	// TODO Double-Usage in Chart-MAcro seems dependend from localisation, because 1.3 is not valid in german and could be read in englisch. Diagram shows value 13 in germany locale.
 
 	/** The Constant REPORTS. */
 	public static final boolean REPORTS = true;

@@ -30,6 +30,9 @@ public class PropertyUtil {
 	/** The application name. */
 	public static String APPLICATION_NAME = "application.name";
 
+	/** The dropbox enabled. */
+	public static String DROPBOX_ENABLED = "dropbox.enabled";
+	
 	/** The dropbox credentials key. */
 	public static String DROPBOX_CREDENTIALS_KEY = "dropbox.credentials.key";
 
@@ -60,6 +63,9 @@ public class PropertyUtil {
 	/** The mail port. */
 	public static String MAIL_PORT = "mail.port";
 
+	/** The mail enabled. */
+	public static String MAIL_ENABLED = "mail.enabled";
+	
 	/** The mail sender. */
 	public static String MAIL_SENDER = "mail.sender";
 
@@ -361,6 +367,24 @@ public class PropertyUtil {
 		return getBooleanValue(FILE_SYNCHRONIZER_WRITE);
 	}
 
+	/**
+	 * Checks if is mail interface enabled.
+	 *
+	 * @return the boolean
+	 */
+	public Boolean isMailInterfaceEnabled() {
+		return getBooleanValue(MAIL_ENABLED);
+	}
+	
+	/**
+	 * Checks if is dropbox interface enabled.
+	 *
+	 * @return the boolean
+	 */
+	public Boolean isDropboxInterfaceEnabled() {
+		return getBooleanValue(DROPBOX_ENABLED);
+	}
+	
 	/**
 	 * Checks if is atlassian synchronizer enabled.
 	 *

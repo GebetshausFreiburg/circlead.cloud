@@ -69,30 +69,30 @@ public class MailUtil {
 	/**
 	 * Send mail.
 	 *
-	 * @param to the to
+	 * @param to      the to
 	 * @param subject the subject
 	 */
 	public void sendMail(String to, String subject) {
 		sendMail(PropertyUtil.getInstance().getMailSender(), to, subject, "", null);
 	}
-	
+
 	/**
 	 * Send mail.
 	 *
-	 * @param to the to
+	 * @param to      the to
 	 * @param subject the subject
-	 * @param msg the msg
+	 * @param msg     the msg
 	 */
 	public void sendMail(String to, String subject, String msg) {
 		sendMail(PropertyUtil.getInstance().getMailSender(), to, subject, msg, null);
 	}
-	
+
 	/**
 	 * Send mail.
 	 *
-	 * @param to the to
-	 * @param subject the subject
-	 * @param msg the msg
+	 * @param to         the to
+	 * @param subject    the subject
+	 * @param msg        the msg
 	 * @param attachment the attachment
 	 */
 	public void sendMail(String to, String subject, String msg, File attachment) {
@@ -110,49 +110,51 @@ public class MailUtil {
 	 */
 	public void sendMail(String from, String to, String subject, String msg, File attachment) {
 
-		Properties prop = new Properties();
-		prop.put("mail.smtp.auth", true);
-		prop.put("mail.smtp.starttls.enable", "true");
-		prop.put("mail.smtp.host", host);
-		prop.put("mail.smtp.port", port);
-		prop.put("mail.smtp.ssl.trust", host);
+		if (PropertyUtil.getInstance().isMailInterfaceEnabled()) {
+			Properties prop = new Properties();
+			prop.put("mail.smtp.auth", true);
+			prop.put("mail.smtp.starttls.enable", "true");
+			prop.put("mail.smtp.host", host);
+			prop.put("mail.smtp.port", port);
+			prop.put("mail.smtp.ssl.trust", host);
 
-		Session session = Session.getInstance(prop, new Authenticator() {
-			@Override
-			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(username, password);
-			}
-		});
-
-		try {
-
-			Message message = new MimeMessage(session);
-			message.setHeader("X-Mailer", "Circlead");
-			message.setSentDate(new Date());
-			message.setFrom(new InternetAddress(from));
-			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
-			message.setSubject(subject);
-
-			MimeBodyPart mimeBodyPart = new MimeBodyPart();
-			mimeBodyPart.setContent(msg, "text/html");
-
-			Multipart multipart = new MimeMultipart();
-			multipart.addBodyPart(mimeBodyPart);
-
-			if (attachment != null) {
-				if (attachment.exists()) {
-					MimeBodyPart attachmentBodyPart = new MimeBodyPart();
-					attachmentBodyPart.attachFile(attachment);
-					multipart.addBodyPart(attachmentBodyPart);
+			Session session = Session.getInstance(prop, new Authenticator() {
+				@Override
+				protected PasswordAuthentication getPasswordAuthentication() {
+					return new PasswordAuthentication(username, password);
 				}
+			});
+
+			try {
+
+				Message message = new MimeMessage(session);
+				message.setHeader("X-Mailer", "Circlead");
+				message.setSentDate(new Date());
+				message.setFrom(new InternetAddress(from));
+				message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+				message.setSubject(subject);
+
+				MimeBodyPart mimeBodyPart = new MimeBodyPart();
+				mimeBodyPart.setContent(msg, "text/html");
+
+				Multipart multipart = new MimeMultipart();
+				multipart.addBodyPart(mimeBodyPart);
+
+				if (attachment != null) {
+					if (attachment.exists()) {
+						MimeBodyPart attachmentBodyPart = new MimeBodyPart();
+						attachmentBodyPart.attachFile(attachment);
+						multipart.addBodyPart(attachmentBodyPart);
+					}
+				}
+
+				message.setContent(multipart);
+
+				Transport.send(message);
+
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-
-			message.setContent(multipart);
-
-			Transport.send(message);
-
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 

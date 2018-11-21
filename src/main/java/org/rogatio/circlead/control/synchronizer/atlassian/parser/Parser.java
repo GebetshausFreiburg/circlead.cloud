@@ -176,10 +176,10 @@ public class Parser {
 			}
 		}
 
-		if (activatedLinks&&!PropertyUtil.getInstance().isApplicationDisplayTeamLevel()) {
+		if (activatedLinks && !PropertyUtil.getInstance().isApplicationDisplayTeamLevel()) {
 			containsLevel = false;
 		}
-		
+
 		Element tr = tbody.appendElement("tr");
 		tr.appendElement("th").attr("colspan", "1").appendText(ROLE.toString());
 		tr.appendElement("th").attr("colspan", "1").appendText(NEEDED.toString());
@@ -236,8 +236,8 @@ public class Parser {
 	/**
 	 * Creates the competence table.
 	 *
-	 * @param competencies the competencies
-	 * @param synchronizer the synchronizer
+	 * @param competencies   the competencies
+	 * @param synchronizer   the synchronizer
 	 * @param activatedLinks the activated links
 	 * @return the element
 	 */
@@ -479,16 +479,18 @@ public class Parser {
 		}
 
 		List<Timeslice> dataset = dataMap.get(keys.get(0));
-		for (Timeslice timeslice : dataset) {
-			tr.appendElement("th").appendText("" + timeslice.getUnitValue());
-		}
-
-		for (String key : keys) {
-			tr = tbody.appendElement("tr");
-			tr.appendElement("td").appendText(key);
-			dataset = dataMap.get(key);
+		if (ObjectUtil.isListNotNullAndEmpty(dataset)) {
 			for (Timeslice timeslice : dataset) {
-				tr.appendElement("td").appendText("" + timeslice.getAllokation());
+				tr.appendElement("th").appendText("" + timeslice.getUnitValue());
+			}
+
+			for (String key : keys) {
+				tr = tbody.appendElement("tr");
+				tr.appendElement("td").appendText(key);
+				dataset = dataMap.get(key);
+				for (Timeslice timeslice : dataset) {
+					tr.appendElement("td").appendText("" + (int)timeslice.getAllokation());
+				}
 			}
 		}
 
@@ -579,7 +581,7 @@ public class Parser {
 			} else {
 				addBulletList(PERSONS.toString(), d.getPersons(), table);
 			}
-			
+
 			addBulletList(ACTIVITIES.toString(), d.getActivities(), table);
 			addBulletList(RESPONSIBILITY.toString(), d.getResponsibilities(), table);
 			addBulletList(OPPORTUNITIES.toString(), d.getOpportunities(), table);
