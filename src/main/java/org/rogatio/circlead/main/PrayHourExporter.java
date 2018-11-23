@@ -28,13 +28,13 @@ import org.rogatio.circlead.util.StringUtil;
  * @author Matthias Wegner
  */
 public class PrayHourExporter {
-	
+
 	/** The Constant LOGGER. */
 	final static Logger LOGGER = LogManager.getLogger(PrayHourExporter.class);
 
 	/** The workbook. */
 	final XSSFWorkbook workbook = new XSSFWorkbook();
-	
+
 	/** The headerstyle. */
 	final XSSFCellStyle HEADERSTYLE = workbook.createCellStyle();
 
@@ -45,23 +45,23 @@ public class PrayHourExporter {
 		HEADERSTYLE.setAlignment(org.apache.poi.ss.usermodel.HorizontalAlignment.CENTER);
 		HEADERSTYLE.setVerticalAlignment(org.apache.poi.ss.usermodel.VerticalAlignment.TOP);
 		ExcelUtil.addColorBackground(HEADERSTYLE, (byte) 200, (byte) 200, (byte) 200);
-	
+
 		addSheet(PrayHourExporter.MODE_EXTERN);
 		addSheet(PrayHourExporter.MODE_INTERN);
 		addSheet(PrayHourExporter.MODE_NEED);
 		addSheet(PrayHourExporter.MODE_DETAIL);
-		
+
 	}
 
 	/** The mode intern. */
 	public static String MODE_INTERN = new String("Intern");
-	
+
 	/** The mode extern. */
 	public static String MODE_EXTERN = new String("Extern");
-	
+
 	/** The mode detail. */
 	public static String MODE_DETAIL = new String("Detailliert");
-	
+
 	/** The mode need. */
 	public static String MODE_NEED = new String("Bedarf");
 
@@ -78,7 +78,9 @@ public class PrayHourExporter {
 
 			cell.setCellStyle(HEADERSTYLE);
 			if (i > 0) {
-				cell.setCellValue(ExcelUtil.getRichString(CircleadRecurrenceRule.WEEKDAYS2GERMAN.get(CircleadRecurrenceRule.DAYOFWEEK2WEEKDAY.get(i)), workbook, true, 12));
+				cell.setCellValue(ExcelUtil.getRichString(
+						CircleadRecurrenceRule.WEEKDAYS2GERMAN.get(CircleadRecurrenceRule.DAYOFWEEK2WEEKDAY.get(i)),
+						workbook, true, 12));
 			} else {
 				cell.setCellValue(" ");
 			}
@@ -128,7 +130,7 @@ public class PrayHourExporter {
 			XSSFCell cell = row.createCell(0);
 			XSSFCellStyle s = HEADERSTYLE;
 			cell.setCellStyle(s);
-			cell.setCellValue(ExcelUtil.getRichString(StringUtil.addSpace(i + "", 2, '0')+":00", workbook, true, 12));
+			cell.setCellValue(ExcelUtil.getRichString(StringUtil.addSpace(i + "", 2, '0') + ":00", workbook, true, 12));
 		}
 	}
 
@@ -162,18 +164,38 @@ public class PrayHourExporter {
 				XSSFCell cell = null;
 				int pos = CircleadRecurrenceRule.WEEKDAY2DAYOFWEEK.get(wd);
 				sheet.setColumnWidth(pos, 20 * 256);
+
+				XSSFRichTextString rts = new XSSFRichTextString();
+
+				cell = row.getCell(pos);
+
+				if (cell != null) {
+					if (cell.getRichStringCellValue() != null) {
+						rts = cell.getRichStringCellValue();
+						rts.append("\n");
+					}
+				}
+
 				cell = row.createCell(pos);
 
 				if (crr.getDuration() == 2) {
 					sheet.addMergedRegion(new CellRangeAddress(hour + 1, hour + 2, pos, pos));
 				}
 
-				XSSFRichTextString rts = new XSSFRichTextString();
+				String appendix = "";
+				if (crr.isRecurrenceOdd() != null) {
+					if (crr.isRecurrenceOdd() == true) {
+						appendix = " (uKW)";
+					} else {
+						appendix = " (gKW)";
+					}
+				}
+
 				if (team.getTeamType() != null) {
 					XSSFFont fontBold = workbook.createFont();
 					fontBold.setBold(true); // set bold
 					fontBold.setFontHeight(10); // add font size
-					rts.append(team.getTeamType(), fontBold);
+					rts.append(team.getTeamType() + "" + appendix, fontBold);
 				}
 				if (team.getTeamSubtype() != null) {
 					rts.append("\n" + team.getTeamSubtype());
@@ -189,17 +211,17 @@ public class PrayHourExporter {
 						if (team.getRedundance() < 1.0) {
 							ExcelUtil.addColorBackground(cellStyle, (byte) 255, (byte) 255, (byte) 0);
 						}
-						if (team.getTeamSize() < 2&&(!team.isSpecialized())) {
+						if (team.getTeamSize() < 2 && (!team.isSpecialized())) {
 							ExcelUtil.addColorBackground(cellStyle, (byte) 255, (byte) 0, (byte) 0);
 						}
 					}
 					if (mode.equals(MODE_INTERN)) {
-						if ((team.getTeamSize() < 2)&&(!team.isSpecialized())) {
+						if ((team.getTeamSize() < 2) && (!team.isSpecialized())) {
 							ExcelUtil.addColorBackground(cellStyle, (byte) 240, (byte) 240, (byte) 240);
 						}
 					}
 					if (mode.equals(MODE_EXTERN)) {
-						if ((team.getTeamSize() > 1)||(!team.isSpecialized())) {
+						if ((team.getTeamSize() > 1) || (!team.isSpecialized())) {
 							cell.setCellStyle(cellStyle);
 							cell.setCellValue(rts);
 						}

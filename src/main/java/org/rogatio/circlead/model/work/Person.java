@@ -449,6 +449,31 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		return map;
 	}
 
+	public void calcFractions() {
+		double allocO = R.getAverageAllokationInOrganisation(this.getFullname(), Freq.WEEKLY);
+		double allocT = R.getAverageAllokationInTeams(this, Freq.WEEKLY);
+
+		double alloc = allocO + allocT;
+
+		if (this.getFullTimeEquivalent() == 0) {
+			this.setFullTimeEquivalent(Math.ceil(100 * alloc / 40.0));
+		}
+		if (this.getTeamFraction() == 0) {
+			if (alloc != 0) {
+				double c = Math.ceil((100 * allocT / alloc));
+				this.setTeamFraction(c);
+			}
+		}
+		
+//		if (this.getFullTimeEquivalent() < 5) {
+//			this.setFullTimeEquivalent(5.0);
+//		}
+//		
+//		if (this.getTeamFraction() < 50) {
+//			this.setTeamFraction(50);
+//		}
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

@@ -671,6 +671,7 @@ public class CircleadRecurrenceRule {
 		return null;
 	}
 
+	/** The odd recurrence. */
 	private Boolean oddRecurrence = null;
 
 	/**
@@ -861,6 +862,15 @@ public class CircleadRecurrenceRule {
 		return null;
 	}
 
+	/**
+	 * Checks if is recurrence odd.
+	 *
+	 * @return the boolean
+	 */
+	public Boolean isRecurrenceOdd() {
+		return this.oddRecurrence;
+	}
+	
 	/**
 	 * The Enum Duration.
 	 */

@@ -20,8 +20,10 @@ import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer
 import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.control.webserver.Webserver;
 import org.rogatio.circlead.model.WorkitemType;
+import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.util.DropboxUtil;
 import org.rogatio.circlead.util.FileUtil;
+import org.rogatio.circlead.util.GanttProjectUtil;
 import org.rogatio.circlead.util.PropertyUtil;
 import org.rogatio.circlead.view.report.OverviewReport;
 import org.rogatio.circlead.view.report.PersonListReport;
@@ -48,7 +50,7 @@ import com.dropbox.core.v2.DbxTeamClientV2;
  */
 public class SyncCirclead {
 	// TODO FIRST
-	// TODO Team-Manhours must be calculated for team-members. Should be mean-value for person
+	// TODO Add chart for filesynchronizer, see http://nvd3.org/examples/stackedArea.html
 	// TODO Export of all Teams, person, FTEs must be possible, to simulate ressource-allocation
 	
 	// TODO LATER
@@ -153,7 +155,7 @@ public class SyncCirclead {
 		if (COMPETENCIES) {
 			repository.addOrphanedRoleCompetenciesToRootCompetence();
 		}
-
+		
 		/*
 		 * Re-Render loaded data back to set interfaces. Update pages in confluence and
 		 * writes html-pages to local folder 'web'
@@ -194,6 +196,8 @@ public class SyncCirclead {
 			repository.writeExcel("Rollengruppen", WorkitemType.ROLEGROUP, null);
 			repository.writeExcel("Teams", WorkitemType.TEAM, null);
 
+			GanttProjectUtil.write("exports"+File.separatorChar+"Teams.gan", repository.getTeams(), repository.getRoles(), repository.getPersons());
+			
 			PrayHourExporter phe = new PrayHourExporter();
 			phe.export("Gebetsstundenübersicht");
 

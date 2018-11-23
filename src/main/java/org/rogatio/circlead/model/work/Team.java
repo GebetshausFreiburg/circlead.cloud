@@ -14,7 +14,10 @@ import static org.rogatio.circlead.model.Parameter.RECURRENCERULE;
 import static org.rogatio.circlead.model.Parameter.SUBTYPE;
 import static org.rogatio.circlead.model.Parameter.TYPE;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -188,6 +191,55 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	public String getStart() {
 		return this.getDataitem().getStart();
 	}
+	
+	/**
+	 * Gets the duration between the start and end-date in days.
+	 *
+	 * @return the duration
+	 */
+	public int getDuration() {
+		return (int)((this.getEndDate().getTime() - this.getStartDate().getTime())/ (24*60*60*1000));
+	}
+	
+	/**
+	 * Gets the end date. If no date is set it is 12 months after start date.
+	 *
+	 * @return the end date
+	 */
+	public Date getEndDate() {
+		if (this.getDataitem().getEnd()!=null) {
+			DateTime s = DateTime.parse(this.getDataitem().getEnd());
+			SimpleDateFormat f = new SimpleDateFormat("yyyyMMdd");
+			try {
+				return f.parse(s.toString());
+			} catch (ParseException e) {
+			}
+		}
+		
+		Calendar c = Calendar.getInstance();
+		c.setTime(this.getStartDate());
+		c.add(Calendar.MONTH, 12);
+		
+		return c.getTime();
+	}
+	
+	/**
+	 * Gets the start date. If not set it is set to today
+	 *
+	 * @return the start date
+	 */
+	public Date getStartDate() {
+		if (this.getDataitem().getStart()!=null) {
+			DateTime s = DateTime.parse(this.getDataitem().getStart());
+			SimpleDateFormat f = new SimpleDateFormat("yyyyMMdd");
+			try {
+				return f.parse(s.toString());
+			} catch (ParseException e) {
+			}
+		}
+		
+		return new Date();
+	}
 
 	/**
 	 * Sets the category.
@@ -243,6 +295,11 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		return this.getDataitem().getRecurrenceRule();
 	}
 
+	/**
+	 * Gets the data row.
+	 *
+	 * @return the data row
+	 */
 	/* (non-Javadoc)
 	 * @see org.rogatio.circlead.model.data.IDataRow#getDataRow()
 	 */

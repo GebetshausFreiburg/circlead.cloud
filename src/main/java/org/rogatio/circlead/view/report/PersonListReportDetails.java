@@ -63,6 +63,10 @@ public class PersonListReportDetails extends DefaultReport {
 		tr.appendElement("th").appendText("Anzahl Rollen");
 		tr.appendElement("th").appendText(Parameter.ROLES.toString());
 		tr.appendElement("th").appendText("h/Woche");
+		tr.appendElement("th").appendText(Parameter.FTE.toString());
+		tr.appendElement("th").appendText("Org-Workload");
+		tr.appendElement("th").appendText(Parameter.TEAMFRACTION.toString());
+		tr.appendElement("th").appendText("Team-Workload");
 		tr.appendElement("th").appendText(Parameter.STATUS.toString());
 
 		for (Person person : R.getPersons()) {
@@ -108,7 +112,15 @@ public class PersonListReportDetails extends DefaultReport {
 			} else {
 				tr.appendElement("td").appendText("-");
 			}
+			
+			tr.appendElement("td").appendText(Math.round(person.getFullTimeEquivalent())+"%");
+			
+			tr.appendElement("td").appendText(Math.round(person.getOrganisationalWorkload())+"%");
+			
+			tr.appendElement("td").appendText(Math.round(person.getTeamFraction())+"%");
 
+			tr.appendElement("td").appendText(Math.round(person.getTeamWorkload())+"%");
+			
 			renderer.addStatus(tr.appendElement("td"), person.getStatus());
 
 		}
