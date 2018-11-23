@@ -8,6 +8,7 @@
  */
 package org.rogatio.circlead.view;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +20,7 @@ import org.rogatio.circlead.control.validator.ValidationMessage;
 import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.data.ActivityDataitem;
 import org.rogatio.circlead.model.data.HowTo;
+import org.rogatio.circlead.model.data.Timeslice;
 import org.rogatio.circlead.model.work.Activity;
 import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
@@ -28,6 +30,12 @@ import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.report.IReport;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
  * The Class FileRenderEngine supports rendering of data to flat-file
@@ -58,6 +66,249 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		return synchronizer;
 	}
 
+	/**
+	 * Adds the chart.
+	 *
+	 * @param element the element
+	 * @param colors the colors
+	 * @param dataMap the data map
+	 */
+	public void addChart(Element element, String colors, Map<String, List<Timeslice>> dataMap) {
+		
+		ArrayList<String> keys = new ArrayList<String>(dataMap.keySet());
+		
+		if (dataMap.keySet().size() == 0) {
+			return;
+		}
+
+		ArrayList<ChartData> data = new ArrayList<ChartData>();
+		
+		for (String key : keys) {
+			ChartData d = new ChartData();
+			d.setKey(key);
+			List<Timeslice> dataset = dataMap.get(key);
+			for (Timeslice ts : dataset) {
+				int uv = ts.getUnitValue();
+				int v = (int)ts.getAllokation();
+				d.addValue(""+uv, v);
+			}
+			data.add(d);
+		}
+		
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setSerializationInclusion(Include.NON_NULL);
+		mapper.enable(SerializationFeature.INDENT_OUTPUT);
+		
+		colors = colors.replace("#", "'#").replace(",", "',")+"'";
+		
+		try {
+			String json = mapper.writeValueAsString( data );
+			element.append(chartCode(colors, json));
+		} catch (JsonProcessingException e) {
+		}
+		
+	}
+	
+	/**
+	 * Chart code.
+	 *
+	 * @param colors the colors
+	 * @param data the data
+	 * @return the string
+	 */
+	private String chartCode(String colors, String data) {
+		return " <link href=\"javascript/nvd3/v1.8.6/build/nv.d3.css\" rel=\"stylesheet\" type=\"text/css\">\n" + 
+				"<script src=\"javascript/d3/v3.5.17/d3.min.js\" charset=\"utf-8\"></script>\n" + 
+				"    <script src=\"javascript/nvd3/v1.8.6/build/nv.d3.js\"></script>\n" + 
+				"   \n" + 
+				"    <style>\n" + 
+//				"        text {\n" + 
+//				"            font: 12px sans-serif;\n" + 
+//				"        }\n" + 
+//				"        svg {\n" + 
+//				"            display: block;\n" + 
+//				"        }\n" + 
+				"        #chart {\n" + 
+				"            margin: 0px;\n" + 
+				"            padding: 0px;\n" + 
+				"            height: 100%;\n" + 
+				"            width: 100%;\n" + 
+				"        }\n" + 
+				"    </style>\n" + 
+				"\n" + 
+				"<div id=\"chart\">\n" + 
+				"    <svg></svg>\n" + 
+				"</div>\n" + 
+				"\n" + 
+				"<script>\n" + 
+				"\n" + 
+				"  var colors = ["+colors+"];\n" + 
+				"\n" + 
+				"  var data = "+data+  
+				"\n" + 
+				"    nv.addGraph({\n" + 
+				"        generate: function() {\n" + 
+				"            var width = nv.utils.windowSize().width,\n" + 
+				"                height = nv.utils.windowSize().height;\n" + 
+				"\n" + 
+				"            var chart = nv.models.multiBarChart()\n" + 
+				"                .width(width)\n" + 
+				"                .height(height)\n" + 
+				"                .stacked(true)\n" + 
+				"                .color(colors);\n" + 
+				"\n" + 
+				"            chart.dispatch.on('renderEnd', function(){\n" + 
+				"                console.log('Render Complete');\n" + 
+				"            });\n" + 
+				"\n" + 
+				"            var svg = d3.select('#chart svg').datum(data);\n" + 
+				"\n" + 
+				"            console.log('calling chart');\n" + 
+				"            svg.transition().duration(0).call(chart);\n" + 
+				"\n" + 
+				"            return chart;\n" + 
+				"        },\n" + 
+				"        callback: function(graph) {\n" + 
+				"            nv.utils.windowResize(function() {\n" + 
+				"                var width = nv.utils.windowSize().width;\n" + 
+				"                var height = nv.utils.windowSize().height;\n" + 
+				"                graph.width(width).height(height);\n" + 
+				"\n" + 
+				"                d3.select('#chart svg')\n" + 
+				"                    .attr('width', width)\n" + 
+				"                    .attr('height', height)\n" + 
+				"                    .transition().duration(0)\n" + 
+				"                    .call(graph);\n" + 
+				"\n" + 
+				"            });\n" + 
+				"        }\n" + 
+				"    });\n" + 
+				"\n" + 
+				"</script>\n" + 
+				"</body>\n" + 
+				"</html>";
+	}
+	
+	/**
+	 * The Class ChartData.
+	 */
+	private class ChartData {
+		
+		/** The key. */
+		private String key;
+		
+		/**
+		 * The Class P.
+		 */
+		private class P {
+			
+			/**
+			 * Instantiates a new p.
+			 *
+			 * @param x the x
+			 * @param y the y
+			 */
+			public P(String x, double y) {
+				this.x = x;
+				this.y = y;
+			}
+			
+			/** The x. */
+			private String x;
+			
+			/** The y. */
+			private double y;
+			
+			/**
+			 * Gets the x.
+			 *
+			 * @return the x
+			 */
+			public String getX() {
+				return x;
+			}
+			
+			/**
+			 * Sets the x.
+			 *
+			 * @param x the new x
+			 */
+			public void setX(String x) {
+				this.x = x;
+			}
+			
+			/**
+			 * Gets the y.
+			 *
+			 * @return the y
+			 */
+			public double getY() {
+				return y;
+			}
+			
+			/**
+			 * Sets the y.
+			 *
+			 * @param y the new y
+			 */
+			public void setY(double y) {
+				this.y = y;
+			}
+			
+		}
+		
+		/** The values. */
+		private List<P> values = new ArrayList<P>();
+
+		/**
+		 * Gets the key.
+		 *
+		 * @return the key
+		 */
+		public String getKey() {
+			return key;
+		}
+
+		/**
+		 * Adds the value.
+		 *
+		 * @param x the x
+		 * @param y the y
+		 */
+		@JsonIgnore
+		public void addValue(String x, double y) {
+			values.add(new P(x,y));
+		}
+		
+		/**
+		 * Sets the key.
+		 *
+		 * @param key the new key
+		 */
+		public void setKey(String key) {
+			this.key = key;
+		}
+
+		/**
+		 * Gets the values.
+		 *
+		 * @return the values
+		 */
+		public List<P> getValues() {
+			return values;
+		}
+
+		/**
+		 * Sets the values.
+		 *
+		 * @param values the new values
+		 */
+		public void setValues(List<P> values) {
+			this.values = values;
+		}
+		
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

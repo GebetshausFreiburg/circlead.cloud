@@ -51,7 +51,6 @@ import com.dropbox.core.v2.DbxTeamClientV2;
 public class SyncCirclead {
 	// TODO FIRST
 	// TODO Add chart for filesynchronizer, see http://nvd3.org/examples/stackedArea.html
-	// TODO Export of all Teams, person, FTEs must be possible, to simulate ressource-allocation
 	
 	// TODO LATER
 	// TODO Export to Excel for GKW (Appendix to Title). Example should be "Teamstunde So 20h"

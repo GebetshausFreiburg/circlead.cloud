@@ -127,6 +127,16 @@ public class TeamCategegoryInternalReport extends DefaultReport {
 											.appendText(team.getTeamType() );
 								}
 								
+								String appendix = "";
+								if (crr.isRecurrenceOdd() != null) {
+									if (crr.isRecurrenceOdd() == true) {
+										appendix = " (uKW)";
+									} else {
+										appendix = " (gKW)";
+									}
+									p.appendText(appendix);
+								}
+								
 								if (team.isSpecialized()) {
 									p.appendText(PropertyUtil.getInstance().getApplicationSpecializedChar());
 								}

@@ -13,6 +13,7 @@ import static org.rogatio.circlead.model.Parameter.PERSONDATA;
 import static org.rogatio.circlead.model.Parameter.ROLESINORGANISATION;
 import static org.rogatio.circlead.model.Parameter.ROLESINTEAM;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -41,6 +42,8 @@ import org.rogatio.circlead.model.data.Timeslice;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.PropertyUtil;
 import org.rogatio.circlead.util.StringUtil;
+import org.rogatio.circlead.view.ColorPalette;
+import org.rogatio.circlead.view.FileRendererEngine;
 import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.IWorkitemRenderer;
 import org.rogatio.circlead.view.SvgBuilder;
@@ -603,26 +606,41 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	private void addRessourceChart(ISynchronizer synchronizer, Element element) {
 		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 
-		if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
-			final Map<String, List<Timeslice>> map = this.getOrganisationalTimeslices(Freq.MONTHLY, true);
+		final Map<String, List<Timeslice>> map = this.getOrganisationalTimeslices(Freq.MONTHLY, true);
 
-			String colors = "";
-			String colorArray[] = { "#989898", "#A8A8A8", "#B8B8B8", "#C0C0C0" };
+		String colors = "";
+		String colorArray[] = { "#989898", "#A8A8A8", "#B8B8B8", "#C0C0C0" };
 
-			for (int i = 0; i < map.size(); i++) {
-				if (colors == null) {
-					colors = new String("");
-				}
-				colors += colorArray[i];
-
-				if ((i + 1) < map.size()) {
-					colors += ", ";
-				}
+		for (int i = 0; i < map.size(); i++) {
+			if (colors == null) {
+				colors = new String("");
 			}
+			colors += colorArray[i];
 
-			Map<String, List<Timeslice>> m = this.getTeamTimeslices(Freq.MONTHLY);
-			m.forEach((k, v) -> map.put(k, v));
+			if ((i + 1) < map.size()) {
+				colors += ", ";
+			}
+		}
 
+		Map<String, List<Timeslice>> m = this.getTeamTimeslices(Freq.MONTHLY);
+		m.forEach((k, v) -> map.put(k, v));
+		
+		Color[] c = ColorPalette.rainbow(m.size()+2);
+		for (int i = 0; i < m.size(); i++) {
+			if (colors.length()>0) {
+				colors += ", "+ObjectUtil.convertToHtmlColor(c[i+1]);			
+			} else {
+				colors += ""+ObjectUtil.convertToHtmlColor(c[i+1]);						
+			}
+		}
+		
+		if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
+			FileRendererEngine engine = (FileRendererEngine)synchronizer.getRenderer();
+			renderer.addH2(element, "Ressourcenallokation");
+			engine.addChart(element, colors, map);
+		}
+		
+		if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
 			Element chart = Parser.addChartMacro("", "h/Monat", "Monat", colors, map);
 			if (chart != null) {
 				renderer.addH2(element, "Ressourcenallokation");

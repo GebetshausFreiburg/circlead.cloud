@@ -95,7 +95,7 @@ public class IndexRrgs extends DefaultReport {
 				"    pointer-events: none;			\n" + 
 				"}\n" + 
 				"</style>\n" + 
-				"<script src=\"javascript/d3/d3.v3.min.js\"></script>\n" + 
+				"<script src=\"javascript/d3/v4.0/d3.v3.min.js\"></script>\n" + 
 				"<script>\n" + 
 				"\n" + 
 				"var restUrl = \"rolerolegroupstructure.json\";\n" + 
