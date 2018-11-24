@@ -20,7 +20,6 @@ import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer
 import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.control.webserver.Webserver;
 import org.rogatio.circlead.model.WorkitemType;
-import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.util.DropboxUtil;
 import org.rogatio.circlead.util.FileUtil;
 import org.rogatio.circlead.util.GanttProjectUtil;
@@ -49,19 +48,14 @@ import com.dropbox.core.v2.DbxTeamClientV2;
  * as actual "copy" of Atlassian-Storage
  */
 public class SyncCirclead {
-	// TODO FIRST
-	// TODO Add chart for filesynchronizer, see http://nvd3.org/examples/stackedArea.html
-	
-	// TODO LATER
-	// TODO Export to Excel for GKW (Appendix to Title). Example should be "Teamstunde So 20h"
-	// TODO Rollenname erstezen als Agorithmus einbauen, Bsp. Gebetstundenleiter ist falsch
+	// TODO Rollenname erstetzen als Algorithmus einbauen, Bsp. Gebetstundenleiter ist falsch
 	// TODO Comment for person in team
 	// TODO Validation role status vs. person-holder status (i.e. paused, closed)
 	// TODO Validation "empty" (<10 chars) text in role
 	// TODO Atlassian User-Check (for Image-Usage or User-Link)
 	// TODO Velocity als Render-Changer nutzen
 	// TODO Activity-Process-Builder (yWorks) erzeugen
-	// TODO Double-Usage in Chart-MAcro seems dependend from localisation, because 1.3 is not valid in german and could be read in englisch. Diagram shows value 13 in germany locale.
+	// TODO Double-Value-Usage in Chart-Macro seems dependend from localisation, because 1.3 is not valid in german and could be read in english. Diagram shows value 13 in germany locale. QuickFix was normalization to int.
 
 	/** The Constant REPORTS. */
 	public static final boolean REPORTS = true;

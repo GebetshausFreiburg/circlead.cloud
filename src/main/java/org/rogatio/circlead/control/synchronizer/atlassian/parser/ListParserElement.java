@@ -26,7 +26,7 @@ import org.rogatio.circlead.util.StringUtil;
 public class ListParserElement implements IParserElement {
 
 	/** The list. */
-	List<String> list = new ArrayList<>();
+	private List<String> list = new ArrayList<>();
 
 	/**
 	 * Instantiates a new list parser element.

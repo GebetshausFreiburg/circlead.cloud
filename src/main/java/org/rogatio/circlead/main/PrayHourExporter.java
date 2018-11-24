@@ -54,16 +54,16 @@ public class PrayHourExporter {
 	}
 
 	/** The mode intern. */
-	public static String MODE_INTERN = new String("Intern");
+	public static String MODE_INTERN = "Intern";
 
 	/** The mode extern. */
-	public static String MODE_EXTERN = new String("Extern");
+	public static String MODE_EXTERN = "Extern";
 
 	/** The mode detail. */
-	public static String MODE_DETAIL = new String("Detailliert");
+	public static String MODE_DETAIL = "Detailliert";
 
 	/** The mode need. */
-	public static String MODE_NEED = new String("Bedarf");
+	public static String MODE_NEED = "Bedarf";
 
 	/**
 	 * Adds the weekdays.

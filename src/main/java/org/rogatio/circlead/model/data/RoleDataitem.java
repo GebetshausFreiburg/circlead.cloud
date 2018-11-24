@@ -147,10 +147,7 @@ public class RoleDataitem extends DefaultDataitem {
 	 * @return true, if successful
 	 */
 	public boolean hasActivityId(String activityIdentifier) {
-		if (activityIds.containsKey(activityIdentifier)) {
-			return true;
-		}
-		return false;
+		return activityIds.containsKey(activityIdentifier);
 	}
 
 	/**

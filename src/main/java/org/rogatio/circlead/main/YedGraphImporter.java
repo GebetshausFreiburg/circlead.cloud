@@ -39,8 +39,20 @@ import org.xml.sax.SAXException;
 public class YedGraphImporter {
 	
 	/** The Constant logger. */
-	final static Logger LOGGER = LogManager.getLogger(YedGraphImporter.class);
+	private final static Logger LOGGER = LogManager.getLogger(YedGraphImporter.class);
 
+	/** The Constant Default Namespace of GraphML */
+	private static final Namespace ns = Namespace.getNamespace("http://graphml.graphdrawing.org/xmlns");
+
+	/** The Constant Namespace of yWorks-Graph */
+	private static final Namespace y = Namespace.getNamespace("http://www.yworks.com/xml/graphml");
+
+	/** The table rows, which are process-swimlanes */
+	private List<TableRow> tableRows = new ArrayList<TableRow>();
+
+	/** The home dir of the GraphML-Files */
+	private String homeDir;
+	
 	/**
 	 * The main method.
 	 *
@@ -62,18 +74,6 @@ public class YedGraphImporter {
 		fsynchronizer.writeReportRendered(new IndexWorkitems(WorkitemType.ROLE));
 		fsynchronizer.writeReportRendered(new IndexWorkitems(WorkitemType.ACTIVITY));
 	}
-
-	/** The Constant Default Namespace of GraphML */
-	private static final Namespace ns = Namespace.getNamespace("http://graphml.graphdrawing.org/xmlns");
-
-	/** The Constant Namespace of yWorks-Graph */
-	private static final Namespace y = Namespace.getNamespace("http://www.yworks.com/xml/graphml");
-
-	/** The table rows, which are process-swimlanes */
-	private List<TableRow> tableRows = new ArrayList<TableRow>();
-
-	/** The home dir of the GraphML-Files */
-	private String homeDir;
 
 	/**
 	 * Instantiates a new yed graph importer.
