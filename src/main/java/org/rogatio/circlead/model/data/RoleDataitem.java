@@ -87,6 +87,29 @@ public class RoleDataitem extends DefaultDataitem {
 	/** The situational. */
 	private boolean situational = false;
 
+	/** The activity ids. */
+	@JsonIgnore
+	private Map<String, String> activityIds = new HashMap<String, String>();
+
+	/** The organisation. */
+	private String organisation;
+
+	/** The skills. */
+	@JsonIgnore
+	private Map<String, String> skills = new HashMap<String, String>();
+
+	/** The comments. */
+	@JsonIgnore
+	private Map<String, String> comments = new HashMap<String, String>();
+
+	/** The recurrence rules. */
+	@JsonIgnore
+	private Map<String, String> recurrenceRules = new HashMap<String, String>();
+
+	/** The representations. */
+	@JsonIgnore
+	private Map<String, String> representations = new HashMap<String, String>();
+
 	/**
 	 * Checks if is situational.
 	 *
@@ -136,10 +159,6 @@ public class RoleDataitem extends DefaultDataitem {
 		return list;
 	}
 
-	/** The activity ids. */
-	@JsonIgnore
-	private Map<String, String> activityIds = new HashMap<String, String>();
-
 	/**
 	 * Checks for activity id.
 	 *
@@ -147,10 +166,7 @@ public class RoleDataitem extends DefaultDataitem {
 	 * @return true, if successful
 	 */
 	public boolean hasActivityId(String activityIdentifier) {
-		if (activityIds.containsKey(activityIdentifier)) {
-			return true;
-		}
-		return false;
+		return activityIds.containsKey(activityIdentifier);
 	}
 
 	/**
@@ -246,9 +262,6 @@ public class RoleDataitem extends DefaultDataitem {
 	public void setResponsibilities(List<String> responsibilities) {
 		this.responsibilities = responsibilities;
 	}
-
-	/** The organisation. */
-	private String organisation;
 
 	/**
 	 * Gets the organisation.
@@ -436,23 +449,6 @@ public class RoleDataitem extends DefaultDataitem {
 
 		return list;
 	}
-
-	/** The skills. */
-	@JsonIgnore
-	private Map<String, String> skills = new HashMap<String, String>();
-
-	/** The comments. */
-	@JsonIgnore
-	private Map<String, String> comments = new HashMap<String, String>();
-
-	/** The recurrence rules. */
-	@JsonIgnore
-	private Map<String, String> recurrenceRules = new HashMap<String, String>();
-
-	/** The representations. */
-	@JsonIgnore
-	private Map<String, String> representations = new HashMap<String, String>();
-
 	/**
 	 * Checks for representation.
 	 *

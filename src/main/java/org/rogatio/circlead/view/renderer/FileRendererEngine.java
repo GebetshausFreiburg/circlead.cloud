@@ -164,6 +164,12 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		/** The key. */
 		private String key;
 
+		/** The x. */
+		private String x;
+
+		/** The y. */
+		private double y;
+
 		/**
 		 * The Class P.
 		 */
@@ -179,12 +185,6 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 				this.x = x;
 				this.y = y;
 			}
-
-			/** The x. */
-			private String x;
-
-			/** The y. */
-			private double y;
 
 			/**
 			 * Gets the x.

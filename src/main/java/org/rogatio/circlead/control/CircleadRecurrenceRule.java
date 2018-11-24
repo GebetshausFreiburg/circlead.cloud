@@ -87,8 +87,36 @@ public class CircleadRecurrenceRule {
 	}
 
 	/** The Constant LOGGER. */
-	final static Logger LOGGER = LogManager.getLogger(CircleadRecurrenceRule.class);
+	private final static Logger LOGGER = LogManager.getLogger(CircleadRecurrenceRule.class);
 
+
+	/** The durationbyhour. */
+	private final String DURATIONBYHOUR = "DURATIONBYHOUR";
+
+	/** The durationbyday. */
+	private final String DURATIONBYDAY = "DURATIONBYDAY";
+
+	/** The durationbyweek. */
+	private final String DURATIONBYWEEK = "DURATIONBYWEEK";
+
+	/** The durationbymonth. */
+	private final String DURATIONBYMONTH = "DURATIONBYMONTH";
+
+	/** The durationbyquarter. */
+	private final String DURATIONBYQUARTER = "DURATIONBYQUARTER";
+
+	/** The type circlead. */
+	private final String TYPE_CIRCLEAD = "CIRCLEAD";
+
+	/** The type rfc5545. */
+	private final String TYPE_RFC5545 = "RFC5545";
+
+	/** The type undefined. */
+	private final String TYPE_UNDEFINED = "UNDEFINED";
+
+	/** The type. */
+	private String type;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -890,33 +918,6 @@ public class CircleadRecurrenceRule {
 		/** The durationbyquarter. */
 		DURATIONBYQUARTER;
 	}
-
-	/** The durationbyhour. */
-	private final String DURATIONBYHOUR = "DURATIONBYHOUR";
-
-	/** The durationbyday. */
-	private final String DURATIONBYDAY = "DURATIONBYDAY";
-
-	/** The durationbyweek. */
-	private final String DURATIONBYWEEK = "DURATIONBYWEEK";
-
-	/** The durationbymonth. */
-	private final String DURATIONBYMONTH = "DURATIONBYMONTH";
-
-	/** The durationbyquarter. */
-	private final String DURATIONBYQUARTER = "DURATIONBYQUARTER";
-
-	/** The type circlead. */
-	private final String TYPE_CIRCLEAD = "CIRCLEAD";
-
-	/** The type rfc5545. */
-	private final String TYPE_RFC5545 = "RFC5545";
-
-	/** The type undefined. */
-	private final String TYPE_UNDEFINED = "UNDEFINED";
-
-	/** The type. */
-	private String type;
 
 	/**
 	 * Gets the type.

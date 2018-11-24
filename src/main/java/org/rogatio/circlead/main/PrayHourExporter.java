@@ -38,6 +38,18 @@ public class PrayHourExporter {
 	/** The headerstyle. */
 	final XSSFCellStyle HEADERSTYLE = workbook.createCellStyle();
 
+	/** The mode intern. */
+	public static String MODE_INTERN = "Intern";
+
+	/** The mode extern. */
+	public static String MODE_EXTERN = "Extern";
+
+	/** The mode detail. */
+	public static String MODE_DETAIL = "Detailliert";
+
+	/** The mode need. */
+	public static String MODE_NEED = "Bedarf";
+
 	/**
 	 * Instantiates a new pray hour exporter.
 	 */
@@ -52,18 +64,6 @@ public class PrayHourExporter {
 		addSheet(PrayHourExporter.MODE_DETAIL);
 
 	}
-
-	/** The mode intern. */
-	public static String MODE_INTERN = new String("Intern");
-
-	/** The mode extern. */
-	public static String MODE_EXTERN = new String("Extern");
-
-	/** The mode detail. */
-	public static String MODE_DETAIL = new String("Detailliert");
-
-	/** The mode need. */
-	public static String MODE_NEED = new String("Bedarf");
 
 	/**
 	 * Adds the weekdays.

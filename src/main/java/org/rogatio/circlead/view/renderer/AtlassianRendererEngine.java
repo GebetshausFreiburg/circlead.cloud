@@ -46,6 +46,9 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 	/** The correlated synchronizer. */
 	private ISynchronizer synchronizer;
 
+	/** The Constant LOGGER. */
+	private final static Logger LOGGER = LogManager.getLogger(AtlassianRendererEngine.class);
+
 	/**
 	 * Instantiates a new atlassian renderer.
 	 *
@@ -63,9 +66,6 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 	public ISynchronizer getSynchronizer() {
 		return synchronizer;
 	}
-
-	/** The Constant LOGGER. */
-	final static Logger LOGGER = LogManager.getLogger(AtlassianRendererEngine.class);
 
 	/*
 	 * (non-Javadoc)
