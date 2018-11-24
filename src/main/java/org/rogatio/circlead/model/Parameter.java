@@ -1,12 +1,5 @@
 package org.rogatio.circlead.model;
 
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * The Enum Parameter. Holds german names in enum to avoid spelling error.
  * Multilinguality not implemented.

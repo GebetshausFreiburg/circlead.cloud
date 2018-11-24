@@ -10,7 +10,7 @@ package org.rogatio.circlead.view.report;
 
 import java.util.List;
 
-import org.rogatio.circlead.view.IWorkitemRenderer;
+import org.rogatio.circlead.view.renderer.IWorkitemRenderer;
 
 /**
  * The Interface IReport.

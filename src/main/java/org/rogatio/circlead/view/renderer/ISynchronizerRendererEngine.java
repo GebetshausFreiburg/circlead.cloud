@@ -6,7 +6,7 @@
  * @since 01.07.2018
  * 
  */
-package org.rogatio.circlead.view;
+package org.rogatio.circlead.view.renderer;
 
 import java.util.List;
 import java.util.Map;
@@ -55,6 +55,14 @@ public interface ISynchronizerRendererEngine {
 	 */
 	public void addRolegroupList(Element element, List<Rolegroup> list);
 
+	/**
+	 * Adds the ressource chart.
+	 *
+	 * @param element the element
+	 * @param person the person
+	 */
+	public void addRessourceChart(Element element, Person person);
+	
 	/**
 	 * Adds the team list.
 	 *
@@ -138,7 +146,32 @@ public interface ISynchronizerRendererEngine {
 	 * @param map     the map
 	 */
 	public void addTable(Element element, Map<String, String> map);
+	
+	/**
+	 * Adds the image.
+	 *
+	 * @param element the container-element for the image
+	 * @param filename the filename
+	 * @param size the size
+	 */
+	public void addImage(Element element, String filename, int size);
 
+	/**
+	 * Adds the team link.
+	 *
+	 * @param element the element
+	 * @param team the team
+	 */
+	public void addTeamLink(Element element, Team team);
+	
+	/**
+	 * Adds the role link.
+	 *
+	 * @param element the element
+	 * @param role the role
+	 */
+	public void addRoleLink(Element element, Role role);
+	
 	/**
 	 * Adds the person list.
 	 *

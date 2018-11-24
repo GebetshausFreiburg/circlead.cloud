@@ -14,8 +14,8 @@ import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.model.Parameter;
 import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.work.Role;
-import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.SvgBuilder;
+import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
 
 /**
  * The Class RoleListReportDetails.

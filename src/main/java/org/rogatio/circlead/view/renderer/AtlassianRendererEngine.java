@@ -6,13 +6,15 @@
  * @since 01.07.2018
  * 
  */
-package org.rogatio.circlead.view;
+package org.rogatio.circlead.view.renderer;
 
+import java.awt.Color;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dmfs.rfc5545.recur.Freq;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
@@ -21,6 +23,7 @@ import org.rogatio.circlead.control.validator.ValidationMessage;
 import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.data.ActivityDataitem;
 import org.rogatio.circlead.model.data.HowTo;
+import org.rogatio.circlead.model.data.Timeslice;
 import org.rogatio.circlead.model.work.Activity;
 import org.rogatio.circlead.model.work.IWorkitem;
 import org.rogatio.circlead.model.work.Person;
@@ -28,6 +31,8 @@ import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.ObjectUtil;
+import org.rogatio.circlead.util.StringUtil;
+import org.rogatio.circlead.view.ColorPalette;
 import org.rogatio.circlead.view.report.IReport;
 
 /**
@@ -148,7 +153,7 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 			}
 		}
 	}
-	
+
 	/**
 	 * Adds the role list.
 	 *
@@ -163,7 +168,7 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 				li.appendElement("ac:link")
 						.append("<ri:page ri:content-title=\"" + role.getTitle() + "\" ri:version-at-save=\"1\" />");
 			}
-		} 
+		}
 	}
 
 	/**
@@ -204,8 +209,9 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 				}
 				if (role.getDataitem().hasRecurrenceRule(person.getFullname())) {
 					String rule = role.getDataitem().getRecurrenceRule(person.getFullname());
-					li.append("&nbsp;<span style=\"color: rgb(192,192,192);\">"+rule.replace("R=", "").replace("RRULE=", "")+"</span>");
-					
+					li.append("&nbsp;<span style=\"color: rgb(192,192,192);\">"
+							+ rule.replace("R=", "").replace("RRULE=", "") + "</span>");
+
 //					li.append("&nbsp;");
 //					li.appendText(rule);
 				} else {
@@ -215,7 +221,7 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 				}
 				if (role.getDataitem().hasComment(person.getFullname())) {
 					String comment = role.getDataitem().getComment(person.getFullname());
-					li.append("&nbsp;|&nbsp;<span style=\"color: rgb(192,192,192);\">"+comment+"</span>");
+					li.append("&nbsp;|&nbsp;<span style=\"color: rgb(192,192,192);\">" + comment + "</span>");
 				}
 			}
 		}
@@ -307,8 +313,9 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 			}
 			if (role.getDataitem().hasRecurrenceRule(identifier)) {
 				String rule = role.getDataitem().getRecurrenceRule(identifier);
-				li.append("&nbsp;<span style=\"color: rgb(192,192,192);\">"+rule.replace("R=", "").replace("RRULE=", "")+"</span>");
-				//li.appendText(rule);
+				li.append("&nbsp;<span style=\"color: rgb(192,192,192);\">"
+						+ rule.replace("R=", "").replace("RRULE=", "") + "</span>");
+				// li.appendText(rule);
 				//
 			} else {
 //				Element s = Parser.getStatus(UNRELATED.toString());
@@ -317,7 +324,7 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 			}
 			if (role.getDataitem().hasComment(identifier)) {
 				String comment = role.getDataitem().getComment(identifier);
-				li.append("&nbsp;|&nbsp;<span style=\"color: rgb(192,192,192);\">"+comment+"</span>");
+				li.append("&nbsp;|&nbsp;<span style=\"color: rgb(192,192,192);\">" + comment + "</span>");
 			}
 		}
 
@@ -369,7 +376,8 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 			}
 			if (role.getDataitem().hasRecurrenceRule(identifier)) {
 				String rule = role.getDataitem().getRecurrenceRule(identifier);
-				li.append("&nbsp;<span style=\"color: rgb(192,192,192);\">"+rule.replace("R=", "").replace("RRULE=", "")+"</span>");
+				li.append("&nbsp;<span style=\"color: rgb(192,192,192);\">"
+						+ rule.replace("R=", "").replace("RRULE=", "") + "</span>");
 //				li.append("&nbsp;");
 //				li.appendText(rule);
 			} else {
@@ -379,7 +387,7 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 			}
 			if (role.getDataitem().hasComment(identifier)) {
 				String comment = role.getDataitem().getComment(identifier);
-				li.append("&nbsp;|&nbsp;<span style=\"color: rgb(192,192,192);\">"+comment+"</span>");
+				li.append("&nbsp;|&nbsp;<span style=\"color: rgb(192,192,192);\">" + comment + "</span>");
 			}
 		}
 	}
@@ -545,14 +553,18 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 						.append("<ri:page ri:content-title=\"" + r.getTitle() + "\" ri:version-at-save=\"1\" />");
 			} else {
 				div.appendText(content);
-			}		
+			}
 		} else {
 			div.appendText("-");
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addPersonItem(org.jsoup.nodes.Element, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.rogatio.circlead.view.ISynchronizerRendererEngine#addPersonItem(org.jsoup
+	 * .nodes.Element, java.lang.String, java.lang.String)
 	 */
 	public void addPersonItem(Element element, String description, String content) {
 		Person r = Repository.getInstance().getPerson(content);
@@ -574,8 +586,12 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addTeamItem(org.jsoup.nodes.Element, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.rogatio.circlead.view.ISynchronizerRendererEngine#addTeamItem(org.jsoup.
+	 * nodes.Element, java.lang.String, java.lang.String)
 	 */
 	public void addTeamItem(Element element, String description, String content) {
 		Team r = Repository.getInstance().getTeam(content);
@@ -713,8 +729,12 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addTeamList(org.jsoup.nodes.Element, java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.rogatio.circlead.view.ISynchronizerRendererEngine#addTeamList(org.jsoup.
+	 * nodes.Element, java.util.List)
 	 */
 	@Override
 	public void addTeamList(Element element, List<Team> list) {
@@ -722,14 +742,18 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 			Element ul = element.appendElement("div").appendElement("ul");
 			for (Team team : list) {
 				Element li = ul.appendElement("li");
-				li.appendElement("ac:link").append(
-						"<ri:page ri:content-title=\"" + team.getTitle() + "\" ri:version-at-save=\"1\" />");
+				li.appendElement("ac:link")
+						.append("<ri:page ri:content-title=\"" + team.getTitle() + "\" ri:version-at-save=\"1\" />");
 			}
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addPersonList(org.jsoup.nodes.Element, java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.rogatio.circlead.view.ISynchronizerRendererEngine#addPersonList(org.jsoup
+	 * .nodes.Element, java.util.List)
 	 */
 	@Override
 	public void addPersonList(Element element, List<Person> list) {
@@ -737,14 +761,18 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 			Element ul = element.appendElement("div").appendElement("ul");
 			for (Person person : list) {
 				Element li = ul.appendElement("li");
-				li.appendElement("ac:link").append(
-						"<ri:page ri:content-title=\"" + person.getTitle() + "\" ri:version-at-save=\"1\" />");
+				li.appendElement("ac:link")
+						.append("<ri:page ri:content-title=\"" + person.getTitle() + "\" ri:version-at-save=\"1\" />");
 			}
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addReportList(org.jsoup.nodes.Element, java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.rogatio.circlead.view.ISynchronizerRendererEngine#addReportList(org.jsoup
+	 * .nodes.Element, java.util.List)
 	 */
 	@Override
 	public void addReportList(Element element, List<IReport> list) {
@@ -752,14 +780,18 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 			Element ul = element.appendElement("div").appendElement("ul");
 			for (IReport report : list) {
 				Element li = ul.appendElement("li");
-				li.appendElement("ac:link").append(
-						"<ri:page ri:content-title=\"" + report.getName() + "\" ri:version-at-save=\"1\" />");
+				li.appendElement("ac:link")
+						.append("<ri:page ri:content-title=\"" + report.getName() + "\" ri:version-at-save=\"1\" />");
 			}
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addHowToList(org.jsoup.nodes.Element, java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.rogatio.circlead.view.ISynchronizerRendererEngine#addHowToList(org.jsoup.
+	 * nodes.Element, java.util.List)
 	 */
 	@Override
 	public void addHowToList(Element element, List<HowTo> list) {
@@ -767,9 +799,82 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 			Element ul = element.appendElement("div").appendElement("ul");
 			for (HowTo howto : list) {
 				Element li = ul.appendElement("li");
-				li.appendElement("ac:link").append(
-						"<ri:page ri:content-title=\"" + howto.getTitle() + "\" ri:version-at-save=\"1\" />");
+				li.appendElement("ac:link")
+						.append("<ri:page ri:content-title=\"" + howto.getTitle() + "\" ri:version-at-save=\"1\" />");
 			}
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine#addImage(org.jsoup.nodes.Element, java.lang.String, int)
+	 */
+	@Override
+	public void addImage(Element element, String filename, int size) {
+		element.append(Parser.addImage(filename, size, 1));
+	}
+
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine#addTeamLink(org.jsoup.nodes.Element, org.rogatio.circlead.model.work.Team)
+	 */
+	@Override
+	public void addTeamLink(Element element, Team team) {
+		String c = "";
+		if (StringUtil.isNotNullAndNotEmpty(team.getCategory())) {
+			c = " (" + team.getCategory() + ")";
+		}
+
+		element.append("<ac:link><ri:page ri:content-title=\"" + team.getTitle()
+				+ "\" ri:version-at-save=\"1\"/><ac:plain-text-link-body><![CDATA[" + team.getTitle() + "" + c
+				+ "]]></ac:plain-text-link-body></ac:link>");
+	}
+
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine#addRessourceChart(org.jsoup.nodes.Element, org.rogatio.circlead.model.work.Person)
+	 */
+	@Override
+	public void addRessourceChart(Element element, Person person) {
+		final Map<String, List<Timeslice>> map = person.getOrganisationalTimeslices(Freq.MONTHLY, true);
+
+		String colors = "";
+		String colorArray[] = { "#989898", "#A8A8A8", "#B8B8B8", "#C0C0C0" };
+
+		for (int i = 0; i < map.size(); i++) {
+			if (colors == null) {
+				colors = new String("");
+			}
+			colors += colorArray[i];
+
+			if ((i + 1) < map.size()) {
+				colors += ", ";
+			}
+		}
+
+		Map<String, List<Timeslice>> m = person.getTeamTimeslices(Freq.MONTHLY);
+		m.forEach((k, v) -> map.put(k, v));
+
+		Color[] c = ColorPalette.rainbow(m.size() + 2);
+		for (int i = 0; i < m.size(); i++) {
+			if (colors.length() > 0) {
+				colors += ", " + ObjectUtil.convertToHtmlColor(c[i + 1]);
+			} else {
+				colors += "" + ObjectUtil.convertToHtmlColor(c[i + 1]);
+			}
+		}
+
+		Element chart = Parser.addChartMacro("", "h/Monat", "Monat", colors, map);
+		if (chart != null) {
+			addH2(element, "Ressourcenallokation");
+			chart.appendTo(element);
+		}
+
+	}
+
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine#addRoleLink(org.jsoup.nodes.Element, org.rogatio.circlead.model.work.Role)
+	 */
+	@Override
+	public void addRoleLink(Element element, Role role) {
+		element.appendElement("ac:link")
+				.append("<ri:page ri:content-title=\"" + role.getTitle() + "\" ri:version-at-save=\"1\" />");
 	}
 }

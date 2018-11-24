@@ -18,7 +18,7 @@ import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.ObjectUtil;
-import org.rogatio.circlead.view.ISynchronizerRendererEngine;
+import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
 
 /**
  * The Class RolegroupReport shows for every rolegroup the included data with

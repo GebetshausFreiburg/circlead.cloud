@@ -6,12 +6,15 @@
  * @since 01.07.2018
  * 
  */
-package org.rogatio.circlead.view;
+package org.rogatio.circlead.view.renderer;
 
+import java.awt.Color;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.dmfs.rfc5545.recur.Freq;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
@@ -29,6 +32,7 @@ import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
+import org.rogatio.circlead.view.ColorPalette;
 import org.rogatio.circlead.view.report.IReport;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -70,138 +74,101 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 	 * Adds the chart.
 	 *
 	 * @param element the element
-	 * @param colors the colors
+	 * @param colors  the colors
 	 * @param dataMap the data map
 	 */
-	public void addChart(Element element, String colors, Map<String, List<Timeslice>> dataMap) {
-		
+	private void addChart(Element element, String colors, Map<String, List<Timeslice>> dataMap) {
+
 		ArrayList<String> keys = new ArrayList<String>(dataMap.keySet());
-		
+
 		if (dataMap.keySet().size() == 0) {
 			return;
 		}
 
 		ArrayList<ChartData> data = new ArrayList<ChartData>();
-		
+
 		for (String key : keys) {
 			ChartData d = new ChartData();
 			d.setKey(key);
 			List<Timeslice> dataset = dataMap.get(key);
 			for (Timeslice ts : dataset) {
 				int uv = ts.getUnitValue();
-				int v = (int)ts.getAllokation();
-				d.addValue(""+uv, v);
+				int v = (int) ts.getAllokation();
+				d.addValue("" + uv, v);
 			}
 			data.add(d);
 		}
-		
+
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setSerializationInclusion(Include.NON_NULL);
 		mapper.enable(SerializationFeature.INDENT_OUTPUT);
-		
-		colors = colors.replace("#", "'#").replace(",", "',")+"'";
-		
+
+		colors = colors.replace("#", "'#").replace(",", "',") + "'";
+
 		try {
-			String json = mapper.writeValueAsString( data );
+			String json = mapper.writeValueAsString(data);
 			element.append(chartCode(colors, json));
 		} catch (JsonProcessingException e) {
 		}
-		
+
 	}
-	
+
 	/**
 	 * Chart code.
 	 *
 	 * @param colors the colors
-	 * @param data the data
+	 * @param data   the data
 	 * @return the string
 	 */
 	private String chartCode(String colors, String data) {
-		return " <link href=\"javascript/nvd3/v1.8.6/build/nv.d3.css\" rel=\"stylesheet\" type=\"text/css\">\n" + 
-				"<script src=\"javascript/d3/v3.5.17/d3.min.js\" charset=\"utf-8\"></script>\n" + 
-				"    <script src=\"javascript/nvd3/v1.8.6/build/nv.d3.js\"></script>\n" + 
-				"   \n" + 
-				"    <style>\n" + 
+		return " <link href=\"javascript/nvd3/v1.8.6/build/nv.d3.css\" rel=\"stylesheet\" type=\"text/css\">\n"
+				+ "<script src=\"javascript/d3/v3.5.17/d3.min.js\" charset=\"utf-8\"></script>\n"
+				+ "    <script src=\"javascript/nvd3/v1.8.6/build/nv.d3.js\"></script>\n" + "   \n" + "    <style>\n" +
 //				"        text {\n" + 
 //				"            font: 12px sans-serif;\n" + 
 //				"        }\n" + 
 //				"        svg {\n" + 
 //				"            display: block;\n" + 
 //				"        }\n" + 
-				"        #chart {\n" + 
-				"            margin: 0px;\n" + 
-				"            padding: 0px;\n" + 
-				"            height: 100%;\n" + 
-				"            width: 100%;\n" + 
-				"        }\n" + 
-				"    </style>\n" + 
-				"\n" + 
-				"<div id=\"chart\">\n" + 
-				"    <svg></svg>\n" + 
-				"</div>\n" + 
-				"\n" + 
-				"<script>\n" + 
-				"\n" + 
-				"  var colors = ["+colors+"];\n" + 
-				"\n" + 
-				"  var data = "+data+  
-				"\n" + 
-				"    nv.addGraph({\n" + 
-				"        generate: function() {\n" + 
-				"            var width = nv.utils.windowSize().width,\n" + 
-				"                height = nv.utils.windowSize().height;\n" + 
-				"\n" + 
-				"            var chart = nv.models.multiBarChart()\n" + 
-				"                .width(width)\n" + 
-				"                .height(height)\n" + 
-				"                .stacked(true)\n" + 
-				"                .color(colors);\n" + 
-				"\n" + 
-				"            chart.dispatch.on('renderEnd', function(){\n" + 
-				"                console.log('Render Complete');\n" + 
-				"            });\n" + 
-				"\n" + 
-				"            var svg = d3.select('#chart svg').datum(data);\n" + 
-				"\n" + 
-				"            console.log('calling chart');\n" + 
-				"            svg.transition().duration(0).call(chart);\n" + 
-				"\n" + 
-				"            return chart;\n" + 
-				"        },\n" + 
-				"        callback: function(graph) {\n" + 
-				"            nv.utils.windowResize(function() {\n" + 
-				"                var width = nv.utils.windowSize().width;\n" + 
-				"                var height = nv.utils.windowSize().height;\n" + 
-				"                graph.width(width).height(height);\n" + 
-				"\n" + 
-				"                d3.select('#chart svg')\n" + 
-				"                    .attr('width', width)\n" + 
-				"                    .attr('height', height)\n" + 
-				"                    .transition().duration(0)\n" + 
-				"                    .call(graph);\n" + 
-				"\n" + 
-				"            });\n" + 
-				"        }\n" + 
-				"    });\n" + 
-				"\n" + 
-				"</script>\n" + 
-				"</body>\n" + 
-				"</html>";
+				"        #chart {\n" + "            margin: 0px;\n" + "            padding: 0px;\n"
+				+ "            height: 100%;\n" + "            width: 100%;\n" + "        }\n" + "    </style>\n" + "\n"
+				+ "<div id=\"chart\">\n" + "    <svg></svg>\n" + "</div>\n" + "\n" + "<script>\n" + "\n"
+				+ "  var colors = [" + colors + "];\n" + "\n" + "  var data = " + data + "\n" + "    nv.addGraph({\n"
+				+ "        generate: function() {\n" + "            var width = nv.utils.windowSize().width,\n"
+				+ "                height = nv.utils.windowSize().height;\n" + "\n"
+				+ "            var chart = nv.models.multiBarChart()\n" + "                .width(width)\n"
+				+ "                .height(height)\n" + "                .stacked(true)\n"
+				+ "                .color(colors);\n" + "\n"
+				+ "            chart.dispatch.on('renderEnd', function(){\n"
+				+ "                console.log('Render Complete');\n" + "            });\n" + "\n"
+				+ "            var svg = d3.select('#chart svg').datum(data);\n" + "\n"
+				+ "            console.log('calling chart');\n"
+				+ "            svg.transition().duration(0).call(chart);\n" + "\n" + "            return chart;\n"
+				+ "        },\n" + "        callback: function(graph) {\n"
+				+ "            nv.utils.windowResize(function() {\n"
+				+ "                var width = nv.utils.windowSize().width;\n"
+				+ "                var height = nv.utils.windowSize().height;\n"
+				+ "                graph.width(width).height(height);\n" + "\n"
+				+ "                d3.select('#chart svg')\n" + "                    .attr('width', width)\n"
+				+ "                    .attr('height', height)\n" + "                    .transition().duration(0)\n"
+				+ "                    .call(graph);\n" + "\n" + "            });\n" + "        }\n" + "    });\n"
+				+ "\n" + "</script>\n" + "</body>\n" + "</html>";
 	}
-	
+
 	/**
 	 * The Class ChartData.
 	 */
+	@SuppressWarnings("unused")
 	private class ChartData {
-		
+
 		/** The key. */
 		private String key;
-		
+
 		/**
 		 * The Class P.
 		 */
 		private class P {
-			
+
 			/**
 			 * Instantiates a new p.
 			 *
@@ -212,13 +179,13 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 				this.x = x;
 				this.y = y;
 			}
-			
+
 			/** The x. */
 			private String x;
-			
+
 			/** The y. */
 			private double y;
-			
+
 			/**
 			 * Gets the x.
 			 *
@@ -227,7 +194,7 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 			public String getX() {
 				return x;
 			}
-			
+
 			/**
 			 * Sets the x.
 			 *
@@ -236,7 +203,7 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 			public void setX(String x) {
 				this.x = x;
 			}
-			
+
 			/**
 			 * Gets the y.
 			 *
@@ -245,7 +212,7 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 			public double getY() {
 				return y;
 			}
-			
+
 			/**
 			 * Sets the y.
 			 *
@@ -254,9 +221,9 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 			public void setY(double y) {
 				this.y = y;
 			}
-			
+
 		}
-		
+
 		/** The values. */
 		private List<P> values = new ArrayList<P>();
 
@@ -277,9 +244,9 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		 */
 		@JsonIgnore
 		public void addValue(String x, double y) {
-			values.add(new P(x,y));
+			values.add(new P(x, y));
 		}
-		
+
 		/**
 		 * Sets the key.
 		 *
@@ -306,9 +273,9 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		public void setValues(List<P> values) {
 			this.values = values;
 		}
-		
+
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -939,8 +906,12 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addTeamList(org.jsoup.nodes.Element, java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.rogatio.circlead.view.ISynchronizerRendererEngine#addTeamList(org.jsoup.
+	 * nodes.Element, java.util.List)
 	 */
 	@Override
 	public void addTeamList(Element element, List<Team> list) {
@@ -956,8 +927,12 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addPersonList(org.jsoup.nodes.Element, java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.rogatio.circlead.view.ISynchronizerRendererEngine#addPersonList(org.jsoup
+	 * .nodes.Element, java.util.List)
 	 */
 	@Override
 	public void addPersonList(Element element, List<Person> list) {
@@ -973,8 +948,12 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addReportList(org.jsoup.nodes.Element, java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.rogatio.circlead.view.ISynchronizerRendererEngine#addReportList(org.jsoup
+	 * .nodes.Element, java.util.List)
 	 */
 	@Override
 	public void addReportList(Element element, List<IReport> list) {
@@ -998,8 +977,12 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.view.ISynchronizerRendererEngine#addHowToList(org.jsoup.nodes.Element, java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.rogatio.circlead.view.ISynchronizerRendererEngine#addHowToList(org.jsoup.
+	 * nodes.Element, java.util.List)
 	 */
 	@Override
 	public void addHowToList(Element element, List<HowTo> list) {
@@ -1015,5 +998,78 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 				}
 			}
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine#addImage(org.jsoup.nodes.Element, java.lang.String, int)
+	 */
+	@Override
+	public void addImage(Element element, String filename, int size) {
+		File f = new File("images"+File.separatorChar+"profile"+File.separatorChar+filename);
+		
+		if (f.exists()) {
+			element.append(
+					"<img src=\"images\\profile\\" + filename + "\" alt=\"" + filename + "\" width=\"" + size + "px\">");			
+		}
+
+	}
+
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine#addTeamLink(org.jsoup.nodes.Element, org.rogatio.circlead.model.work.Team)
+	 */
+	@Override
+	public void addTeamLink(Element element, Team team) {
+		String c = "";
+		if (StringUtil.isNotNullAndNotEmpty(team.getCategory())) {
+			c = " (" + team.getCategory() + ")";
+		}
+		element.appendElement("a").attr("href", "" + team.getId(synchronizer) + ".html")
+				.appendText(team.getTitle() + c);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine#addRessourceChart(org.jsoup.nodes.Element, org.rogatio.circlead.model.work.Person)
+	 */
+	@Override
+	public void addRessourceChart(Element element, Person person) {
+		final Map<String, List<Timeslice>> map = person.getOrganisationalTimeslices(Freq.MONTHLY, true);
+
+		String colors = "";
+		String colorArray[] = { "#989898", "#A8A8A8", "#B8B8B8", "#C0C0C0" };
+
+		for (int i = 0; i < map.size(); i++) {
+			if (colors == null) {
+				colors = new String("");
+			}
+			colors += colorArray[i];
+
+			if ((i + 1) < map.size()) {
+				colors += ", ";
+			}
+		}
+
+		Map<String, List<Timeslice>> m = person.getTeamTimeslices(Freq.MONTHLY);
+		m.forEach((k, v) -> map.put(k, v));
+
+		Color[] c = ColorPalette.rainbow(m.size() + 2);
+		for (int i = 0; i < m.size(); i++) {
+			if (colors.length() > 0) {
+				colors += ", " + ObjectUtil.convertToHtmlColor(c[i + 1]);
+			} else {
+				colors += "" + ObjectUtil.convertToHtmlColor(c[i + 1]);
+			}
+		}
+
+		addH2(element, "Ressourcenallokation");
+		addChart(element, colors, map);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine#addRoleLink(org.jsoup.nodes.Element, org.rogatio.circlead.model.work.Role)
+	 */
+	@Override
+	public void addRoleLink(Element element, Role role) {
+		element.appendElement("a").attr("href", "" + role.getId(this.getSynchronizer()) + ".html")
+				.appendText(role.getTitle());
 	}
 }

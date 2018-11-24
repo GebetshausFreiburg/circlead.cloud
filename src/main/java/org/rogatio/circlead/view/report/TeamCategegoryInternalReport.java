@@ -22,7 +22,7 @@ import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.PropertyUtil;
 import org.rogatio.circlead.util.StringUtil;
-import org.rogatio.circlead.view.ISynchronizerRendererEngine;
+import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
 
 /**
  * The Class TeamCategegoryInternalReport.

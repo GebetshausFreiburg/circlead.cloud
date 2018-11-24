@@ -13,7 +13,7 @@ import java.util.List;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.validator.ValidationMessage;
-import org.rogatio.circlead.view.ISynchronizerRendererEngine;
+import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
 
 /**
  * The ValidationReport shows all Messages which are thrown from the validation engine, so the consistence of the role-model could be optimized.

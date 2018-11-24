@@ -12,7 +12,7 @@ import java.util.List;
 
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.work.IWorkitem;
-import org.rogatio.circlead.view.ISynchronizerRendererEngine;
+import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.report.IReport;
 
 /**

@@ -52,6 +52,9 @@ public class CircleadRecurrenceRule {
 	/** The Constant WEEKDAYS2GERMAN map enum weekday to german name of weekday. */
 	final static public Map<Weekday, String> WEEKDAYS2GERMAN = new HashMap<Weekday, String>();
 
+	/*
+	 * Set static Maps to correlate weekdays to weekdaynumber and weekdayname
+	 */
 	static {
 		WEEKDAYS.add(Weekday.MO);
 		WEEKDAYS.add(Weekday.TU);

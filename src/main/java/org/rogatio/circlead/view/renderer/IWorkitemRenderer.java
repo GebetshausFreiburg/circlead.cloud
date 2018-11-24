@@ -6,7 +6,7 @@
  * @since 01.07.2018
  * 
  */
-package org.rogatio.circlead.view;
+package org.rogatio.circlead.view.renderer;
 
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;

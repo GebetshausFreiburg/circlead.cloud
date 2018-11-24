@@ -17,7 +17,7 @@ import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.ObjectUtil;
-import org.rogatio.circlead.view.ISynchronizerRendererEngine;
+import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
 
 /**
  * The Class OverviewReport.

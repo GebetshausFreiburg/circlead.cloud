@@ -27,10 +27,10 @@ import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.data.CompetenceDataitem;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.util.StringUtil;
-import org.rogatio.circlead.view.ISynchronizerRendererEngine;
-import org.rogatio.circlead.view.IWorkitemRenderer;
 import org.rogatio.circlead.view.TreeNode;
 import org.rogatio.circlead.view.WorkitemTree;
+import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
+import org.rogatio.circlead.view.renderer.IWorkitemRenderer;
 
 /**
  * The Class Competence is a special workitem, because Circlead should contain

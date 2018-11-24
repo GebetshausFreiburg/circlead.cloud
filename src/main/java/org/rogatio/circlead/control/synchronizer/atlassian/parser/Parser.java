@@ -49,7 +49,7 @@ import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.PropertyUtil;
 import org.rogatio.circlead.util.StringUtil;
-import org.rogatio.circlead.view.IWorkitemRenderer;
+import org.rogatio.circlead.view.renderer.IWorkitemRenderer;
 import org.rogatio.circlead.view.report.IReport;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;

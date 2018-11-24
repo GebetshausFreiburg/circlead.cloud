@@ -214,6 +214,9 @@ public class SyncCirclead {
 			FileUtil.copyFileOrFolder(
 					new File("data" + File.separatorChar + "ressources" + File.separatorChar + "images"),
 					new File("web" + File.separatorChar + "images"));
+			FileUtil.copyFileOrFolder(
+					new File("data" + File.separatorChar + "ressources" + File.separatorChar + "javascript"),
+					new File("web" + File.separatorChar + "javascript"));
 			FileUtil.copyFileOrFolder(new File("data" + File.separatorChar + "howtos"),
 					new File("web" + File.separatorChar + "howtos"));
 			FileUtil.copyFileOrFolder(

@@ -31,15 +31,17 @@ import org.rogatio.circlead.view.report.TeamCategoryReport;
 import org.rogatio.circlead.view.report.ValidationReport;
 
 /**
- * The Class Launcher.
+ * The Main Console Launcher for Circlead Application
+ * 
+ * @author Matthias Wegner
  */
 public class Launcher {
 
 	/** The Constant LOGGER. */
-	final static Logger LOGGER = LogManager.getLogger(Launcher.class);
+	private final static Logger LOGGER = LogManager.getLogger(Launcher.class);
 
 	/**
-	 * The main method.
+	 * The main method of circlead
 	 *
 	 * @param args the arguments
 	 */
@@ -56,18 +58,38 @@ public class Launcher {
 		boolean pojoRole = false;
 		String pojoRoleArgs = "";
 
+		/*
+		 * Print help-text and skip program if no arguments are set
+		 */
 		if (args == null) {
 			System.out.println(helpText());
 			System.exit(0);
 		}
+
+		/*
+		 * Print help-text and skip program if arguments are to less
+		 */
 		if (args.length == 0) {
 			System.out.println(helpText());
 			System.exit(0);
 		}
 
+		/*
+		 * Go forward if arguments are set
+		 */
 		if (args != null && args.length > 0) {
+			/*
+			 * StringBuilder to summarize corresponding argument and value together
+			 */
 			StringBuilder sb = new StringBuilder();
+
+			/*
+			 * Iterate over arguments
+			 */
 			for (String arg : args) {
+				/*
+				 * set webserver-flag if argument is set
+				 */
 				if (StringUtil.containsInsensitive("webserver", arg)) {
 					sb = new StringBuilder();
 					webserver = true;
@@ -76,6 +98,9 @@ public class Launcher {
 					pojoRole = false;
 					load = false;
 				}
+				/*
+				 * set report-flag of report is set
+				 */
 				if (StringUtil.containsInsensitive("reports", arg)) {
 					sb = new StringBuilder();
 					reports = true;
@@ -84,6 +109,9 @@ public class Launcher {
 					pojoRole = false;
 					load = false;
 				}
+				/*
+				 * set directory-deletion-flag on file-synchronizer if clean set
+				 */
 				if (StringUtil.containsInsensitive("clean", arg)) {
 					sb = new StringBuilder();
 					clean = true;
@@ -91,6 +119,9 @@ public class Launcher {
 					pojoRole = false;
 					load = false;
 				}
+				/*
+				 * set load-flag of load is set
+				 */
 				if (StringUtil.containsInsensitive("load", arg)) {
 					sb = new StringBuilder();
 					clean = false;
@@ -98,6 +129,9 @@ public class Launcher {
 					pojoJql = false;
 					pojoRole = false;
 				}
+				/*
+				 * set jql-pojo of argument set
+				 */
 				if (StringUtil.containsInsensitive("pojoJql", arg)) {
 					sb = new StringBuilder();
 					clean = false;
@@ -105,33 +139,58 @@ public class Launcher {
 					pojoJql = true;
 					pojoRole = false;
 				}
+				/*
+				 * set roleId for pojo if argument set
+				 */
 				if (StringUtil.containsInsensitive("pojoRoleId", arg)) {
 					sb = new StringBuilder();
 					clean = false;
 					pojoJql = false;
 					pojoRole = true;
 				}
+				/*
+				 * build load-argument
+				 */
 				if (load) {
 					loadArgs = buildArgument(arg, "-load", sb);
 				}
+				/*
+				 * build cean-argument
+				 */
 				if (clean) {
 					cleanArgs = buildArgument(arg, "-clean", sb);
 				}
+				/*
+				 * build pojo jql argument
+				 */
 				if (pojoJql) {
 					pojoJqlArgs = buildArgument(arg, "-pojoJQL", sb);
 				}
+				/*
+				 * build pojo roleid argument
+				 */
 				if (pojoRole) {
 					pojoRoleArgs = buildArgument(arg, "-pojoRoleId", sb);
 				}
 			}
 		}
 
+		/*
+		 * Instanciate repository
+		 */
 		Repository repository = Repository.getInstance();
+
 		AtlassianSynchronizer asynchronizer = null;
 		FileSynchronizer fsynchronizer = null;
 
+		/*
+		 * Enable AtlassianSynchronizer interface, read, write if property set
+		 */
 		if (PropertyUtil.getInstance().isAtlassianSynchronizerEnabled()) {
 			LOGGER.info("AtlassianSynchronizer enabled");
+			/*
+			 * Set system-location of data to 'CIRCLEAD'-space
+			 */
 			asynchronizer = new AtlassianSynchronizer("CIRCLEAD");
 			repository.addSynchronizer(asynchronizer);
 
@@ -143,8 +202,14 @@ public class Launcher {
 			LOGGER.info("AtlassianSynchronizer disabled");
 		}
 
+		/*
+		 * Enable FileSynchronizer interface, read, write if property set
+		 */
 		if (PropertyUtil.getInstance().isFileSynchronizerEnabled()) {
 			LOGGER.info("FileSynchronizer enabled");
+			/*
+			 * Set system-location of data to 'data'-directory
+			 */
 			fsynchronizer = new FileSynchronizer("data");
 			repository.addSynchronizer(fsynchronizer);
 
@@ -156,12 +221,18 @@ public class Launcher {
 		} else {
 			LOGGER.info("FileSynchronizer disabled");
 		}
-		
-		// Force Deletion of json-data for FileSynchronizer if AtlassianSynchronizer is used
-		if (PropertyUtil.getInstance().isAtlassianSynchronizerEnabled()&&PropertyUtil.getInstance().isFileSynchronizerEnabled()) {
+
+		/* Force Deletion of json-data for FileSynchronizer if AtlassianSynchronizer is
+		* used
+		*/
+		if (PropertyUtil.getInstance().isAtlassianSynchronizerEnabled()
+				&& PropertyUtil.getInstance().isFileSynchronizerEnabled()) {
 			fsynchronizer.deleteAll();
 		}
 
+		/*
+		 * Load json-data and create POJO-classes for atlassian if argument set
+		 */
 		if (StringUtil.isNotNullAndNotEmpty(pojoJqlArgs) && StringUtil.isNotNullAndNotEmpty(pojoRoleArgs)) {
 			String roleId = pojoRoleArgs.trim();
 			String jql = pojoJqlArgs.trim();
@@ -176,6 +247,9 @@ public class Launcher {
 			}
 		}
 
+		/*
+		 * Delete json-file-database of filesynchronizer if argument set
+		 */
 		if (StringUtil.isNotNullAndNotEmpty(cleanArgs)) {
 			if (cleanArgs.contains("f")) {
 				if (fsynchronizer != null) {
@@ -187,6 +261,9 @@ public class Launcher {
 			}
 		}
 
+		/*
+		 * Load system-data if argument set
+		 */
 		if (StringUtil.isNotNullAndNotEmpty(loadArgs)) {
 			if (loadArgs.contains("i")) {
 				LOGGER.info("Load Howtos");
@@ -228,6 +305,9 @@ public class Launcher {
 		@SuppressWarnings("unused")
 		List<SynchronizerResult> results = repository.updateWorkitems();
 
+		/*
+		 * Add reports if argument set
+		 */
 		if (reports) {
 			repository.addReport(new RolegroupReport(PropertyUtil.getInstance().getApplicationDefaultRolegroup()));
 			repository.addReport(new RoleHolderReport());
@@ -249,10 +329,15 @@ public class Launcher {
 			repository.addReports();
 			results = repository.updateReports();
 		}
-		
-		// Set last modified Date
+
+		/*
+		 * Set last modified date when application was used
+		 */
 		PropertyUtil.getInstance().setRuntimeModifiedDateToActual();
-		
+
+		/*
+		 * Clean history version of atlassian if arguments are set
+		 */
 		if (StringUtil.isNotNullAndNotEmpty(cleanArgs)) {
 			if (cleanArgs.contains("a")) {
 				LOGGER.info("Clean Atlassian History of Activitites");
@@ -280,6 +365,9 @@ public class Launcher {
 			}
 		}
 
+		/*
+		 * Copy web-ressources for filesynchronizer from data-repository if file-synchronizer is used
+		 */
 		if (PropertyUtil.getInstance().isFileSynchronizerEnabled()) {
 
 			repository.writeIndex();
@@ -288,6 +376,9 @@ public class Launcher {
 				FileUtil.copyFileOrFolder(
 						new File("data" + File.separatorChar + "ressources" + File.separatorChar + "images"),
 						new File("web" + File.separatorChar + "images"));
+				FileUtil.copyFileOrFolder(
+						new File("data" + File.separatorChar + "ressources" + File.separatorChar + "javascript"),
+						new File("web" + File.separatorChar + "javascript"));
 				FileUtil.copyFileOrFolder(new File("data" + File.separatorChar + "howtos"),
 						new File("web" + File.separatorChar + "howtos"));
 				FileUtil.copyFileOrFolder(
@@ -302,6 +393,9 @@ public class Launcher {
 			}
 		}
 
+		/*
+		 * Start webserver if argument is set
+		 */
 		if (webserver) {
 			LOGGER.info("Start Webserver through Launcher");
 			Webserver server = new Webserver();
@@ -311,9 +405,9 @@ public class Launcher {
 	}
 
 	/**
-	 * Help text.
+	 * Create help text for console when application is started without arguments
 	 *
-	 * @return the string
+	 * @return help text
 	 */
 	private static String helpText() {
 		StringBuilder sb = new StringBuilder();
@@ -347,15 +441,15 @@ public class Launcher {
 	}
 
 	/**
-	 * Builds the argument.
+	 * Builds arguments when argument has parameter and value
 	 *
-	 * @param arg the arg
-	 * @param key the key
-	 * @param sb the sb
-	 * @return the string
+	 * @param value the value of the argument
+	 * @param key the key of the argument
+	 * @param sb  the string builder which holds the argument
+	 * @return the string of the argument
 	 */
-	private static String buildArgument(String arg, String key, StringBuilder sb) {
-		String a = StringUtil.replaceInsensitive(arg, key);
+	private static String buildArgument(String value, String key, StringBuilder sb) {
+		String a = StringUtil.replaceInsensitive(value, key);
 		if (a.startsWith("=")) {
 			a = a.substring(1, a.length()).trim();
 		}

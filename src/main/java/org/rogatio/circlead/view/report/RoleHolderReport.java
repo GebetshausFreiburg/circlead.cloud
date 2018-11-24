@@ -20,7 +20,7 @@ import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.ObjectUtil;
-import org.rogatio.circlead.view.ISynchronizerRendererEngine;
+import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
 
 /**
  * The Class RoleHolderReport.

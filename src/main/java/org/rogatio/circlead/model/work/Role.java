@@ -50,9 +50,9 @@ import org.rogatio.circlead.model.data.RoleDataitem;
 import org.rogatio.circlead.model.data.TeamEntry;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
-import org.rogatio.circlead.view.ISynchronizerRendererEngine;
-import org.rogatio.circlead.view.IWorkitemRenderer;
 import org.rogatio.circlead.view.SvgBuilder;
+import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
+import org.rogatio.circlead.view.renderer.IWorkitemRenderer;
 
 /**
  * The Class Role holds the core information of the role workitem.

@@ -59,8 +59,8 @@ import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.PropertyUtil;
 import org.rogatio.circlead.util.StringUtil;
-import org.rogatio.circlead.view.AtlassianRendererEngine;
-import org.rogatio.circlead.view.ISynchronizerRendererEngine;
+import org.rogatio.circlead.view.renderer.AtlassianRendererEngine;
+import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.report.IReport;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;

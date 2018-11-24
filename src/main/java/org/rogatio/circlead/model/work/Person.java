@@ -13,7 +13,6 @@ import static org.rogatio.circlead.model.Parameter.PERSONDATA;
 import static org.rogatio.circlead.model.Parameter.ROLESINORGANISATION;
 import static org.rogatio.circlead.model.Parameter.ROLESINTEAM;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -25,9 +24,7 @@ import org.dmfs.rfc5545.recur.Freq;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.CircleadRecurrenceRule;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
-import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.PairTableParserElement;
-import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
 import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
@@ -42,11 +39,9 @@ import org.rogatio.circlead.model.data.Timeslice;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.PropertyUtil;
 import org.rogatio.circlead.util.StringUtil;
-import org.rogatio.circlead.view.ColorPalette;
-import org.rogatio.circlead.view.FileRendererEngine;
-import org.rogatio.circlead.view.ISynchronizerRendererEngine;
-import org.rogatio.circlead.view.IWorkitemRenderer;
 import org.rogatio.circlead.view.SvgBuilder;
+import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
+import org.rogatio.circlead.view.renderer.IWorkitemRenderer;
 
 /**
  * The Class Person is the working item for a person.
@@ -179,11 +174,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 
 		double divider = (fte / 100.0) * (tf / 100.0);
 
-		// System.out.println("dt"+divider);
-
 		double teamAllocation = R.getAverageAllokationInTeams(this, Freq.WEEKLY);
-
-		// teamAllocation = 10;
 
 		return 100 * teamAllocation / (divider * 40.0);
 	}
@@ -409,14 +400,20 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		}
 
 		if (optimize) {
-			// Merge Timeslices of small taken roles to optimize view
+			/*
+			 * Merge Timeslices of small taken roles to optimize view
+			 */
 			if (map.size() > 3) {
-				// Sort timeslice-dataets by size
+				/*
+				 * Sort timeslice-dataets by size
+				 */
 				Map<String, List<Timeslice>> dmap = ObjectUtil.sort(map);
 				map = new LinkedHashMap<String, List<Timeslice>>();
 				Map<String, List<Timeslice>> tmap = new LinkedHashMap<String, List<Timeslice>>();
 
-				// hold biggest three slice-datasets and merge rest
+				/*
+				 * hold biggest three slice-datasets and merge rest
+				 */
 				Vector<String> keys = new Vector<String>(dmap.keySet());
 				for (int i = keys.size() - 1; i >= 0; i--) {
 					if (i > keys.size() - 4) {
@@ -452,6 +449,9 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		return map;
 	}
 
+	/**
+	 * Calc fractions.
+	 */
 	public void calcFractions() {
 		double allocO = R.getAverageAllokationInOrganisation(this.getFullname(), Freq.WEEKLY);
 		double allocT = R.getAverageAllokationInTeams(this, Freq.WEEKLY);
@@ -467,7 +467,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 				this.setTeamFraction(c);
 			}
 		}
-		
+
 //		if (this.getFullTimeEquivalent() < 5) {
 //			this.setFullTimeEquivalent(5.0);
 //		}
@@ -477,57 +477,52 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 //		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.rogatio.circlead.view.IRenderer#render()
+	/**
+	 * Checks for contact data.
+	 *
+	 * @return true, if successful
 	 */
-	@Override
-	public Element render(ISynchronizer synchronizer) {
-		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
-
-		Element element = new Element("p");
-
-		if (StringUtil.isNotNullAndNotEmpty(this.getAvatar())) {
-			if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
-				element.append(Parser.addImage(getAvatar(), 250, 1));
-			} else if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
-				element.append("<img src=\"images\\profile\\" + getAvatar() + "\" alt=\"" + this.getFullname()
-						+ "\" width=\"250px\">");
-			}
-		}
-
-		if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
-			element.append(SvgBuilder.createPersonDnaProfile(this, 512).toString());
-		}
-
-		long fte = Math.round(this.getFullTimeEquivalent());
-		long tf = Math.round(this.getTeamFraction());
-		if ((fte != 0) || (tf != 0)) {
-			renderer.addH2(element, "Plankapazität");
-		}
-		if (fte != 0) {
-			renderer.addItem(element, Parameter.FTE.toString(), fte + "%");
-		}
-		if (tf != 0) {
-			renderer.addItem(element, Parameter.TEAMFRACTION.toString(), tf + "%");
-		}
-
-		renderer.addH2(element, CONTACTS.toString());
-
+	public boolean hasContactData() {
 		for (ContactDataitem contact : this.getContacts()) {
-			renderer.addH3(element, contact.getName());
-			renderer.addList(element, contact.getAsList());
-		}
-
-		Map<String, String> d = this.getData();
-		if (d != null) {
-			if (d.size() > 0) {
-				renderer.addH2(element, PERSONDATA.toString());
-				renderer.addTable(element, d);
+			if (StringUtil.isNotNullAndNotEmpty(contact.getAddress())) {
+				return true;
+			}
+			if (StringUtil.isNotNullAndNotEmpty(contact.getPhone())) {
+				return true;
+			}
+			if (StringUtil.isNotNullAndNotEmpty(contact.getMobile())) {
+				return true;
+			}
+			if (StringUtil.isNotNullAndNotEmpty(contact.getMail())) {
+				return true;
 			}
 		}
+		return false;
+	}
 
+	/**
+	 * Gets the readable team alloc and workload.
+	 *
+	 * @return the readable team alloc and workload
+	 */
+	public String getReadableTeamAllocAndWorkload() {
+		double sum = R.getAverageAllokationInTeams(this, Freq.WEEKLY);
+
+		double tw = this.getTeamWorkload();
+		String teamWorkload = "";
+		if (tw != 0.0) {
+			teamWorkload = ", " + Math.round(tw) + "%";
+		}
+
+		return " (" + Math.round(sum) + "h/Woche" + teamWorkload + ")";
+	}
+
+	/**
+	 * Gets the readable organisational alloc and workload.
+	 *
+	 * @return the readable organisational alloc and workload
+	 */
+	public String getReadableOrganisationalAllocAndWorkload() {
 		double sumR = R.getAverageAllokationInOrganisation(this.getFullname(), Freq.WEEKLY);
 
 		double ow = this.getOrganisationalWorkload();
@@ -540,47 +535,116 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		if (sumR != 0) {
 			add = " (" + Math.round(sumR) + "h/Woche" + orgWorkload + ")";
 		}
+		return add;
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.rogatio.circlead.view.IRenderer#render()
+	 */
+	@Override
+	public Element render(ISynchronizer synchronizer) {
+		/*
+		 * get renderer of synchronizer to generate rendered view of data
+		 */
+		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
+
+		/*
+		 * Instanciate html-paragraph as conteiner for data
+		 */
+		Element element = new Element("p");
+
+		/*
+		 * Add person-avatar if it exists
+		 */
+		if (StringUtil.isNotNullAndNotEmpty(this.getAvatar())) {
+			renderer.addImage(element, getAvatar(), 250);
+		}
+
+		/*
+		 * Add person-dna-profile if system can handle svg
+		 */
+		if (synchronizer instanceof FileSynchronizer) {
+			element.append(SvgBuilder.createPersonDnaProfile(this, 512).toString());
+		}
+
+		/*
+		 * Display full-time-equivalent or team-fraction of fte if set
+		 */
+		long fte = Math.round(this.getFullTimeEquivalent());
+		long tf = Math.round(this.getTeamFraction());
+		if ((fte != 0) || (tf != 0)) {
+			renderer.addH2(element, "Plankapazität");
+		}
+		if (fte != 0) {
+			renderer.addItem(element, Parameter.FTE.toString(), fte + "%");
+		}
+		if (tf != 0) {
+			renderer.addItem(element, Parameter.TEAMFRACTION.toString(), tf + "%");
+		}
+
+		/*
+		 * show contact-data if data is set
+		 */
+		if (this.hasContactData()) {
+			renderer.addH2(element, CONTACTS.toString());
+			for (ContactDataitem contact : this.getContacts()) {
+				renderer.addH3(element, contact.getName());
+				renderer.addList(element, contact.getAsList());
+			}
+		}
+
+		/*
+		 * show custom data table if it is set
+		 */
+		Map<String, String> d = this.getData();
+		if (d != null) {
+			if (d.size() > 0) {
+				renderer.addH2(element, PERSONDATA.toString());
+				renderer.addTable(element, d);
+			}
+		}
+
+		/*
+		 * show roles for person if existent
+		 */
 		List<Role> orgRoles = R.getOrganisationalRolesWithPerson(this.getFullname());
 		if (ObjectUtil.isListNotNullAndEmpty(orgRoles)) {
-			renderer.addH2(element, ROLESINORGANISATION.toString() + add);
+			renderer.addH2(element, ROLESINORGANISATION.toString() + getReadableOrganisationalAllocAndWorkload());
 			renderer.addRoleList(element, orgRoles, this);
 		}
 
+		/*
+		 * show teams for person if existent
+		 */
 		List<Team> foundTeams = R.getTeamsWithMember(this);
 		if (ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
-			double sum = R.getAverageAllokationInTeams(this, Freq.WEEKLY);
+			renderer.addH2(element, ROLESINTEAM.toString() + getReadableTeamAllocAndWorkload());
 
-			double tw = this.getTeamWorkload();
-			String teamWorkload = "";
-			if (tw != 0.0) {
-				teamWorkload = ", " + Math.round(tw) + "%";
-			}
-
-			renderer.addH2(element, ROLESINTEAM.toString() + " (" + Math.round(sum) + "h/Woche" + teamWorkload + ")");
+			/*
+			 * create team-bullet-list
+			 */
 			Element ul = element.appendElement("ul");
 			for (Team team : foundTeams) {
 				Element li = ul.appendElement("li");
-				String c = "";
-				if (StringUtil.isNotNullAndNotEmpty(team.getCategory())) {
-					c = " (" + team.getCategory() + ")";
-				}
+				/*
+				 * create link to team
+				 */
+				renderer.addTeamLink(li, team);
 
-				if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
-					li.append("<ac:link><ri:page ri:content-title=\"" + team.getTitle()
-							+ "\" ri:version-at-save=\"1\"/><ac:plain-text-link-body><![CDATA[" + team.getTitle() + ""
-							+ c + "]]></ac:plain-text-link-body></ac:link>");
-				} else if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
-					li.appendElement("a").attr("href", "" + team.getId(synchronizer) + ".html")
-							.appendText(team.getTitle() + c);
-				}
-
+				/*
+				 * add status of team
+				 */
 				WorkitemStatusParameter status = WorkitemStatusParameter.get(team.getStatus());
 				if (status != null) {
 					li.append("&nbsp;");
 					renderer.addStatus(li, status.getName());
 				}
 
+				/*
+				 * add team-entries if they exist
+				 */
 				List<TeamEntry> x = team.getTeamEntries();
 				Element ul2 = li.appendElement("ul");
 				for (TeamEntry e : x) {
@@ -592,61 +656,12 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 			}
 		}
 
-		addRessourceChart(synchronizer, element);
+		/*
+		 * show ressource chart
+		 */
+		renderer.addRessourceChart(element, this);
 
 		return element;
-	}
-
-	/**
-	 * Adds the ressource chart.
-	 *
-	 * @param synchronizer the synchronizer
-	 * @param element      the element
-	 */
-	private void addRessourceChart(ISynchronizer synchronizer, Element element) {
-		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
-
-		final Map<String, List<Timeslice>> map = this.getOrganisationalTimeslices(Freq.MONTHLY, true);
-
-		String colors = "";
-		String colorArray[] = { "#989898", "#A8A8A8", "#B8B8B8", "#C0C0C0" };
-
-		for (int i = 0; i < map.size(); i++) {
-			if (colors == null) {
-				colors = new String("");
-			}
-			colors += colorArray[i];
-
-			if ((i + 1) < map.size()) {
-				colors += ", ";
-			}
-		}
-
-		Map<String, List<Timeslice>> m = this.getTeamTimeslices(Freq.MONTHLY);
-		m.forEach((k, v) -> map.put(k, v));
-		
-		Color[] c = ColorPalette.rainbow(m.size()+2);
-		for (int i = 0; i < m.size(); i++) {
-			if (colors.length()>0) {
-				colors += ", "+ObjectUtil.convertToHtmlColor(c[i+1]);			
-			} else {
-				colors += ""+ObjectUtil.convertToHtmlColor(c[i+1]);						
-			}
-		}
-		
-		if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
-			FileRendererEngine engine = (FileRendererEngine)synchronizer.getRenderer();
-			renderer.addH2(element, "Ressourcenallokation");
-			engine.addChart(element, colors, map);
-		}
-		
-		if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
-			Element chart = Parser.addChartMacro("", "h/Monat", "Monat", colors, map);
-			if (chart != null) {
-				renderer.addH2(element, "Ressourcenallokation");
-				chart.appendTo(element);
-			}
-		}
 	}
 
 	/**
@@ -675,15 +690,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 
 		if (teamEntry.getRoleIdentifier() != null) {
 			if (role != null) {
-				if (renderer.getSynchronizer().getClass().getSimpleName()
-						.equals(AtlassianSynchronizer.class.getSimpleName())) {
-					listElement.appendElement("ac:link").append(
-							"<ri:page ri:content-title=\"" + role.getTitle() + "\" ri:version-at-save=\"1\" />");
-				} else if (renderer.getSynchronizer().getClass().getSimpleName()
-						.equals(FileSynchronizer.class.getSimpleName())) {
-					listElement.appendElement("a").attr("href", "" + role.getId(renderer.getSynchronizer()) + ".html")
-							.appendText(role.getTitle());
-				}
+				renderer.addRoleLink(listElement, role);
 			} else {
 				listElement.appendText(teamEntry.getRoleIdentifier());
 			}
@@ -700,8 +707,6 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 			listElement.append("&nbsp;<span style=\"color: rgb(192,192,192);\">"
 					+ rule.replace("R=", "").replace("RRULE=", "") + "</span>");
 		}
-
-//		listElement.appendText(""+ team.getAverageAllokation(this, Freq.WEEKLY) );
 	}
 
 	/*
@@ -764,8 +769,6 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 			}
 		}
 
-//		System.out.println(r.getTitle() +" - "+ this.getFullname()+" "+r.getDataitem().getRepresentation(this.getFullname())+" - "+ignoreReprepresentationMessage);
-
 		ArrayList<Role> roles = R.getOrganisationalRolesWithPerson(this.getFullname());
 		if (roles.size() == 0) {
 			if (!ignoreReprepresentationMessage) {
@@ -801,7 +804,6 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 	public Map<Parameter, Object> getDataRow() {
 		Map<Parameter, Object> map = new TreeMap<Parameter, Object>();
 
-//		addDataRowElement(this.getTitle(), Parameter.TITLE, map);
 		addDataRowElement(this.getFirstname(), Parameter.FIRSTNAME, map);
 		addDataRowElement(this.getSecondname(), Parameter.SECONDNAME, map);
 		addDataRowElement(this.getFamilyname(), Parameter.FAMILYNAME, map);
@@ -814,12 +816,6 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 			addDataRowElement(cdi.getPhone(), Parameter.PHONE, map);
 			addDataRowElement(cdi.getAddress(), Parameter.ADRESS, map);
 		}
-
-		/*
-		 * Map<String, String> d = this.getData(); if (d != null) { if (d.size() > 0) {
-		 * for (String key : d.keySet()) { String value = d.get(key);
-		 * addDataRowElement(value, key, map); } } }
-		 */
 
 		return map;
 	}

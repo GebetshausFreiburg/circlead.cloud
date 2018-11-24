@@ -269,22 +269,22 @@ public class StringUtil {
 	}
 	
 	/**
-	 * Contains insenstitive.
+	 * Check if string contains insenstitive string
 	 *
-	 * @param wantedStr the wanted str
-	 * @param source the source
-	 * @return true, if successful
+	 * @param wantedStr the wanted string which is searched insensitive
+	 * @param source the source string which should be searched 
+	 * @return true, if source successful contains wanted string insensitive
 	 */
 	public static boolean containsInsensitive(String wantedStr, String source) {
 		return Pattern.compile(Pattern.quote(wantedStr), Pattern.CASE_INSENSITIVE).matcher(source).find();
 	}
 
 	/**
-	 * Replace insensisitive.
+	 * Replace text which is insensitive target in source with '' 
 	 *
-	 * @param source the source
-	 * @param target the target
-	 * @return the string
+	 * @param source the source which should be corrected
+	 * @param target the target which should be replaced
+	 * @return the string with the replaced insensitive target text
 	 */
 	public static String replaceInsensitive(String source, String target) {
 		String replacement = "";

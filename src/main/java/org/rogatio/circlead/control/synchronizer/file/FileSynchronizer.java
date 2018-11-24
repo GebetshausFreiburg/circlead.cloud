@@ -51,9 +51,9 @@ import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.FileUtil;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.PropertyUtil;
-import org.rogatio.circlead.view.FileRendererEngine;
-import org.rogatio.circlead.view.ISynchronizerRendererEngine;
-import org.rogatio.circlead.view.IWorkitemRenderer;
+import org.rogatio.circlead.view.renderer.FileRendererEngine;
+import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
+import org.rogatio.circlead.view.renderer.IWorkitemRenderer;
 import org.rogatio.circlead.view.report.IReport;
 import org.rogatio.circlead.view.report.IndexCirclead;
 import org.rogatio.circlead.view.report.IndexRbs;
@@ -390,6 +390,20 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 
 			body.appendElement("H1").appendText(workitem.getTitle());
 
+			/*Element p = body.appendElement("p");
+			p.attr("align", "right");
+			List<ISynchronizer> syn = SynchronizerFactory.getInstance().getSynchronizers();
+			for (ISynchronizer iSynchronizer : syn) {
+				if (iSynchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
+					p.append("<ac:link><ri:page ri:content-title=\"" +"A"
+							+ "\" ri:version-at-save=\"1\"/><ac:plain-text-link-body><![CDATA[" + workitem.getTitle() + ""
+							+ "]]></ac:plain-text-link-body></ac:link>");
+				} else if (iSynchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
+					p.appendElement("a").attr("href", "" + workitem.getId(iSynchronizer) + ".html")
+							.appendText("F");
+				}
+			}*/
+			
 			renderer.render(this).appendTo(body);
 
 			try {

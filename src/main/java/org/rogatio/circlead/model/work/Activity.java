@@ -40,8 +40,8 @@ import org.rogatio.circlead.model.data.HowTo;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
-import org.rogatio.circlead.view.ISynchronizerRendererEngine;
-import org.rogatio.circlead.view.IWorkitemRenderer;
+import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
+import org.rogatio.circlead.view.renderer.IWorkitemRenderer;
 
 /**
  * The Class Activity is the working item for a activity.

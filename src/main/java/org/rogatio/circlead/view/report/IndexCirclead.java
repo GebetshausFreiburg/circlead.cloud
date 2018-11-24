@@ -14,7 +14,7 @@ import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer
 import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.model.Parameter;
 import org.rogatio.circlead.model.WorkitemType;
-import org.rogatio.circlead.view.ISynchronizerRendererEngine;
+import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
 
 /**
  * The Class IndexCirclead.

@@ -19,8 +19,8 @@ import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.PropertyUtil;
-import org.rogatio.circlead.view.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.SvgBuilder;
+import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
 
 /**
  * The Class RoleNeed.
