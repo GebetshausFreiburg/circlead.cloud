@@ -47,6 +47,7 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 	private ISynchronizer synchronizer;
 
 	/** The Constant LOGGER. */
+	@SuppressWarnings("unused")
 	private final static Logger LOGGER = LogManager.getLogger(AtlassianRendererEngine.class);
 
 	/**

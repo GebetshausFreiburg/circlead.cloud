@@ -36,7 +36,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
-import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.ListParserElement;
 import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.control.validator.IValidator;
@@ -63,7 +62,8 @@ import org.rogatio.circlead.view.renderer.IWorkitemRenderer;
 public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidator, IDataRow {
 
 	/** The Constant LOGGER. */
-	final static Logger LOGGER = LogManager.getLogger(Role.class);
+	@SuppressWarnings("unused")
+	private final static Logger LOGGER = LogManager.getLogger(Role.class);
 
 	/**
 	 * Instantiates a new emtpy role.
@@ -81,6 +81,9 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	public Role(IDataitem dataitem) {
 		super(dataitem);
 
+		/*
+		 * check if dataitem is instanceof roledataitem
+		 */
 		if (!(dataitem instanceof RoleDataitem)) {
 			throw new IllegalArgumentException("IDataitem must be of type RoleDataitem");
 		}
@@ -138,6 +141,9 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	 * @param persons the new person identifiers
 	 */
 	public void setPersonIdentifiers(String persons) {
+		/*
+		 * set list of personIdentifiers from string. split b< comma
+		 */
 		List<String> list = Arrays.asList(persons.split("[\\s,]+"));
 		this.setPersons(list);
 	}
@@ -166,6 +172,9 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	 * @param competences the new competences
 	 */
 	public void setCompetences(String competences) {
+		/*
+		 * set list of competencies from sting by splitting comma
+		 */
 		List<String> list = Arrays.asList(competences.split("[\\s,]+"));
 		this.setCompetences(list);
 	}
@@ -194,6 +203,9 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	 * @param guidelines the new guidelines
 	 */
 	public void setGuidelines(String guidelines) {
+		/*
+		 * set list of guidelines from sting by splitting comma
+		 */
 		List<String> list = Arrays.asList(guidelines.split("[\\s,]+"));
 		this.setGuidelines(list);
 	}
@@ -222,6 +234,9 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	 * @param opportunities the new opportunities
 	 */
 	public void setOpportunities(String opportunities) {
+		/*
+		 * split string by comma to create list of opportunities
+		 */
 		List<String> list = Arrays.asList(opportunities.split("[\\s,]+"));
 		this.setOpportunities(list);
 	}
@@ -260,6 +275,9 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	 * @param responsibilities the new responsibilities
 	 */
 	public void setResponsibilities(String responsibilities) {
+		/*
+		 * split string by comma to create list of responsibilities
+		 */
 		List<String> list = Arrays.asList(responsibilities.split("[\\s,]+"));
 		this.setResponsibilities(list);
 	}
@@ -403,7 +421,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	}
 
 	/**
-	 * Sets the activities.
+	 * Sets the activities from html-parsed-list
 	 *
 	 * @param element the new activities
 	 */
@@ -417,6 +435,9 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	 * @param activities the new activities
 	 */
 	public void setActivities(String activities) {
+		/*
+		 * split string by comma to create list of activities
+		 */
 		List<String> list = Arrays.asList(activities.split("[\\s,]+"));
 		this.setActivities(list);
 	}
@@ -436,6 +457,9 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	 * @param synonyms the new synonyms
 	 */
 	public void setSynonyms(String synonyms) {
+		/*
+		 * split string by comma to create list of synonyms
+		 */
 		List<String> list = Arrays.asList(synonyms.split("[\\s,]+"));
 		this.setSynonyms(list);
 	}
@@ -529,11 +553,8 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		List<IWorkitem> references = new ArrayList<IWorkitem>();
 
 		/*
-		 * List<Role> childRoles = R.getRoleChildren(this.getTitle()); if
-		 * (ObjectUtil.isListNotNullAndEmpty(childRoles)) {
-		 * references.addAll(childRoles); }
+		 * get list of person-workitems
 		 */
-
 		if (ObjectUtil.isListNotNullAndEmpty(this.getPersonIdentifiers())) {
 			List<Person> persons = new ArrayList<Person>();
 			for (String personIdentifier : this.getPersonIdentifiers()) {
@@ -545,6 +566,9 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			references.addAll(persons);
 		}
 
+		/*
+		 * get list of global known activities with named responsible role
+		 */
 		List<Activity> globalActivities = R.getActivities(this.getTitle());
 		List<Activity> ga = new ArrayList<Activity>();
 		for (Activity activity : globalActivities) {
@@ -553,10 +577,16 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			}
 		}
 
+		/*
+		 * add found global activities if not empty
+		 */
 		if (ObjectUtil.isListNotNullAndEmpty(ga)) {
 			references.addAll(ga);
 		}
 
+		/*
+		 * add parentRole if existent
+		 */
 		if (StringUtil.isNotNullAndNotEmpty(this.getParentIdentifier())) {
 			Role r = R.getRole(this.getParentIdentifier());
 			if (r != null) {
@@ -566,6 +596,9 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			}
 		}
 
+		/*
+		 * add correlated rolegroup if existent
+		 */
 		if (StringUtil.isNotNullAndNotEmpty(this.getRolegroupIdentifier())) {
 			Rolegroup r = R.getRolegroup(this.getRolegroupIdentifier());
 			if (r != null) {
@@ -629,12 +662,12 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 				Element ul = element.appendElement("ul");
 				for (Team team : foundTeams) {
 					Element li = ul.appendElement("li");
-					
+
 					/*
 					 * add link to team
 					 */
 					renderer.addTeamLink(li, team);
-					
+
 					/*
 					 * add status for team
 					 */
@@ -1179,7 +1212,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			}
 
 			map.put(parameter, sb.toString());
-		} 
+		}
 	}
 
 	/**

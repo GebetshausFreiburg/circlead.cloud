@@ -14,7 +14,6 @@ import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.ObjectUtil;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class SvgBuilder creates a XML-DOM for and SVG.
  * 
@@ -158,21 +157,59 @@ public class SvgBuilder {
 			Color c = node.getColor();
 			long idx = ColorPalette.getColorOrderIndex(c, size);
 
-			Element line = element.appendElement("line");
-			line.attr("opacity", opacity + "").attr("x1", "" + (idx + 2)).attr("y1", "20").attr("x2", "" + (idx + 2))
-					.attr("y2", "24").attr("stroke-width", "2").attr("stroke", "gray");
+			Element line = addImplicitGreyLine(element, opacity, idx);
 
 			Element title = line.appendElement("title");
 			title.appendText(competence + " (" + skill + "% Implizit)");
 
-			line = element.appendElement("line");
-			line.attr("opacity", opacity + "").attr("x1", "" + (idx + 2)).attr("y1", "1").attr("x2", "" + (idx + 2))
-					.attr("y2", "19").attr("stroke-width", "2")
-					.attr("stroke", ObjectUtil.convertToHtmlColor(node.getColor()));
+			line = addImplicitColorLine(element, node.getColor(), opacity, idx);
 
 			title = line.appendElement("title");
 			title.appendText(competence + " (" + skill + "% Implizit)");
 		}
+	}
+
+	/**
+	 * Adds the implicit color line.
+	 *
+	 * @param element the element
+	 * @param color the color
+	 * @param opacity the opacity
+	 * @param idx the idx
+	 * @return the element
+	 */
+	private static Element addImplicitColorLine(Element element, Color color, double opacity, long idx) {
+		Element line = element.appendElement("line");
+		line.attr("opacity", opacity + "").attr("x1", "" + (idx + 2)).attr("y1", "1").attr("x2", "" + (idx + 2))
+				.attr("y2", "19").attr("stroke-width", "2").attr("stroke", ObjectUtil.convertToHtmlColor(color));
+		return line;
+	}
+
+	/**
+	 * Adds the implicit grey line.
+	 *
+	 * @param element the element
+	 * @param opacity the opacity
+	 * @param idx the idx
+	 * @return the element
+	 */
+	private static Element addImplicitGreyLine(Element element, double opacity, long idx) {
+		Element line = element.appendElement("line");
+		line.attr("opacity", opacity + "").attr("x1", "" + (idx + 2)).attr("y1", "20").attr("x2", "" + (idx + 2))
+				.attr("y2", "24").attr("stroke-width", "2").attr("stroke", "gray");
+		return line;
+	}
+
+	/**
+	 * Adds the implicit title.
+	 *
+	 * @param line the line
+	 * @param competence the competence
+	 * @param workitem the workitem
+	 */
+	private static void addImplicitTitle(Element line, String competence, IWorkitem workitem) {
+		Element title = line.appendElement("title");
+		title.appendText(competence + " (Implizit " + workitem.getTitle() + ")");
 	}
 
 	/**
@@ -194,20 +231,11 @@ public class SvgBuilder {
 			Color c = node.getColor();
 			long idx = ColorPalette.getColorOrderIndex(c, size);
 
-			Element line = element.appendElement("line");
-			line.attr("opacity", opacity + "").attr("x1", "" + (idx + 2)).attr("y1", "20").attr("x2", "" + (idx + 2))
-					.attr("y2", "24").attr("stroke-width", "2").attr("stroke", "gray");
+			Element line = addImplicitGreyLine(element, opacity, idx);
+			addImplicitTitle(line, competence, rx);
 
-			Element title = line.appendElement("title");
-			title.appendText(competence + " (Implizit " + rx.getTitle() + ")");
-
-			line = element.appendElement("line");
-			line.attr("opacity", opacity + "").attr("x1", "" + (idx + 2)).attr("y1", "1").attr("x2", "" + (idx + 2))
-					.attr("y2", "19").attr("stroke-width", "2")
-					.attr("stroke", ObjectUtil.convertToHtmlColor(node.getColor()));
-
-			title = line.appendElement("title");
-			title.appendText(competence + " (Implizit " + rx.getTitle() + ")");
+			line = addImplicitColorLine(element, node.getColor(), opacity, idx);
+			addImplicitTitle(line, competence, rx);
 		}
 	}
 
@@ -228,14 +256,27 @@ public class SvgBuilder {
 			Color c = node.getColor();
 			long idx = ColorPalette.getColorOrderIndex(c, size);
 
-			Element line = element.appendElement("line");
-			line.attr("opacity", opacity + "").attr("x1", "" + (idx + 2)).attr("y1", "1").attr("x2", "" + (idx + 2))
-					.attr("y2", "24").attr("stroke-width", "2")
-					.attr("stroke", ObjectUtil.convertToHtmlColor(node.getColor()));
+			Element line = addColorLine(element, node.getColor(), opacity, idx);
 
 			Element title = line.appendElement("title");
 			title.appendText(competence + " (Explizit)");
 		}
+	}
+
+	/**
+	 * Adds the color line.
+	 *
+	 * @param element the element
+	 * @param color the color
+	 * @param opacity the opacity
+	 * @param idx the idx
+	 * @return the element
+	 */
+	private static Element addColorLine(Element element, Color color, double opacity, long idx) {
+		Element line = element.appendElement("line");
+		line.attr("opacity", opacity + "").attr("x1", "" + (idx + 2)).attr("y1", "1").attr("x2", "" + (idx + 2))
+				.attr("y2", "24").attr("stroke-width", "2").attr("stroke", ObjectUtil.convertToHtmlColor(color));
+		return line;
 	}
 
 	/**
@@ -258,10 +299,7 @@ public class SvgBuilder {
 			Color c = node.getColor();
 			long idx = ColorPalette.getColorOrderIndex(c, size);
 
-			Element line = element.appendElement("line");
-			line.attr("opacity", opacity + "").attr("x1", "" + (idx + 2)).attr("y1", "1").attr("x2", "" + (idx + 2))
-					.attr("y2", "24").attr("stroke-width", "2")
-					.attr("stroke", ObjectUtil.convertToHtmlColor(node.getColor()));
+			Element line = addColorLine(element, node.getColor(), opacity, idx);
 
 			Element title = line.appendElement("title");
 			title.appendText(competence + " (" + skill + "% Explizit)");

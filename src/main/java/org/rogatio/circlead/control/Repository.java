@@ -1013,17 +1013,20 @@ public final class Repository {
 	}
 
 	/**
-	 * Gets the average allokation in teams.
+	 * Gets the average allocation of a person in teams.
 	 *
-	 * @param person the person
-	 * @param freq   the freq
-	 * @return the average allokation in teams
+	 * @param person the person for which the allocation is calculated
+	 * @param freq   the frequence (@link org.dmfs.rfc5545.recur.Freq) which is used to calculate the allocation.
+	 * @return the average allokation in teams of a person
 	 */
 	public double getAverageAllokationInTeams(Person person, Freq freq) {
 		List<Team> foundTeams = Repository.getInstance().getTeamsWithMember(person);
 		double sum = 0;
 		if (ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
 			for (Team team : foundTeams) {
+				/*
+				 * Only add allocation if status is not paused, closed or inactive
+				 */
 				WorkitemStatusParameter wsp = WorkitemStatusParameter.get(team.getStatus());
 				if ((wsp != WorkitemStatusParameter.PAUSED) || (wsp != WorkitemStatusParameter.CLOSED)
 						|| (wsp != WorkitemStatusParameter.INACTIVE)) {
@@ -1035,17 +1038,20 @@ public final class Repository {
 	}
 
 	/**
-	 * Gets the average allokation in organisation.
+	 * Gets the average allocation in organisation.
 	 *
-	 * @param personIdentifier the person identifier
-	 * @param freq             the freq
-	 * @return the average allokation in organisation
+	 * @param personIdentifier the person identifier for which the allocation in the organisation is calculated
+	 * @param freq             the frequence (@link org.dmfs.rfc5545.recur.Freq) which is used to calculate the allocation
+	 * @return the average allocation in organisation
 	 */
 	public double getAverageAllokationInOrganisation(String personIdentifier, Freq freq) {
 		List<Role> orgRoles = Repository.getInstance().getOrganisationalRolesWithPerson(personIdentifier);
 		double sumR = 0;
 		for (Role role : orgRoles) {
 			boolean skip = false;
+			/*
+			 * Only add (skip=false) allocation if status is not paused, closed or inactive
+			 */
 			if (role.getDataitem().hasRepresentation(personIdentifier)) {
 				String representation = role.getDataitem().getRepresentation(personIdentifier);
 				WorkitemStatusParameter status = WorkitemStatusParameter.get(representation);
