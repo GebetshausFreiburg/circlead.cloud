@@ -68,6 +68,30 @@ public final class Repository {
 	/** The Constant logger. */
 	private final static Logger LOGGER = LogManager.getLogger(Repository.class);
 
+	/** The instance. */
+	private static Repository instance;
+
+	/** The connector. */
+	private Connector connector;
+	
+	/** The reports. */
+	private List<IReport> reports = new ArrayList<IReport>();
+
+	/** The list of all loaded or added workitems. */
+	private List<IWorkitem> workitems = new ArrayList<IWorkitem>();
+
+	/**
+	 * The index of all loaded reports. Is a json-representation of the metadata of
+	 * the howtos
+	 */
+	private List<String> indexReports = new ArrayList<String>();
+
+	/**
+	 * The index of all loaded howtos. Is a json-representation of the metatdata of
+	 * the reports
+	 */
+	private List<String> indexHowtos = new ArrayList<String>();
+
 	/**
 	 * Gets the single instance of Repository.
 	 *
@@ -79,12 +103,6 @@ public final class Repository {
 		}
 		return instance;
 	}
-
-	/** The instance. */
-	private static Repository instance;
-
-	/** The connector. */
-	private Connector connector;
 
 	/**
 	 * Gets the roles.
@@ -532,9 +550,6 @@ public final class Repository {
 		return workitems;
 	}
 
-	/** The list of all loaded or added workitems. */
-	private List<IWorkitem> workitems = new ArrayList<IWorkitem>();
-
 	/**
 	 * Adds the role items.
 	 *
@@ -659,18 +674,6 @@ public final class Repository {
 		this.addItems(persons);
 		return ObjectUtil.castList(Person.class, persons);
 	}
-
-	/**
-	 * The index of all loaded reports. Is a json-representation of the metadata of
-	 * the howtos
-	 */
-	private List<String> indexReports = new ArrayList<String>();
-
-	/**
-	 * The index of all loaded howtos. Is a json-representation of the metatdata of
-	 * the reports
-	 */
-	private List<String> indexHowtos = new ArrayList<String>();
 
 	/**
 	 * Gets the index how tos.
@@ -1763,9 +1766,6 @@ public final class Repository {
 		}
 		return results;
 	}
-
-	/** The reports. */
-	private List<IReport> reports = new ArrayList<IReport>();
 
 	/**
 	 * Adds the report.

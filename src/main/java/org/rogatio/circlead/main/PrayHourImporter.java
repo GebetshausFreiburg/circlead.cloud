@@ -32,8 +32,9 @@ public class PrayHourImporter {
 	 *
 	 * @param args the arguments
 	 * @throws EncryptedDocumentException the encrypted document exception
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws InvalidFormatException the invalid format exception
+	 * @throws IOException                Signals that an I/O exception has
+	 *                                    occurred.
+	 * @throws InvalidFormatException     the invalid format exception
 	 */
 	public static void main(String[] args) throws EncryptedDocumentException, IOException, InvalidFormatException {
 
@@ -72,50 +73,47 @@ public class PrayHourImporter {
 						int h = c.get(Calendar.HOUR_OF_DAY);
 						String hv = ExcelUtil.getHeaderValue(cell);
 
-						if (hv.equals("Start")) {
+						if ("Start".equals(hv)) {
 							hour = h;
 						}
-//						System.out.println(hv.toString() + ":" + h);
 					}
 
 					if (ExcelUtil.isStringValue(cell)) {
 						String cellValue = ExcelUtil.getStringValue(cell);
 						String headerValue = ExcelUtil.getHeaderValue(cell);
-//						System.out.println(headerValue + ":" + cellValue);
-						if (headerValue.startsWith("Team_Name")) {
-							if (StringUtil.isNotNullAndNotEmpty(cellValue)) {
-								teamList.add(cellValue.trim());
-							}
+						if (headerValue.startsWith("Team_Name") && StringUtil.isNotNullAndNotEmpty(cellValue)) {
+							teamList.add(cellValue.trim());
 						}
-						if (headerValue.equals("Schwerpunkt")) {
+
+						if ("Schwerpunkt".equals(headerValue)) {
 							if (StringUtil.isNotNullAndNotEmpty(cellValue)) {
 								subtype = cellValue.trim();
 							}
 						}
-						if (headerValue.equals("Stundenleiter")) {
+						if ("Stundenleiter".equals(headerValue)) {
 							if (StringUtil.isNotNullAndNotEmpty(cellValue)) {
 								teamlead = cellValue.trim();
 							}
 						}
-						if (headerValue.equals("Art der Stunde")) {
+						if ("Art der Stunde".equals(headerValue)) {
 							if (StringUtil.isNotNullAndNotEmpty(cellValue)) {
 								type = cellValue.trim();
 							}
 						}
 
-						if (headerValue.equals("Dauer")) {
+						if ("Dauer".equals(headerValue)) {
 							duration = cellValue.trim().toUpperCase();
 						}
-						if (headerValue.equals("Tag")) {
-							if (cellValue.equals("Montag")) {
+						if ("Tag".equals(headerValue)) {
+							if ("Montag".equals(cellValue)) {
 								day = "MO";
 								dayFull = "Mo";
 							}
-							if (cellValue.equals("Dienstag")) {
+							if ("Dienstag".equals(cellValue)) {
 								day = "TU";
 								dayFull = "Di";
 							}
-							if (cellValue.equals("Mittwoch")) {
+							if ("Mittwoch".equals(cellValue)) {
 								day = "WE";
 								dayFull = "Mi";
 							}
@@ -123,15 +121,15 @@ public class PrayHourImporter {
 								day = "TH";
 								dayFull = "Do";
 							}
-							if (cellValue.equals("Freitag")) {
+							if ("Freitag".equals(cellValue)) {
 								day = "FR";
 								dayFull = "Fr";
 							}
-							if (cellValue.equals("Samstag")) {
+							if ("Samstag".equals(cellValue)) {
 								day = "SA";
 								dayFull = "Sa";
 							}
-							if (cellValue.equals("Sonntag")) {
+							if ("Sonntag".equals(cellValue)) {
 								day = "SU";
 								dayFull = "So";
 							}
@@ -145,7 +143,7 @@ public class PrayHourImporter {
 				String rule = x + day + duration;
 
 				team.setRecurrenceRule(rule);
-				
+
 				team.setTitle("Teamstunde " + dayFull + " " + x + "h");
 
 				if (StringUtil.isNotNullAndNotEmpty(subtype)) {
@@ -190,7 +188,7 @@ public class PrayHourImporter {
 				if (!DRY) {
 					repository.addWorkitem(team);
 				}
-				System.out.println("dry="+DRY+": "+ team);
+				System.out.println("dry=" + DRY + ": " + team);
 			}
 
 			counter++;
