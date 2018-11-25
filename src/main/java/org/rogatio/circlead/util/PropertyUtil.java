@@ -57,6 +57,9 @@ public class PropertyUtil {
 	/** The application default role. */
 	public static String APPLICATION_DEFAULT_ROLE_REPORT = "application.default.role.report";
 
+	/** The application role displayteamroles. */
+	public static String APPLICATION_ROLE_DISPLAYTEAMROLES = "application.display.role.inteam";
+	
 	/** The runtime lastmodified date. */
 	public static String RUNTIME_LASTMODIFIED_DATE = "application.lastmodified";
 
@@ -423,7 +426,16 @@ public class PropertyUtil {
 	public Boolean isDedicatedServer() {
 		return getBooleanValue(ATLASSIAN_SERVER_DEDICATED);
 	}
-
+	
+	/**
+	 * Checks if is application display team roles in role.
+	 *
+	 * @return the boolean
+	 */
+	public Boolean isApplicationDisplayTeamRolesInRole() {
+		return getBooleanValue(APPLICATION_ROLE_DISPLAYTEAMROLES);
+	}
+	
 	/**
 	 * Gets the confluence url.
 	 *

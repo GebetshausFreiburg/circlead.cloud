@@ -1149,6 +1149,9 @@ public final class Repository {
 
 		String abr = null;
 
+		/*
+		 * if role exists and has abbreviation, then set it
+		 */
 		if (r == null) {
 			return false;
 		} else {
@@ -1161,6 +1164,9 @@ public final class Repository {
 
 		int counter = 0;
 
+		/*
+		 * count occurence of abreviation.
+		 */
 		for (Role role : this.getRoles()) {
 			if (role.hasAbbreviation()) {
 				if (role.getAbbreviation().equals(abr)) {
@@ -1169,6 +1175,9 @@ public final class Repository {
 			}
 		}
 
+		/*
+		 * if abbreviation is unique, the return true. if not, false.
+		 */
 		return counter == 1;
 	}
 
@@ -1183,6 +1192,9 @@ public final class Repository {
 
 		String title = null;
 
+		/*
+		 * if role exists and has title, then set it
+		 */
 		if (r == null) {
 			return false;
 		} else {
@@ -1195,6 +1207,9 @@ public final class Repository {
 
 		int counter = 0;
 
+		/*
+		 * count occurence of title.
+		 */
 		for (Role role : this.getRoles()) {
 			if (role.hasTitle()) {
 				if (role.getTitle().equals(title)) {
@@ -1203,6 +1218,9 @@ public final class Repository {
 			}
 		}
 
+		/*
+		 * if title is unique, the return true. if not, false.
+		 */
 		return counter == 1;
 	}
 
@@ -1214,9 +1232,17 @@ public final class Repository {
 	 */
 	public List<Role> getRoles(List<String> roleIdentifiers) {
 		List<Role> foundRoles = new ArrayList<Role>();
+		
+		/*
+		 * if no identifiers set, then return empty result list
+		 */
 		if (roleIdentifiers == null) {
 			return foundRoles;
 		}
+		
+		/*
+		 * set role if it could be identified
+		 */
 		for (String identifier : roleIdentifiers) {
 			Role r = getRole(identifier);
 			if (r != null) {

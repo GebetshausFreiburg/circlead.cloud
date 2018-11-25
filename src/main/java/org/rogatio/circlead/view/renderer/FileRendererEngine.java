@@ -1072,4 +1072,10 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 		element.appendElement("a").attr("href", "" + role.getId(this.getSynchronizer()) + ".html")
 				.appendText(role.getTitle());
 	}
+
+	@Override
+	public void addPersonLink(Element element, Person person) {
+		element.appendElement("a").attr("href", "" + person.getId(this.getSynchronizer()) + ".html")
+		.appendText(person.getTitle());
+	}
 }

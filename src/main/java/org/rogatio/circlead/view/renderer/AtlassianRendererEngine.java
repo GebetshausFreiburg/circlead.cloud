@@ -805,16 +805,24 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine#addImage(org.jsoup.nodes.Element, java.lang.String, int)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine#addImage(org.
+	 * jsoup.nodes.Element, java.lang.String, int)
 	 */
 	@Override
 	public void addImage(Element element, String filename, int size) {
 		element.append(Parser.addImage(filename, size, 1));
 	}
 
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine#addTeamLink(org.jsoup.nodes.Element, org.rogatio.circlead.model.work.Team)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine#addTeamLink(
+	 * org.jsoup.nodes.Element, org.rogatio.circlead.model.work.Team)
 	 */
 	@Override
 	public void addTeamLink(Element element, Team team) {
@@ -828,8 +836,12 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 				+ "]]></ac:plain-text-link-body></ac:link>");
 	}
 
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine#addRessourceChart(org.jsoup.nodes.Element, org.rogatio.circlead.model.work.Person)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine#
+	 * addRessourceChart(org.jsoup.nodes.Element,
+	 * org.rogatio.circlead.model.work.Person)
 	 */
 	@Override
 	public void addRessourceChart(Element element, Person person) {
@@ -869,12 +881,25 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine#addRoleLink(org.jsoup.nodes.Element, org.rogatio.circlead.model.work.Role)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine#addRoleLink(
+	 * org.jsoup.nodes.Element, org.rogatio.circlead.model.work.Role)
 	 */
 	@Override
 	public void addRoleLink(Element element, Role role) {
 		element.appendElement("ac:link")
 				.append("<ri:page ri:content-title=\"" + role.getTitle() + "\" ri:version-at-save=\"1\" />");
+	}
+
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine#addPersonLink(org.jsoup.nodes.Element, org.rogatio.circlead.model.work.Person)
+	 */
+	@Override
+	public void addPersonLink(Element element, Person person) {
+		element.appendElement("ac:link")
+				.append("<ri:page ri:content-title=\"" + person.getTitle() + "\" ri:version-at-save=\"1\" />");
 	}
 }

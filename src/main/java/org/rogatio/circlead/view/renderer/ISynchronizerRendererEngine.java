@@ -165,6 +165,14 @@ public interface ISynchronizerRendererEngine {
 	public void addTeamLink(Element element, Team team);
 	
 	/**
+	 * Adds the person link.
+	 *
+	 * @param element the element
+	 * @param person the person
+	 */
+	public void addPersonLink(Element element, Person person);
+	
+	/**
 	 * Adds the role link.
 	 *
 	 * @param element the element
