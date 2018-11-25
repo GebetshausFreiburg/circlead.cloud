@@ -74,7 +74,7 @@ public final class Repository {
 	/** The connector. */
 	private Connector connector;
 	
-	/** The reports. */
+	/** The stored reports in repository */
 	private List<IReport> reports = new ArrayList<IReport>();
 
 	/** The list of all loaded or added workitems. */
