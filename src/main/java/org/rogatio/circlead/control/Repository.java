@@ -858,6 +858,16 @@ public final class Repository {
 		return teams;
 	}
 
+	public List<Person> getPersonsWithAvatar() {
+		List<Person> persons = new ArrayList<Person>();
+		for (Person person : getPersons()) {
+			if (StringUtil.isNotNullAndNotEmpty(person.getAvatar())) {
+				persons.add(person);
+			}
+		}
+		return persons;
+	}
+	
 	/**
 	 * Gets the persons.
 	 *
@@ -941,7 +951,7 @@ public final class Repository {
 		}
 		return null;
 	}
-
+	
 	/**
 	 * Adds the workitem.
 	 *

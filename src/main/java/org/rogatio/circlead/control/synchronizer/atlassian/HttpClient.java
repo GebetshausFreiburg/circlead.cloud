@@ -48,7 +48,7 @@ public class HttpClient {
 	 *
 	 * @return the string
 	 */
-	private String createCredentials() {
+	public String createCredentials() {
 		String login = user + ":" + password;
 		final byte[] authBytes = login.getBytes(StandardCharsets.UTF_8);
 		String encodedCredentials = Base64.getEncoder().withoutPadding().encodeToString(authBytes);

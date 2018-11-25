@@ -15,7 +15,7 @@ import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.ObjectUtil;
 
 /**
- * The Class SvgBuilder creates a XML-DOM for and SVG.
+ * The Class SvgBuilder creates a XML-DOM as SVG for the DNA-Profile.
  * 
  * @author Matthias Wegner
  */

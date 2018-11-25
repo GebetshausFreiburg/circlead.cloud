@@ -1005,7 +1005,7 @@ public class FileRendererEngine implements ISynchronizerRendererEngine {
 	 */
 	@Override
 	public void addImage(Element element, String filename, int size) {
-		File f = new File("images"+File.separatorChar+"profile"+File.separatorChar+filename);
+		File f = new File("web"+File.separatorChar+"images"+File.separatorChar+"profile"+File.separatorChar+filename);
 		
 		if (f.exists()) {
 			element.append(

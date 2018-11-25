@@ -20,6 +20,7 @@ import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer
 import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.control.webserver.Webserver;
 import org.rogatio.circlead.model.WorkitemType;
+import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.util.DropboxUtil;
 import org.rogatio.circlead.util.FileUtil;
 import org.rogatio.circlead.util.GanttProjectUtil;
@@ -77,6 +78,8 @@ public class SyncCirclead {
 
 	public static final boolean TEAMS = true;
 
+	public static final boolean IMPORTIMAGES = false;
+	
 	public static final boolean EXPORT = true;
 
 	public static final boolean COMPETENCIES = true;
@@ -183,6 +186,13 @@ public class SyncCirclead {
 
 		repository.writeIndex();
 
+		if (IMPORTIMAGES) {
+		List<Person> avatarPersons = repository.getPersonsWithAvatar();
+		for (Person person : avatarPersons) {
+			asynchronizer.saveImageAttachmentOfPage(person.getId(asynchronizer), person.getAvatar());
+		}
+		}
+		
 		if (EXPORT) {
 			repository.writeExcel("Mitarbeiterliste", WorkitemType.PERSON, null);
 			repository.writeExcel("Rollen", WorkitemType.ROLE, null);

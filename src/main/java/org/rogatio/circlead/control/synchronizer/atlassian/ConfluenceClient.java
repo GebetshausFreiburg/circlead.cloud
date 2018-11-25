@@ -8,13 +8,22 @@
  */
 package org.rogatio.circlead.control.synchronizer.atlassian;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.UUID;
 
 import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
 import org.rogatio.circlead.util.PropertyUtil;
+
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * The Class ConfluenceClient.
@@ -32,18 +41,19 @@ public class ConfluenceClient extends HttpClient {
 
 	/** The limit. */
 	private final int LIMIT = PropertyUtil.getInstance().getIntValue(PropertyUtil.ATLASSIAN_QUERY_LIMIT);
-	
+
 	/** The rest prefix. Is different for cloud to dedicated server */
 	private String restPrefix = null;
 
 	/**
-	 * Authentification is enabled with basic auth. Check "curl -v http://url-to-atlassian?os_authType=basic
-	 * If basic auth enabled, the "WWW-Authenticate: Basic realm="protected-area" is returned
+	 * Authentification is enabled with basic auth. Check "curl -v
+	 * http://url-to-atlassian?os_authType=basic If basic auth enabled, the
+	 * "WWW-Authenticate: Basic realm="protected-area" is returned
 	 * 
-	 * @param baseUrl Url to the server, could be http or https
-	 * @param user Plain-Text of user to log in
+	 * @param baseUrl  Url to the server, could be http or https
+	 * @param user     Plain-Text of user to log in
 	 * @param password Plain text of password
-	 * @param server true if dedicated server, false if cloud server
+	 * @param server   true if dedicated server, false if cloud server
 	 */
 	public ConfluenceClient(String baseUrl, String user, String password, boolean server) {
 		this.baseUrl = baseUrl;
@@ -53,14 +63,14 @@ public class ConfluenceClient extends HttpClient {
 		if (server) {
 			// Set rest-prefix if atlassian-dedicated-server
 			restPrefix = "rest/api/";
-			//LOGGER.info("ConfluenceClient ist set to dedicated server");
+			// LOGGER.info("ConfluenceClient ist set to dedicated server");
 		} else {
 			// Set rest-prefix if atlassian-cloud-server
 			restPrefix = "wiki/rest/api/";
-			//LOGGER.info("ConfluenceClient ist set to cloud server");
+			// LOGGER.info("ConfluenceClient ist set to cloud server");
 		}
 	}
-	
+
 	/**
 	 * Instantiates a new confluence client.
 	 */
@@ -72,29 +82,89 @@ public class ConfluenceClient extends HttpClient {
 		if (PropertyUtil.getInstance().isDedicatedServer()) {
 			// Set rest-prefix if atlassian-dedicated-server
 			restPrefix = "rest/api/";
-			//LOGGER.info("ConfluenceClient ist set to dedicated server");
+			// LOGGER.info("ConfluenceClient ist set to dedicated server");
 		} else {
 			// Set rest-prefix if atlassian-cloud-server
 			restPrefix = "wiki/rest/api/";
-			//LOGGER.info("ConfluenceClient ist set to cloud server");
+			// LOGGER.info("ConfluenceClient ist set to cloud server");
 		}
 	}
 
 	/**
 	 * Delete version.
 	 *
-	 * @param pageId the page id
+	 * @param pageId  the page id
 	 * @param version the version
 	 * @return the synchronizer result
 	 */
 	public SynchronizerResult deleteVersion(int pageId, int version) {
 		try {
-			return this.delete(restPrefix + "content/" + pageId + "/version/"+version);
+			return this.delete(restPrefix + "content/" + pageId + "/version/" + version);
 		} catch (IOException e) {
 			return null;
 		}
 	}
-	
+
+	/**
+	 * Load attachment.
+	 *
+	 * @param pageId the page id
+	 * @param filename the filename
+	 * @param targetPath the target path
+	 */
+	public void loadAttachment(int pageId, String filename, String targetPath) {
+		String mediaType = null;
+		String downloadUrl = null;
+
+		try {
+			/*
+			 * load json-results of attachments. rest-url sets filter to specific attachment with filename
+			 */
+			SynchronizerResult res = get("wiki/rest/api/content/" + pageId + "/child/attachment?filename=" + filename);
+
+			ObjectMapper mapper = new ObjectMapper();
+			mapper.setSerializationInclusion(Include.NON_NULL);
+			org.rogatio.circlead.control.synchronizer.atlassian.attachment.Results r = mapper.readValue(
+					res.getContent(), org.rogatio.circlead.control.synchronizer.atlassian.attachment.Results.class);
+
+			if (r.getResults().size() > 0) {
+				mediaType = r.getResults().get(0).getExtensions().getMediaType();
+				downloadUrl = r.getResults().get(0).getLinks().getDownload();
+			}
+
+			/*
+			 * if result of attachment is found, then load
+			 */
+			if (downloadUrl != null && mediaType != null) {
+				URL url = new URL(baseUrl + "wiki" + downloadUrl);
+				HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+				connection.setRequestMethod("GET");
+				connection.setRequestProperty("Accept", "*/*");
+				connection.setRequestProperty("Content-Type", mediaType);
+				connection.setRequestProperty("Authorization", "Basic " + this.createCredentials());
+				connection.setDoInput(true);
+				connection.connect();
+
+				InputStream is = connection.getInputStream();
+				File f = new File(targetPath + filename);
+
+				OutputStream os = new FileOutputStream(f);
+				byte[] buf = new byte[1024];
+				int len;
+
+				while ((len = is.read(buf)) > 0) {
+					os.write(buf, 0, len);
+				}
+
+				os.close();
+				is.close();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * Gets the content versions.
 	 *
@@ -108,7 +178,7 @@ public class ConfluenceClient extends HttpClient {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Gets the page space.
 	 *
@@ -159,7 +229,8 @@ public class ConfluenceClient extends HttpClient {
 	 */
 	public SynchronizerResult getPage(int id) {
 		try {
-			return this.get(restPrefix + "content/" + id + "?" + "expand=body.storage,metadata.labels,history,history.lastUpdated,space,version,ancestors");
+			return this.get(restPrefix + "content/" + id + "?"
+					+ "expand=body.storage,metadata.labels,history,history.lastUpdated,space,version,ancestors");
 		} catch (IOException e) {
 			return null;
 		}
@@ -191,7 +262,7 @@ public class ConfluenceClient extends HttpClient {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Gets the systeminfo.
 	 *
@@ -262,7 +333,7 @@ public class ConfluenceClient extends HttpClient {
 	 * Delete metadata.
 	 *
 	 * @param pageId the page id
-	 * @param key the key
+	 * @param key    the key
 	 * @return the synchronizer result
 	 */
 	public SynchronizerResult deleteMetadata(int pageId, String key) {
@@ -278,7 +349,7 @@ public class ConfluenceClient extends HttpClient {
 	 * Adds the label.
 	 *
 	 * @param pageId the page id
-	 * @param label the label
+	 * @param label  the label
 	 * @return the synchronizer result
 	 */
 	public SynchronizerResult addLabel(String pageId, String label) {
@@ -295,7 +366,7 @@ public class ConfluenceClient extends HttpClient {
 	 * Adds the label.
 	 *
 	 * @param pageId the page id
-	 * @param label the label
+	 * @param label  the label
 	 * @return the synchronizer result
 	 */
 	public SynchronizerResult addLabel(int pageId, String label) {
@@ -315,14 +386,15 @@ public class ConfluenceClient extends HttpClient {
 	/**
 	 * Update metadata.
 	 *
-	 * @param pageId the page id
-	 * @param key the key
-	 * @param value the value
+	 * @param pageId        the page id
+	 * @param key           the key
+	 * @param value         the value
 	 * @param versionNumber the version number
-	 * @param minorEdit the minor edit
+	 * @param minorEdit     the minor edit
 	 * @return the synchronizer result
 	 */
-	public SynchronizerResult updateMetadata(int pageId, String key, String value, int versionNumber, boolean minorEdit) {
+	public SynchronizerResult updateMetadata(int pageId, String key, String value, int versionNumber,
+			boolean minorEdit) {
 
 		if (value.trim().startsWith("{") && value.trim().endsWith("}")) {
 			value = value.trim();
@@ -330,8 +402,8 @@ public class ConfluenceClient extends HttpClient {
 			value = "\"" + value + "\"";
 		}
 
-		String data = "{" + "\"value\" : " + value + "," + "\"version\": {" + "\"minorEdit\": " + minorEdit + "," + "\"number\": " + versionNumber + "" + "}"
-				+ "}";
+		String data = "{" + "\"value\" : " + value + "," + "\"version\": {" + "\"minorEdit\": " + minorEdit + ","
+				+ "\"number\": " + versionNumber + "" + "}" + "}";
 
 		try {
 			return this.put(restPrefix + "content/" + pageId + "/property/" + key, data);
@@ -346,8 +418,8 @@ public class ConfluenceClient extends HttpClient {
 	 * Adds the metadata.
 	 *
 	 * @param pageId the page id
-	 * @param key the key
-	 * @param value the value
+	 * @param key    the key
+	 * @param value  the value
 	 * @return the synchronizer result
 	 */
 	public SynchronizerResult addMetadata(int pageId, String key, String value) {
@@ -412,15 +484,15 @@ public class ConfluenceClient extends HttpClient {
 	/**
 	 * New page.
 	 *
-	 * @param title the title
+	 * @param title    the title
 	 * @param spaceKey the space key
-	 * @param content the content
+	 * @param content  the content
 	 * @return the synchronizer result
 	 */
 	public SynchronizerResult newPage(String title, String spaceKey, String content) {
 		try {
-			String data = "{\"type\":\"page\",\"title\":\"" + title + "\",\"space\":{\"key\":\"" + spaceKey + "\"},\"body\":{\"storage\":{\"value\":\""
-					+ content + "\",\"representation\":\"storage\"}}}";
+			String data = "{\"type\":\"page\",\"title\":\"" + title + "\",\"space\":{\"key\":\"" + spaceKey
+					+ "\"},\"body\":{\"storage\":{\"value\":\"" + content + "\",\"representation\":\"storage\"}}}";
 			return this.post(restPrefix + "content/", data);
 		} catch (IOException e) {
 			return null;

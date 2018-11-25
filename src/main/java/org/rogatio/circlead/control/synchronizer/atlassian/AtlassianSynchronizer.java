@@ -10,6 +10,7 @@ package org.rogatio.circlead.control.synchronizer.atlassian;
 
 import static org.rogatio.circlead.model.WorkitemType.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -638,6 +639,29 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		return id;
 	}
 
+	/**
+	 * Save image attachment of page.
+	 *
+	 * @param pageId the page id
+	 * @param filename the filename
+	 */
+	public void saveImageAttachmentOfPage(String pageId, String filename) {
+		Integer i = Integer.parseInt(pageId);
+		confluenceClient.loadAttachment(i, filename, "data"+File.separatorChar+"ressources"+File.separatorChar+"images"+File.separatorChar+"profile"+File.separatorChar);
+		LOGGER.debug("Load and write '"+filename+"'.");
+	}
+	
+	/**
+	 * Save image attachment of page.
+	 *
+	 * @param pageId the page id
+	 * @param filename the filename
+	 */
+	public void saveImageAttachmentOfPage(int pageId, String filename) {
+		confluenceClient.loadAttachment(pageId, filename, "data"+File.separatorChar+"ressources"+File.separatorChar+"images"+File.separatorChar+"profile"+File.separatorChar);
+		LOGGER.debug("Load and write '"+filename+"'.");
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
