@@ -1000,7 +1000,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	/**
 	 * Checks for organisation identifier.
 	 *
-	 * @return true, if successful
+	 * @return true, if successful found organisation identifier
 	 */
 	public boolean hasOrganisationIdentifier() {
 		if (this.getDataitem().getOrganisation() != null) {
@@ -1179,7 +1179,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			}
 
 			map.put(parameter, sb.toString());
-		}
+		} 
 	}
 
 	/**
