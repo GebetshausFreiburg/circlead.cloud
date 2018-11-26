@@ -24,7 +24,7 @@ import org.rogatio.circlead.model.work.Team;
  * 
  * @author Matthias Wegner
  */
-public class GanttProjectUtil {
+public class GanttUtil {
 
 	/** The Constant DATEFORMATTER. */
 	private final static SimpleDateFormat DATEFORMATTER = new SimpleDateFormat("yyyy-MM-dd");

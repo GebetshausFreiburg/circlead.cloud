@@ -191,23 +191,75 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	public String getStart() {
 		return this.getDataitem().getStart();
 	}
-	
+
 	/**
 	 * Gets the duration between the start and end-date in days.
 	 *
 	 * @return the duration
 	 */
 	public int getDuration() {
-		return (int)((this.getEndDate().getTime() - this.getStartDate().getTime())/ (24*60*60*1000));
+		return (int) ((this.getEndDate().getTime() - this.getStartDate().getTime()) / (24 * 60 * 60 * 1000));
 	}
-	
+
+	/**
+	 * Gets the CRR hour.
+	 *
+	 * @return the CRR hour
+	 */
+	public Integer getCRRHour() {
+		if (StringUtil.isNotNullAndNotEmpty(getRecurrenceRule())) {
+			CircleadRecurrenceRule crr = new CircleadRecurrenceRule(getRecurrenceRule());
+			return crr.getHour();
+		}
+		return null; 
+	}
+
+	/**
+	 * Gets the CRR weekday no.
+	 *
+	 * @return the CRR weekday no
+	 */
+	public int getCRRWeekdayNo() {
+		if (StringUtil.isNotNullAndNotEmpty(getRecurrenceRule())) {
+			CircleadRecurrenceRule crr = new CircleadRecurrenceRule(getRecurrenceRule());
+			return CircleadRecurrenceRule.WEEKDAY2DAYOFWEEK.get(crr.getWeekday());
+		}
+		return -1;
+	}
+
+	/**
+	 * Gets the CRR weekday.
+	 *
+	 * @return the CRR weekday
+	 */
+	public String getCRRWeekday() {
+		if (StringUtil.isNotNullAndNotEmpty(getRecurrenceRule())) {
+			CircleadRecurrenceRule crr = new CircleadRecurrenceRule(getRecurrenceRule());
+			return CircleadRecurrenceRule.WEEKDAYS2GERMAN.get(crr.getWeekday());
+		}
+		return null;
+	}
+
+	/**
+	 * Gets the CRR duration.
+	 *
+	 * @return the CRR duration
+	 */
+	public int getCRRDuration() {
+		if (StringUtil.isNotNullAndNotEmpty(getRecurrenceRule())) {
+			CircleadRecurrenceRule crr = new CircleadRecurrenceRule(getRecurrenceRule());
+			return crr.getDuration();
+		}
+		return -1;
+	}
+
 	/**
 	 * Gets the end date. If no date is set it is 12 months after start date.
 	 *
 	 * @return the end date
 	 */
 	public Date getEndDate() {
-		if (this.getDataitem().getEnd()!=null) {
+		if (this.getDataitem().getEnd() != null) {
 			DateTime s = DateTime.parse(this.getDataitem().getEnd());
 			SimpleDateFormat f = new SimpleDateFormat("yyyyMMdd");
 			try {
@@ -215,21 +267,21 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			} catch (ParseException e) {
 			}
 		}
-		
+
 		Calendar c = Calendar.getInstance();
 		c.setTime(this.getStartDate());
 		c.add(Calendar.MONTH, 12);
-		
+
 		return c.getTime();
 	}
-	
+
 	/**
 	 * Gets the start date. If not set it is set to today
 	 *
 	 * @return the start date
 	 */
 	public Date getStartDate() {
-		if (this.getDataitem().getStart()!=null) {
+		if (this.getDataitem().getStart() != null) {
 			DateTime s = DateTime.parse(this.getDataitem().getStart());
 			SimpleDateFormat f = new SimpleDateFormat("yyyyMMdd");
 			try {
@@ -237,7 +289,7 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			} catch (ParseException e) {
 			}
 		}
-		
+
 		return new Date();
 	}
 
@@ -300,7 +352,9 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	 *
 	 * @return the data row
 	 */
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.model.data.IDataRow#getDataRow()
 	 */
 	@Override
@@ -314,25 +368,25 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		addDataRowElement(this.getEnd(), Parameter.ENDDATE, map);
 		addDataRowElement(this.getTeamMembers(), Parameter.PERSONS, map);
 		addDataRowElement(this.getStatus(), Parameter.STATUS, map);
-		
+
 		List<Timeslice> slices = this.getAllokationSlices(Freq.MONTHLY);
 		for (Timeslice timeslice : slices) {
 			Parameter p = Parameter.get(timeslice.getSliceStart());
-			if (p!=null) {
+			if (p != null) {
 				p.setDetail(timeslice.getSliceStart());
-				addDataRowElement(""+((int)timeslice.getAllokation()), p, map);	
+				addDataRowElement("" + ((int) timeslice.getAllokation()), p, map);
 			}
 		}
-	
+
 		return map;
 	}
 
 	/**
 	 * Adds the data row element.
 	 *
-	 * @param value the value
+	 * @param value     the value
 	 * @param parameter the parameter
-	 * @param map the map
+	 * @param map       the map
 	 */
 	private void addDataRowElement(String value, Parameter parameter, Map<Parameter, Object> map) {
 		if (StringUtil.isNotNullAndNotEmpty(value)) {
@@ -343,9 +397,9 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	/**
 	 * Adds the data row element.
 	 *
-	 * @param values the values
+	 * @param values    the values
 	 * @param parameter the parameter
-	 * @param map the map
+	 * @param map       the map
 	 */
 	private void addDataRowElement(List<String> values, Parameter parameter, Map<Parameter, Object> map) {
 		if (ObjectUtil.isListNotNullAndEmpty(values)) {
@@ -597,7 +651,7 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		if (this.getCategory() != null) {
 			if (this.getCategory().equals(PropertyUtil.getInstance().getApplicationDefaultTeamcategory())) {
 				if (StringUtil.isNotNullAndNotEmpty(PropertyUtil.getInstance().getApplicationDefaultTeamMessage())) {
-					String m = PropertyUtil.getInstance().getApplicationDefaultTeamMessage(); 
+					String m = PropertyUtil.getInstance().getApplicationDefaultTeamMessage();
 					Element p = element.appendElement("p");
 					p.appendText(m);
 				}

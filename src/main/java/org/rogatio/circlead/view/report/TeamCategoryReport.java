@@ -38,7 +38,7 @@ public class TeamCategoryReport extends DefaultReport {
 	public TeamCategoryReport(String category) {
 		this.setName("Team Category Report");
 		this.category = category;
-		this.setDescription("Zeigt die teams der Kategorie '" + category
+		this.setDescription("Zeigt die Teams der Kategorie '" + category
 				+ "' an und stellt diese in einem stundengenauen Wochenplan dar.");
 	}
 
@@ -48,7 +48,7 @@ public class TeamCategoryReport extends DefaultReport {
 	 * @see org.rogatio.circlead.view.report.DefaultReport#getHead()
 	 */
 	@Override
-	public List<String> getHead() {
+	public List<String> getHead() { 
 		List<String> list = new ArrayList<String>();
 		list.add(
 				"<link href='http://fonts.googleapis.com/css?family=Open+Sans&subset=latin' rel='stylesheet' type='text/css'>");

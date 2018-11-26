@@ -218,6 +218,31 @@ public class StringUtil {
 		return mergeFromTemplate(templateFile, null);
 	}
 	
+	public static String getNextDay(String day) {
+		if ("Montag".equalsIgnoreCase(day)) {
+			return "Dienstag";
+		}
+		if ("Dienstag".equalsIgnoreCase(day)) {
+			return "Mittwoch";
+		}
+		if ("Mittwoch".equalsIgnoreCase(day)) {
+			return "Donnerstag";
+		}
+		if ("Donnerstag".equalsIgnoreCase(day)) {
+			return "Freitag";
+		}
+		if ("Freitag".equalsIgnoreCase(day)) {
+			return "Samstag";
+		}
+		if ("Samstag".equalsIgnoreCase(day)) {
+			return "Sonntag";
+		}
+		if ("Sonntag".equalsIgnoreCase(day)) {
+			return "Montag";
+		}
+		return null;
+	}
+	
 	/**
 	 * Merge data with velocity template.
 	 *

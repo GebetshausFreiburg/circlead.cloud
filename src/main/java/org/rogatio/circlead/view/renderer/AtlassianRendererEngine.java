@@ -874,7 +874,7 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 			}
 		}
 
-		Element chart = Parser.addChartMacro("", "h/Monat", "Monat", colors, map);
+		Element chart = Parser.addChartMacro("", "Monat", "h/Monat", colors, map);
 		if (chart != null) {
 			addH2(element, "Ressourcenallokation");
 			chart.appendTo(element);

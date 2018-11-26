@@ -73,8 +73,8 @@ public final class Repository {
 
 	/** The connector. */
 	private Connector connector;
-	
-	/** The stored reports in repository */
+
+	/** The stored reports in repository. */
 	private List<IReport> reports = new ArrayList<IReport>();
 
 	/** The list of all loaded or added workitems. */
@@ -104,6 +104,19 @@ public final class Repository {
 		return instance;
 	}
 
+	public Team getTeam(int hour, String day) {
+		for (Team team : getTeams()) {
+			try {
+				if (hour == team.getCRRHour() && day.equalsIgnoreCase(team.getCRRWeekday())) {
+					return team;
+				}
+			} catch (NullPointerException e) {
+
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * Gets the roles.
 	 *
@@ -121,6 +134,37 @@ public final class Repository {
 			}
 		}
 		return roles;
+	}
+
+	/**
+	 * Get all the teams with a named category where at least one person of the
+	 * personList exists
+	 *
+	 * @param personIdentifiers the list of personIdentifiers
+	 * @param teamCategory      the team category
+	 * @return the teams
+	 */
+	public List<Team> getTeams(List<String> personIdentifiers, String teamCategory) {
+		List<Team> teamList = new ArrayList<Team>();
+		if (ObjectUtil.isListNotNullAndEmpty(personIdentifiers)) {
+			for (int i = 0; i < personIdentifiers.size(); i++) {
+				String personIdentifier = personIdentifiers.get(i);
+				Person p = getPerson(personIdentifier);
+				if (p != null) {
+					List<Team> teams = getTeamsWithMember(p);
+					if (teams.size() > 0) {
+						for (Team team : teams) {
+							if (team.getCategory().equalsIgnoreCase(teamCategory)) {
+								if (!teamList.contains(team)) {
+									teamList.add(team);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return teamList;
 	}
 
 	/**
@@ -210,6 +254,12 @@ public final class Repository {
 		return rbs;
 	}
 
+	/**
+	 * Gets the teams with size.
+	 *
+	 * @param size the size
+	 * @return the teams with size
+	 */
 	public List<Team> getTeamsWithSize(int size) {
 		List<Team> found = new ArrayList<Team>();
 		for (Team team : getTeams()) {
@@ -220,6 +270,12 @@ public final class Repository {
 		return found;
 	}
 
+	/**
+	 * Gets the teams notinweek.
+	 *
+	 * @param category the category
+	 * @return the teams notinweek
+	 */
 	public List<String> getTeamsNotinweek(String category) {
 		List<String> foundList = new ArrayList<String>();
 
@@ -269,6 +325,11 @@ public final class Repository {
 		return foundList;
 	}
 
+	/**
+	 * Gets the teams with low redundance.
+	 *
+	 * @return the teams with low redundance
+	 */
 	public List<Team> getTeamsWithLowRedundance() {
 		List<Team> found = new ArrayList<Team>();
 		for (Team team : getTeams()) {
@@ -279,6 +340,12 @@ public final class Repository {
 		return found;
 	}
 
+	/**
+	 * Gets the roles with person representation.
+	 *
+	 * @param statusParameter the status parameter
+	 * @return the roles with person representation
+	 */
 	public List<Role> getRolesWithPersonRepresentation(WorkitemStatusParameter statusParameter) {
 		List<Role> found = new ArrayList<Role>();
 		for (Role role : getRoles()) {
@@ -861,6 +928,11 @@ public final class Repository {
 		return teams;
 	}
 
+	/**
+	 * Gets the persons with avatar.
+	 *
+	 * @return the persons with avatar
+	 */
 	public List<Person> getPersonsWithAvatar() {
 		List<Person> persons = new ArrayList<Person>();
 		for (Person person : getPersons()) {
@@ -870,7 +942,7 @@ public final class Repository {
 		}
 		return persons;
 	}
-	
+
 	/**
 	 * Gets the persons.
 	 *
@@ -954,7 +1026,7 @@ public final class Repository {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Adds the workitem.
 	 *
@@ -1029,7 +1101,8 @@ public final class Repository {
 	 * Gets the average allocation of a person in teams.
 	 *
 	 * @param person the person for which the allocation is calculated
-	 * @param freq   the frequence (@link org.dmfs.rfc5545.recur.Freq) which is used to calculate the allocation.
+	 * @param freq   the frequence (@link org.dmfs.rfc5545.recur.Freq) which is used
+	 *               to calculate the allocation.
 	 * @return the average allokation in teams of a person
 	 */
 	public double getAverageAllokationInTeams(Person person, Freq freq) {
@@ -1053,8 +1126,10 @@ public final class Repository {
 	/**
 	 * Gets the average allocation in organisation.
 	 *
-	 * @param personIdentifier the person identifier for which the allocation in the organisation is calculated
-	 * @param freq             the frequence (@link org.dmfs.rfc5545.recur.Freq) which is used to calculate the allocation
+	 * @param personIdentifier the person identifier for which the allocation in the
+	 *                         organisation is calculated
+	 * @param freq             the frequence (@link org.dmfs.rfc5545.recur.Freq)
+	 *                         which is used to calculate the allocation
 	 * @return the average allocation in organisation
 	 */
 	public double getAverageAllokationInOrganisation(String personIdentifier, Freq freq) {
@@ -1251,14 +1326,14 @@ public final class Repository {
 	 */
 	public List<Role> getRoles(List<String> roleIdentifiers) {
 		List<Role> foundRoles = new ArrayList<Role>();
-		
+
 		/*
 		 * if no identifiers set, then return empty result list
 		 */
 		if (roleIdentifiers == null) {
 			return foundRoles;
 		}
-		
+
 		/*
 		 * set role if it could be identified
 		 */

@@ -9,7 +9,6 @@
 package org.rogatio.circlead.view.report;
 
 import java.util.List;
-
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer;
@@ -66,7 +65,7 @@ public class PersonRoleReport extends DefaultReport {
 					String personIdentifier = personIdentifiers.get(i);
 					Person p = R.getPerson(personIdentifier);
 					
-					if (p!=null) {
+					if (p!=null) { 
 						Element h1 = element.appendElement("h1");
 						h1.appendText(p.getTitle());
 						renderer.addStatus(element, p.getStatus());	

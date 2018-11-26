@@ -4,7 +4,6 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-// TODO: Auto-generated Javadoc
 /**
  * Unit test for simple App.
  */
@@ -28,10 +27,4 @@ public class AppTest extends TestCase {
 		return new TestSuite(AppTest.class);
 	}
 
-	/**
-	 * Rigourous Test :-).
-	 */
-	public void testApp() {
-		assertTrue(true);
-	}
 }

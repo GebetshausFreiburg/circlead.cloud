@@ -69,7 +69,7 @@ public class TeamCategegoryInternalReport extends DefaultReport {
 		Element table = new Element("table");
 		table.attr("class", "wrapped");
 		Element tbody = table.appendElement("tbody");
-
+ 
 		Element tr = tbody.appendElement("tr");
 
 		for (int i = 0; i <= 7; i++) {

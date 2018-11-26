@@ -23,7 +23,7 @@ import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.util.DropboxUtil;
 import org.rogatio.circlead.util.FileUtil;
-import org.rogatio.circlead.util.GanttProjectUtil;
+import org.rogatio.circlead.util.GanttUtil;
 import org.rogatio.circlead.util.PropertyUtil;
 import org.rogatio.circlead.view.report.OverviewReport;
 import org.rogatio.circlead.view.report.PersonListReport;
@@ -199,7 +199,7 @@ public class SyncCirclead {
 			repository.writeExcel("Rollengruppen", WorkitemType.ROLEGROUP, null);
 			repository.writeExcel("Teams", WorkitemType.TEAM, null);
 
-			GanttProjectUtil.write("exports"+File.separatorChar+"Teams.gan", repository.getTeams(), repository.getRoles(), repository.getPersons());
+			GanttUtil.write("exports"+File.separatorChar+"Teams.gan", repository.getTeams(), repository.getRoles(), repository.getPersons());
 			
 			PrayHourExporter phe = new PrayHourExporter();
 			phe.export("Gebetsstundenübersicht");
