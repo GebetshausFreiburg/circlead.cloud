@@ -129,6 +129,7 @@ public class GroovyUtil {
 		binding.setVariable("StringUtil", new StringUtil());
 		binding.setVariable("FileUtil", new FileUtil());
 		binding.setVariable("DropboxUtil", new DropboxUtil());
+		binding.setVariable("PropertyUtil", PropertyUtil.getInstance());
 		binding.setVariable("GanttUtil", new GanttUtil());
 		GroovyShell shell = new GroovyShell(binding);
 		return shell.evaluate(scriptText);

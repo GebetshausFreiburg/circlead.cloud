@@ -3,6 +3,7 @@ package org.rogatio.circlead.main;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,6 +14,7 @@ import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.control.webserver.Webserver;
 import org.rogatio.circlead.model.WorkitemType;
 import org.rogatio.circlead.util.FileUtil;
+import org.rogatio.circlead.util.GroovyUtil;
 import org.rogatio.circlead.util.PropertyUtil;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.report.OverviewReport;
@@ -335,6 +337,14 @@ public class Launcher {
 		 */
 		PropertyUtil.getInstance().setRuntimeModifiedDateToActual();
 
+		/*
+		 * Run scripts (if available)
+		 */
+		Map<Object, String> gr = GroovyUtil.loadAndRunScripts();
+		for (Object object : gr.keySet()) {
+			LOGGER.debug(object + " " + gr.get(object));
+		}
+		
 		/*
 		 * Clean history version of atlassian if arguments are set
 		 */
