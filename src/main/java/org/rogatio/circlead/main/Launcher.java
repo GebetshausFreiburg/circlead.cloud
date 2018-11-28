@@ -1,7 +1,8 @@
 package org.rogatio.circlead.main;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -13,24 +14,10 @@ import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer
 import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.control.webserver.Webserver;
 import org.rogatio.circlead.model.WorkitemType;
-import org.rogatio.circlead.util.FileUtil;
 import org.rogatio.circlead.util.GroovyUtil;
 import org.rogatio.circlead.util.PropertyUtil;
 import org.rogatio.circlead.util.StringUtil;
-import org.rogatio.circlead.view.report.OverviewReport;
-import org.rogatio.circlead.view.report.PersonListReport;
-import org.rogatio.circlead.view.report.PersonListReportDetails;
-import org.rogatio.circlead.view.report.PersonRoleReport;
-import org.rogatio.circlead.view.report.ReworkReport;
-import org.rogatio.circlead.view.report.RoleHolderReport;
-import org.rogatio.circlead.view.report.RoleListReportDetails;
-import org.rogatio.circlead.view.report.RoleNeedReport;
-import org.rogatio.circlead.view.report.RoleTreeReport;
-import org.rogatio.circlead.view.report.RolegroupReport;
-import org.rogatio.circlead.view.report.RolegroupSummaryReport;
-import org.rogatio.circlead.view.report.TeamCategegoryInternalReport;
-import org.rogatio.circlead.view.report.TeamCategoryReport;
-import org.rogatio.circlead.view.report.ValidationReport;
+import org.rogatio.circlead.view.report.DefaultReport;
 
 /**
  * The Main Console Launcher for Circlead Application
@@ -224,9 +211,10 @@ public class Launcher {
 			LOGGER.info("FileSynchronizer disabled");
 		}
 
-		/* Force Deletion of json-data for FileSynchronizer if AtlassianSynchronizer is
-		* used
-		*/
+		/*
+		 * Force Deletion of json-data for FileSynchronizer if AtlassianSynchronizer is
+		 * used
+		 */
 		if (PropertyUtil.getInstance().isAtlassianSynchronizerEnabled()
 				&& PropertyUtil.getInstance().isFileSynchronizerEnabled()) {
 			fsynchronizer.deleteAll();
@@ -311,22 +299,15 @@ public class Launcher {
 		 * Add reports if argument set
 		 */
 		if (reports) {
-			repository.addReport(new RolegroupReport(PropertyUtil.getInstance().getApplicationDefaultRolegroup()));
-			repository.addReport(new RoleHolderReport());
-			repository.addReport(new OverviewReport());
-			repository.addReport(new ValidationReport());
-			repository.addReport(new ReworkReport());
-			repository.addReport(new PersonListReport());
-			repository.addReport(new PersonListReportDetails());
-			repository.addReport(new RoleTreeReport());
-			repository.addReport(new RoleNeedReport());
-			repository.addReport(new RoleListReportDetails());
-			repository.addReport(new PersonRoleReport(PropertyUtil.getInstance().getApplicationDefaultRoleReport()));
-			repository.addReport(new RolegroupSummaryReport());
-			repository
-					.addReport(new TeamCategoryReport(PropertyUtil.getInstance().getApplicationDefaultTeamcategory()));
-			repository.addReport(
-					new TeamCategegoryInternalReport(PropertyUtil.getInstance().getApplicationDefaultTeamcategory()));
+			try {
+				Files.walk(Paths.get("scripts")).filter(p -> p.toString().endsWith(".report.groovy"))
+						.filter(Files::isRegularFile).forEach(file -> {
+							LOGGER.debug("Add report '" + file.toFile().getName() + "'");
+							repository.addReport(new DefaultReport(file.toFile().toString()));
+						});
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 
 			repository.addReports();
 			results = repository.updateReports();
@@ -344,7 +325,7 @@ public class Launcher {
 		for (Object object : gr.keySet()) {
 			LOGGER.debug(object + " " + gr.get(object));
 		}
-		
+
 		/*
 		 * Clean history version of atlassian if arguments are set
 		 */
@@ -376,31 +357,11 @@ public class Launcher {
 		}
 
 		/*
-		 * Copy web-ressources for filesynchronizer from data-repository if file-synchronizer is used
+		 * Copy web-ressources for filesynchronizer from data-repository if
+		 * file-synchronizer is used
 		 */
 		if (PropertyUtil.getInstance().isFileSynchronizerEnabled()) {
-
 			repository.writeIndex();
-
-			try {
-				FileUtil.copyFileOrFolder(
-						new File("data" + File.separatorChar + "ressources" + File.separatorChar + "images"),
-						new File("web" + File.separatorChar + "images"));
-				FileUtil.copyFileOrFolder(
-						new File("data" + File.separatorChar + "ressources" + File.separatorChar + "javascript"),
-						new File("web" + File.separatorChar + "javascript"));
-				FileUtil.copyFileOrFolder(new File("data" + File.separatorChar + "howtos"),
-						new File("web" + File.separatorChar + "howtos"));
-				FileUtil.copyFileOrFolder(
-						new File("data" + File.separatorChar + "ressources" + File.separatorChar + "styles.css"),
-						new File("web" + File.separatorChar + "styles.css"));
-				FileUtil.copyFileOrFolder(
-						new File("data" + File.separatorChar + "ressources" + File.separatorChar
-								+ "stylesCategoryReport.css"),
-						new File("web" + File.separatorChar + "stylesCategoryReport.css"));
-			} catch (IOException e) {
-				LOGGER.error(e);
-			}
 		}
 
 		/*
@@ -454,8 +415,8 @@ public class Launcher {
 	 * Builds arguments when argument has parameter and value
 	 *
 	 * @param value the value of the argument
-	 * @param key the key of the argument
-	 * @param sb  the string builder which holds the argument
+	 * @param key   the key of the argument
+	 * @param sb    the string builder which holds the argument
 	 * @return the string of the argument
 	 */
 	private static String buildArgument(String value, String key, StringBuilder sb) {

@@ -1,15 +1,7 @@
-/*
- * Circlead - Develop and structure evolutionary Organisations
- * 
- * @author Matthias Wegner
- * @version 0.1
- * @since 01.07.2018
- * 
- */
-package org.rogatio.circlead.view.report;
+name = "PersonList Report Details"
+description = "Detaillierte Mitarbeiterliste (inkl. Auslastung und Rollenanzahl)"
 
 import java.util.ArrayList;
-
 import org.dmfs.rfc5545.recur.Freq;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
@@ -22,31 +14,7 @@ import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.SvgBuilder;
 import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
 
-/**
- * The Class PersonListReportDetails.
- * 
- * @author Matthias Wegner
- */
-public class PersonListReportDetails extends DefaultReport {
-
-	/**
-	 * Instantiates a new person list report details.
-	 */
-	public PersonListReportDetails() {
-		this.setName("PersonList Report Details");
-		this.setDescription("Detaillierte Mitarbeiterliste (inkl. Auslastung und Rollenanzahl))");
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.rogatio.circlead.view.DefaultReport#render(org.rogatio.circlead.control.
-	 * synchronizer.ISynchronizer)
-	 */
-	@Override
-	public Element render(ISynchronizer synchronizer) {
-		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
+ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 		Element element = new Element("p");
 
 		Element table = element.appendElement("div").appendElement("table");
@@ -126,6 +94,3 @@ public class PersonListReportDetails extends DefaultReport {
 		}
 
 		return element;
-	}
-
-}

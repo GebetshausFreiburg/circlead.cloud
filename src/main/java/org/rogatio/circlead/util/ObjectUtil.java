@@ -66,6 +66,11 @@ public class ObjectUtil {
 		return r;
 	}
 
+	public static boolean[][] createMatrix(Integer rows, Integer columns) {
+		boolean writeable[][] = new boolean[rows][columns];
+		return writeable;
+	}
+	
 	/**
 	 * Checks if is list not null and empty.
 	 *
@@ -167,22 +172,29 @@ public class ObjectUtil {
 	}
 
 	/**
-	 * Sort.
+	 * Sort timeslice-map by slice-sum
 	 *
 	 * @param dataMap the data map
-	 * @return the map
+	 * @return the sorted map by size
 	 */
 	public static Map<String, List<Timeslice>> sort(Map<String, List<Timeslice>> dataMap) {
 		Map<Double, String> sortedMap = new TreeMap<Double, String>();
 
 		Vector<String> keys = new Vector<String>(dataMap.keySet());
 
+		/*
+		 * Is needed to get entities if sum is equal other timeslices.
+		 */
+		double doubleEntityCounter = 0.00001;
+		
 		for (String key : keys) {
 			double sum = 0;
 			List<Timeslice> dataset = dataMap.get(key);
 			for (Timeslice timeslice : dataset) {
 				sum += timeslice.getAllokation();
 			}
+			sum += doubleEntityCounter;
+			doubleEntityCounter += 0.00001;
 			sortedMap.put(sum, key);
 		}
 
@@ -190,7 +202,6 @@ public class ObjectUtil {
 
 		Vector<Double> k = new Vector<Double>(sortedMap.keySet());
 		for (Double d : k) {
-//			System.out.println(d+": "+sortedMap.get(d));
 			map.put(sortedMap.get(d), dataMap.get(sortedMap.get(d)));
 		}
 

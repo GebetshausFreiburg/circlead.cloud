@@ -1,12 +1,5 @@
-/*
- * Circlead - Develop and structure evolutionary Organisations
- * 
- * @author Matthias Wegner
- * @version 0.1
- * @since 01.07.2018
- * 
- */
-package org.rogatio.circlead.view.report;
+name = "Rework Report"
+description = "Anzeige aller Workitems (Rollen und Rollengruppen) die nicht Aktiv sind"
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,31 +13,7 @@ import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
 
-/**
- * The Class ReworkReport.
- * 
- * @author Matthias Wegner
- */
-public class ReworkReport extends DefaultReport {
-
-	/**
-	 * Instantiates a new rework report.
-	 */
-	public ReworkReport() {
-		this.setName("Rework Report");
-		this.setDescription("Anzeige aller Workitems (Rollen und Rollengruppen) die nicht Aktiv sind");
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.rogatio.circlead.view.DefaultReport#render(org.rogatio.circlead.control.
-	 * synchronizer.ISynchronizer)
-	 */
-	@Override
-	public Element render(ISynchronizer synchronizer) {
-		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
+ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 		Element element = new Element("p");
 
 		List<Rolegroup> rolegroups = new ArrayList<Rolegroup>();
@@ -64,6 +33,3 @@ public class ReworkReport extends DefaultReport {
 		renderer.addWorkitemTable(element, ObjectUtil.castList(IWorkitem.class, roles));
 
 		return element;
-	}
-
-}

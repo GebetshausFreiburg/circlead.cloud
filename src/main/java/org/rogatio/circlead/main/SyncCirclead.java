@@ -8,8 +8,9 @@
  */
 package org.rogatio.circlead.main;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -21,23 +22,9 @@ import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer
 import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.control.webserver.Webserver;
 import org.rogatio.circlead.model.work.Person;
-import org.rogatio.circlead.util.FileUtil;
 import org.rogatio.circlead.util.GroovyUtil;
 import org.rogatio.circlead.util.PropertyUtil;
-import org.rogatio.circlead.view.report.OverviewReport;
-import org.rogatio.circlead.view.report.PersonListReport;
-import org.rogatio.circlead.view.report.PersonListReportDetails;
-import org.rogatio.circlead.view.report.PersonRoleReport;
-import org.rogatio.circlead.view.report.ReworkReport;
-import org.rogatio.circlead.view.report.RoleHolderReport;
-import org.rogatio.circlead.view.report.RoleListReportDetails;
-import org.rogatio.circlead.view.report.RoleNeedReport;
-import org.rogatio.circlead.view.report.RoleTreeReport;
-import org.rogatio.circlead.view.report.RolegroupReport;
-import org.rogatio.circlead.view.report.RolegroupSummaryReport;
-import org.rogatio.circlead.view.report.TeamCategegoryInternalReport;
-import org.rogatio.circlead.view.report.TeamCategoryReport;
-import org.rogatio.circlead.view.report.ValidationReport;
+import org.rogatio.circlead.view.report.DefaultReport;
 
 /**
  * Start-Class for Synchronizing Systems. Merge of workitems is not ready
@@ -162,24 +149,15 @@ public class SyncCirclead {
 
 		/* Add report-handler */
 		if (REPORTS) {
-			// repository.addReports(RolegroupReport.createReports());
-			repository.addReport(new RolegroupReport(PropertyUtil.getInstance().getApplicationDefaultRolegroup()));
-			repository.addReport(new RoleHolderReport());
-			repository.addReport(new OverviewReport());
-			repository.addReport(new ValidationReport());
-			repository.addReport(new ReworkReport());
-			repository.addReport(new PersonListReport());
-			repository.addReport(new PersonListReportDetails());
-			repository.addReport(new RoleTreeReport());
-			repository.addReport(new RoleNeedReport());
-			repository.addReport(new PersonRoleReport(PropertyUtil.getInstance().getApplicationDefaultRoleReport()));
-			repository.addReport(new RoleListReportDetails());
-			repository.addReport(new RolegroupSummaryReport());
-			repository
-					.addReport(new TeamCategoryReport(PropertyUtil.getInstance().getApplicationDefaultTeamcategory()));
-			repository.addReport(
-					new TeamCategegoryInternalReport(PropertyUtil.getInstance().getApplicationDefaultTeamcategory()));
-			// repository.addReport(new RoleIssueReport());
+			try {
+				Files.walk(Paths.get("scripts")).filter(p -> p.toString().endsWith(".report.groovy"))
+						.filter(Files::isRegularFile).forEach(file -> {
+							LOGGER.debug("Add report '" + file.toFile().getName() + "'");
+							repository.addReport(new DefaultReport(file.toFile().toString()));
+						});
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 
 			/* Rewrite Reports */
 			repository.addReports();
@@ -215,32 +193,31 @@ public class SyncCirclead {
 		// Set last modified Date
 		PropertyUtil.getInstance().setRuntimeModifiedDateToActual();
 
-		@SuppressWarnings("unused")
 		Map<Object, String> gr = GroovyUtil.loadAndRunScripts();
 		for (Object object : gr.keySet()) {
 			LOGGER.debug(object + " " + gr.get(object));
 		}
 
-		// Copy ressources to web-dir
-		try {
-			FileUtil.copyFileOrFolder(
-					new File("data" + File.separatorChar + "ressources" + File.separatorChar + "images"),
-					new File("web" + File.separatorChar + "images"));
-			FileUtil.copyFileOrFolder(
-					new File("data" + File.separatorChar + "ressources" + File.separatorChar + "javascript"),
-					new File("web" + File.separatorChar + "javascript"));
-			FileUtil.copyFileOrFolder(new File("data" + File.separatorChar + "howtos"),
-					new File("web" + File.separatorChar + "howtos"));
-			FileUtil.copyFileOrFolder(
-					new File("data" + File.separatorChar + "ressources" + File.separatorChar + "styles.css"),
-					new File("web" + File.separatorChar + "styles.css"));
-			FileUtil.copyFileOrFolder(
-					new File("data" + File.separatorChar + "ressources" + File.separatorChar
-							+ "stylesCategoryReport.css"),
-					new File("web" + File.separatorChar + "stylesCategoryReport.css"));
-		} catch (IOException e) {
-			LOGGER.error(e);
-		}
+//		// Copy ressources to web-dir
+//		try {
+//			FileUtil.copyFileOrFolder(
+//					new File("data" + File.separatorChar + "ressources" + File.separatorChar + "images"),
+//					new File("web" + File.separatorChar + "images"));
+//			FileUtil.copyFileOrFolder(
+//					new File("data" + File.separatorChar + "ressources" + File.separatorChar + "javascript"),
+//					new File("web" + File.separatorChar + "javascript"));
+//			FileUtil.copyFileOrFolder(new File("data" + File.separatorChar + "howtos"),
+//					new File("web" + File.separatorChar + "howtos"));
+//			FileUtil.copyFileOrFolder(
+//					new File("data" + File.separatorChar + "ressources" + File.separatorChar + "styles.css"),
+//					new File("web" + File.separatorChar + "styles.css"));
+//			FileUtil.copyFileOrFolder(
+//					new File("data" + File.separatorChar + "ressources" + File.separatorChar
+//							+ "stylesCategoryReport.css"),
+//					new File("web" + File.separatorChar + "stylesCategoryReport.css"));
+//		} catch (IOException e) {
+//			LOGGER.error(e);
+//		}
 
 		if (USEWEBSERVER) {
 			// Create Webserver

@@ -1,15 +1,9 @@
-/*
- * Circlead - Develop and structure evolutionary Organisations
- * 
- * @author Matthias Wegner
- * @version 0.1
- * @since 01.07.2018
- * 
- */
-package org.rogatio.circlead.view.report;
+String category = PropertyUtil.getInstance().getApplicationDefaultTeamcategory()
 
+name = "Team Category Analysis Report"
+description = "Zeigt alle Teams der Kategorie '"+category+"' an bedarfsorientierten Wochenbericht."
+	
 import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dmfs.rfc5545.Weekday;
@@ -24,40 +18,8 @@ import org.rogatio.circlead.util.PropertyUtil;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
 
-/**
- * The Class TeamCategegoryInternalReport.
- * 
- * @author Matthias Wegner
- */
-public class TeamCategegoryInternalReport extends DefaultReport {
 
-	final static Logger LOGGER = LogManager.getLogger(TeamCategegoryInternalReport.class);
-	
-	/** The category. */
-	private String category;
-
-	/**
-	 * Instantiates a new team categegory internal report.
-	 *
-	 * @param category the category
-	 */
-	public TeamCategegoryInternalReport(String category) {
-		LOGGER.debug("Create Team Category Analysis Report for  '"+category+"'");
-		this.setName("Team Category Analysis Report");
-		this.category = category;
-		this.setDescription("Zeigt alle Teams der Kategorie '"+category+"' an bedarfsorientierten Wochenbericht.");
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.rogatio.circlead.view.DefaultReport#render(org.rogatio.circlead.control.
-	 * synchronizer.ISynchronizer)
-	 */
-	@Override
-	public Element render(ISynchronizer synchronizer) {
-		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
+ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 		Element element = new Element("p");
 
 		List<Team> teams = R.getTeamsWithCategory(category);
@@ -81,12 +43,12 @@ public class TeamCategegoryInternalReport extends DefaultReport {
 			}
 		}
 
-		boolean writeable[][] = new boolean[24][8];
-		for (int i = 0; i < 24; i++) {
-			for (int j = 0; j <= 7; j++) {
-				writeable[i][j] = true;
-			}
-		}
+boolean[][] writeable = ObjectUtil.createMatrix(24,8)
+for (int i = 0; i < 24; i++) {
+	for (int j = 0; j <= 7; j++) {
+		writeable[i][j] = true;
+	}
+}
 
 		tr = tbody.appendElement("tr");
 		for (int i = 0; i < 24; i++) {
@@ -171,6 +133,3 @@ public class TeamCategegoryInternalReport extends DefaultReport {
 		table.appendTo(element);
 
 		return element;
-	}
-
-}

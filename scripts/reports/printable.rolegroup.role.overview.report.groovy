@@ -1,15 +1,8 @@
-/*
- * Circlead - Develop and structure evolutionary Organisations
- * 
- * @author Matthias Wegner
- * @version 0.1
- * @since 01.07.2018
- * 
- */
-package org.rogatio.circlead.view.report;
+name = "Overview Report"
+description = "Druckvorlage aller Rollengruppen und Rollen (mit Seitenumbruch nach jedem Workitem)"
 
 import java.util.List;
-
+import org.rogatio.circlead.control.validator.ValidationMessage;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer;
@@ -19,31 +12,7 @@ import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
 
-/**
- * The Class OverviewReport.
- * 
- * @author Matthias Wegner
- */
-public class OverviewReport extends DefaultReport {
-
-	/**
-	 * Instantiates a new overview report.
-	 */
-	public OverviewReport() {
-		this.setName("Overview Report");
-		this.setDescription("Druckvorlage aller Rollengruppen und Rollen (mit Seitenumbruch nach jedem Workitem)");
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.rogatio.circlead.view.DefaultReport#render(org.rogatio.circlead.control.
-	 * synchronizer.ISynchronizer)
-	 */
-	@Override
-	public Element render(ISynchronizer synchronizer) {
-		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
+	ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 		Element element = new Element("p");
 
 		if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
@@ -91,6 +60,3 @@ public class OverviewReport extends DefaultReport {
 		}
 
 		return element;
-	}
-
-}

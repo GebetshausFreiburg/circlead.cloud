@@ -1,4 +1,5 @@
-package org.rogatio.circlead.view.report;
+name = "Issue by Role-Label Report"
+description = "Jira-Vorgangsübersicht nach Rollen klassifiziert"
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,12 +17,6 @@ import org.rogatio.circlead.control.synchronizer.atlassian.jira.Issue;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.PropertyUtil;
 
-/**
- * The Class RoleIssueReport.
- * 
- * @author Matthias Wegner
- */
-public class RoleIssueReport extends DefaultReport {
 
 	/** The urljira. */
 	private final String URLJIRA = PropertyUtil.getInstance().getApplicationValue(PropertyUtil.ATLASSIAN_JIRA_URL);
@@ -38,20 +33,17 @@ public class RoleIssueReport extends DefaultReport {
 	/** The Constant LOGGER. */
 	final static Logger LOGGER = LogManager.getLogger(RoleIssueReport.class);
 
-	/**
-	 * Instantiates a new role issue report.
-	 */
-	public RoleIssueReport() {
-		this.setName("Issue by Role-Label Report");
-		this.setDescription("Jira-Vorgangsübersicht nach Rollen klassifiziert");
+private String addIssueList(String query, String roleLabel) {
+		return  "<li>" + roleLabel + " (<ac:structured-macro ac:name=\"jira\" ac:schema-version=\"1\" "
+				+ "ac:macro-id=\"0eded1d6-9414-4884-b299-b48ac912a317\">"
+				+ "<ac:parameter ac:name=\"server\">System Jira</ac:parameter>"
+				+ "<ac:parameter ac:name=\"jqlQuery\">"+query+" AND labels = " + roleLabel
+				+ " ORDER BY created DESC </ac:parameter>" + "<ac:parameter ac:name=\"count\">true</ac:parameter>"
+				+ "<ac:parameter ac:name=\"serverId\">aa483c16-161d-3599-b439-850eba0fbf58</ac:parameter></ac:structured-macro>)"
+				+ "</li>";
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.view.report.DefaultReport#render(org.rogatio.circlead.control.synchronizer.ISynchronizer)
-	 */
-	@Override
-	public Element render(ISynchronizer synchronizer) {
-		Element element = new Element("p");
+
+Element element = new Element("p");
 
 		if (synchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
 
@@ -108,44 +100,13 @@ public class RoleIssueReport extends DefaultReport {
 				}
 
 				if (foundRole) {
-//				logger.info("Label: " + key + " (" + issueMap.get(key).size() + ")");
-//				List<Issue> list = issueMap.get(key);
-//				for (Issue issue : list) {
-//					logger.info("   Issue '" + issue.getKey() + "' (type=" + issue.getFields().getIssuetype().getName()
-//							+ ", id=" + issue.getId() + ") " + issue.getFields().getSummary());
-//				}
+
 					ul.append(addIssueList(q, key));
 				}
 			}
-
-//		logger.info("Label: None");
-//		for (Issue issue : issuesWithoutLabels) {
-//			logger.info("   Issue '" + issue.getKey() + "' (type=" + issue.getFields().getIssuetype().getName()
-//					+ ", id=" + issue.getId() + ") " + issue.getFields().getSummary());
-//		}
 
 		} else {
 			element.appendText("Not implemented for FileSynchronizer");
 		}
 
 		return element;
-	}
-
-	/**
-	 * Adds the issue list.
-	 *
-	 * @param query the query
-	 * @param roleLabel the role label
-	 * @return the string
-	 */
-	private String addIssueList(String query, String roleLabel) {
-		return  "<li>" + roleLabel + " (<ac:structured-macro ac:name=\"jira\" ac:schema-version=\"1\" "
-				+ "ac:macro-id=\"0eded1d6-9414-4884-b299-b48ac912a317\">"
-				+ "<ac:parameter ac:name=\"server\">System Jira</ac:parameter>"
-				+ "<ac:parameter ac:name=\"jqlQuery\">"+query+" AND labels = " + roleLabel
-				+ " ORDER BY created DESC </ac:parameter>" + "<ac:parameter ac:name=\"count\">true</ac:parameter>"
-				+ "<ac:parameter ac:name=\"serverId\">aa483c16-161d-3599-b439-850eba0fbf58</ac:parameter></ac:structured-macro>)"
-				+ "</li>";
-	}
-
-}

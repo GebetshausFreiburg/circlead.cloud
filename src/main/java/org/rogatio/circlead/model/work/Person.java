@@ -405,7 +405,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 			 */
 			if (map.size() > 3) {
 				/*
-				 * Sort timeslice-dataets by size
+				 * Sort timeslice-datasets by size
 				 */
 				Map<String, List<Timeslice>> dmap = ObjectUtil.sort(map);
 				map = new LinkedHashMap<String, List<Timeslice>>();

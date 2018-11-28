@@ -1,16 +1,8 @@
-/*
- * Circlead - Develop and structure evolutionary Organisations
- * 
- * @author Matthias Wegner
- * @version 0.1
- * @since 01.07.2018
- * 
- */
-package org.rogatio.circlead.view.report;
+name = "Role Need Report"
+description = "Liste aller Bedarfe bzgl. Rollen."
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
@@ -22,31 +14,7 @@ import org.rogatio.circlead.util.PropertyUtil;
 import org.rogatio.circlead.view.SvgBuilder;
 import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
 
-/**
- * The Class RoleNeed.
- * 
- * @author Matthias Wegner
- */
-public class RoleNeedReport extends DefaultReport {
-
-	/**
-	 * Instantiates a new role need report.
-	 */
-	public RoleNeedReport() {
-		this.setName("Role Need Report");
-		this.setDescription("Liste aller Bedarfe bzgl. Rollen.");
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.rogatio.circlead.view.DefaultReport#render(org.rogatio.circlead.control.
-	 * synchronizer.ISynchronizer)
-	 */
-	@Override
-	public Element render(ISynchronizer synchronizer) {
-		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
+ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 		Element element = new Element("p");
 
 		Element table = element.appendElement("div").appendElement("table");
@@ -175,6 +143,3 @@ public class RoleNeedReport extends DefaultReport {
 		}
 
 		return element;
-	}
-
-}

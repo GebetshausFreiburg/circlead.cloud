@@ -1,12 +1,5 @@
-/*
- * Circlead - Develop and structure evolutionary Organisations
- * 
- * @author Matthias Wegner
- * @version 0.1
- * @since 01.07.2018
- * 
- */
-package org.rogatio.circlead.view.report;
+name = "PersonList Report"
+description = "Adressliste aller Mitarbeiter in der Organisation"
 
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
@@ -18,32 +11,7 @@ import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
 
-/**
- * The Class PersonListReport.
- * 
- * @author Matthias Wegner
- */
-public class PersonListReport extends DefaultReport {
-
-	/**
-	 * Instantiates a new person list report.
-	 */
-	public PersonListReport() {
-		this.setName("PersonList Report");
-		this.setDescription("Adressliste aller Mitarbeiter in der Organisation");
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.rogatio.circlead.view.DefaultReport#render(org.rogatio.circlead.control.
-	 * synchronizer.ISynchronizer)
-	 */
-	@Override
-	public Element render(ISynchronizer synchronizer) {
-		@SuppressWarnings("unused")
-		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
+ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 		Element element = new Element("p");
 
 		Element table = element.appendElement("div").appendElement("table");
@@ -99,6 +67,3 @@ public class PersonListReport extends DefaultReport {
 		}
 
 		return element;
-	}
-
-}

@@ -104,6 +104,10 @@ public class StringUtil {
 		return s.substring(0, 1).toUpperCase() + s.substring(1, s.length());
 	}
 
+	public static String addSpace(String string, Integer space, String fill) {
+		return addSpace(string, space, fill.charAt(0));
+	}
+	
 	/**
 	 * Adds the space.
 	 *
@@ -112,7 +116,7 @@ public class StringUtil {
 	 * @param fill   the fill
 	 * @return the string
 	 */
-	public static String addSpace(String string, int space, char fill) {
+	public static String addSpace(String string, Integer space, char fill) {
 
 		int spacer = 0;
 		StringBuffer sb = new StringBuffer();

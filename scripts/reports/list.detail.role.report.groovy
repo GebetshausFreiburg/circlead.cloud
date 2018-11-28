@@ -1,12 +1,5 @@
-/*
- * Circlead - Develop and structure evolutionary Organisations
- * 
- * @author Matthias Wegner
- * @version 0.1
- * @since 01.07.2018
- * 
- */
-package org.rogatio.circlead.view.report;
+name = "RoleList Report Details"
+description = "Detaillierte Liste aller Rollen die den Status und die Besetzung ausweist."
 
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
@@ -17,31 +10,7 @@ import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.view.SvgBuilder;
 import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
 
-/**
- * The Class RoleListReportDetails.
- * 
- * @author Matthias Wegner
- */
-public class RoleListReportDetails extends DefaultReport {
-
-	/**
-	 * Instantiates a new role list report details.
-	 */
-	public RoleListReportDetails() {
-		this.setName("RoleList Report Details");
-		this.setDescription("Detaillierte Liste aller Rollen die den Status und die Besetzung ausweist.");
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.rogatio.circlead.view.DefaultReport#render(org.rogatio.circlead.control.
-	 * synchronizer.ISynchronizer)
-	 */
-	@Override
-	public Element render(ISynchronizer synchronizer) {
-		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
+ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 		Element element = new Element("p");
 
 		Element table = element.appendElement("div").appendElement("table");
@@ -83,6 +52,3 @@ public class RoleListReportDetails extends DefaultReport {
 		}
 
 		return element;
-	}
-
-}

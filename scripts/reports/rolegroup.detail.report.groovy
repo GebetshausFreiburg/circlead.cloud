@@ -1,15 +1,7 @@
-/*
- * Circlead - Develop and structure evolutionary Organisations
- * 
- * @author Matthias Wegner
- * @version 0.1
- * @since 01.07.2018
- * 
- */
-package org.rogatio.circlead.view.report;
+name = "Rolegroup-Summary Report"
+description = "Tabellarische Übersicht aller Rollengruppen mit der Auflistung aller enthaltenen Rollen"
 
 import java.util.List;
-
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.model.data.ContactDataitem;
@@ -20,31 +12,7 @@ import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
 
-/**
- * The Class RolegroupSummaryReport.
- * 
- * @author Matthias Wegner
- */
-public class RolegroupSummaryReport extends DefaultReport {
-
-	/**
-	 * Instantiates a new rolegroup summary report.
-	 */
-	public RolegroupSummaryReport() {
-		this.setName("Rolegroup-Summary Report");
-		this.setDescription("Tabellarische Übersicht aller Rollengruppen mit der Auflistung aller enthaltenen Rollen");
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.rogatio.circlead.view.DefaultReport#render(org.rogatio.circlead.control.
-	 * synchronizer.ISynchronizer)
-	 */
-	@Override
-	public Element render(ISynchronizer synchronizer) {
-		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
+ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 		Element element = new Element("p");
 
 		Element table = new Element("table");
@@ -152,6 +120,3 @@ public class RolegroupSummaryReport extends DefaultReport {
 		table.appendTo(element);
 
 		return element;
-	}
-
-}

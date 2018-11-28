@@ -86,9 +86,9 @@ public class GroovyUtil {
 	public static Map<Object, String> loadAndRunScripts() {
 		Map<Object, String> map = new TreeMap<Object, String>();
 		try {
-			Files.walk(Paths.get("scripts")).filter(Files::isRegularFile).forEach(file -> {
+			Files.walk(Paths.get("scripts")).filter(p -> !p.toString().endsWith(".report.groovy")&&p.toString().endsWith(".groovy")).filter(Files::isRegularFile).forEach(file -> {
 				Object o = loadAndRunScript(file.toFile().getAbsolutePath());
-				if (o!=null) {
+				if (o != null) {
 					map.put(o, file.toFile().getName());
 				}
 			});
@@ -97,7 +97,7 @@ public class GroovyUtil {
 		}
 		return map;
 	}
-	
+
 	/**
 	 * Load and run script.
 	 *
@@ -105,16 +105,16 @@ public class GroovyUtil {
 	 * @return the object
 	 */
 	public static Object loadAndRunScript(String fileName) {
-		try {
-			LOGGER.info("Running script '"+fileName+"'");
-			String script = new String(Files.readAllBytes(Paths.get(fileName)));
-			return runScript(script);
-		} catch (IOException e) {
-			LOGGER.error(e);
-		}
+			try {
+				LOGGER.info("Running script '" + fileName + "'");
+				String script = new String(Files.readAllBytes(Paths.get(fileName)));
+				return runScript(script);
+			} catch (IOException e) {
+				LOGGER.error(e);
+			}
 		return null;
 	}
-	
+
 	/**
 	 * Run script.
 	 *
@@ -123,6 +123,8 @@ public class GroovyUtil {
 	 */
 	public static Object runScript(String scriptText) {
 		Binding binding = new Binding();
+		binding.setVariable("reportName", new String());
+		binding.setVariable("reportDescription", new String());
 		binding.setVariable("R", Repository.getInstance());
 		binding.setVariable("ObjectUtil", new ObjectUtil());
 		binding.setVariable("MailUtil", new MailUtil());

@@ -1,12 +1,9 @@
-/*
- * Circlead - Develop and structure evolutionary Organisations
- * 
- * @author Matthias Wegner
- * @version 0.1
- * @since 01.07.2018
- * 
- */
-package org.rogatio.circlead.view.report;
+Rolegroup rolegroup = Repository.getInstance().getRolegroup(rolegroupIdentifier);
+
+name = "Report '" + rolegroup.getTitle() + "'"
+description = "(Druckfähige) Zusammenfassung der Rollengruppe '" + rolegroupIdentifier
+					+ "' mit allen enthaltenen Rollen"
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,22 +17,7 @@ import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
 
-/**
- * The Class RolegroupReport shows for every rolegroup the included data with
- * all coresponding roles. Pagebreak is included after every item.
- * 
- * @author Matthias Wegner
- */
-public class RolegroupReport extends DefaultReport {
 
-	/** The rolegroup. */
-	private Rolegroup rolegroup;
-
-	/**
-	 * Creates the reports.
-	 *
-	 * @return the list
-	 */
 	public static List<IReport> createReports() {
 		List<IReport> reports = new ArrayList<IReport>();
 		Repository repository = Repository.getInstance();
@@ -48,87 +30,7 @@ public class RolegroupReport extends DefaultReport {
 		return reports;
 	}
 
-	/**
-	 * Instantiates a new rolegroup report.
-	 *
-	 * @param rolegroupIdentifier the rolegroup identifier
-	 */
-	public RolegroupReport(String rolegroupIdentifier) {
-		Rolegroup rolegroup = Repository.getInstance().getRolegroup(rolegroupIdentifier);
-		if (rolegroup != null) {
-			this.setName("Report '" + rolegroup.getTitle() + "'");
-			this.rolegroup = rolegroup;
-			this.setDescription("(Druckfähige) Zusammenfassung der Rollengruppe '" + rolegroupIdentifier
-					+ "' mit allen enthaltenen Rollen");
-		}
-	}
-
-	/**
-	 * Instantiates a new rolegroup report.
-	 *
-	 * @param rolegroup the rolegroup
-	 */
-	public RolegroupReport(Rolegroup rolegroup) {
-		this.setName("Report '" + rolegroup.getTitle() + "'");
-		this.rolegroup = rolegroup;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.rogatio.circlead.view.DefaultReport#render(org.rogatio.circlead.control.
-	 * synchronizer.ISynchronizer)
-	 */
-	@Override
-	public Element render(ISynchronizer synchronizer) {
-		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
-		Element element = new Element("p");
-
-		renderer.addH2(element, rolegroup.getTitle());
-		renderer.addStatus(element, rolegroup.getStatus());
-
-		rolegroup.render(synchronizer).appendTo(element);
-
-		renderer.addH3(element, "Rollentragende Personen in Rollengruppe");
-		List<String> persons = new ArrayList<String>();
-		List<Role> roles = R.getRoles(rolegroup.getTitle());
-		if (roles.size() > 0) {
-			for (Role role : roles) {
-				List<String> pIds = role.getPersonIdentifiers();
-				for (String p : pIds) {
-					if (!persons.contains(p)) {
-						persons.add(p);
-					}
-				}
-			}
-		}
-		renderer.addList(element, persons);
-
-		renderer.addH3(element, "Vorgänge zur Rollengruppe");
-		addJiraMacro(element, rolegroup);
-
-		element.append("<p style=\"page-break-before: always\">");
-
-		roles = R.getRoles(rolegroup.getTitle());
-		if (roles.size() > 0) {
-			for (Role role : roles) {
-				renderer.addH2(element, role.getTitle());
-				renderer.addStatus(element, role.getStatus());
-
-				role.render(synchronizer).appendTo(element);
-
-				renderer.addH3(element, "Vorgänge zur Rolle");
-				addJiraMacro(element, role);
-
-				element.append("<p style=\"page-break-before: always\">");
-			}
-		}
-
-		return element;
-	}
-
-	/**
+/**
 	 * Adds the jira macro.
 	 *
 	 * @param element   the element
@@ -196,4 +98,48 @@ public class RolegroupReport extends DefaultReport {
 		jiraMacro.appendTo(element);
 	}
 
-}
+
+ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
+		Element element = new Element("p");
+
+		renderer.addH2(element, rolegroup.getTitle());
+		renderer.addStatus(element, rolegroup.getStatus());
+
+		rolegroup.render(synchronizer).appendTo(element);
+
+		renderer.addH3(element, "Rollentragende Personen in Rollengruppe");
+		List<String> persons = new ArrayList<String>();
+		List<Role> roles = R.getRoles(rolegroup.getTitle());
+		if (roles.size() > 0) {
+			for (Role role : roles) {
+				List<String> pIds = role.getPersonIdentifiers();
+				for (String p : pIds) {
+					if (!persons.contains(p)) {
+						persons.add(p);
+					}
+				}
+			}
+		}
+		renderer.addList(element, persons);
+
+		renderer.addH3(element, "Vorgänge zur Rollengruppe");
+		addJiraMacro(element, rolegroup);
+
+		element.append("<p style=\"page-break-before: always\">");
+
+		roles = R.getRoles(rolegroup.getTitle());
+		if (roles.size() > 0) {
+			for (Role role : roles) {
+				renderer.addH2(element, role.getTitle());
+				renderer.addStatus(element, role.getStatus());
+
+				role.render(synchronizer).appendTo(element);
+
+				renderer.addH3(element, "Vorgänge zur Rolle");
+				addJiraMacro(element, role);
+
+				element.append("<p style=\"page-break-before: always\">");
+			}
+		}
+
+		return element;
