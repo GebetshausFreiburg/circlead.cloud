@@ -84,9 +84,8 @@ public class DefaultReport implements IReport {
 			this.scriptFile = scriptFile;
 			Binding binding = new Binding();
 
-			binding.setVariable("name", new String());
-			binding.setVariable("description", new String());
-			binding.setVariable("description", new String());
+			binding.setVariable("name", "");
+			binding.setVariable("description", "");
 			binding.setVariable("synchronizer", SynchronizerFactory.getInstance().getActual());
 			binding.setVariable("R", Repository.getInstance());
 			binding.setVariable("ObjectUtil", new ObjectUtil());
@@ -148,8 +147,8 @@ public class DefaultReport implements IReport {
 
 				Binding binding = new Binding();
 
-				binding.setVariable("name", new String());
-				binding.setVariable("description", new String());
+				binding.setVariable("name", "");
+				binding.setVariable("description", "");
 				binding.setVariable("synchronizer", synchronizer);
 				binding.setVariable("R", Repository.getInstance());
 				binding.setVariable("ObjectUtil", new ObjectUtil());

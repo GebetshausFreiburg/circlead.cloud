@@ -173,23 +173,6 @@ public class SyncCirclead {
 			}
 		}
 
-//		Oif (EXPORT) {
-//			repository.writeExcel("Mitarbeiterliste", WorkitemType.PERSON, null);
-//			repository.writeExcel("Rollen", WorkitemType.ROLE, null);
-//			repository.writeExcel("Rollengruppen", WorkitemType.ROLEGROUP, null);
-//			repository.writeExcel("Teams", WorkitemType.TEAM, null);
-
-//			GanttUtil.write("exports"+File.separatorChar+"Teams.gan", repository.getTeams(), repository.getRoles(), repository.getPersons());
-
-//			PrayHourExporter phe = new PrayHourExporter();
-//			phe.export("Gebetsstundenübersicht");
-
-//			DbxTeamClientV2 dbxClient = DropboxUtil.getTeamClientFromAccessToken(PropertyUtil.getInstance().getDropboxAccesstoken());
-//			DbxTeamClientV2 dbxClient = DropboxUtil.getTeamClientFromAuthFile("gebetshaus.credentials");
-//			DropboxUtil.uploadFileToTeamFolder(dbxClient, new File("exports/Gebetsstundenübersicht.xlsx"),
-//					"/06_GBH_BO_Gebetstundenorga/Gebetsstundenübersicht.xlsx");
-//		}
-
 		// Set last modified Date
 		PropertyUtil.getInstance().setRuntimeModifiedDateToActual();
 
@@ -197,27 +180,6 @@ public class SyncCirclead {
 		for (Object object : gr.keySet()) {
 			LOGGER.debug(object + " " + gr.get(object));
 		}
-
-//		// Copy ressources to web-dir
-//		try {
-//			FileUtil.copyFileOrFolder(
-//					new File("data" + File.separatorChar + "ressources" + File.separatorChar + "images"),
-//					new File("web" + File.separatorChar + "images"));
-//			FileUtil.copyFileOrFolder(
-//					new File("data" + File.separatorChar + "ressources" + File.separatorChar + "javascript"),
-//					new File("web" + File.separatorChar + "javascript"));
-//			FileUtil.copyFileOrFolder(new File("data" + File.separatorChar + "howtos"),
-//					new File("web" + File.separatorChar + "howtos"));
-//			FileUtil.copyFileOrFolder(
-//					new File("data" + File.separatorChar + "ressources" + File.separatorChar + "styles.css"),
-//					new File("web" + File.separatorChar + "styles.css"));
-//			FileUtil.copyFileOrFolder(
-//					new File("data" + File.separatorChar + "ressources" + File.separatorChar
-//							+ "stylesCategoryReport.css"),
-//					new File("web" + File.separatorChar + "stylesCategoryReport.css"));
-//		} catch (IOException e) {
-//			LOGGER.error(e);
-//		}
 
 		if (USEWEBSERVER) {
 			// Create Webserver
