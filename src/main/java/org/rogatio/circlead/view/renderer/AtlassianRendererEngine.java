@@ -685,7 +685,7 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 	}
 
 	/**
-	 * Adds the H 1.
+	 * Adds the Heading 1 to the page.
 	 *
 	 * @param element the element
 	 * @param header  the header
