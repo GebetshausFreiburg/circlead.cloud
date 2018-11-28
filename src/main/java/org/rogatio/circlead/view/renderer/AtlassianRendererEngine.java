@@ -853,7 +853,7 @@ public class AtlassianRendererEngine implements ISynchronizerRendererEngine {
 
 		for (int i = 0; i < map.size(); i++) {
 			if (colors == null) {
-				colors = new String("");
+				colors = "";
 			}
 			colors += colorArray[i];
 

@@ -123,8 +123,6 @@ public class GroovyUtil {
 	 */
 	public static Object runScript(String scriptText) {
 		Binding binding = new Binding();
-		binding.setVariable("reportName", new String());
-		binding.setVariable("reportDescription", new String());
 		binding.setVariable("R", Repository.getInstance());
 		binding.setVariable("ObjectUtil", new ObjectUtil());
 		binding.setVariable("MailUtil", new MailUtil());

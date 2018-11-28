@@ -40,6 +40,15 @@ public class DefaultReport implements IReport {
 	/** The r. */
 	protected final Repository R = Repository.getInstance();
 
+	/** The name. */
+	private String name = null;
+
+	/** The description. */
+	private String description = null;
+
+	/** The script file. */
+	private String scriptFile = null;
+	
 	/**
 	 * Instantiates a new default report.
 	 */
@@ -55,15 +64,6 @@ public class DefaultReport implements IReport {
 	public DefaultReport(String scriptFile) {
 		setScriptFile(scriptFile);
 	}
-
-	/** The name. */
-	private String name = null;
-
-	/** The description. */
-	private String description = null;
-
-	/** The script file. */
-	private String scriptFile = null;
 
 	/**
 	 * Gets the script file.
@@ -84,9 +84,8 @@ public class DefaultReport implements IReport {
 			this.scriptFile = scriptFile;
 			Binding binding = new Binding();
 
-			binding.setVariable("name", new String());
-			binding.setVariable("description", new String());
-			binding.setVariable("description", new String());
+			binding.setVariable("name", "");
+			binding.setVariable("description", "");
 			binding.setVariable("synchronizer", SynchronizerFactory.getInstance().getActual());
 			binding.setVariable("R", Repository.getInstance());
 			binding.setVariable("ObjectUtil", new ObjectUtil());
@@ -148,8 +147,8 @@ public class DefaultReport implements IReport {
 
 				Binding binding = new Binding();
 
-				binding.setVariable("name", new String());
-				binding.setVariable("description", new String());
+				binding.setVariable("name", "");
+				binding.setVariable("description", "");
 				binding.setVariable("synchronizer", synchronizer);
 				binding.setVariable("R", Repository.getInstance());
 				binding.setVariable("ObjectUtil", new ObjectUtil());
