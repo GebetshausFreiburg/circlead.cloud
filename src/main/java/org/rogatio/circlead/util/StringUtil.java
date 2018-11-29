@@ -104,6 +104,14 @@ public class StringUtil {
 		return s.substring(0, 1).toUpperCase() + s.substring(1, s.length());
 	}
 
+	/**
+	 * Adds the space.
+	 *
+	 * @param string the string
+	 * @param space the space
+	 * @param fill the fill
+	 * @return the string
+	 */
 	public static String addSpace(String string, Integer space, String fill) {
 		return addSpace(string, space, fill.charAt(0));
 	}
@@ -222,6 +230,12 @@ public class StringUtil {
 		return mergeFromTemplate(templateFile, null);
 	}
 	
+	/**
+	 * Gets the next day.
+	 *
+	 * @param day the day
+	 * @return the next day
+	 */
 	public static String getNextDay(String day) {
 		if ("Montag".equalsIgnoreCase(day)) {
 			return "Dienstag";
@@ -298,10 +312,10 @@ public class StringUtil {
 	}
 	
 	/**
-	 * Check if string contains insenstitive string
+	 * Check if string contains insenstitive string.
 	 *
 	 * @param wantedStr the wanted string which is searched insensitive
-	 * @param source the source string which should be searched 
+	 * @param source the source string which should be searched
 	 * @return true, if source successful contains wanted string insensitive
 	 */
 	public static boolean containsInsensitive(String wantedStr, String source) {
@@ -309,7 +323,7 @@ public class StringUtil {
 	}
 
 	/**
-	 * Replace text which is insensitive target in source with '' 
+	 * Replace text which is insensitive target in source with '' .
 	 *
 	 * @param source the source which should be corrected
 	 * @param target the target which should be replaced

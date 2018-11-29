@@ -28,7 +28,8 @@ import org.rogatio.circlead.model.work.Activity;
 public class ActivityTableParserElement implements IParserElement {
 
 	/** The Constant LOGGER. */
-	final static Logger LOGGER = LogManager.getLogger(ActivityTableParserElement.class);
+	@SuppressWarnings("unused")
+	private final static Logger LOGGER = LogManager.getLogger(ActivityTableParserElement.class);
 
 	/**
 	 * Instantiates a new head table parser element.

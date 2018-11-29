@@ -7,7 +7,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dmfs.rfc5545.recur.Freq;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -26,6 +29,8 @@ import org.rogatio.circlead.model.work.Team;
  */
 public class GanttUtil {
 
+	private final static Logger LOGGER = LogManager.getLogger(GanttUtil.class);
+	
 	/** The Constant DATEFORMATTER. */
 	private final static SimpleDateFormat DATEFORMATTER = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -160,14 +165,25 @@ public class GanttUtil {
 	 * @param teams the teams
 	 * @return the list
 	 */
-	private static List<Element> createTasks(List<Team> teams) {
+	private static List<Element> createTasks(List<Team> teams, Map<String, String> colors) {
 		List<Element> elements = new ArrayList<Element>();
 
 		int duration = 0;
 		Date start = new Date();
 
 		for (Team team : teams) {
-			elements.add(createTask("" + (teams.indexOf(team) + 1), team.getTitle(), "#8cb6ce", team.getStartDate(),
+			
+			String color = "#8cb6ce";
+			
+			if (colors!=null) {
+				for (String keyword : colors.keySet()) {
+					if (team.getTitle().contains(keyword)) {
+						color = colors.get(keyword);
+					}	
+				}
+			}
+			
+			elements.add(createTask("" + (teams.indexOf(team) + 1), team.getTitle(), color, team.getStartDate(),
 					team.getDuration()));
 
 			if (start.after(team.getStartDate())) {
@@ -218,6 +234,10 @@ public class GanttUtil {
 		return properties;
 	}
 
+	public static void write(String targetXml, List<Team> teams, List<Role> roles, List<Person> persons) {
+		write(targetXml, teams, roles, persons, null);
+	}
+	
 	/**
 	 * Write.
 	 *
@@ -226,7 +246,7 @@ public class GanttUtil {
 	 * @param roles the roles
 	 * @param persons the persons
 	 */
-	public static void write(String targetXml, List<Team> teams, List<Role> roles, List<Person> persons) {
+	public static void write(String targetXml, List<Team> teams, List<Role> roles, List<Person> persons, Map<String, String> colors) {
 
 		try {
 			Element root = new Element("project");
@@ -279,7 +299,7 @@ public class GanttUtil {
 			tasks.setAttribute("empty-milestones", "true");
 			tasks.addContent(createTaskProperties());
 
-			List<Element> t = createTasks(teams);
+			List<Element> t = createTasks(teams, colors);
 			for (Element element : t) {
 				tasks.addContent(element);
 			}
@@ -302,8 +322,8 @@ public class GanttUtil {
 					if (r != null) {
 						roleIndex = roles.indexOf(r) + 1;
 					}
-					if (ObjectUtil.isListNotNullAndEmpty(entry.getPersonIdentifiers())) {
-						for (String pi : entry.getPersonIdentifiers()) {
+					if (ObjectUtil.isListNotNullAndEmpty(entry.getPersons())) {
+						for (String pi : entry.getPersons()) {
 							Person p = Repository.getInstance().getPerson(pi);
 							if (p != null) {
 								int personIndex = persons.indexOf(p) + 1;
@@ -321,16 +341,16 @@ public class GanttUtil {
 				tasks.addContent(createTask("" + (persons.indexOf(person) + teams.size() + 1),
 						"Allokation - " + person.getFullname() + "", "#cccccc", new Date(), 365));
 			
-						boolean realisticAlloc = false;
-						if (!realisticAlloc) {
-							allocations.addContent(createAllocation("" + (persons.indexOf(person) + teams.size() + 1),
-									(persons.indexOf(person) + 1) + "", null, false, 100.0 - person.getFullTimeEquivalent()*person.getTeamFraction()/100.0));	
-						} else {
-							allocations.addContent(createAllocation("" + (persons.indexOf(person) + teams.size() + 1),
-									(persons.indexOf(person) + 1) + "", null, false,
-									Repository.getInstance().getAverageAllokationInOrganisation(person.getFullname(), Freq.WEEKLY)
-									/ 40. * 100.0));
-						}
+				if (person.getOrganisationalWorkload()>100) {
+					allocations.addContent(createAllocation("" + (persons.indexOf(person) + teams.size() + 1),
+							(persons.indexOf(person) + 1) + "", null, false,
+							(100.0 - (person.getFullTimeEquivalent())*person.getTeamFraction()/100.0)*person.getOrganisationalWorkload()/100.0));
+				} else {
+					allocations.addContent(createAllocation("" + (persons.indexOf(person) + teams.size() + 1),
+							(persons.indexOf(person) + 1) + "", null, false, 100.0 - person.getFullTimeEquivalent()*person.getTeamFraction()/100.0));	
+				
+				}
+				
 			}
 
 			root.addContent(allocations);

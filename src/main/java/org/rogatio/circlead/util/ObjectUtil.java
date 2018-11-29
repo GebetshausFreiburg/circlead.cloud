@@ -66,6 +66,13 @@ public class ObjectUtil {
 		return r;
 	}
 
+	/**
+	 * Creates the matrix.
+	 *
+	 * @param rows the rows
+	 * @param columns the columns
+	 * @return the boolean[][]
+	 */
 	public static boolean[][] createMatrix(Integer rows, Integer columns) {
 		boolean writeable[][] = new boolean[rows][columns];
 		return writeable;
@@ -172,7 +179,7 @@ public class ObjectUtil {
 	}
 
 	/**
-	 * Sort timeslice-map by slice-sum
+	 * Sort timeslice-map by slice-sum.
 	 *
 	 * @param dataMap the data map
 	 * @return the sorted map by size

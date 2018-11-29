@@ -1,5 +1,7 @@
 package org.rogatio.circlead.main;
 
+import java.io.IOException;
+
 import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
 import org.rogatio.circlead.control.synchronizer.atlassian.ConfluenceClient;
 import org.rogatio.circlead.control.synchronizer.atlassian.JiraClient;
@@ -13,11 +15,6 @@ import org.rogatio.circlead.util.ObjectUtil;
  * @author Matthias Wegner
  */
 public class AtlassianPojoCreator {
-
-//	public static void main(String[] args) {
-	// AtlassianPojoCreator.createAtlassianPojos("project in (ASSET, GEB)",
-	// "264700209", "CIRCLEAD");
-//	}
 
 	/**
  * Creates the atlassian pojos.
@@ -47,6 +44,7 @@ public static void createAtlassianPojos(String jiraJQL, String roleID) {
 
 		AtlassianPojoCreator.createJiraResults(jiraJQL);
 		AtlassianPojoCreator.createPageContent(spaceID, roleID);
+		AtlassianPojoCreator.createAttachments(spaceID, roleID);
 		AtlassianPojoCreator.createContentVersions(spaceID, roleID);
 		AtlassianPojoCreator.createSearchResults(spaceID, WorkitemType.ROLE);
 	}
@@ -91,7 +89,28 @@ public static void createAtlassianPojos(String jiraJQL, String roleID) {
 		ObjectUtil.createPojoDirFromJson(jsonSource, "Results",
 				"org.rogatio.circlead.control.synchronizer.atlassian.version", "lib");
 	}
+	
+	/**
+	 * Creates the attachments.
+	 *
+	 * @param circleadSpace the circlead space
+	 * @param pageId the page id
+	 */
+	public static void createAttachments(String circleadSpace, String pageId) {
+		ConfluenceClient confluenceClient = new ConfluenceClient();
 
+		SynchronizerResult res;
+		try {
+			res = confluenceClient.get("wiki/rest/api/content/" + pageId + "/child/attachment");
+			String jsonSource = res.getContent();
+
+			ObjectUtil.createPojoDirFromJson(jsonSource, "Results",
+					"org.rogatio.circlead.control.synchronizer.atlassian.attachment", "lib");
+
+		} catch (IOException e) {
+		}
+	}
+	
 	/**
 	 * Creates the page content.
 	 *
