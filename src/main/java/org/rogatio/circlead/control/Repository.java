@@ -68,7 +68,7 @@ public final class Repository {
 	/** The Constant logger. */
 	private final static Logger LOGGER = LogManager.getLogger(Repository.class);
 
-	/** The instance. */
+	/** The singleton instance of the repository */
 	private static Repository instance;
 
 	/** The connector. */
@@ -104,6 +104,14 @@ public final class Repository {
 		return instance;
 	}
 
+	/**
+	 * Gets the team if it has a periodically reccurence pattern and a set hour and
+	 * weekday
+	 *
+	 * @param hour the hour must be value between 0 and 23
+	 * @param day  the day must be a string value in german weekdays, i.e. "Montag"
+	 * @return the first found team which has the occurence of hour and day
+	 */
 	public Team getTeam(int hour, String day) {
 		for (Team team : getTeams()) {
 			try {
@@ -118,19 +126,20 @@ public final class Repository {
 	}
 
 	/**
-	 * Gets the roles.
+	 * Gets the roles by a status
 	 *
-	 * @param status the status
-	 * @return the roles
+	 * @param status the status of the role as enum {@link WorkitemStatusParameter}
+	 * @return the roles with given status as list
 	 */
 	public List<Role> getRoles(WorkitemStatusParameter status) {
+		/*
+		 * Initialize empty list of roles
+		 */
 		List<Role> roles = new ArrayList<Role>();
-		if (Repository.getInstance().getRolegroups().size() > 0) {
-			for (Role role : getRoles()) {
-				WorkitemStatusParameter s = WorkitemStatusParameter.get(role.getStatus());
-				if (s == status) {
-					roles.add(role);
-				}
+		for (Role role : getRoles()) {
+			WorkitemStatusParameter s = WorkitemStatusParameter.get(role.getStatus());
+			if (s == status) {
+				roles.add(role);
 			}
 		}
 		return roles;
@@ -138,19 +147,34 @@ public final class Repository {
 
 	/**
 	 * Get all the teams with a named category where at least one person of the
-	 * personList exists
+	 * personList exists.
 	 *
 	 * @param personIdentifiers the list of personIdentifiers
 	 * @param teamCategory      the team category
 	 * @return the teams
 	 */
 	public List<Team> getTeams(List<String> personIdentifiers, String teamCategory) {
+		/*
+		 * Initialize empty team list
+		 */
 		List<Team> teamList = new ArrayList<Team>();
+
+		/*
+		 * move on if list of personIdentifiers is not empty
+		 */
 		if (ObjectUtil.isListNotNullAndEmpty(personIdentifiers)) {
 			for (int i = 0; i < personIdentifiers.size(); i++) {
 				String personIdentifier = personIdentifiers.get(i);
 				Person p = getPerson(personIdentifier);
+
+				/*
+				 * move on if person is found to identifier
+				 */
 				if (p != null) {
+
+					/*
+					 * Iterate over teams and add team if it contains category
+					 */
 					List<Team> teams = getTeamsWithMember(p);
 					if (teams.size() > 0) {
 						for (Team team : teams) {
@@ -187,9 +211,9 @@ public final class Repository {
 	}
 
 	/**
-	 * Checks if name is rolename.
+	 * Checks if identifier-string is rolename.
 	 *
-	 * @param roleName the name to check
+	 * @param roleName the name (identifier) to check
 	 * @return true, if is role name
 	 */
 	public boolean isRoleName(String roleName) {
@@ -271,10 +295,10 @@ public final class Repository {
 	}
 
 	/**
-	 * Gets the teams notinweek.
+	 * Gets the teams which are not found in week
 	 *
 	 * @param category the category
-	 * @return the teams notinweek
+	 * @return the teams not in week
 	 */
 	public List<String> getTeamsNotinweek(String category) {
 		List<String> foundList = new ArrayList<String>();
@@ -388,20 +412,6 @@ public final class Repository {
 		}
 		return rbs;
 	}
-
-//	public List<Role> x() {
-//		for (Role role : getRoles()) {
-//			
-//			List<String> pi = role.getPersonIdentifiers();
-//			if (ObjectUtil.isListNotNullAndEmpty(pi)) {
-//				for (String p : pi) {
-//					String skill = role.getDataitem().getSkill(p);
-//							
-//				}
-//							
-//			}
-//		}
-//	}
 
 	/**
 	 * Gets the roles with competence.
@@ -951,7 +961,6 @@ public final class Repository {
 	public List<Person> getPersons() {
 		List<Person> persons = new ArrayList<Person>();
 		for (IWorkitem workitem : workitems) {
-//			System.out.println(workitem.getType());
 			if (WorkitemType.PERSON.isTypeOf(workitem)) {
 				persons.add((Person) workitem);
 			}
@@ -1054,17 +1063,13 @@ public final class Repository {
 				}
 			}
 
-//			List<IWorkitem> set = new ArrayList<IWorkitem>();
 			for (IWorkitem workitem : workitemsToUpdate) {
-//				if (workitem.getUpdateable()&&(!set.contains(workitem))) {
 				List<IWorkitem> workitems = workitem.getReferencedItems();
 				if (ObjectUtil.isListNotNullAndEmpty(workitems)) {
 					for (IWorkitem w : workitems) {
 						w.setUpdateable(true);
 					}
-//						set.addAll(workitems);
 				}
-//				}
 			}
 		}
 
@@ -1703,6 +1708,9 @@ public final class Repository {
 	 * @return the root roles
 	 */
 	public List<Role> getRootRoles(Comparator<Role> comparator) {
+		/*
+		 * Initialize empty list of roles
+		 */
 		List<Role> rootRoles = new ArrayList<Role>();
 		for (Role role : this.getRoles()) {
 			if (role.getParentIdentifier() == null) {
@@ -1718,11 +1726,21 @@ public final class Repository {
 	/**
 	 * Gets the competences from roles.
 	 *
-	 * @return the competences from roles
+	 * @return the list of competences from roles
 	 */
 	public Map<String, List<Role>> getCompetencesFromRoles() {
+		/*
+		 * Initialize empty list of competencies
+		 */
 		List<String> competencies = new ArrayList<String>();
+
+		/*
+		 * Iterate through roles
+		 */
 		for (Role role : this.getRoles()) {
+			/*
+			 * Iterate through competencies and add if not already set
+			 */
 			List<String> temp = role.getCompetences();
 			if (ObjectUtil.isListNotNullAndEmpty(temp)) {
 				for (String c : temp) {
@@ -1732,12 +1750,21 @@ public final class Repository {
 				}
 			}
 		}
+
+		/*
+		 * sort competencies by title
+		 */
 		Collections.sort(competencies);
+
+		/*
+		 * Initialize empty map of sorted competencies and role-list
+		 */
 		Map<String, List<Role>> map = new TreeMap<String, List<Role>>();
 		for (String competence : competencies) {
 			List<Role> foundRoles = findRolesWithCompetence(competence);
 			map.put(competence, foundRoles);
 		}
+
 		return map;
 	}
 
@@ -1748,8 +1775,19 @@ public final class Repository {
 	 * @return the list
 	 */
 	public List<Role> findRolesWithCompetence(String competence) {
+		/*
+		 * Initialize empty list of roles
+		 */
 		List<Role> foundRoles = new ArrayList<Role>();
+
+		/*
+		 * Iterate though roles
+		 */
 		for (Role r : this.getRoles()) {
+
+			/*
+			 * Add role if it contains competence
+			 */
 			if (r.getCompetences() != null) {
 				if (r.getCompetences().contains(competence)) {
 					foundRoles.add(r);
@@ -1766,52 +1804,74 @@ public final class Repository {
 	 * @return the role children which have given parent
 	 */
 	public List<Role> getRoleChildren(String roleIdentifier) {
+		/*
+		 * Initialize empty list of roles
+		 */
 		List<Role> childRoles = new ArrayList<Role>();
 
+		/*
+		 * return null if parent role identifier is null
+		 */
 		if (roleIdentifier == null) {
 			return null;
 		}
 
+		/*
+		 * add role child of parent identifier is found in role
+		 */
 		for (Role role : this.getRoles()) {
-
 			if (roleIdentifier.equalsIgnoreCase(role.getParentIdentifier())) {
 				childRoles.add(role);
 			}
-
 		}
 
 		return childRoles;
 	}
 
 	/**
-	 * Gets the role children.
+	 * Gets the role children of named role parent. Sort by comparator defined in
+	 * {@link Comparators}
 	 *
-	 * @param roleIdentifier the role identifier
-	 * @param comparator     the comparator
-	 * @return the role children
+	 * @param roleIdentifier the parent role identifier
+	 * @param comparator     the comparator to sort roles. If null the sorting is
+	 *                       skipped
+	 * @return the list of role children
 	 */
 	public List<Role> getRoleChildren(String roleIdentifier, Comparator<Role> comparator) {
+		/*
+		 * Initialize empty list of roles
+		 */
 		List<Role> childRoles = new ArrayList<Role>();
 
+		/*
+		 * return null if parent role identifier is null
+		 */
 		if (roleIdentifier == null) {
 			return null;
 		}
 
+		/*
+		 * add role child of parent identifier is found in role
+		 */
 		for (Role role : this.getRoles()) {
-
 			if (roleIdentifier.equalsIgnoreCase(role.getParentIdentifier())) {
 				childRoles.add(role);
 			}
-
 		}
 
-		Collections.sort(childRoles, comparator);
+		/*
+		 * skip sorting of comparator is not set
+		 */
+		if (comparator != null) {
+			Collections.sort(childRoles, comparator);
+		}
 
 		return childRoles;
 	}
 
 	/**
-	 * Adds the reports.
+	 * Adds the reports in repository to all available synchronizers (through
+	 * {@link Connector})
 	 */
 	public void addReports() {
 		for (IReport report : this.reports) {
@@ -1832,7 +1892,7 @@ public final class Repository {
 	 * {@link org.rogatio.circlead.control.synchronizer.Connector} for every
 	 * {@link org.rogatio.circlead.control.synchronizer.ISynchronizer}.
 	 *
-	 * @return the list
+	 * @return the list of {@link SynchronizerResult}s
 	 */
 	public List<SynchronizerResult> updateReports() {
 		List<SynchronizerResult> results = new ArrayList<SynchronizerResult>();
@@ -1843,7 +1903,7 @@ public final class Repository {
 	}
 
 	/**
-	 * Adds the report.
+	 * Adds the report to repository.
 	 *
 	 * @param report the report
 	 */
@@ -1852,9 +1912,9 @@ public final class Repository {
 	}
 
 	/**
-	 * Adds the reports.
+	 * Adds the list of reports to repository.
 	 *
-	 * @param reports the reports
+	 * @param reports the list of reports
 	 */
 	public void addReports(List<IReport> reports) {
 		if (reports != null) {
@@ -1865,29 +1925,35 @@ public final class Repository {
 	}
 
 	/**
-	 * Gets the reports.
+	 * Gets the available reports.
 	 *
-	 * @return the reports
+	 * @return the list of reports
 	 */
 	public List<IReport> getReports() {
 		return reports;
 	}
 
 	/**
-	 * Gets the competence children.
+	 * Gets the competence children of the named parent competence.
 	 *
-	 * @param competence the competence
-	 * @return the competence children
+	 * @param competence the identifier of a parent competence
+	 * @return the list of competence children
 	 */
 	public List<Competence> getCompetenceChildren(String competence) {
 		List<Competence> childs = new ArrayList<Competence>();
 
+		/*
+		 * get the root competence which holds all available competences
+		 */
 		Competence c = this.getRootCompetence();
 
 		if (c != null) {
 			return c.getChildren(competence);
 		}
 
+		/*
+		 * return empty list if root is null
+		 */
 		return childs;
 	}
 
@@ -1898,12 +1964,21 @@ public final class Repository {
 	 * @return the rolegroup children
 	 */
 	public List<Rolegroup> getRolegroupChildren(String rolegroupIdentifier) {
+		/*
+		 * Initialize empty list of rolegroups
+		 */
 		List<Rolegroup> childRolegroups = new ArrayList<Rolegroup>();
 
+		/*
+		 * return null if no value to method is set
+		 */
 		if (rolegroupIdentifier == null) {
 			return null;
 		}
 
+		/*
+		 * add rolegroup if is is set to parent of rolegroups
+		 */
 		for (Rolegroup rolegroup : this.getRolegroups()) {
 			if (rolegroupIdentifier.equalsIgnoreCase(rolegroup.getParentIdentifier())) {
 				childRolegroups.add(rolegroup);
@@ -1920,36 +1995,62 @@ public final class Repository {
 	 * @return the list
 	 */
 	public List<ValidationMessage> validate() {
+		/*
+		 * Initialize empty list of validators
+		 */
 		List<IValidator> validators = new ArrayList<IValidator>();
 
-		Collection<ISynchronizer> s = this.getConnector().getSynchronizer();
-		for (Iterator<ISynchronizer> iterator = s.iterator(); iterator.hasNext();) {
+		/*
+		 * Iterate over all available synchronizers
+		 */
+		Collection<ISynchronizer> synchronizers = this.getConnector().getSynchronizer();
+		for (Iterator<ISynchronizer> iterator = synchronizers.iterator(); iterator.hasNext();) {
 			ISynchronizer iSynchronizer = (ISynchronizer) iterator.next();
+			/*
+			 * Add synchonizer to validation if interface is set
+			 */
 			if (iSynchronizer instanceof IValidator) {
 				validators.add((IValidator) iSynchronizer);
 			}
 		}
 
+		/*
+		 * Iterate through workitems
+		 */
 		for (IWorkitem workitem : workitems) {
+			/*
+			 * Add workitem to validation if interface is set
+			 */
 			if (workitem instanceof IValidator) {
 				validators.add((IValidator) workitem);
 			}
 		}
 
+		/*
+		 * Initialize empty list of validation-messages
+		 */
 		List<ValidationMessage> allMessages = new ArrayList<ValidationMessage>();
 
+		/*
+		 * Iterate through all validator-classes
+		 */
 		for (IValidator validator : validators) {
 			List<ValidationMessage> messages = validator.validate();
 			for (ValidationMessage m : messages) {
+				/*
+				 * add validation-message
+				 */
 				allMessages.add(m);
-				if (m.getType() == Type.INFO) {
 
+				/*
+				 * set message to logger
+				 */
+				if (m.getType() == Type.INFO) {
 					if (m.getSolution() != null) {
 						LOGGER.info("" + m.getMessage() + " -> " + m.getSolution());
 					} else {
 						LOGGER.info("" + m.getMessage());
 					}
-
 				}
 				if (m.getType() == Type.WARNING) {
 					if (m.getSolution() != null) {
@@ -1985,9 +2086,13 @@ public final class Repository {
 	 * @return the organisational roles with person
 	 */
 	public ArrayList<Role> getOrganisationalRolesWithPerson(Person person) {
+		/*
+		 * return null if person is null
+		 */
 		if (person == null) {
 			return null;
 		}
+
 		return getOrganisationalRolesWithPerson(person.getFullname());
 	}
 
@@ -1998,11 +2103,25 @@ public final class Repository {
 	 * @return the roles with person who holds a role
 	 */
 	public ArrayList<Role> getOrganisationalRolesWithPerson(String person) {
+		/*
+		 * Initialize empty list
+		 */
 		ArrayList<Role> foundRoles = new ArrayList<Role>();
+
+		/*
+		 * Iterate through list of roles
+		 */
 		for (Role role : getRoles()) {
 			List<String> persons = role.getPersonIdentifiers();
+
+			/*
+			 * Iterate through list of personIdentifiers
+			 */
 			for (String p : persons) {
 				if (p.equals(person)) {
+					/*
+					 * Add role if personIdentifier is found
+					 */
 					foundRoles.add(role);
 				}
 			}

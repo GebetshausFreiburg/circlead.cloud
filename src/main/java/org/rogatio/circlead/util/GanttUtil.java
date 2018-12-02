@@ -29,6 +29,7 @@ import org.rogatio.circlead.model.work.Team;
  */
 public class GanttUtil {
 
+	@SuppressWarnings("unused")
 	private final static Logger LOGGER = LogManager.getLogger(GanttUtil.class);
 	
 	/** The Constant DATEFORMATTER. */
