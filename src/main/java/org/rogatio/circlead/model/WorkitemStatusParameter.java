@@ -86,6 +86,9 @@ public enum WorkitemStatusParameter {
 	/** The overassigned. */
 	OVERASSIGNED("Green", "Mehrfachbesetzung"),
 	
+	/** The adequate. */
+	ADEQUATE("Green", "Ausreichend besetzt"), 
+	
 	/** The assigned. */
 	ASSIGNED("Yellow", "Einfachbesetzung"), 
 	

@@ -35,7 +35,6 @@ import org.rogatio.circlead.view.report.DefaultReport;
 public class SyncCirclead {
 	// TODO Rollenname erstetzen als Algorithmus einbauen, Bsp. Gebetstundenleiter
 	// ist falsch
-	// TODO Comment for person in team
 	// TODO Validation role status vs. person-holder status (i.e. paused, closed)
 	// TODO Validation "empty" (<10 chars) text in role
 	// TODO Atlassian User-Check (for Image-Usage or User-Link)

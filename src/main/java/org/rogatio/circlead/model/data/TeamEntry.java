@@ -20,6 +20,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class TeamEntry {
 
+	/** The comments. */
+	@JsonIgnore
+	private Map<String, String> comments = new HashMap<String, String>();
+	
 	/** The identifier of the role which is needed in the team. */
 	private String roleIdentifier;
 
@@ -199,12 +203,32 @@ public class TeamEntry {
 					sb.append(this.getRecurrenceRule(person));
 					sb.append("]");
 				}
+				
+				if (this.hasComment(person)) {
+					sb.append(" ## " + this.getComment(person));
+				}
 
 				list.add(sb.toString());
 			}
 		}
 
 		return list;
+	}
+	
+	@JsonIgnore
+	public String getComment(String personIdentifier) {
+		if (comments.containsKey(personIdentifier)) {
+			return comments.get(personIdentifier);
+		}
+		return null;
+	}
+	
+	@JsonIgnore
+	public boolean hasComment(String personIdentifier) {
+		if (comments.containsKey(personIdentifier)) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -265,6 +289,21 @@ public class TeamEntry {
 		setPersonIdentifiers(StringUtil.join(personIdentifiers));
 	}
 
+	@JsonIgnore
+	private void setCommentMatch(String personFullname, String value) {
+		value = value.trim();
+
+		if (value.startsWith("##")) {
+			value = value.substring(2, value.length());
+		}
+
+		value = value.trim();
+
+		if (StringUtil.isNotNullAndNotEmpty(value)) {
+			comments.put(personFullname, value);
+		}
+	}
+	
 	/**
 	 * Sets the persons with personIdentifier and their recurrence-rule by
 	 * string-representation.
@@ -281,15 +320,30 @@ public class TeamEntry {
 
 		if (persons != null) {
 			for (String person : persons) {
+				
+				String comment = null;
+				if (person.contains("##")) {
+					int idx = person.indexOf("##");
+					comment = person.substring(idx + 2, person.length()).trim();
+					person = person.substring(0, idx).trim();
+				}
+				
 				int idx = person.indexOf("[");
 				if (idx != -1) {
 					String val = person.substring(idx, person.length()).replace("[", "").replace("]", "").trim();
 					String fullname = person.substring(0, idx).trim();
 					setRecurrenceRuleMatch(fullname, val);
+					if (StringUtil.isNotNullAndNotEmpty(comment)) {
+						setCommentMatch(fullname, comment);
+					}
 					list.add(fullname);
 				} else {
+					if (StringUtil.isNotNullAndNotEmpty(comment)) {
+						setCommentMatch(person, comment);
+					}
 					list.add(person);
 				}
+				
 			}
 		}
 
