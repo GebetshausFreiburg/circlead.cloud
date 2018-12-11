@@ -223,7 +223,22 @@ public class Parser {
 					tr.appendElement("td").attr("colspan", "1")
 							.appendText(StringUtil.join(entry.getPersonIdentifiers()));
 				} else {
-					addPersonListToTableCell(tr, entry.getPersons(), synchronizer);
+					Element td = tr.appendElement("td").attr("colspan", "1");
+					Element ul = td.appendElement("ul");
+					for (String personIdentifier : entry.getPersons()) {
+						Element li = ul.appendElement("li");
+						synchronizer.getRenderer().addPersonItem(li, null, personIdentifier);
+						if (entry.hasRecurrenceRule(personIdentifier)) {
+							String rule = entry.getRecurrenceRule(personIdentifier);
+							li.append("&nbsp;<span style=\"color: rgb(192,192,192);\">"
+									+ rule.replace("R=", "").replace("RRULE=", "") + "</span>");
+						}
+						if (entry.hasComment(personIdentifier)) {
+							String comment = entry.getComment(personIdentifier);
+							li.append("&nbsp;|&nbsp;<span style=\"color: rgb(192,192,192);\">" + comment + "</span>");
+						}
+					}
+					// addPersonListToTableCell(tr, entry.getPersons(), synchronizer);
 				}
 			} else {
 				tr.appendElement("td").attr("colspan", "1").appendText("");
@@ -489,7 +504,7 @@ public class Parser {
 				tr.appendElement("td").appendText(key);
 				dataset = dataMap.get(key);
 				for (Timeslice timeslice : dataset) {
-					tr.appendElement("td").appendText("" + (int)timeslice.getAllokation());
+					tr.appendElement("td").appendText("" + (int) timeslice.getAllokation());
 				}
 			}
 		}

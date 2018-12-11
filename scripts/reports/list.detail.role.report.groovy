@@ -39,7 +39,11 @@ ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 					renderer.addStatus(tr.appendElement("td"), WorkitemStatusParameter.SITUATIONAL.getName());
 				}
 			} else if (role.getRedundance() < 2.0) {
-				renderer.addStatus(tr.appendElement("td"), WorkitemStatusParameter.ASSIGNED.getName());
+				if (role.isSpecialized()) {
+					renderer.addStatus(tr.appendElement("td"), WorkitemStatusParameter.ADEQUATE.getName());
+				} else {
+					renderer.addStatus(tr.appendElement("td"), WorkitemStatusParameter.ASSIGNED.getName());
+				}			
 			} else if (role.getRedundance() >= 2.0) {
 				renderer.addStatus(tr.appendElement("td"), WorkitemStatusParameter.OVERASSIGNED.getName());
 			}
