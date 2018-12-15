@@ -707,6 +707,15 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 			listElement.append("&nbsp;<span style=\"color: rgb(192,192,192);\">"
 					+ rule.replace("R=", "").replace("RRULE=", "") + "</span>");
 		}
+		
+		if (role!=null) {
+			String comment = teamEntry.getComment(this.getFullname());
+			if (StringUtil.isNotNullAndNotEmpty(comment)) {
+				listElement.append("&nbsp;|&nbsp;<span style=\"color: rgb(192,192,192);\">"
+						+ comment + "</span>");
+			}
+		}
+		
 	}
 
 	/*
