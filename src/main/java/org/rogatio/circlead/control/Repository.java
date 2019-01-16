@@ -58,6 +58,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class Repository is a singleton-representation of all loaded and handled
  * data while runtime. This is the real core of the circlead-application.
@@ -69,7 +70,7 @@ public final class Repository {
 	/** The Constant logger. */
 	private final static Logger LOGGER = LogManager.getLogger(Repository.class);
 
-	/** The singleton instance of the repository */
+	/**  The singleton instance of the repository. */
 	private static Repository instance;
 
 	/** The connector. */
@@ -107,7 +108,7 @@ public final class Repository {
 
 	/**
 	 * Gets the team if it has a periodically reccurence pattern and a set hour and
-	 * weekday
+	 * weekday.
 	 *
 	 * @param hour the hour must be value between 0 and 23
 	 * @param day  the day must be a string value in german weekdays, i.e. "Montag"
@@ -127,7 +128,7 @@ public final class Repository {
 	}
 
 	/**
-	 * Gets the roles by a status
+	 * Gets the roles by a status.
 	 *
 	 * @param status the status of the role as enum {@link WorkitemStatusParameter}
 	 * @return the roles with given status as list
@@ -296,7 +297,7 @@ public final class Repository {
 	}
 
 	/**
-	 * Gets the teams which are not found in week
+	 * Gets the teams which are not found in week.
 	 *
 	 * @param category the category
 	 * @return the teams not in week
@@ -1882,7 +1883,7 @@ public final class Repository {
 
 	/**
 	 * Adds the reports in repository to all available synchronizers (through
-	 * {@link Connector})
+	 * {@link Connector}).
 	 */
 	public void addReports() {
 		for (IReport report : this.reports) {
@@ -1999,6 +2000,11 @@ public final class Repository {
 		return childRolegroups;
 	}
 
+	/**
+	 * Log and validate for unique Ids in workitem.
+	 *
+	 * @return the list
+	 */
 	private List<ValidationMessage> logForUniqueIDs() {
 		List<ValidationMessage> list = new ArrayList<ValidationMessage>();
 		for (IWorkitem wi : this.getWorkitems()) {
