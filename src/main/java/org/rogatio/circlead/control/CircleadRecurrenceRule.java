@@ -22,6 +22,7 @@ import org.dmfs.rfc5545.recur.InvalidRecurrenceRuleException;
 import org.dmfs.rfc5545.recur.RecurrenceRule;
 import org.dmfs.rfc5545.recur.RecurrenceRule.Part;
 import org.dmfs.rfc5545.recur.RecurrenceRuleIterator;
+import org.rogatio.circlead.control.synchronizer.CircleadRecurrenceRuleException;
 import org.rogatio.circlead.model.data.Timeslice;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
@@ -89,7 +90,6 @@ public class CircleadRecurrenceRule {
 	/** The Constant LOGGER. */
 	private final static Logger LOGGER = LogManager.getLogger(CircleadRecurrenceRule.class);
 
-
 	/** The durationbyhour. */
 	private final String DURATIONBYHOUR = "DURATIONBYHOUR";
 
@@ -116,7 +116,7 @@ public class CircleadRecurrenceRule {
 
 	/** The type. */
 	private String type;
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -143,8 +143,12 @@ public class CircleadRecurrenceRule {
 	 *
 	 * @param rule the rule
 	 */
-	public CircleadRecurrenceRule(String rule) {
+	public CircleadRecurrenceRule(String rule) throws CircleadRecurrenceRuleException {
 		recurrenceRule = this.convert(rule);
+		
+		if (recurrenceRule==null) {
+			throw new CircleadRecurrenceRuleException("Rule '"+rule+"' could not be interpreted.");
+		}
 	}
 
 	/**
@@ -223,9 +227,13 @@ public class CircleadRecurrenceRule {
 	 *
 	 * @param freq the freq
 	 */
-	public CircleadRecurrenceRule(Freq freq) {
+	public CircleadRecurrenceRule(Freq freq) throws CircleadRecurrenceRuleException {
 		recurrenceRule = new RecurrenceRule(freq);
 		this.type = this.TYPE_RFC5545;
+		
+		if (recurrenceRule==null) {
+			throw new CircleadRecurrenceRuleException("Rule could not be generated. Frequence ist not set.");
+		}
 	}
 
 	/**
@@ -678,7 +686,7 @@ public class CircleadRecurrenceRule {
 	 * @return the weekday
 	 */
 	public Weekday getWeekday() {
-		if (this.recurrenceRule==null) {
+		if (this.recurrenceRule == null) {
 			return null;
 		}
 		return this.recurrenceRule.getWeekStart();
@@ -690,7 +698,7 @@ public class CircleadRecurrenceRule {
 	 * @return the hour
 	 */
 	public Integer getHour() {
-		if (recurrenceRule==null) {
+		if (recurrenceRule == null) {
 			return null;
 		}
 		List<Integer> hours = this.recurrenceRule.getByPart(Part.BYHOUR);
@@ -747,6 +755,7 @@ public class CircleadRecurrenceRule {
 
 			int hour = 0;
 			String d = duration;
+			// EN
 			for (Weekday wd : Weekday.values()) {
 				if (d.contains(wd.name())) {
 					int idx = d.indexOf(wd.name());
@@ -759,6 +768,8 @@ public class CircleadRecurrenceRule {
 				}
 				d = d.replace(wd.name(), "");
 			}
+			// DE
+			// TODO Routine erweitern
 
 			d = d.replace("H", "").replace("D", "").replace("W", "").replace("M", "").replace("Q", "");
 
@@ -787,7 +798,7 @@ public class CircleadRecurrenceRule {
 				rule = new RecurrenceRule(Freq.YEARLY);
 			}
 
-			if (duration.contains(Weekday.SU.name())) {
+			if (duration.contains(Weekday.SU.name())||duration.contains("SO")) {
 				rule.setWeekStart(Weekday.SU, true);
 			}
 
@@ -795,15 +806,15 @@ public class CircleadRecurrenceRule {
 				rule.setWeekStart(Weekday.MO, true);
 			}
 
-			if (duration.contains(Weekday.TU.name())) {
+			if (duration.contains(Weekday.TU.name())||duration.contains("DI")) {
 				rule.setWeekStart(Weekday.TU, true);
 			}
 
-			if (duration.contains(Weekday.WE.name())) {
+			if (duration.contains(Weekday.WE.name())||duration.contains("MI")) {
 				rule.setWeekStart(Weekday.WE, true);
 			}
 
-			if (duration.contains(Weekday.TH.name())) {
+			if (duration.contains(Weekday.TH.name())||duration.contains("DO")) {
 				rule.setWeekStart(Weekday.TH, true);
 			}
 
@@ -901,7 +912,7 @@ public class CircleadRecurrenceRule {
 	public Boolean isRecurrenceOdd() {
 		return this.oddRecurrence;
 	}
-	
+
 	/**
 	 * The Enum Duration.
 	 */
@@ -935,7 +946,7 @@ public class CircleadRecurrenceRule {
 	 * @return the type
 	 */
 	private String getType(String rule) {
-		final String circleadTypeRegex = "([0-9]+)?(SU|MO|TU|WE|TH|FR|SA)?([0-9]+)(H|D|W|M|Q)(/(D|(u|g|e|o|U|G|E|O)*W|M|Q|Y))?";
+		final String circleadTypeRegex = "([0-9]+)?(SU|SO|MO|TU|DI|WE|MI|TH|DO|FR|SA)?([0-9]+)(H|D|W|M|Q)(/(D|(u|g|e|o|U|G|E|O)*W|M|Q|Y))?";
 
 		if (clean(rule).matches(circleadTypeRegex)) {
 			type = TYPE_CIRCLEAD;
@@ -1348,25 +1359,28 @@ public class CircleadRecurrenceRule {
 	 * @return the start date list
 	 */
 	public List<DateTime> getStartDateList(DateTime startDateTime, int maxInstances) {
-		startDateTime = getStartByRule(startDateTime);
 		List<DateTime> list = new ArrayList<DateTime>();
-		RecurrenceRuleIterator it = startDateIterator(startDateTime);
-		while (it.hasNext() && (!recurrenceRule.isInfinite() || maxInstances-- > 0)) {
-			DateTime nextInstance = it.nextDateTime();
 
-			if (this.oddRecurrence != null) {
-				Date d = convertDate(nextInstance);
-				Calendar c = Calendar.getInstance();
-				c.setTime(d);
-				int weekOfYear = c.get(Calendar.WEEK_OF_YEAR);
-				if (((weekOfYear % 2) == 0) && !this.oddRecurrence) {
+		if (recurrenceRule != null) {
+			startDateTime = getStartByRule(startDateTime);
+			RecurrenceRuleIterator it = startDateIterator(startDateTime);
+			while (it.hasNext() && (!recurrenceRule.isInfinite() || maxInstances-- > 0)) {
+				DateTime nextInstance = it.nextDateTime();
+
+				if (this.oddRecurrence != null) {
+					Date d = convertDate(nextInstance);
+					Calendar c = Calendar.getInstance();
+					c.setTime(d);
+					int weekOfYear = c.get(Calendar.WEEK_OF_YEAR);
+					if (((weekOfYear % 2) == 0) && !this.oddRecurrence) {
+						list.add(nextInstance);
+					}
+					if (((weekOfYear % 2) == 1) && this.oddRecurrence) {
+						list.add(nextInstance);
+					}
+				} else {
 					list.add(nextInstance);
 				}
-				if (((weekOfYear % 2) == 1) && this.oddRecurrence) {
-					list.add(nextInstance);
-				}
-			} else {
-				list.add(nextInstance);
 			}
 		}
 		return list;
@@ -1398,6 +1412,9 @@ public class CircleadRecurrenceRule {
 	 * @return the recurrence rule iterator
 	 */
 	public RecurrenceRuleIterator startDateIterator(DateTime start) {
+		if (recurrenceRule == null) {
+			return null;
+		}
 		return recurrenceRule.iterator(start);
 	}
 
@@ -1407,7 +1424,9 @@ public class CircleadRecurrenceRule {
 	 * @param interval the new interval
 	 */
 	public void setInterval(int interval) {
-		recurrenceRule.setInterval(interval);
+		if (recurrenceRule != null) {
+			recurrenceRule.setInterval(interval);
+		}
 	}
 
 	/**

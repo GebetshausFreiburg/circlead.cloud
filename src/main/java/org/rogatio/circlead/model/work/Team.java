@@ -25,10 +25,13 @@ import java.util.Map;
 import java.util.TimeZone;
 import java.util.TreeMap;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dmfs.rfc5545.DateTime;
 import org.dmfs.rfc5545.recur.Freq;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.CircleadRecurrenceRule;
+import org.rogatio.circlead.control.synchronizer.CircleadRecurrenceRuleException;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.HeaderTableParserElement;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
@@ -54,6 +57,8 @@ import org.rogatio.circlead.view.renderer.IWorkitemRenderer;
  */
 public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidator, IDataRow {
 
+	final static Logger LOGGER = LogManager.getLogger(Team.class);
+	
 	/**
 	 * Instantiates a new team.
 	 */
@@ -82,6 +87,14 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	 */
 	public void setRecurrenceRule(String recurrenceRule) {
 		this.getDataitem().setRecurrenceRule(recurrenceRule);
+		
+		try {
+			@SuppressWarnings("unused")
+			CircleadRecurrenceRule crr = new CircleadRecurrenceRule(recurrenceRule);
+		} catch (CircleadRecurrenceRuleException e) {
+			LOGGER.error("Rule not correct in team '"+this.getTitle()+"'", e);
+		}
+		
 	}
 
 	/**
@@ -208,12 +221,12 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	 */
 	public Integer getCRRHour() {
 		if (StringUtil.isNotNullAndNotEmpty(getRecurrenceRule())) {
-			CircleadRecurrenceRule crr = new CircleadRecurrenceRule(getRecurrenceRule());
+			CircleadRecurrenceRule crr = getCircleadRecurrenceRule();
 			return crr.getHour();
 		}
-		return null; 
+		return null;
 	}
-
+	
 	/**
 	 * Gets the CRR weekday no.
 	 *
@@ -221,7 +234,7 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	 */
 	public int getCRRWeekdayNo() {
 		if (StringUtil.isNotNullAndNotEmpty(getRecurrenceRule())) {
-			CircleadRecurrenceRule crr = new CircleadRecurrenceRule(getRecurrenceRule());
+			CircleadRecurrenceRule crr = getCircleadRecurrenceRule();
 			return CircleadRecurrenceRule.WEEKDAY2DAYOFWEEK.get(crr.getWeekday());
 		}
 		return -1;
@@ -234,7 +247,7 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	 */
 	public String getCRRWeekday() {
 		if (StringUtil.isNotNullAndNotEmpty(getRecurrenceRule())) {
-			CircleadRecurrenceRule crr = new CircleadRecurrenceRule(getRecurrenceRule());
+			CircleadRecurrenceRule crr = getCircleadRecurrenceRule();
 			return CircleadRecurrenceRule.WEEKDAYS2GERMAN.get(crr.getWeekday());
 		}
 		return null;
@@ -247,7 +260,7 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	 */
 	public int getCRRDuration() {
 		if (StringUtil.isNotNullAndNotEmpty(getRecurrenceRule())) {
-			CircleadRecurrenceRule crr = new CircleadRecurrenceRule(getRecurrenceRule());
+			CircleadRecurrenceRule crr = getCircleadRecurrenceRule();
 			return crr.getDuration();
 		}
 		return -1;
@@ -317,10 +330,16 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	 * @return the circlead recurrence rule
 	 */
 	public CircleadRecurrenceRule getCircleadRecurrenceRule() {
-
+		
 		if (StringUtil.isNotNullAndNotEmpty(getRecurrenceRule())) {
-			CircleadRecurrenceRule crr = new CircleadRecurrenceRule(getRecurrenceRule());
-
+			
+			CircleadRecurrenceRule crr = null;
+			try {
+				crr = new CircleadRecurrenceRule(this.getRecurrenceRule());
+			} catch (CircleadRecurrenceRuleException e) {
+				LOGGER.error("Rule not correct in team '"+this.getTitle()+"'", e);
+			}
+			
 			// Set start-date, if not null
 			if (StringUtil.isNotNullAndNotEmpty(this.getStart())) {
 				crr.setStartDate(this.getStart());
@@ -346,7 +365,7 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	public String getRecurrenceRule() {
 		return this.getDataitem().getRecurrenceRule();
 	}
-
+	
 	/**
 	 * Gets the data row.
 	 *
@@ -370,11 +389,13 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		addDataRowElement(this.getStatus(), Parameter.STATUS, map);
 
 		List<Timeslice> slices = this.getAllokationSlices(Freq.MONTHLY);
-		for (Timeslice timeslice : slices) {
-			Parameter p = Parameter.get(timeslice.getSliceStart());
-			if (p != null) {
-				p.setDetail(timeslice.getSliceStart());
-				addDataRowElement("" + ((int) timeslice.getAllokation()), p, map);
+		if (slices != null) {
+			for (Timeslice timeslice : slices) {
+				Parameter p = Parameter.get(timeslice.getSliceStart());
+				if (p != null) {
+					p.setDetail(timeslice.getSliceStart());
+					addDataRowElement("" + ((int) timeslice.getAllokation()), p, map);
+				}
 			}
 		}
 
@@ -552,7 +573,7 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	 * @return the readable rule
 	 */
 	public String getReadableRule() {
-		CircleadRecurrenceRule crr = new CircleadRecurrenceRule(this.getRecurrenceRule());
+		CircleadRecurrenceRule crr = getCircleadRecurrenceRule();
 		return crr.getReadableRule();
 	}
 
@@ -754,7 +775,12 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 	 */
 	private CircleadRecurrenceRule getCircleadRecurrenceRule(TeamEntry e, String personIdentifier) {
 		String rule = e.getRecurrenceRule(personIdentifier);
-		CircleadRecurrenceRule crr = new CircleadRecurrenceRule(rule);
+		CircleadRecurrenceRule crr = null;
+		try {
+			crr = new CircleadRecurrenceRule(rule);
+		} catch (CircleadRecurrenceRuleException e1) {
+			LOGGER.error("Rule not correct in team '"+this.getTitle()+"'", e);
+		}
 		if (this.getCircleadRecurrenceRule() != null) {
 			CircleadRecurrenceRule cx = this.getCircleadRecurrenceRule();
 			if (cx.getStartDate() != null) {
@@ -838,7 +864,7 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		}
 
 		if (counter == 0) {
-			CircleadRecurrenceRule crr = new CircleadRecurrenceRule(getRecurrenceRule());
+			CircleadRecurrenceRule crr = getCircleadRecurrenceRule();
 			slices = crr.getAllokationSlices(freq);
 			return slices;
 		}
@@ -884,7 +910,7 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 					double allok = crr.getAverageAllokation(freq);
 					sum += allok;
 				} else if (StringUtil.isNotNullAndNotEmpty(this.getRecurrenceRule())) {
-					CircleadRecurrenceRule crr = new CircleadRecurrenceRule(getRecurrenceRule());
+					CircleadRecurrenceRule crr = getCircleadRecurrenceRule();
 					double allok = crr.getAverageAllokation(freq);
 					sum += allok;
 				}
@@ -892,7 +918,7 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 		}
 
 		if (counter == 0) {
-			CircleadRecurrenceRule crr = new CircleadRecurrenceRule(getRecurrenceRule());
+			CircleadRecurrenceRule crr = getCircleadRecurrenceRule();
 			double allok = crr.getAverageAllokation(freq);
 			return allok;
 		}

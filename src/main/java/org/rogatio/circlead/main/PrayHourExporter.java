@@ -18,6 +18,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.dmfs.rfc5545.Weekday;
 import org.rogatio.circlead.control.CircleadRecurrenceRule;
 import org.rogatio.circlead.control.Repository;
+import org.rogatio.circlead.control.synchronizer.CircleadRecurrenceRuleException;
 import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.ExcelUtil;
 import org.rogatio.circlead.util.StringUtil;
@@ -149,92 +150,101 @@ public class PrayHourExporter {
 		List<Team> teams = Repository.getInstance().getTeamsWithCategory(category);
 		for (Team team : teams) {
 			if (team.getRecurrenceRule() != null) {
-				CircleadRecurrenceRule crr = new CircleadRecurrenceRule(team.getRecurrenceRule());
-
-				Weekday wd = crr.getWeekday();
-				int hour = crr.getHour();
-
-				XSSFRow row = sheet.getRow(hour + 1);
-				if (mode.equals(MODE_DETAIL)) {
-					row.setHeight((short) (256 * 4));
-				} else {
-					row.setHeight((short) (256 * 2));
+				CircleadRecurrenceRule crr = null;
+				try {
+					crr = new CircleadRecurrenceRule(team.getRecurrenceRule());
+				} catch (CircleadRecurrenceRuleException e) {
+					LOGGER.error("Rule not correct in team '"+team.getTitle()+"'", e);
 				}
 
-				XSSFCell cell = null;
-				int pos = CircleadRecurrenceRule.WEEKDAY2DAYOFWEEK.get(wd);
-				sheet.setColumnWidth(pos, 20 * 256);
+				if (crr != null) {
+					if (crr.getHour() != null) {
+						Weekday wd = crr.getWeekday();
+						int hour = crr.getHour();
 
-				XSSFRichTextString rts = new XSSFRichTextString();
-
-				cell = row.getCell(pos);
-
-				if (cell != null) {
-					if (cell.getRichStringCellValue() != null) {
-						rts = cell.getRichStringCellValue();
-						rts.append("\n");
-					}
-				}
-
-				cell = row.createCell(pos);
-
-				if (crr.getDuration() == 2) {
-					sheet.addMergedRegion(new CellRangeAddress(hour + 1, hour + 2, pos, pos));
-				}
-
-				String appendix = "";
-				if (crr.isRecurrenceOdd() != null) {
-					if (crr.isRecurrenceOdd() == true) {
-						appendix = " (uKW)";
-					} else {
-						appendix = " (gKW)";
-					}
-				}
-
-				if (team.getTeamType() != null) {
-					XSSFFont fontBold = workbook.createFont();
-					fontBold.setBold(true); // set bold
-					fontBold.setFontHeight(10); // add font size
-					rts.append(team.getTeamType() + "" + appendix, fontBold);
-				}
-				if (team.getTeamSubtype() != null) {
-					rts.append("\n" + team.getTeamSubtype());
-				}
-
-				if (cell != null) {
-					XSSFCellStyle cellStyle = workbook.createCellStyle();
-					cellStyle.setAlignment(org.apache.poi.ss.usermodel.HorizontalAlignment.CENTER);
-					cellStyle.setVerticalAlignment(org.apache.poi.ss.usermodel.VerticalAlignment.TOP);
-					cellStyle.setWrapText(true);
-
-					if (mode.equals(MODE_NEED)) {
-						if (team.getRedundance() < 1.0) {
-							ExcelUtil.addColorBackground(cellStyle, (byte) 255, (byte) 255, (byte) 0);
+						XSSFRow row = sheet.getRow(hour + 1);
+						if (mode.equals(MODE_DETAIL)) {
+							row.setHeight((short) (256 * 4));
+						} else {
+							row.setHeight((short) (256 * 2));
 						}
-						if (team.getTeamSize() < 2 && (!team.isSpecialized())) {
-							ExcelUtil.addColorBackground(cellStyle, (byte) 255, (byte) 0, (byte) 0);
-						}
-					}
-					if (mode.equals(MODE_INTERN)) {
-						if ((team.getTeamSize() < 2) && (!team.isSpecialized())) {
-							ExcelUtil.addColorBackground(cellStyle, (byte) 240, (byte) 240, (byte) 240);
-						}
-					}
-					if (mode.equals(MODE_EXTERN)) {
-						if ((team.getTeamSize() > 1) || (!team.isSpecialized())) {
-							cell.setCellStyle(cellStyle);
-							cell.setCellValue(rts);
-						}
-					}
-					if (mode.equals(MODE_DETAIL)) {
-						XSSFFont small = workbook.createFont();
-						small.setFontHeight(6);
-						rts.append("\n" + StringUtil.join(team.getTeamMembers()), small);
-					}
 
-					if (!mode.equals(MODE_EXTERN)) {
-						cell.setCellStyle(cellStyle);
-						cell.setCellValue(rts);
+						XSSFCell cell = null;
+						int pos = CircleadRecurrenceRule.WEEKDAY2DAYOFWEEK.get(wd);
+						sheet.setColumnWidth(pos, 20 * 256);
+
+						XSSFRichTextString rts = new XSSFRichTextString();
+
+						cell = row.getCell(pos);
+
+						if (cell != null) {
+							if (cell.getRichStringCellValue() != null) {
+								rts = cell.getRichStringCellValue();
+								rts.append("\n");
+							}
+						}
+
+						cell = row.createCell(pos);
+
+						if (crr.getDuration() == 2) {
+							sheet.addMergedRegion(new CellRangeAddress(hour + 1, hour + 2, pos, pos));
+						}
+
+						String appendix = "";
+						if (crr.isRecurrenceOdd() != null) {
+							if (crr.isRecurrenceOdd() == true) {
+								appendix = " (uKW)";
+							} else {
+								appendix = " (gKW)";
+							}
+						}
+
+						if (team.getTeamType() != null) {
+							XSSFFont fontBold = workbook.createFont();
+							fontBold.setBold(true); // set bold
+							fontBold.setFontHeight(10); // add font size
+							rts.append(team.getTeamType() + "" + appendix, fontBold);
+						}
+						if (team.getTeamSubtype() != null) {
+							rts.append("\n" + team.getTeamSubtype());
+						}
+
+						if (cell != null) {
+							XSSFCellStyle cellStyle = workbook.createCellStyle();
+							cellStyle.setAlignment(org.apache.poi.ss.usermodel.HorizontalAlignment.CENTER);
+							cellStyle.setVerticalAlignment(org.apache.poi.ss.usermodel.VerticalAlignment.TOP);
+							cellStyle.setWrapText(true);
+
+							if (mode.equals(MODE_NEED)) {
+								if (team.getRedundance() < 1.0) {
+									ExcelUtil.addColorBackground(cellStyle, (byte) 255, (byte) 255, (byte) 0);
+								}
+								if (team.getTeamSize() < 2 && (!team.isSpecialized())) {
+									ExcelUtil.addColorBackground(cellStyle, (byte) 255, (byte) 0, (byte) 0);
+								}
+							}
+							if (mode.equals(MODE_INTERN)) {
+								if ((team.getTeamSize() < 2) && (!team.isSpecialized())) {
+									ExcelUtil.addColorBackground(cellStyle, (byte) 240, (byte) 240, (byte) 240);
+								}
+							}
+							if (mode.equals(MODE_EXTERN)) {
+								if ((team.getTeamSize() > 1) || (team.isSpecialized())) {
+									cell.setCellStyle(cellStyle);
+									cell.setCellValue(rts);
+								}
+							}
+							if (mode.equals(MODE_DETAIL)) {
+								XSSFFont small = workbook.createFont();
+								small.setFontHeight(6);
+								rts.append("\n" + StringUtil.join(team.getTeamMembers()), small);
+							}
+
+							if (!mode.equals(MODE_EXTERN)) {
+								cell.setCellStyle(cellStyle);
+								cell.setCellValue(rts);
+							}
+						}
 					}
 				}
 			}

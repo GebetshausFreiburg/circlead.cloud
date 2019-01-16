@@ -56,16 +56,18 @@ public class SvgBuilder {
 			for (TeamEntry teamEntry : entries) {
 				Role role = Repository.getInstance().getRole(teamEntry.getRoleIdentifier());
 
-				List<String> competencies = role.getCompetences();
+				if (role != null) {
+					List<String> competencies = role.getCompetences();
 
-				for (String competence : competencies) {
-					SvgBuilder.addSvgCompetence(competence, size, element, tree);
-					List<Role> f = Repository.getInstance().getParentRoles(role);
-					for (Role rx : f) {
-						if (rx.getCompetences() != null) {
-							List<String> co = rx.getCompetences();
-							for (String c : co) {
-								SvgBuilder.addSvgImplicitCompetence(rx, c, size, element, tree);
+					for (String competence : competencies) {
+						SvgBuilder.addSvgCompetence(competence, size, element, tree);
+						List<Role> f = Repository.getInstance().getParentRoles(role);
+						for (Role rx : f) {
+							if (rx.getCompetences() != null) {
+								List<String> co = rx.getCompetences();
+								for (String c : co) {
+									SvgBuilder.addSvgImplicitCompetence(rx, c, size, element, tree);
+								}
 							}
 						}
 					}
@@ -173,9 +175,9 @@ public class SvgBuilder {
 	 * Adds the implicit color line.
 	 *
 	 * @param element the element
-	 * @param color the color
+	 * @param color   the color
 	 * @param opacity the opacity
-	 * @param idx the idx
+	 * @param idx     the idx
 	 * @return the element
 	 */
 	private static Element addImplicitColorLine(Element element, Color color, double opacity, long idx) {
@@ -190,7 +192,7 @@ public class SvgBuilder {
 	 *
 	 * @param element the element
 	 * @param opacity the opacity
-	 * @param idx the idx
+	 * @param idx     the idx
 	 * @return the element
 	 */
 	private static Element addImplicitGreyLine(Element element, double opacity, long idx) {
@@ -203,9 +205,9 @@ public class SvgBuilder {
 	/**
 	 * Adds the implicit title.
 	 *
-	 * @param line the line
+	 * @param line       the line
 	 * @param competence the competence
-	 * @param workitem the workitem
+	 * @param workitem   the workitem
 	 */
 	private static void addImplicitTitle(Element line, String competence, IWorkitem workitem) {
 		Element title = line.appendElement("title");
@@ -267,9 +269,9 @@ public class SvgBuilder {
 	 * Adds the color line.
 	 *
 	 * @param element the element
-	 * @param color the color
+	 * @param color   the color
 	 * @param opacity the opacity
-	 * @param idx the idx
+	 * @param idx     the idx
 	 * @return the element
 	 */
 	private static Element addColorLine(Element element, Color color, double opacity, long idx) {

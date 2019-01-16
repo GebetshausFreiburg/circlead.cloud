@@ -20,9 +20,12 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dmfs.rfc5545.recur.Freq;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.CircleadRecurrenceRule;
+import org.rogatio.circlead.control.synchronizer.CircleadRecurrenceRuleException;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.PairTableParserElement;
 import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
@@ -50,6 +53,8 @@ import org.rogatio.circlead.view.renderer.IWorkitemRenderer;
  */
 public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValidator, IDataRow {
 
+	final static Logger LOGGER = LogManager.getLogger(Person.class);
+	
 	/**
 	 * Instantiates a new person.
 	 */
@@ -393,7 +398,12 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		for (Role role : orgRoles) {
 			String rule = role.getRecurrenceRule(this.getFullname());
 			if (StringUtil.isNotNullAndNotEmpty(rule)) {
-				CircleadRecurrenceRule crr = new CircleadRecurrenceRule(rule);
+				CircleadRecurrenceRule crr = null;
+				try {
+					crr = new CircleadRecurrenceRule(rule);
+				} catch (CircleadRecurrenceRuleException e) {
+					LOGGER.error("Rule not correct in person '"+this.getTitle()+"'", e);
+				}
 				List<Timeslice> ts = crr.getAllokationSlices(freq);
 				map.put(role.getTitle(), ts);
 			}

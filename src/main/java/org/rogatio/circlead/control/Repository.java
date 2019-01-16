@@ -23,6 +23,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dmfs.rfc5545.Weekday;
 import org.dmfs.rfc5545.recur.Freq;
+import org.rogatio.circlead.control.synchronizer.CircleadRecurrenceRuleException;
 import org.rogatio.circlead.control.synchronizer.Connector;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
@@ -315,7 +316,12 @@ public final class Repository {
 				boolean found = false;
 				for (Team team : this.getTeamsWithCategory(category)) {
 					if (StringUtil.isNotNullAndNotEmpty(team.getRecurrenceRule())) {
-						CircleadRecurrenceRule crr = new CircleadRecurrenceRule(team.getRecurrenceRule());
+						CircleadRecurrenceRule crr = null;
+						try {
+							crr = new CircleadRecurrenceRule(team.getRecurrenceRule());
+						} catch (CircleadRecurrenceRuleException e) {
+							LOGGER.error("Rule not correct in team '" + team.getTitle() + "'", e);
+						}
 
 						Weekday wd = crr.getWeekday();
 						Integer hour = crr.getHour();
@@ -1159,7 +1165,12 @@ public final class Repository {
 			if (!skip) {
 				String rule = role.getRecurrenceRule(personIdentifier);
 				if (StringUtil.isNotNullAndNotEmpty(rule)) {
-					CircleadRecurrenceRule crr = new CircleadRecurrenceRule(rule);
+					CircleadRecurrenceRule crr = null;
+					try {
+						crr = new CircleadRecurrenceRule(rule);
+					} catch (CircleadRecurrenceRuleException e) {
+						LOGGER.error("Rule not correct in role '" + role.getTitle() + "'", e);
+					}
 					double allok = crr.getAverageAllokation(freq);
 					sumR += allok;
 				}
@@ -1988,6 +1999,41 @@ public final class Repository {
 		return childRolegroups;
 	}
 
+	private List<ValidationMessage> logForUniqueIDs() {
+		List<ValidationMessage> list = new ArrayList<ValidationMessage>();
+		for (IWorkitem wi : this.getWorkitems()) {
+			if (!wi.getType().equals(WorkitemType.COMPETENCE.getName())) {
+				int counter = 0;
+				for (String id : wi.getId().keySet()) {
+					for (IWorkitem wi2 : this.getWorkitems()) {
+						for (String id2 : wi2.getId().keySet()) {
+							if (StringUtil.isNotNullAndNotEmpty(id2)) {
+								if (wi.getId().get(id).equals(wi2.getId().get(id2))) {
+									if (id.equals(id2)) {
+										counter++;
+										if (!wi.getTitle().equals(wi2.getTitle())) {
+											if (counter >= 2) {
+												ValidationMessage m = new ValidationMessage(wi);
+												m.error("Doubled ID", "ID '" + id + "' is not unique in item '"
+														+ wi.getTitle() + "' and item '" + wi2.getTitle() + "'");
+												list.add(m);
+												LOGGER.error("ID '" + id + "' is not unique in item '" + wi.getTitle()
+														+ "' and item '" + wi2.getTitle() + "'");
+											}
+										}
+									}
+
+								}
+							}
+						}
+					}
+				}
+			}
+
+		}
+		return list;
+	}
+
 	/**
 	 * Validate all instances of IValidator. If available all synchronizers and
 	 * workitems
@@ -1995,6 +2041,7 @@ public final class Repository {
 	 * @return the list
 	 */
 	public List<ValidationMessage> validate() {
+
 		/*
 		 * Initialize empty list of validators
 		 */
@@ -2035,6 +2082,7 @@ public final class Repository {
 		 * Iterate through all validator-classes
 		 */
 		for (IValidator validator : validators) {
+
 			List<ValidationMessage> messages = validator.validate();
 			for (ValidationMessage m : messages) {
 				/*
@@ -2075,6 +2123,10 @@ public final class Repository {
 				}
 			}
 		}
+
+		List<ValidationMessage> list = logForUniqueIDs();
+		allMessages.addAll(list);
+
 		return allMessages;
 
 	}

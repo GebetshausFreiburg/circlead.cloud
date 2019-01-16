@@ -79,8 +79,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class AtlassianSynchronizer extends DefaultSynchronizer {
 
 	/** The urlconfluence. */
-	private final String URLCONFLUENCE = PropertyUtil.getInstance().getApplicationValue(PropertyUtil.ATLASSIAN_CONFLUENCE_URL);
-	
+	private final String URLCONFLUENCE = PropertyUtil.getInstance()
+			.getApplicationValue(PropertyUtil.ATLASSIAN_CONFLUENCE_URL);
+
 	/** The dedicatedserver. */
 	private final boolean DEDICATEDSERVER = PropertyUtil.getInstance()
 			.getBooleanValue(PropertyUtil.ATLASSIAN_SERVER_DEDICATED);
@@ -329,7 +330,9 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 				/* Catch result from rest-interface writing confluence-page */
 				SynchronizerResult res = confluenceClient.put(uri, data);
 
-				LOGGER.debug(workitem.getTitle() + ": " + res.toString());
+				if (res != null) {
+					LOGGER.debug(workitem.getTitle() + ": " + res.toString());
+				}
 
 				return res;
 			} catch (JsonProcessingException e) {
@@ -642,26 +645,28 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 	/**
 	 * Save image attachment of page.
 	 *
-	 * @param pageId the page id
+	 * @param pageId   the page id
 	 * @param filename the filename
 	 */
 	public void saveImageAttachmentOfPage(String pageId, String filename) {
 		Integer i = Integer.parseInt(pageId);
-		confluenceClient.loadAttachment(i, filename, "data"+File.separatorChar+"ressources"+File.separatorChar+"images"+File.separatorChar+"profile"+File.separatorChar);
-		LOGGER.debug("Load and write '"+filename+"'.");
+		confluenceClient.loadAttachment(i, filename, "data" + File.separatorChar + "ressources" + File.separatorChar
+				+ "images" + File.separatorChar + "profile" + File.separatorChar);
+		LOGGER.debug("Load and write '" + filename + "'.");
 	}
-	
+
 	/**
 	 * Save image attachment of page.
 	 *
-	 * @param pageId the page id
+	 * @param pageId   the page id
 	 * @param filename the filename
 	 */
 	public void saveImageAttachmentOfPage(int pageId, String filename) {
-		confluenceClient.loadAttachment(pageId, filename, "data"+File.separatorChar+"ressources"+File.separatorChar+"images"+File.separatorChar+"profile"+File.separatorChar);
-		LOGGER.debug("Load and write '"+filename+"'.");
+		confluenceClient.loadAttachment(pageId, filename, "data" + File.separatorChar + "ressources"
+				+ File.separatorChar + "images" + File.separatorChar + "profile" + File.separatorChar);
+		LOGGER.debug("Load and write '" + filename + "'.");
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -823,7 +828,8 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 
 				DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 				LOGGER.debug("Load: code=" + page.getCode() + ", message=" + page.getMessage() + ", source="
-						+ page.getSource() + ", title=" + p.getTitle() +"(modified="+formatter.format(wi.getModified())+")");
+						+ page.getSource() + ", title=" + p.getTitle() + "(modified="
+						+ formatter.format(wi.getModified()) + ")");
 
 			} catch (JsonParseException e) {
 				throw new SynchronizerException("Error (JsonParse) loading item '" + indexId + "'. " + e.getMessage(),
@@ -1169,7 +1175,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 			SynchronizerResult results = confluenceClient
 					.search("space = \"" + circleadSpace + "\" AND label = \"" + type + "\"");
 
-			if (results==null|results.getContent() == null) {
+			if (results == null | results.getContent() == null) {
 				LOGGER.error("Error occured: Loading Index returns no content in result-set.");
 			}
 

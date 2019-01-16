@@ -128,10 +128,9 @@ public class HttpClient {
 		} else {
 			if (con.getErrorStream() != null) {
 				result.setContent(this.read(con.getErrorStream()));
-				
 				return result;
 			} else {
-				return null;
+				return result;
 			}
 		}
 	}
