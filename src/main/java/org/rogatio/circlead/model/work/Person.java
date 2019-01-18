@@ -782,6 +782,31 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 			}
 		}
 
+		ContactDataitem c = this.getFirstPrivateContact();
+		if (c!=null) {
+			if (!StringUtil.isNotNullAndNotEmpty(c.getMobile())) {
+				ValidationMessage m = new ValidationMessage(this);
+				m.warning("Person has no mobile", "Person '" + this.getFullname() + "' has no mobile phone data");
+				messages.add(m);
+			}
+			if (!StringUtil.isNotNullAndNotEmpty(c.getMail())) {
+				ValidationMessage m = new ValidationMessage(this);
+				m.warning("Person has no mail", "Person '" + this.getFullname() + "' has no mail data");
+				messages.add(m);
+			}
+			String a = this.getDataValue(Parameter.ABBREVIATION2.toString());
+			if (!StringUtil.isNotNullAndNotEmpty(a)) {
+				ValidationMessage m = new ValidationMessage(this);
+				m.warning("Person has no abbreviation", "Person '" + this.getFullname() + "' has no abbreviation");
+				messages.add(m);
+			}
+			
+		} else {
+			ValidationMessage m = new ValidationMessage(this);
+			m.warning("Person has no contact", "Person '" + this.getFullname() + "' has no private contact data");
+			messages.add(m);
+		}
+		
 		if (r != null) {
 			if (this.getStatus().equalsIgnoreCase("Inaktiv") || this.getStatus().equalsIgnoreCase("Pausiert")) {
 				ignoreReprepresentationMessage = true;

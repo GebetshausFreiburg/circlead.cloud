@@ -752,7 +752,7 @@ public class Team extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 					ValidationMessage m = new ValidationMessage(this);
 					m.warning("Teamrole not completly set",
 							"Teamrole '" + teamEntry.getRoleIdentifier() + "' in Team '" + this.getTitle() + "' needs "
-									+ teamEntry.getNeeded() + "persons and has only " + teamEntry.getPersons().size());
+									+ teamEntry.getNeeded() + " persons and has only " + teamEntry.getPersons().size());
 					messages.add(m);
 				}
 			} else {
