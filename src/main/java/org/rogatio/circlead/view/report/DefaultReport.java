@@ -40,6 +40,8 @@ public class DefaultReport implements IReport {
 	/** The r. */
 	protected final Repository R = Repository.getInstance();
 
+	private String stylesheet = "styles.css";
+
 	/** The name. */
 	private String name = null;
 
@@ -48,7 +50,7 @@ public class DefaultReport implements IReport {
 
 	/** The script file. */
 	private String scriptFile = null;
-	
+
 	/**
 	 * Instantiates a new default report.
 	 */
@@ -86,6 +88,7 @@ public class DefaultReport implements IReport {
 
 			binding.setVariable("name", "");
 			binding.setVariable("description", "");
+			binding.setVariable("stylesheet", "");
 			binding.setVariable("synchronizer", SynchronizerFactory.getInstance().getActual());
 			binding.setVariable("R", Repository.getInstance());
 			binding.setVariable("ObjectUtil", new ObjectUtil());
@@ -95,9 +98,13 @@ public class DefaultReport implements IReport {
 			GroovyShell shell = new GroovyShell(binding);
 
 			String script = new String(Files.readAllBytes(Paths.get(scriptFile)));
-		    shell.evaluate(script);
+			shell.evaluate(script);
 			this.name = (String) binding.getProperty("name");
 			this.description = (String) binding.getProperty("description");
+			String stylesheet = (String) binding.getProperty("stylesheet");
+			if (StringUtil.isNotNullAndNotEmpty(stylesheet)) {
+				this.stylesheet = stylesheet;
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -149,6 +156,7 @@ public class DefaultReport implements IReport {
 
 				binding.setVariable("name", "");
 				binding.setVariable("description", "");
+				binding.setVariable("stylesheet", "");
 				binding.setVariable("synchronizer", synchronizer);
 				binding.setVariable("R", Repository.getInstance());
 				binding.setVariable("ObjectUtil", new ObjectUtil());
@@ -161,10 +169,15 @@ public class DefaultReport implements IReport {
 
 				String name = (String) binding.getProperty("name");
 				String description = (String) binding.getProperty("description");
+				String stylesheet = (String) binding.getProperty("stylesheet");
+
 				Element element = (Element) o;
 
 				this.name = name;
 				this.description = description;
+				if (StringUtil.isNotNullAndNotEmpty(stylesheet)) {
+					this.stylesheet = stylesheet;
+				}
 
 				return element;
 
@@ -183,7 +196,7 @@ public class DefaultReport implements IReport {
 	@Override
 	public List<String> getHead() {
 		List<String> head = new ArrayList<String>();
-		head.add("<link rel=\"stylesheet\" href=\"styles.css\">");
+		head.add("<link rel=\"stylesheet\" href=\"" + stylesheet + "\">");
 		return head;
 	}
 

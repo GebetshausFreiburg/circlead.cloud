@@ -1,5 +1,6 @@
 name = "Team Category Report"
 description = "Zeigt die Teams der Kategorie '" + PropertyUtil.getApplicationDefaultTeamcategory() + "' an und stellt diese in einem stundengenauen Wochenplan dar."
+stylesheet = "stylesCategoryReport.css"
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,6 +94,9 @@ import org.rogatio.circlead.util.StringUtil;
 			} else if (d == 2) {
 				duration = "twohour";
 				durrationTime = d;
+			} else if (d == 3) {
+				duration = "threehour";
+				durrationTime = d;
 			}
 		}
 
@@ -142,8 +146,12 @@ Element element = new Element("p");
 
 				for (int hour = 0; hour < 24; hour++) {
 					int durrationTime = setHour(weekday, hour, ul);
-					if (durrationTime > 1) {
+					if (durrationTime == 2) {
 						hour++;
+					}
+                                        if (durrationTime == 3) {
+						hour++;
+                                                hour++;
 					}
 				}
 

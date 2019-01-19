@@ -70,7 +70,11 @@ for (int i = 0; i < 24; i++) {
 							if (writeable[i][j] && (j == pos && i == hour)) {
 								Element td = tr.appendElement("td");
 
-								if (crr.getDuration() == 2) {
+								if (crr.getDuration() == 3) {
+									td.attr("rowspan", "3");
+									writeable[i + 1][j] = false;
+									writeable[i + 2][j] = false;
+								} else if (crr.getDuration() == 2) {
 									td.attr("rowspan", "2");
 									writeable[i + 1][j] = false;
 								} else {

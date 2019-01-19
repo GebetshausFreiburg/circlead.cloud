@@ -10,10 +10,26 @@ a:link {
    text-decoration: none;
 }
 
-img{
+img {
    max-height:80px;
    max-width:80px;
 }
+
+table { 
+   border: 1px solid #d3d3d3;
+   margin:0;
+   padding:0;
+   border-collapse: collapse;
+}
+
+td { 
+   border: thin solid #d3d3d3;
+   margin:0;
+   padding:1;
+   border-collapse: collapse;
+}
+
+
 
 /* visited link */
 a:visited {
@@ -122,4 +138,6 @@ html {
    text-align: right;
    float: right;
 }
+
+
 

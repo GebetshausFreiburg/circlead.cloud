@@ -189,6 +189,9 @@ public class PrayHourExporter {
 						if (crr.getDuration() == 2) {
 							sheet.addMergedRegion(new CellRangeAddress(hour + 1, hour + 2, pos, pos));
 						}
+						if (crr.getDuration() == 3) {
+							sheet.addMergedRegion(new CellRangeAddress(hour + 1, hour + 3, pos, pos));
+						}
 
 						String appendix = "";
 						if (crr.isRecurrenceOdd() != null) {

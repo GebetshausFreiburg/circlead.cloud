@@ -3,6 +3,7 @@ package org.rogatio.circlead.main;
 import java.awt.Color;
 import java.awt.DisplayMode;
 import java.awt.Graphics;
+import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Rectangle;
@@ -28,8 +29,13 @@ import javax.swing.WindowConstants;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.rogatio.circlead.control.Repository;
+import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer;
+import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
+import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.DropboxUtil;
 import org.rogatio.circlead.util.PropertyUtil;
+import org.rogatio.circlead.util.StringUtil;
 
 import com.dropbox.core.DbxDownloader;
 import com.dropbox.core.DbxException;
@@ -50,9 +56,14 @@ public class Slideshow extends JFrame {
 
 	/** The Constant LOGGER. */
 	final static Logger LOGGER = LogManager.getLogger(Slideshow.class);
-	
+
 	/** The Constant TIMEFRAME_IN_SECONDS. */
 	static final int TIMEFRAME_IN_SECONDS = 5;
+	static final String BACKGROUND_COLOR_IMAGE = "#000000";
+	static final String BACKGROUND_COLOR_TEXT = "#FFFFFF";
+	static final int TEXTSIZE_TYPE = 80;
+	static final int TEXTSIZE_SUBTYPE = 60;
+
 	
 	/**
 	 * Instantiates a new slideshow.
@@ -60,61 +71,60 @@ public class Slideshow extends JFrame {
 	public Slideshow() {
 		PicturePanel pp = new PicturePanel();
 		add(pp);
-		
-		// on ESC key close frame
-        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-            KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel"); 
-        getRootPane().getActionMap().put("Cancel", new AbstractAction(){ 
-           private static final long serialVersionUID = 250834673044684738L;
 
-			public void actionPerformed(ActionEvent e)
-            {
-                close();
-            }
-        });
-        
-        // on close window the close method is called
-        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent evt) 
-            {
-                close();
-            }
-        });
+		// on ESC key close frame
+		getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+				"Cancel");
+		getRootPane().getActionMap().put("Cancel", new AbstractAction() {
+			private static final long serialVersionUID = 250834673044684738L;
+
+			public void actionPerformed(ActionEvent e) {
+				close();
+			}
+		});
+
+		// on close window the close method is called
+		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(java.awt.event.WindowEvent evt) {
+				close();
+			}
+		});
 	}
-	
+
 	/**
 	 * Close.
 	 */
 	private void close() {
 		System.exit(0);
 	}
-	
+
 	/**
 	 * The main method.
 	 *
 	 * @param args the arguments
 	 */
 	public static void main(String[] args) {
-			Slideshow frame = new Slideshow();
-			frame.setTitle("Display");
-			frame.setLocationRelativeTo(null);
-			frame.setMaximized(true);
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-			frame.setUndecorated(true);
-			frame.setVisible(true);	
+		Slideshow frame = new Slideshow();
+		frame.setTitle("Display");
+		frame.setLocationRelativeTo(null);
+		frame.setMaximized(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		frame.setUndecorated(true);
+		frame.setVisible(true);
 	}
 
 	/**
 	 * Load slides.
 	 *
 	 * @param displayUserName the display user name
-	 * @param path the path
+	 * @param path            the path
 	 * @return the list
 	 * @throws TeamFolderListErrorException the team folder list error exception
-	 * @throws DbxException the dbx exception
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws DbxException                 the dbx exception
+	 * @throws IOException                  Signals that an I/O exception has
+	 *                                      occurred.
 	 */
 	public static List<ImageIcon> loadSlides(String displayUserName, String path)
 			throws TeamFolderListErrorException, DbxException, IOException {
@@ -130,6 +140,7 @@ public class Slideshow extends JFrame {
 
 		for (Metadata entry : res.getEntries()) {
 			if (entry.getName().endsWith(".jpg")) {
+				LOGGER.info("Load Slide '"+path + "/" + entry.getName()+"'");
 				DbxDownloader<FileMetadata> dl = client.files().download(path + "/" + entry.getName());
 				ByteArrayOutputStream out = new ByteArrayOutputStream();
 				dl.download(out);
@@ -140,13 +151,13 @@ public class Slideshow extends JFrame {
 
 		return slides;
 	}
-	
+
 	/**
 	 * Scale image.
 	 *
 	 * @param icon the icon
-	 * @param w the w
-	 * @param h the h
+	 * @param w    the w
+	 * @param h    the h
 	 * @return the image icon
 	 */
 	public static ImageIcon scaleImage(ImageIcon icon, int w, int h) {
@@ -165,57 +176,69 @@ public class Slideshow extends JFrame {
 
 		return new ImageIcon(icon.getImage().getScaledInstance(nw, nh, Image.SCALE_DEFAULT));
 	}
-	
+
 	/**
 	 * The Class PicturePanel.
 	 */
 	class PicturePanel extends JPanel {
-		
+
 		/** The Constant serialVersionUID. */
 		private static final long serialVersionUID = -7020396329447754705L;
 
 		/** The counter. */
 		private int counter = 0;
-		
-		/** The image. */
+
+		/** The slides. */
 		private List<ImageIcon> slides = new ArrayList<ImageIcon>();
-		
+
 		/** The picture. */
-		JLabel picture = new JLabel();
+		private JLabel slide = new JLabel();
 		
+		private Repository repository;
+
 		/**
 		 * Instantiates a new picture panel.
 		 */
 		public PicturePanel() {
+//			System.out.println();
 			try {
 				slides = loadSlides("Matthias Wegner", "/04_GBH_GBS_Gebetstunden/01_Flurdisplay");
 			} catch (DbxException | IOException e) {
 				LOGGER.error(e);
 			}
 			
+			repository = Repository.getInstance();
+			AtlassianSynchronizer asynchronizer = new AtlassianSynchronizer("CIRCLEAD");
+			repository.addSynchronizer(asynchronizer);
+			repository.loadTeams();
+
+			this.setLayout(new GridBagLayout());
+			this.setBackground(Color.decode(BACKGROUND_COLOR_IMAGE));
+
+			slide.setHorizontalAlignment(JLabel.CENTER);
+			slide.setVerticalAlignment(JLabel.CENTER);
+			add(slide);
 			
 			Timer timer = new Timer(1000 * TIMEFRAME_IN_SECONDS, new TimerListener());
 			timer.start();
-			add(picture);
-			this.setBackground(Color.decode("#000000"));
-			
 		}
 
 		/**
-		 * The listener interface for receiving timer events.
-		 * The class that is interested in processing a timer
-		 * event implements this interface, and the object created
-		 * with that class is registered with a component using the
-		 * component's <code>addTimerListener<code> method. When
-		 * the timer event occurs, that object's appropriate
-		 * method is invoked.
+		 * The listener interface for receiving timer events. The class that is
+		 * interested in processing a timer event implements this interface, and the
+		 * object created with that class is registered with a component using the
+		 * component's <code>addTimerListener<code> method. When the timer event occurs,
+		 * that object's appropriate method is invoked.
 		 *
 		 * @see TimerEvent
 		 */
 		class TimerListener implements ActionListener {
-			
-			/* (non-Javadoc)
-			 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see
+			 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 			 */
 			public void actionPerformed(ActionEvent e) {
 				repaint();
@@ -223,25 +246,58 @@ public class Slideshow extends JFrame {
 				update(getGraphics());
 				counter++;
 				if (counter >= slides.size()) {
-					counter = 0;
+					counter = -1;
 				}
 
 			}
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
 		 */
 		protected void paintComponent(Graphics g) {
 			super.paintComponent(g);
-			ImageIcon img = slides.get(counter);
+			if (counter < 0) {	
+				Team team = repository.getTeam(14, "Montag");
+				setText(team.getTeamType(), team.getTeamSubtype());
+			} else {
+				setImage();
+			}
+		}
+
+		/**
+		 * Sets the text.
+		 *
+		 * @param type the type
+		 * @param subtype the subtype
+		 */
+		private void setText(String type, String subtype) {
+			this.setBackground(Color.decode(BACKGROUND_COLOR_TEXT));
+			slide.setIcon(null);
+			if (!StringUtil.isNotNullAndNotEmpty(subtype)) {
+				subtype = "";
+			}
+			slide.setText("<html>" + "<span style='font-size:"+TEXTSIZE_TYPE+"px;color:red'>" + type + "</span><br>"
+					+ "<span style='font-size:"+TEXTSIZE_SUBTYPE+"px;color:blue'>" + subtype + "</span>" + "</html>");
+
+		}
+		
+		/**
+		 * Sets the image.
+		 */
+		private void setImage() {
+			this.setBackground(Color.decode(BACKGROUND_COLOR_IMAGE));
+			slide.setText(null);
 			
+			ImageIcon img = slides.get(counter);
+
 			// get size of parent panel. add 1 to avoid zero size.
 			int w = getParent().getWidth() + 1;
 			int h = getParent().getHeight() + 1;
-			
 			// scale image
-			picture.setIcon(scaleImage(img, w, h));
+			slide.setIcon(scaleImage(img, w, h));
 		}
 
 	}
