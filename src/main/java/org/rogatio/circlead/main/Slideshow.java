@@ -14,7 +14,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -31,7 +33,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer;
-import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.DropboxUtil;
 import org.rogatio.circlead.util.PropertyUtil;
@@ -59,12 +60,21 @@ public class Slideshow extends JFrame {
 
 	/** The Constant TIMEFRAME_IN_SECONDS. */
 	static final int TIMEFRAME_IN_SECONDS = 5;
-	static final String BACKGROUND_COLOR_IMAGE = "#000000";
-	static final String BACKGROUND_COLOR_TEXT = "#FFFFFF";
-	static final int TEXTSIZE_TYPE = 80;
-	static final int TEXTSIZE_SUBTYPE = 60;
-
 	
+	static final String DROPBOX_PATH = "04_GBH_GBS_Gebetstunden/01_Flurdisplay";
+	
+	/** The Constant BACKGROUND_COLOR_IMAGE. */
+	static final String BACKGROUND_COLOR_IMAGE = "#000000";
+	
+	/** The Constant BACKGROUND_COLOR_TEXT. */
+	static final String BACKGROUND_COLOR_TEXT = "#000000";
+	
+	/** The Constant TEXTSIZE_TYPE. */
+	static final int TEXTSIZE_TYPE = 80;
+	
+	/** The Constant TEXTSIZE_SUBTYPE. */
+	static final int TEXTSIZE_SUBTYPE = 40;
+
 	/**
 	 * Instantiates a new slideshow.
 	 */
@@ -139,8 +149,8 @@ public class Slideshow extends JFrame {
 		ListFolderResult res = DropboxUtil.listTeamFolder(client, path);
 
 		for (Metadata entry : res.getEntries()) {
-			if (entry.getName().endsWith(".jpg")) {
-				LOGGER.info("Load Slide '"+path + "/" + entry.getName()+"'");
+			if (entry.getName().endsWith(".jpg")||entry.getName().endsWith(".png")) {
+				LOGGER.info("Load Slide '" + path + "/" + entry.getName() + "'");
 				DbxDownloader<FileMetadata> dl = client.files().download(path + "/" + entry.getName());
 				ByteArrayOutputStream out = new ByteArrayOutputStream();
 				dl.download(out);
@@ -174,6 +184,10 @@ public class Slideshow extends JFrame {
 			nw = (icon.getIconWidth() * nh) / icon.getIconHeight();
 		}
 
+		if (nw==0||nh==0) {
+			return icon;
+		}
+		
 		return new ImageIcon(icon.getImage().getScaledInstance(nw, nh, Image.SCALE_DEFAULT));
 	}
 
@@ -193,20 +207,20 @@ public class Slideshow extends JFrame {
 
 		/** The picture. */
 		private JLabel slide = new JLabel();
-		
+
+		/** The repository. */
 		private Repository repository;
 
 		/**
 		 * Instantiates a new picture panel.
 		 */
 		public PicturePanel() {
-//			System.out.println();
 			try {
-				slides = loadSlides("Matthias Wegner", "/04_GBH_GBS_Gebetstunden/01_Flurdisplay");
+				slides = loadSlides(PropertyUtil.getInstance().getDropboxTeamUsername(), DROPBOX_PATH);
 			} catch (DbxException | IOException e) {
 				LOGGER.error(e);
 			}
-			
+
 			repository = Repository.getInstance();
 			AtlassianSynchronizer asynchronizer = new AtlassianSynchronizer("CIRCLEAD");
 			repository.addSynchronizer(asynchronizer);
@@ -218,7 +232,7 @@ public class Slideshow extends JFrame {
 			slide.setHorizontalAlignment(JLabel.CENTER);
 			slide.setVerticalAlignment(JLabel.CENTER);
 			add(slide);
-			
+
 			Timer timer = new Timer(1000 * TIMEFRAME_IN_SECONDS, new TimerListener());
 			timer.start();
 		}
@@ -248,7 +262,6 @@ public class Slideshow extends JFrame {
 				if (counter >= slides.size()) {
 					counter = -1;
 				}
-
 			}
 		}
 
@@ -259,9 +272,12 @@ public class Slideshow extends JFrame {
 		 */
 		protected void paintComponent(Graphics g) {
 			super.paintComponent(g);
-			if (counter < 0) {	
-				Team team = repository.getTeam(14, "Montag");
-				setText(team.getTeamType(), team.getTeamSubtype());
+			if (counter < 0) {
+				Calendar c = Calendar.getInstance();
+				int hour = c.get(Calendar.HOUR_OF_DAY);
+				String day = new SimpleDateFormat("EEEE").format(c.getTime());
+				Team team = repository.getTeam(hour, day);
+				setText(team);
 			} else {
 				setImage();
 			}
@@ -270,27 +286,55 @@ public class Slideshow extends JFrame {
 		/**
 		 * Sets the text.
 		 *
-		 * @param type the type
-		 * @param subtype the subtype
+		 * @param team the new text
 		 */
-		private void setText(String type, String subtype) {
+		private void setText(Team team) {
 			this.setBackground(Color.decode(BACKGROUND_COLOR_TEXT));
 			slide.setIcon(null);
-			if (!StringUtil.isNotNullAndNotEmpty(subtype)) {
-				subtype = "";
+
+			Calendar c = Calendar.getInstance();
+			int hour = c.get(Calendar.HOUR_OF_DAY);
+			String day = new SimpleDateFormat("EEEE").format(c.getTime());
+
+			String type = "Unbesetzt";
+			if (team == null) {
+				repository.getNextTeam(hour, day);
+			} else {
+				type = team.getTeamType();
 			}
-			slide.setText("<html>" + "<span style='font-size:"+TEXTSIZE_TYPE+"px;color:red'>" + type + "</span><br>"
-					+ "<span style='font-size:"+TEXTSIZE_SUBTYPE+"px;color:blue'>" + subtype + "</span>" + "</html>");
+
+			String subtype = "";
+			if (team != null) {
+				if (StringUtil.isNotNullAndNotEmpty(team.getTeamSubtype())) {
+					subtype = team.getTeamSubtype();
+				}
+			}
+
+			Team nextTeam = repository.getNextTeam(hour, day);
+			String nextTeamDesc = nextTeam.getTeamType();
+			if (StringUtil.isNotNullAndNotEmpty(nextTeam.getTeamSubtype())) {
+				nextTeamDesc = nextTeamDesc + ": " + nextTeam.getTeamSubtype();
+			}
+
+			String text = "<html><span style='font-size:12px;color:#54585A'>Aktuell (" + hour + ":00h)</span>\n"
+					+ "<br>\n" + "<span style='font-size:" + TEXTSIZE_TYPE + "px;color:#D4D9DB'><b>" + type
+					+ "</b></span>\n" + "<br>\n" + "<span style='font-size:" + TEXTSIZE_SUBTYPE + "px;color:#CC8A00'>"
+					+ subtype + "</span>\n" + "<br><br><br>\n"
+					+ "<span style='font-size:12px;color:#54585A'>Nächste Stunde (" + nextTeam.getCRRHour()
+					+ ":00h)</span>\n" + "<br>\n" + "<span style='font-size:20px;color:#D4D9DB'>" + nextTeamDesc
+					+ "</span></html>";
+
+			slide.setText(text);
 
 		}
-		
+
 		/**
 		 * Sets the image.
 		 */
 		private void setImage() {
 			this.setBackground(Color.decode(BACKGROUND_COLOR_IMAGE));
 			slide.setText(null);
-			
+
 			ImageIcon img = slides.get(counter);
 
 			// get size of parent panel. add 1 to avoid zero size.

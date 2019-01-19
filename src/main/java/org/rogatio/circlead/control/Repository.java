@@ -70,7 +70,7 @@ public final class Repository {
 	/** The Constant logger. */
 	private final static Logger LOGGER = LogManager.getLogger(Repository.class);
 
-	/**  The singleton instance of the repository. */
+	/** The singleton instance of the repository. */
 	private static Repository instance;
 
 	/** The connector. */
@@ -106,6 +106,52 @@ public final class Repository {
 		return instance;
 	}
 
+	public Team getNextTeam(int hour, String day) {
+//		LOGGER.debug("Hour before: h="+hour+", d="+day);
+		hour++;
+
+		if (hour == 24) {
+			hour = 0;
+			if (day.equals("Montag")) {
+				day = "Dienstag";
+			}
+			if (day.equals("Dienstag")) {
+				day = "Mittwoch";
+			}
+			if (day.equals("Mittwoch")) {
+				day = "Donnerstag";
+			}
+			if (day.equals("Donnerstag")) {
+				day = "Freitag";
+			}
+			if (day.equals("Freitag")) {
+				day = "Samstag";
+			}
+			if (day.equals("Samstag")) {
+				day = "Sonntag";
+			}
+			if (day.equals("Sonntag")) {
+				day = "Montag";
+			}
+		}
+
+		Team t = getTeam(hour, day);
+		while (t == null) {
+//			LOGGER.debug("While: h"+hour+", d="+day);
+			t = getTeam(hour, day);
+			if (t != null) {
+				if (!t.getCategory().equals(PropertyUtil.getInstance().getApplicationDefaultTeamcategory())) {
+					t = null;
+				}
+			}
+			hour++;
+		}
+
+//		LOGGER.debug(t);
+
+		return t;
+	}
+
 	/**
 	 * Gets the team if it has a periodically reccurence pattern and a set hour and
 	 * weekday.
@@ -117,9 +163,11 @@ public final class Repository {
 	public Team getTeam(int hour, String day) {
 		for (Team team : getTeams()) {
 			try {
-				if (hour == team.getCRRHour() && day.equalsIgnoreCase(team.getCRRWeekday())) {
-					return team;
-				}
+//				if (!team.getCategory().equals(PropertyUtil.getInstance().getApplicationDefaultTeamcategory())) {
+					if (hour == team.getCRRHour() && day.equalsIgnoreCase(team.getCRRWeekday())) {
+						return team;
+					}
+//				}
 			} catch (NullPointerException e) {
 
 			}
