@@ -81,6 +81,11 @@ if (ObjectUtil.isListNotNullAndEmpty(personIdentifiers)) {
 	}
 }
 
+File f = new File("exports/prayhour.godfather.export.txt");
+		if (!f.exists()) {
+			f.getParentFile().mkdirs(); 
+			f.createNewFile();
+		}
 Files.write(Paths.get("exports/prayhour.godfather.export.txt"), content.getBytes(), StandardOpenOption.CREATE);
 
 return "sucessfully used prayhour.godfather.export"

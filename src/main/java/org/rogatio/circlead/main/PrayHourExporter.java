@@ -268,7 +268,12 @@ public class PrayHourExporter {
 	public void export(String filename) {
 		try {
 			LOGGER.debug("Export PrayHours to '" + filename + ".xlsx'");
-			FileOutputStream out = new FileOutputStream(new File("exports" + File.separatorChar + filename + ".xlsx"));
+			File f = new File("exports" + File.separatorChar + filename + ".xlsx");
+			if (!f.exists()) {
+				f.getParentFile().mkdirs(); 
+				f.createNewFile();
+			}
+			FileOutputStream out = new FileOutputStream(f);
 			workbook.write(out);
 			out.close();
 		} catch (Exception e) {

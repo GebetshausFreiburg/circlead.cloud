@@ -81,12 +81,6 @@ public class Slideshow extends JFrame {
 	 */
 	public Slideshow() {
 		
-		this.setLocationRelativeTo(null);
-		this.setMaximized(true);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		this.setUndecorated(true);
-		
 		PicturePanel pp = new PicturePanel();
 		add(pp);
 
@@ -108,6 +102,12 @@ public class Slideshow extends JFrame {
 				close();
 			}
 		});
+		
+		setLocationRelativeTo(null);
+		setMaximized(true);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setExtendedState(JFrame.MAXIMIZED_BOTH);
+		setUndecorated(true);
 	}
 
 	/**

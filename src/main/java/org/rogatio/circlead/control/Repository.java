@@ -58,7 +58,6 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Repository is a singleton-representation of all loaded and handled
  * data while runtime. This is the real core of the circlead-application.
@@ -106,6 +105,13 @@ public final class Repository {
 		return instance;
 	}
 
+	/**
+	 * Gets the next team.
+	 *
+	 * @param hour the hour
+	 * @param day  the day
+	 * @return the next team
+	 */
 	public Team getNextTeam(int hour, String day) {
 //		LOGGER.debug("Hour before: h="+hour+", d="+day);
 		hour++;
@@ -136,6 +142,13 @@ public final class Repository {
 		}
 
 		Team t = getTeam(hour, day);
+
+		if (t != null) {
+			if (!t.getCategory().equals(PropertyUtil.getInstance().getApplicationDefaultTeamcategory())) {
+				t = null;
+			}
+		}
+
 		while (t == null) {
 //			LOGGER.debug("While: h"+hour+", d="+day);
 			t = getTeam(hour, day);
@@ -164,9 +177,9 @@ public final class Repository {
 		for (Team team : getTeams()) {
 			try {
 //				if (!team.getCategory().equals(PropertyUtil.getInstance().getApplicationDefaultTeamcategory())) {
-					if (hour == team.getCRRHour() && day.equalsIgnoreCase(team.getCRRWeekday())) {
-						return team;
-					}
+				if (hour == team.getCRRHour() && day.equalsIgnoreCase(team.getCRRWeekday())) {
+					return team;
+				}
 //				}
 			} catch (NullPointerException e) {
 
