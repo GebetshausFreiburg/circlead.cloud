@@ -80,6 +80,13 @@ public class Slideshow extends JFrame {
 	 * Instantiates a new slideshow.
 	 */
 	public Slideshow() {
+		
+		this.setLocationRelativeTo(null);
+		this.setMaximized(true);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		this.setUndecorated(true);
+		
 		PicturePanel pp = new PicturePanel();
 		add(pp);
 

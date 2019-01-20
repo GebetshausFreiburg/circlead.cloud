@@ -6,6 +6,8 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JFrame;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.rogatio.circlead.control.Repository;
@@ -72,6 +74,11 @@ public class Launcher {
 			 */
 			StringBuilder sb = new StringBuilder();
 
+			if (StringUtil.containsInsensitive("slideshow", args[0])) {
+				Slideshow frame = new Slideshow();
+				frame.setVisible(true);
+			}
+			
 			/*
 			 * Iterate over arguments
 			 */
@@ -385,6 +392,7 @@ public class Launcher {
 
 		sb.append("Command: java -jar circlead.jar [OPTION]...\n");
 		sb.append("\n");
+		sb.append(" -slideshow           Uses slideshow (use no other command)\n");
 		sb.append(" -load=[PARAM]...     Load Dataitems of Database-System\n");
 		sb.append("   a                  Load all Activity-Dataitems of enabled Synchronizers\n");
 		sb.append("   r                  Load all Role-Dataitems of enabled Synchronizers\n");
