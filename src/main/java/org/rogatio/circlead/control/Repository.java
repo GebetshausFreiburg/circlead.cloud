@@ -109,7 +109,11 @@ public final class Repository {
 	 * Gets the next team.
 	 *
 	 * @param hour the hour
+<<<<<<< HEAD
 	 * @param day  the day
+=======
+	 * @param day the day
+>>>>>>> branch 'master' of https://github.com/GebetshausFreiburg/circlead.cloud.git
 	 * @return the next team
 	 */
 	public Team getNextTeam(int hour, String day) {
