@@ -108,11 +108,12 @@ public final class Repository {
 	/**
 	 * Gets the next team.
 	 *
-	 * @param hour the hour
+	 * @param hour the hour 
+	 * @param day  the day 
 	 * @param day  the day
 	 * @return the next team
 	 */
-	public Team getNextTeam(int hour, String day) {
+	public Team getNextTeam(int hour, String day, String category) {
 //		LOGGER.debug("Hour before: h="+hour+", d="+day);
 		hour++;
 
@@ -141,19 +142,19 @@ public final class Repository {
 			}
 		}
 
-		Team t = getTeam(hour, day);
+		Team t = getTeam(hour, day, category);
 
 		if (t != null) {
-			if (!t.getCategory().equals(PropertyUtil.getInstance().getApplicationDefaultTeamcategory())) {
+			if (!t.getCategory().equals(category)) {
 				t = null;
 			}
 		}
 
 		while (t == null) {
 //			LOGGER.debug("While: h"+hour+", d="+day);
-			t = getTeam(hour, day);
+			t = getTeam(hour, day, category);
 			if (t != null) {
-				if (!t.getCategory().equals(PropertyUtil.getInstance().getApplicationDefaultTeamcategory())) {
+				if (!t.getCategory().equals(category)) {
 					t = null;
 				}
 			}
@@ -173,14 +174,14 @@ public final class Repository {
 	 * @param day  the day must be a string value in german weekdays, i.e. "Montag"
 	 * @return the first found team which has the occurence of hour and day
 	 */
-	public Team getTeam(int hour, String day) {
+	public Team getTeam(int hour, String day, String category) {
 		for (Team team : getTeams()) {
 			try {
-//				if (!team.getCategory().equals(PropertyUtil.getInstance().getApplicationDefaultTeamcategory())) {
-				if (hour == team.getCRRHour() && day.equalsIgnoreCase(team.getCRRWeekday())) {
-					return team;
+				if (team.getCategory().equals(category)) {
+					if (hour == team.getCRRHour() && day.equalsIgnoreCase(team.getCRRWeekday())) {
+						return team;
+					}
 				}
-//				}
 			} catch (NullPointerException e) {
 
 			}

@@ -60,6 +60,18 @@ public class PropertyUtil {
 	/** The application role displayteamroles. */
 	public static String APPLICATION_ROLE_DISPLAYTEAMROLES = "application.display.role.inteam";
 	
+	/**  The time in seconds to switch to next slide. */
+	public static String SLIDESHOW_TIMEFRAME = "slideshow.timeframe";
+	
+	/**  The path for dropbox to download the slides. */
+	public static String SLIDESHOW_PATH = "slideshow.path";
+	
+	/**  The backgroundcolor of the slides. */
+	public static String SLIDESHOW_COLOR = "slideshow.color";
+	
+	/**  Text to display for default categorized hours. */
+	public static String SLIDESHOW_TEXT = "slideshow.text";
+	
 	/** The runtime lastmodified date. */
 	public static String RUNTIME_LASTMODIFIED_DATE = "application.lastmodified";
 
@@ -623,6 +635,37 @@ public class PropertyUtil {
 		return getApplicationValue(WEBSERVER_URL);
 	}
 
+	/**
+	 * Gets the slideshow timeframe.
+	 *
+	 * @return the slideshow timeframe
+	 */
+	public int getSlideshowTimeframe() {
+		return getIntValue(SLIDESHOW_TIMEFRAME);
+	}
+	
+	/**
+	 * Gets the slideshow path.
+	 *
+	 * @return the slideshow path
+	 */
+	public String getSlideshowPath() {
+		return getApplicationValue(SLIDESHOW_PATH);
+	}
+	
+	public String getSlideshowColor() {
+		return getApplicationValue(SLIDESHOW_COLOR);
+	}
+	
+	/**
+	 * Gets the slideshow text.
+	 *
+	 * @return the slideshow text
+	 */
+	public String getSlideshowText() {
+		return getApplicationValue(SLIDESHOW_TEXT);
+	}
+	
 	/**
 	 * Gets the webserver port.
 	 *

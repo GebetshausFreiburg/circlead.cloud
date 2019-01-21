@@ -32,6 +32,7 @@ import javax.swing.WindowConstants;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.velocity.VelocityContext;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer;
 import org.rogatio.circlead.model.work.Team;
@@ -60,27 +61,21 @@ public class Slideshow extends JFrame {
 	final static Logger LOGGER = LogManager.getLogger(Slideshow.class);
 
 	/** The Constant TIMEFRAME_IN_SECONDS. */
-	static final int TIMEFRAME_IN_SECONDS = 5;
+	static final int TIMEFRAME_IN_SECONDS = PropertyUtil.getInstance().getSlideshowTimeframe();;
 
-	static final String DROPBOX_PATH = "/04_GBH_GBS_Gebetstunden/01_Flurdisplay";
+	static final String DROPBOX_PATH = PropertyUtil.getInstance().getSlideshowPath();
 
 	/** The Constant BACKGROUND_COLOR_IMAGE. */
-	static final String BACKGROUND_COLOR_IMAGE = "#000000";
+	static final String BACKGROUND_COLOR_IMAGE = PropertyUtil.getInstance().getSlideshowColor();
 
 	/** The Constant BACKGROUND_COLOR_TEXT. */
-	static final String BACKGROUND_COLOR_TEXT = "#000000";
-
-	/** The Constant TEXTSIZE_TYPE. */
-	static final int TEXTSIZE_TYPE = 80;
-
-	/** The Constant TEXTSIZE_SUBTYPE. */
-	static final int TEXTSIZE_SUBTYPE = 40;
+	static final String BACKGROUND_COLOR_TEXT = PropertyUtil.getInstance().getSlideshowColor();
 
 	/**
 	 * Instantiates a new slideshow.
 	 */
 	public Slideshow() {
-		
+
 		PicturePanel pp = new PicturePanel();
 		add(pp);
 
@@ -102,7 +97,7 @@ public class Slideshow extends JFrame {
 				close();
 			}
 		});
-		
+
 		setLocationRelativeTo(null);
 		setMaximized(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -220,12 +215,12 @@ public class Slideshow extends JFrame {
 		private Repository repository;
 
 		private void load() {
-			
+
 			Date loadDate = new Date();
-			
+
 			if (nextLoadTime.before(loadDate)) {
-				LOGGER.info("Loading at "+ loadDate);
-				
+				LOGGER.info("Loading at " + loadDate);
+
 				try {
 					slides = loadSlides(PropertyUtil.getInstance().getDropboxTeamUsername(), DROPBOX_PATH);
 				} catch (DbxException | IOException e) {
@@ -236,7 +231,7 @@ public class Slideshow extends JFrame {
 				AtlassianSynchronizer asynchronizer = new AtlassianSynchronizer("CIRCLEAD");
 				repository.addSynchronizer(asynchronizer);
 				repository.loadTeams();
-				
+
 				Calendar c = Calendar.getInstance();
 				c.setTime(loadDate);
 				c.set(Calendar.MINUTE, 0);
@@ -245,8 +240,8 @@ public class Slideshow extends JFrame {
 				c.set(Calendar.HOUR_OF_DAY, 1);
 				c.add(Calendar.DAY_OF_MONTH, 1);
 				nextLoadTime = c.getTime();
-			
-				LOGGER.info("Set next load time to "+ nextLoadTime);
+
+				LOGGER.info("Set next load time to " + nextLoadTime);
 			}
 		}
 
@@ -259,9 +254,9 @@ public class Slideshow extends JFrame {
 			c.set(Calendar.HOUR_OF_DAY, 1);
 			c.add(Calendar.DAY_OF_MONTH, -1);
 			nextLoadTime = c.getTime();
-			
+
 			load();
-			
+
 			this.setLayout(new GridBagLayout());
 			this.setBackground(Color.decode(BACKGROUND_COLOR_IMAGE));
 
@@ -312,7 +307,22 @@ public class Slideshow extends JFrame {
 				Calendar c = Calendar.getInstance();
 				int hour = c.get(Calendar.HOUR_OF_DAY);
 				String day = new SimpleDateFormat("EEEE").format(c.getTime());
-				Team team = repository.getTeam(hour, day);
+				Team team = repository.getTeam(hour, day, PropertyUtil.getInstance().getApplicationDefaultTeamcategory());
+
+				// look for hour which starts 1 hours before
+				if (team == null) {
+					// not looking the day before at 23h (to much if-sentences for an unused case - at the moment).
+					if (hour != 0) {
+						team = repository.getTeam(hour - 1, day, PropertyUtil.getInstance().getApplicationDefaultTeamcategory());
+					}
+					// look for hour which starts 2 hours before
+					if (team == null) {
+						if (hour != 0) {
+							team = repository.getTeam(hour - 2, day, PropertyUtil.getInstance().getApplicationDefaultTeamcategory());
+						}
+					}
+				}
+
 				setText(team);
 			} else {
 				setImage();
@@ -335,10 +345,10 @@ public class Slideshow extends JFrame {
 			String day = new SimpleDateFormat("EEEE").format(c.getTime());
 
 			load();
-			
+
 			String type = "Unbesetzt";
 			if (team == null) {
-				repository.getNextTeam(hour, day);
+				repository.getNextTeam(hour, day, PropertyUtil.getInstance().getApplicationDefaultTeamcategory());
 			} else {
 				type = team.getTeamType();
 			}
@@ -350,19 +360,32 @@ public class Slideshow extends JFrame {
 				}
 			}
 
-			Team nextTeam = repository.getNextTeam(hour, day);
+			Team nextTeam = repository.getNextTeam(hour, day, PropertyUtil.getInstance().getApplicationDefaultTeamcategory());
 			String nextTeamDesc = nextTeam.getTeamType();
 			if (StringUtil.isNotNullAndNotEmpty(nextTeam.getTeamSubtype())) {
 				nextTeamDesc = nextTeamDesc + ": " + nextTeam.getTeamSubtype();
 			}
+			
+			String content = PropertyUtil.getInstance().getSlideshowText();
+			
+			VelocityContext context = new VelocityContext();
+			context.put("teamHour", hour);
+			context.put("teamType", type);
+			context.put("teamSubtype", subtype);
+			context.put("nextTeamHour", nextTeam.getCRRHour());
+			context.put("nextTeamType", nextTeam.getTeamType());
+			context.put("nextTeamSubtype", nextTeam.getTeamSubtype());
+			context.put("nextTeamDescription", nextTeamDesc);
+			
+			String text = StringUtil.evaluateTemplate(content, context);
 
-			String text = "<html><span style='font-size:12px;color:#54585A'>Aktuell (" + hour + ":00h)</span>\n"
-					+ "<br>\n" + "<span style='font-size:" + TEXTSIZE_TYPE + "px;color:#D4D9DB'><b>" + type
-					+ "</b></span>\n" + "<br>\n" + "<span style='font-size:" + TEXTSIZE_SUBTYPE + "px;color:#CC8A00'>"
-					+ subtype + "</span>\n" + "<br><br><br>\n"
-					+ "<span style='font-size:12px;color:#54585A'>Nächste Stunde (" + nextTeam.getCRRHour()
-					+ ":00h)</span>\n" + "<br>\n" + "<span style='font-size:20px;color:#D4D9DB'>" + nextTeamDesc
-					+ "</span></html>";
+//			String text = "<html><span style='font-size:12px;color:#54585A'>Aktuell (" + hour + ":00h)</span>\n"
+//					+ "<br>\n" + "<span style='font-size:" + TEXTSIZE_TYPE + "px;color:#D4D9DB'><b>" + type
+//					+ "</b></span>\n" + "<br>\n" + "<span style='font-size:" + TEXTSIZE_SUBTYPE + "px;color:#CC8A00'>"
+//					+ subtype + "</span>\n" + "<br><br><br>\n"
+//					+ "<span style='font-size:12px;color:#54585A'>Nächste Stunde (" + nextTeam.getCRRHour()
+//					+ ":00h)</span>\n" + "<br>\n" + "<span style='font-size:20px;color:#D4D9DB'>" + nextTeamDesc
+//					+ "</span></html>";
 
 			slide.setText(text);
 

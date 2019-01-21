@@ -261,6 +261,24 @@ public class StringUtil {
 		return null;
 	}
 	
+	public static String evaluateTemplate(String content, VelocityContext context ) {
+		
+		StringWriter writer = new StringWriter();
+		try {
+			VelocityEngine velocityEngine = new VelocityEngine();
+			velocityEngine.init();
+			velocityEngine.evaluate(context, writer, "log", content);
+		} finally {
+			try {
+				writer.close();
+			} catch (IOException e) {
+				throw new AssertionError("StringWriter#close() should not throw IOException", e);
+			}
+		}
+		
+		return writer.toString();
+	}
+	
 	/**
 	 * Merge data with velocity template.
 	 *
