@@ -10,14 +10,17 @@ package org.rogatio.circlead.util;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -153,6 +156,65 @@ public class StringUtil {
 		}
 		return false;
 	}
+	
+	/**
+	 * Detect charset.
+	 *
+	 * @param value the value
+	 * @return the string
+	 */
+	public static String detectCharset(String value) {
+		if (!isNotNullAndNotEmpty(value))
+			return null;
+		
+		String detectedCharset = findCharset(value, Charset.availableCharsets().keySet());
+		return detectedCharset;
+	}
+	
+	public static String convertEncoding(String value, String toEncoding) {
+		try {
+			return new String(value.getBytes(detectCharset(value)), toEncoding);
+		} catch (UnsupportedEncodingException e) {
+		}
+		return null;
+	}
+	
+	/**
+	 * Convert encoding.
+	 *
+	 * @param value the value
+	 * @param fromEncoding the from encoding
+	 * @param toEncoding the to encoding
+	 * @return the string
+	 */
+	public static String convertEncoding(String value, String fromEncoding, String toEncoding) {
+		try {
+			return new String(value.getBytes(fromEncoding), toEncoding);
+		} catch (UnsupportedEncodingException e) {
+		}
+		return null;
+	}
+	
+	/**
+	 * Find charset.
+	 *
+	 * @param value the value
+	 * @param charsets the charsets
+	 * @return the string
+	 */
+	private static String findCharset(String value, Set<String> charsets) {
+		String probe = StandardCharsets.UTF_8.name();
+		
+		for (String c : charsets) {
+			Charset charset = Charset.forName(c);
+			if (charset != null) {
+				if (value.equals(convertEncoding(convertEncoding(value, charset.name(), probe), probe, charset.name()))) {
+					return c;
+				}
+			}
+		}
+		return StandardCharsets.UTF_8.name();
+	}
 
 	/**
 	 * Clean a list, so no null and empty value is inside. If null a empty list is
@@ -261,11 +323,24 @@ public class StringUtil {
 		return null;
 	}
 	
+	/**
+	 * Evaluate template.
+	 *
+	 * @param content the content
+	 * @param context the context
+	 * @return the string
+	 */
 	public static String evaluateTemplate(String content, VelocityContext context ) {
+		
+		LOGGER.debug("Content has encoding "+StringUtil.detectCharset(content)+": "+content);
 		
 		StringWriter writer = new StringWriter();
 		try {
 			VelocityEngine velocityEngine = new VelocityEngine();
+//			velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_INSTANCE, "org.apache.velocity.runtime.log.Log4JLogChute" );
+//			velocityEngine.setProperty("runtime.log.logsystem.log4j.logger","velocity");
+//			System.setProperty("org.slf4j.simpleLogger.log.org.apache.velocity", "off");
+			
 			velocityEngine.init();
 			velocityEngine.evaluate(context, writer, "log", content);
 		} finally {
@@ -294,6 +369,9 @@ public class StringUtil {
 
 			Template t = velocityEngine.getTemplate(templateFile);
 
+			LOGGER.debug("Content has encoding "+t.getEncoding()+": "+templateFile);
+			
+			
 			VelocityContext context = new VelocityContext();
 			context.put("repository", Repository.getInstance());
 			context.put("objectUtil", new ObjectUtil());

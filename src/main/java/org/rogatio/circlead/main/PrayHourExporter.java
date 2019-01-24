@@ -266,6 +266,7 @@ public class PrayHourExporter {
 	 * @param filename the filename
 	 */
 	public void export(String filename) {
+//		filename = StringUtil.convertEncoding(filename, "UTF-8");
 		try {
 			LOGGER.debug("Export PrayHours to '" + filename + ".xlsx'");
 			File f = new File("exports" + File.separatorChar + filename + ".xlsx");

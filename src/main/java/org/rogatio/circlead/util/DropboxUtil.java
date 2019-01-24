@@ -202,6 +202,9 @@ public class DropboxUtil {
 	 * @see https://github.com/dropbox/dropbox-sdk-java/blob/master/examples/upload-file/src/main/java/com/dropbox/core/examples/upload_file/Main.java
 	 */
 	public static void uploadFile(DbxClientV2 dbxClient, File localFile, String dropboxPath) {
+		
+		//StringUtil.toUTF(localFile.toString()));
+		
 		if (PropertyUtil.getInstance().isDropboxInterfaceEnabled()) {
 			try (InputStream in = new FileInputStream(localFile)) {
 				ProgressListener progressListener = l -> printProgress(l, localFile.length());
@@ -233,7 +236,29 @@ public class DropboxUtil {
 	public static void uploadFileToTeamFolder(DbxTeamClientV2 dbxClient, File localFile, String targetPath) {
 		uploadFileToTeamFolder(dbxClient, localFile, targetPath, PropertyUtil.getInstance().getDropboxTeamUsername());
 	}
+	
+	/**
+	 * Upload file to team folder.
+	 *
+	 * @param dbxClient the dbx client
+	 * @param localFile the local file
+	 * @param targetPath the target path
+	 */
+	public static void uploadFileToTeamFolder(DbxTeamClientV2 dbxClient, String localFile, String targetPath) {
+		
+//		localFile = StringUtil.convertEncoding(localFile, "UTF-8");
+		File f = new File(localFile);
+		
+		uploadFileToTeamFolder(dbxClient, f, targetPath, PropertyUtil.getInstance().getDropboxTeamUsername());
+	}
 
+	/**
+	 * List team folder.
+	 *
+	 * @param dbxClient the dbx client
+	 * @param folder the folder
+	 * @return the list folder result
+	 */
 	public static ListFolderResult listTeamFolder(DbxClientV2 dbxClient, String folder) {
 
 		ListFolderResult res = null;
@@ -246,6 +271,13 @@ public class DropboxUtil {
 		return res;
 	}
 
+	/**
+	 * Download.
+	 *
+	 * @param dbxClient the dbx client
+	 * @param inputPath the input path
+	 * @param outputPath the output path
+	 */
 	public static void download(DbxClientV2 dbxClient, String inputPath, String outputPath) {
 		try {
 			DbxDownloader<FileMetadata> dl = dbxClient.files().download(inputPath);
@@ -262,6 +294,13 @@ public class DropboxUtil {
 
 	}
 
+	/**
+	 * Gets the member id.
+	 *
+	 * @param dbxClient the dbx client
+	 * @param displayUserName the display user name
+	 * @return the member id
+	 */
 	public static String getMemberId(DbxTeamClientV2 dbxClient, String displayUserName) {
 		String memberId = null;
 		try {
@@ -288,6 +327,9 @@ public class DropboxUtil {
 	 */
 	public static void uploadFileToTeamFolder(DbxTeamClientV2 dbxClient, File localFile, String targetPath,
 			String displayUserName) {
+
+//		targetPath = StringUtil.convertEncoding(targetPath, "UTF-8");
+		
 		if (PropertyUtil.getInstance().isDropboxInterfaceEnabled()) {
 //			try {
 //			List<TeamFolderMetadata> folders = dbxClient.team().teamFolderList().getTeamFolders();

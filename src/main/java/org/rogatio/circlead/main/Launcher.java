@@ -79,6 +79,17 @@ public class Launcher {
 				frame.setVisible(true);
 			} else {
 
+				try {
+					Files.walk(Paths.get("scripts")).filter(p -> p.toString().endsWith(".preprocessor"))
+							.filter(Files::isRegularFile).forEach(file -> {
+								LOGGER.debug("Run preprocessor '" + file.toFile().getName() + "'");
+								Object res = GroovyUtil.loadAndRunScript(file.toString());
+								LOGGER.debug(res);
+							});
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
 				/*
 				 * Iterate over arguments
 				 */

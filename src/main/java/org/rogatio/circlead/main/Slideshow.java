@@ -214,12 +214,15 @@ public class Slideshow extends JFrame {
 		/** The repository. */
 		private Repository repository;
 
+		private boolean loading = false;
+
 		private void load() {
 
 			Date loadDate = new Date();
 
-			if (nextLoadTime.before(loadDate)) {
-				LOGGER.info("Loading at " + loadDate);
+			if (nextLoadTime.before(loadDate) && !loading) {
+				loading = true;
+				LOGGER.info("Start loading at " + loadDate);
 
 				try {
 					slides = loadSlides(PropertyUtil.getInstance().getDropboxTeamUsername(), DROPBOX_PATH);
@@ -242,6 +245,8 @@ public class Slideshow extends JFrame {
 				nextLoadTime = c.getTime();
 
 				LOGGER.info("Set next load time to " + nextLoadTime);
+			} else {
+				loading = false;
 			}
 		}
 
@@ -307,18 +312,22 @@ public class Slideshow extends JFrame {
 				Calendar c = Calendar.getInstance();
 				int hour = c.get(Calendar.HOUR_OF_DAY);
 				String day = new SimpleDateFormat("EEEE").format(c.getTime());
-				Team team = repository.getTeam(hour, day, PropertyUtil.getInstance().getApplicationDefaultTeamcategory());
+				Team team = repository.getTeam(hour, day,
+						PropertyUtil.getInstance().getApplicationDefaultTeamcategory());
 
 				// look for hour which starts 1 hours before
 				if (team == null) {
-					// not looking the day before at 23h (to much if-sentences for an unused case - at the moment).
+					// not looking the day before at 23h (to much if-sentences for an unused case -
+					// at the moment).
 					if (hour != 0) {
-						team = repository.getTeam(hour - 1, day, PropertyUtil.getInstance().getApplicationDefaultTeamcategory());
+						team = repository.getTeam(hour - 1, day,
+								PropertyUtil.getInstance().getApplicationDefaultTeamcategory());
 					}
 					// look for hour which starts 2 hours before
 					if (team == null) {
 						if (hour != 0) {
-							team = repository.getTeam(hour - 2, day, PropertyUtil.getInstance().getApplicationDefaultTeamcategory());
+							team = repository.getTeam(hour - 2, day,
+									PropertyUtil.getInstance().getApplicationDefaultTeamcategory());
 						}
 					}
 				}
@@ -346,38 +355,40 @@ public class Slideshow extends JFrame {
 
 			load();
 
-			String type = "Unbesetzt";
-			if (team == null) {
-				repository.getNextTeam(hour, day, PropertyUtil.getInstance().getApplicationDefaultTeamcategory());
-			} else {
-				type = team.getTeamType();
-			}
-
-			String subtype = "";
-			if (team != null) {
-				if (StringUtil.isNotNullAndNotEmpty(team.getTeamSubtype())) {
-					subtype = team.getTeamSubtype();
+			if (!loading) {
+				String type = "Unbesetzt";
+				if (team == null) {
+					repository.getNextTeam(hour, day, PropertyUtil.getInstance().getApplicationDefaultTeamcategory());
+				} else {
+					type = team.getTeamType();
 				}
-			}
 
-			Team nextTeam = repository.getNextTeam(hour, day, PropertyUtil.getInstance().getApplicationDefaultTeamcategory());
-			String nextTeamDesc = nextTeam.getTeamType();
-			if (StringUtil.isNotNullAndNotEmpty(nextTeam.getTeamSubtype())) {
-				nextTeamDesc = nextTeamDesc + ": " + nextTeam.getTeamSubtype();
-			}
-			
-			String content = PropertyUtil.getInstance().getSlideshowText();
-			
-			VelocityContext context = new VelocityContext();
-			context.put("teamHour", hour);
-			context.put("teamType", type);
-			context.put("teamSubtype", subtype);
-			context.put("nextTeamHour", nextTeam.getCRRHour());
-			context.put("nextTeamType", nextTeam.getTeamType());
-			context.put("nextTeamSubtype", nextTeam.getTeamSubtype());
-			context.put("nextTeamDescription", nextTeamDesc);
-			
-			String text = StringUtil.evaluateTemplate(content, context);
+				String subtype = "";
+				if (team != null) {
+					if (StringUtil.isNotNullAndNotEmpty(team.getTeamSubtype())) {
+						subtype = team.getTeamSubtype();
+					}
+				}
+
+				Team nextTeam = repository.getNextTeam(hour, day,
+						PropertyUtil.getInstance().getApplicationDefaultTeamcategory());
+				String nextTeamDesc = nextTeam.getTeamType();
+				if (StringUtil.isNotNullAndNotEmpty(nextTeam.getTeamSubtype())) {
+					nextTeamDesc = nextTeamDesc + ": " + nextTeam.getTeamSubtype();
+				}
+
+				String content = PropertyUtil.getInstance().getSlideshowText();
+
+				VelocityContext context = new VelocityContext();
+				context.put("teamHour", hour);
+				context.put("teamType", type);
+				context.put("teamSubtype", subtype);
+				context.put("nextTeamHour", nextTeam.getCRRHour());
+				context.put("nextTeamType", nextTeam.getTeamType());
+				context.put("nextTeamSubtype", nextTeam.getTeamSubtype());
+				context.put("nextTeamDescription", nextTeamDesc);
+
+				String text = StringUtil.evaluateTemplate(content, context);
 
 //			String text = "<html><span style='font-size:12px;color:#54585A'>Aktuell (" + hour + ":00h)</span>\n"
 //					+ "<br>\n" + "<span style='font-size:" + TEXTSIZE_TYPE + "px;color:#D4D9DB'><b>" + type
@@ -387,7 +398,10 @@ public class Slideshow extends JFrame {
 //					+ ":00h)</span>\n" + "<br>\n" + "<span style='font-size:20px;color:#D4D9DB'>" + nextTeamDesc
 //					+ "</span></html>";
 
-			slide.setText(text);
+				slide.setText(text);
+			} else {
+				slide.setText("Loading ...");
+			}
 
 		}
 

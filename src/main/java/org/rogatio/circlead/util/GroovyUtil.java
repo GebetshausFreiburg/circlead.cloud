@@ -13,6 +13,7 @@ import org.rogatio.circlead.control.Repository;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class GroovyUtil allows scripting in application. Needs
  * 
@@ -77,7 +78,7 @@ public class GroovyUtil {
 
 	/** The Constant LOGGER. */
 	private final static Logger LOGGER = LogManager.getLogger(GroovyUtil.class);
-	
+
 	/**
 	 * Load and run scripts.
 	 *
@@ -86,12 +87,14 @@ public class GroovyUtil {
 	public static Map<Object, String> loadAndRunScripts() {
 		Map<Object, String> map = new TreeMap<Object, String>();
 		try {
-			Files.walk(Paths.get("scripts")).filter(p -> !p.toString().endsWith(".report.groovy")&&p.toString().endsWith(".groovy")).filter(Files::isRegularFile).forEach(file -> {
-				Object o = loadAndRunScript(file.toFile().getAbsolutePath());
-				if (o != null) {
-					map.put(o, file.toFile().getName());
-				}
-			});
+			Files.walk(Paths.get("scripts"))
+					.filter(p -> !p.toString().endsWith(".report.groovy") && p.toString().endsWith(".groovy"))
+					.filter(Files::isRegularFile).forEach(file -> {
+						Object o = loadAndRunScript(file.toFile().getAbsolutePath());
+						if (o != null) {
+							map.put(o, file.toFile().getName());
+						}
+					});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -105,13 +108,13 @@ public class GroovyUtil {
 	 * @return the object
 	 */
 	public static Object loadAndRunScript(String fileName) {
-			try {
-				LOGGER.info("Running script '" + fileName + "'");
-				String script = new String(Files.readAllBytes(Paths.get(fileName)));
-				return runScript(script);
-			} catch (IOException e) {
-				LOGGER.error(e);
-			}
+		try {
+			LOGGER.info("Running script '" + fileName + "'");
+			String script = new String(Files.readAllBytes(Paths.get(fileName)));
+			return runScript(script, fileName);
+		} catch (IOException e) {
+			LOGGER.error(e);
+		}
 		return null;
 	}
 
@@ -122,12 +125,28 @@ public class GroovyUtil {
 	 * @return the object
 	 */
 	public static Object runScript(String scriptText) {
+		return runScript(scriptText, null);
+	}
+
+	/**
+	 * Run script.
+	 *
+	 * @param scriptText the script text
+	 * @param loggerName the logger name
+	 * @return the object
+	 */
+	public static Object runScript(String scriptText, String loggerName) {
 		Binding binding = new Binding();
 		binding.setVariable("R", Repository.getInstance());
 		binding.setVariable("ObjectUtil", new ObjectUtil());
 		binding.setVariable("MailUtil", new MailUtil());
 		binding.setVariable("StringUtil", new StringUtil());
 		binding.setVariable("FileUtil", new FileUtil());
+		if (loggerName != null) {
+			binding.setVariable("LOG", LogManager.getLogger(loggerName.replace(".", "_")));
+		} else {
+			binding.setVariable("LOG", LogManager.getLogger("script"));		
+		}
 		binding.setVariable("DropboxUtil", new DropboxUtil());
 		binding.setVariable("PropertyUtil", PropertyUtil.getInstance());
 		binding.setVariable("GanttUtil", new GanttUtil());

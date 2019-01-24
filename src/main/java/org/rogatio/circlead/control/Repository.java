@@ -166,6 +166,10 @@ public final class Repository {
 		return t;
 	}
 
+	public Team getTeam(int hour, String day) {
+		return getTeam(hour, day, PropertyUtil.getInstance().getApplicationDefaultTeamcategory());
+	}
+	
 	/**
 	 * Gets the team if it has a periodically reccurence pattern and a set hour and
 	 * weekday.

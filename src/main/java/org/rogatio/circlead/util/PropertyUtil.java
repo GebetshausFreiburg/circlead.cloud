@@ -165,6 +165,9 @@ public class PropertyUtil {
 	/** The runtime properties. */
 	private Properties runtimeProperties = new Properties();
 
+	/** The Constant APPLICATION_PREPROCESSOR. */
+	private static final String APPLICATION_PREPROCESSOR = "application.default.script";
+	
 	static {
 		LOGGER.info("" + PropertyUtil.getInstance().getApplicationValue(APPLICATION_NAME) + " (v"
 				+ PropertyUtil.getInstance().getApplicationValue(APPLICATION_VERSION) + ")");
@@ -634,6 +637,15 @@ public class PropertyUtil {
 	public String getWebserverUrl() {
 		return getApplicationValue(WEBSERVER_URL);
 	}
+	
+	/**
+	 * Gets the application preprocessor.
+	 *
+	 * @return the application preprocessor
+	 */
+	public String getApplicationPreprocessor() {
+		return getApplicationValue(APPLICATION_PREPROCESSOR);
+	}
 
 	/**
 	 * Gets the slideshow timeframe.
@@ -653,6 +665,11 @@ public class PropertyUtil {
 		return getApplicationValue(SLIDESHOW_PATH);
 	}
 	
+	/**
+	 * Gets the slideshow color.
+	 *
+	 * @return the slideshow color
+	 */
 	public String getSlideshowColor() {
 		return getApplicationValue(SLIDESHOW_COLOR);
 	}
