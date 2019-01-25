@@ -27,11 +27,12 @@ import org.apache.logging.log4j.Logger;
  */
 public class PropertyUtil {
 
-	/** The application version. */
-	public static String APPLICATION_VERSION = "application.version";
+	/** The application version. Use Sematic Versioning (https://semver.org/). */
+	/* IF CHANGED, THEN CHANGE ALSO IN POM. */
+	public static String APPLICATION_VERSION = "1.0.0";
 
 	/** The application name. */
-	public static String APPLICATION_NAME = "application.name";
+	public static String APPLICATION_NAME = "Circlead";
 
 	/** The dropbox enabled. */
 	public static String DROPBOX_ENABLED = "dropbox.enabled";
@@ -168,12 +169,8 @@ public class PropertyUtil {
 	/** The runtime properties. */
 	private Properties runtimeProperties = new Properties();
 
-	/** The Constant APPLICATION_PREPROCESSOR. */
-	private static final String APPLICATION_PREPROCESSOR = "application.default.script";
-	
 	static {
-		LOGGER.info("" + PropertyUtil.getInstance().getApplicationValue(APPLICATION_NAME) + " (v"
-				+ PropertyUtil.getInstance().getApplicationValue(APPLICATION_VERSION) + ")");
+		LOGGER.info("" + APPLICATION_NAME + " (v" + APPLICATION_VERSION + ")");
 		LOGGER.info("Default Rolegroup: " + PropertyUtil.getInstance().getApplicationDefaultRolegroup());
 		LOGGER.info("Default Teamcategory: " + PropertyUtil.getInstance().getApplicationDefaultTeamcategory());
 		LOGGER.info("Application-Update-Mode is '" + PropertyUtil.getInstance().getApplicationUpdateMode() + "'");
@@ -647,14 +644,14 @@ public class PropertyUtil {
 	}
 	
 	/**
-	 * Gets the application preprocessor.
+	 * Gets the application version.
 	 *
-	 * @return the application preprocessor
+	 * @return the application version
 	 */
-	public String getApplicationPreprocessor() {
-		return getApplicationValue(APPLICATION_PREPROCESSOR);
+	public String getApplicationVersion() {
+		return APPLICATION_VERSION;
 	}
-
+	
 	/**
 	 * Gets the slideshow timeframe.
 	 *
