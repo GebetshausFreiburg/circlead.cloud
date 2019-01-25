@@ -20,11 +20,11 @@ import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
 
 
 ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
-		Element element = new Element("p");
+Element element = new Element("p");
 
 		List<Team> teams = R.getTeamsWithCategory(category);
 		if (!ObjectUtil.isListNotNullAndEmpty(teams)) {
-			element.appendText("Report not created, because not team found with category '"+category+"'");
+			element.appendText("Report not created, because no team found with category '"+category+"'");
 			return element;
 		}
 		
