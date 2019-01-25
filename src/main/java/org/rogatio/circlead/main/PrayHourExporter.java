@@ -29,7 +29,11 @@ import org.rogatio.circlead.util.StringUtil;
  * @author Matthias Wegner
  */
 public class PrayHourExporter {
-
+	
+	//TODO Linien in Zellen-Exporten
+	//TODO Alle gefüllten Zellen leicht grau (wie interne Stunden)
+	//TODO Zellengröße in Höhe nach Textgröße anpassen
+	
 	/** The Constant LOGGER. */
 	final static Logger LOGGER = LogManager.getLogger(PrayHourExporter.class);
 

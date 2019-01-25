@@ -336,11 +336,7 @@ public class StringUtil {
 		
 		StringWriter writer = new StringWriter();
 		try {
-			VelocityEngine velocityEngine = new VelocityEngine();
-//			velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_INSTANCE, "org.apache.velocity.runtime.log.Log4JLogChute" );
-//			velocityEngine.setProperty("runtime.log.logsystem.log4j.logger","velocity");
-//			System.setProperty("org.slf4j.simpleLogger.log.org.apache.velocity", "off");
-			
+			VelocityEngine velocityEngine = new VelocityEngine();		
 			velocityEngine.init();
 			velocityEngine.evaluate(context, writer, "log", content);
 		} finally {

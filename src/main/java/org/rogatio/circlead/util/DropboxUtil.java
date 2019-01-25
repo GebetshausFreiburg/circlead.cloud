@@ -69,7 +69,6 @@ public class DropboxUtil {
 		DbxRequestConfig requestConfig = new DbxRequestConfig("circlead-cloud");
 		DbxClientV2 dbxClient = new DbxClientV2(requestConfig, authInfo.getAccessToken(), authInfo.getHost());
 
-		// Make the /account/info API call.
 		FullAccount dbxAccountInfo;
 		try {
 			dbxAccountInfo = dbxClient.users().getCurrentAccount();
@@ -96,7 +95,6 @@ public class DropboxUtil {
 		DbxRequestConfig requestConfig = new DbxRequestConfig("circlead-cloud");
 		DbxClientV2 dbxClient = new DbxClientV2(requestConfig, accessToken);
 
-		// Make the /account/info API call.
 		FullAccount dbxAccountInfo;
 		try {
 			dbxAccountInfo = dbxClient.users().getCurrentAccount();
@@ -142,7 +140,6 @@ public class DropboxUtil {
 		DbxRequestConfig requestConfig = new DbxRequestConfig("circlead-cloud");
 		DbxTeamClientV2 dbxClient = new DbxTeamClientV2(requestConfig, authInfo.getAccessToken(), authInfo.getHost());
 
-		// Make the /account/info API call.
 		TeamGetInfoResult info;
 		try {
 			info = dbxClient.team().getInfo();
@@ -168,7 +165,6 @@ public class DropboxUtil {
 		DbxRequestConfig requestConfig = new DbxRequestConfig("circlead-cloud");
 		DbxTeamClientV2 dbxClient = new DbxTeamClientV2(requestConfig, accessToken);
 
-		// Make the /account/info API call.
 		TeamGetInfoResult info;
 		try {
 			info = dbxClient.team().getInfo();
@@ -202,9 +198,7 @@ public class DropboxUtil {
 	 * @see https://github.com/dropbox/dropbox-sdk-java/blob/master/examples/upload-file/src/main/java/com/dropbox/core/examples/upload_file/Main.java
 	 */
 	public static void uploadFile(DbxClientV2 dbxClient, File localFile, String dropboxPath) {
-		
-		//StringUtil.toUTF(localFile.toString()));
-		
+
 		if (PropertyUtil.getInstance().isDropboxInterfaceEnabled()) {
 			try (InputStream in = new FileInputStream(localFile)) {
 				ProgressListener progressListener = l -> printProgress(l, localFile.length());
@@ -234,29 +228,37 @@ public class DropboxUtil {
 	 * @param targetPath the target path
 	 */
 	public static void uploadFileToTeamFolder(DbxTeamClientV2 dbxClient, File localFile, String targetPath) {
-		uploadFileToTeamFolder(dbxClient, localFile, targetPath, PropertyUtil.getInstance().getDropboxTeamUsername());
+		if (localFile != null) {
+			if (localFile.exists()) {
+				uploadFileToTeamFolder(dbxClient, localFile, targetPath,
+						PropertyUtil.getInstance().getDropboxTeamUsername());
+			}
+		}
 	}
-	
+
 	/**
 	 * Upload file to team folder.
 	 *
-	 * @param dbxClient the dbx client
-	 * @param localFile the local file
+	 * @param dbxClient  the dbx client
+	 * @param localFile  the local file
 	 * @param targetPath the target path
 	 */
 	public static void uploadFileToTeamFolder(DbxTeamClientV2 dbxClient, String localFile, String targetPath) {
-		
-//		localFile = StringUtil.convertEncoding(localFile, "UTF-8");
-		File f = new File(localFile);
-		
-		uploadFileToTeamFolder(dbxClient, f, targetPath, PropertyUtil.getInstance().getDropboxTeamUsername());
+		if (localFile != null) {
+			localFile = StringUtil.convertEncoding(localFile, "UTF-8");
+			
+			File f = new File(new File("").getAbsolutePath()+File.separatorChar+localFile.trim());
+			if (f.exists()) {
+				uploadFileToTeamFolder(dbxClient, f, targetPath, PropertyUtil.getInstance().getDropboxTeamUsername());
+			}
+		}
 	}
 
 	/**
 	 * List team folder.
 	 *
 	 * @param dbxClient the dbx client
-	 * @param folder the folder
+	 * @param folder    the folder
 	 * @return the list folder result
 	 */
 	public static ListFolderResult listTeamFolder(DbxClientV2 dbxClient, String folder) {
@@ -274,8 +276,8 @@ public class DropboxUtil {
 	/**
 	 * Download.
 	 *
-	 * @param dbxClient the dbx client
-	 * @param inputPath the input path
+	 * @param dbxClient  the dbx client
+	 * @param inputPath  the input path
 	 * @param outputPath the output path
 	 */
 	public static void download(DbxClientV2 dbxClient, String inputPath, String outputPath) {
@@ -297,7 +299,7 @@ public class DropboxUtil {
 	/**
 	 * Gets the member id.
 	 *
-	 * @param dbxClient the dbx client
+	 * @param dbxClient       the dbx client
 	 * @param displayUserName the display user name
 	 * @return the member id
 	 */
@@ -328,22 +330,14 @@ public class DropboxUtil {
 	public static void uploadFileToTeamFolder(DbxTeamClientV2 dbxClient, File localFile, String targetPath,
 			String displayUserName) {
 
-//		targetPath = StringUtil.convertEncoding(targetPath, "UTF-8");
-		
-		if (PropertyUtil.getInstance().isDropboxInterfaceEnabled()) {
-//			try {
-//			List<TeamFolderMetadata> folders = dbxClient.team().teamFolderList().getTeamFolders();
-//			for (TeamFolderMetadata teamFolderMetadata : folders) {
-//				System.out.println(teamFolderMetadata);
-//				if (teamFolderMetadata.getName().equals(teamFolder)) {
-//					teamFolderId = teamFolderMetadata.getTeamFolderId();		
-//				}
-//			}
-
-			String memberId = getMemberId(dbxClient, displayUserName);
-
-			DbxClientV2 client = dbxClient.asMember(memberId);
-			uploadFile(client, localFile, targetPath);
+		if (localFile != null) {
+			if (localFile.exists()) {
+				if (PropertyUtil.getInstance().isDropboxInterfaceEnabled()) {
+					String memberId = getMemberId(dbxClient, displayUserName);
+					DbxClientV2 client = dbxClient.asMember(memberId);
+					uploadFile(client, localFile, targetPath);
+				}
+			}
 		}
 	}
 

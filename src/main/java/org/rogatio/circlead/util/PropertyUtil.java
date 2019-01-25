@@ -1,11 +1,14 @@
 package org.rogatio.circlead.util;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -204,20 +207,25 @@ public class PropertyUtil {
 		String appConfigPath = currentDir + File.separatorChar + "circlead.properties";
 		String runtimeConfigPath = currentDir + File.separatorChar + "runtime.properties";
 		try {
-			applicationProperties.load(new FileInputStream(appConfigPath));
+			FileInputStream i = new FileInputStream(appConfigPath);
+			BufferedReader in = new BufferedReader(new InputStreamReader(i, "UTF-8"));
+			applicationProperties.load(in);
 		} catch (FileNotFoundException e) {
 			LOGGER.error(e);
 		} catch (IOException e) {
 			LOGGER.error(e);
 		}
 		try {
-			runtimeProperties.load(new FileInputStream(runtimeConfigPath));
+			FileInputStream i = new FileInputStream(runtimeConfigPath);
+			BufferedReader in = new BufferedReader(new InputStreamReader(i, "UTF-8"));
+			runtimeProperties.load(in);
 		} catch (FileNotFoundException e) {
 			LOGGER.info("Runtime-Properties not set yet.");
 		} catch (IOException e) {
 			LOGGER.info("Runtime-Properties not set yet.");
 		}
 
+		LOGGER.info("Default charset is '"+Charset.defaultCharset().name()+"'");
 	}
 
 	/**

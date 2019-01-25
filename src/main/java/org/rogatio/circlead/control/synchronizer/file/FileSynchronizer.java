@@ -532,6 +532,7 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.setSerializationInclusion(Include.NON_NULL);
+			
 			try {
 				LOGGER.info("Read file '" + filename + "'");
 

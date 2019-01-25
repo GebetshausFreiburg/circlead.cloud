@@ -13,9 +13,8 @@ import org.rogatio.circlead.control.Repository;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class GroovyUtil allows scripting in application. Needs
+ * The Class GroovyUtil allows scripting in application. Needs modules (>Java v1.9)
  * 
  * --add-opens=java.base/java.io=ALL-UNNAMED
  * --add-opens=java.base/java.lang=ALL-UNNAMED
@@ -110,7 +109,7 @@ public class GroovyUtil {
 	public static Object loadAndRunScript(String fileName) {
 		try {
 			LOGGER.info("Running script '" + fileName + "'");
-			String script = new String(Files.readAllBytes(Paths.get(fileName)));
+			String script = new String(Files.readAllBytes(Paths.get(fileName)), "UTF-8");
 			return runScript(script, fileName);
 		} catch (IOException e) {
 			LOGGER.error(e);
