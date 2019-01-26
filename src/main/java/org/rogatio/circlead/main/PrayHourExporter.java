@@ -1,5 +1,6 @@
 package org.rogatio.circlead.main;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -7,14 +8,17 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.extensions.XSSFCellBorder.BorderSide;
 import org.dmfs.rfc5545.Weekday;
 import org.rogatio.circlead.control.CircleadRecurrenceRule;
 import org.rogatio.circlead.control.Repository;
@@ -29,11 +33,7 @@ import org.rogatio.circlead.util.StringUtil;
  * @author Matthias Wegner
  */
 public class PrayHourExporter {
-	
-	//TODO Linien in Zellen-Exporten
-	//TODO Alle gefüllten Zellen leicht grau (wie interne Stunden)
-	//TODO Zellengröße in Höhe nach Textgröße anpassen
-	
+
 	/** The Constant LOGGER. */
 	final static Logger LOGGER = LogManager.getLogger(PrayHourExporter.class);
 
@@ -61,6 +61,7 @@ public class PrayHourExporter {
 	public PrayHourExporter() {
 		HEADERSTYLE.setAlignment(org.apache.poi.ss.usermodel.HorizontalAlignment.CENTER);
 		HEADERSTYLE.setVerticalAlignment(org.apache.poi.ss.usermodel.VerticalAlignment.TOP);
+		ExcelUtil.setBorder(HEADERSTYLE, BorderStyle.MEDIUM, 0, 0, 0);
 		ExcelUtil.addColorBackground(HEADERSTYLE, (byte) 200, (byte) 200, (byte) 200);
 
 		addSheet(PrayHourExporter.MODE_EXTERN);
@@ -89,6 +90,7 @@ public class PrayHourExporter {
 			} else {
 				cell.setCellValue(" ");
 			}
+			
 		}
 	}
 
@@ -158,7 +160,7 @@ public class PrayHourExporter {
 				try {
 					crr = new CircleadRecurrenceRule(team.getRecurrenceRule());
 				} catch (CircleadRecurrenceRuleException e) {
-					LOGGER.error("Rule not correct in team '"+team.getTitle()+"'", e);
+					LOGGER.error("Rule not correct in team '" + team.getTitle() + "'", e);
 				}
 
 				if (crr != null) {
@@ -168,9 +170,9 @@ public class PrayHourExporter {
 
 						XSSFRow row = sheet.getRow(hour + 1);
 						if (mode.equals(MODE_DETAIL)) {
-							row.setHeight((short) (256 * 4));
+							row.setHeight((short) (256 * 6));
 						} else {
-							row.setHeight((short) (256 * 2));
+							row.setHeight((short) (256 * 3));
 						}
 
 						XSSFCell cell = null;
@@ -192,9 +194,12 @@ public class PrayHourExporter {
 
 						if (crr.getDuration() == 2) {
 							sheet.addMergedRegion(new CellRangeAddress(hour + 1, hour + 2, pos, pos));
+							ExcelUtil.setBorder(BorderStyle.HAIR, new CellRangeAddress(hour + 1, hour + 2, pos, pos), sheet);
+							
 						}
 						if (crr.getDuration() == 3) {
 							sheet.addMergedRegion(new CellRangeAddress(hour + 1, hour + 3, pos, pos));
+							ExcelUtil.setBorder(BorderStyle.HAIR, new CellRangeAddress(hour + 1, hour + 3, pos, pos), sheet);
 						}
 
 						String appendix = "";
@@ -221,6 +226,8 @@ public class PrayHourExporter {
 							cellStyle.setAlignment(org.apache.poi.ss.usermodel.HorizontalAlignment.CENTER);
 							cellStyle.setVerticalAlignment(org.apache.poi.ss.usermodel.VerticalAlignment.TOP);
 							cellStyle.setWrapText(true);
+							ExcelUtil.setBorder(cellStyle, BorderStyle.HAIR, 0, 0, 0);
+							ExcelUtil.addColorBackground(cellStyle, (byte) 240, (byte) 240, (byte) 240);
 
 							if (mode.equals(MODE_NEED)) {
 								if (team.getRedundance() < 1.0) {
@@ -232,7 +239,7 @@ public class PrayHourExporter {
 							}
 							if (mode.equals(MODE_INTERN)) {
 								if ((team.getTeamSize() < 2) && (!team.isSpecialized())) {
-									ExcelUtil.addColorBackground(cellStyle, (byte) 240, (byte) 240, (byte) 240);
+									ExcelUtil.addColorBackground(cellStyle, (byte) 180, (byte) 180, (byte) 180);
 								}
 							}
 							if (mode.equals(MODE_EXTERN)) {
@@ -252,6 +259,9 @@ public class PrayHourExporter {
 								cell.setCellValue(rts);
 							}
 						}
+
+						// Autosize row
+//						row.setHeight((short)-1);
 					}
 				}
 			}
@@ -275,7 +285,7 @@ public class PrayHourExporter {
 			LOGGER.debug("Export PrayHours to '" + filename + ".xlsx'");
 			File f = new File("exports" + File.separatorChar + filename + ".xlsx");
 			if (!f.exists()) {
-				f.getParentFile().mkdirs(); 
+				f.getParentFile().mkdirs();
 				f.createNewFile();
 			}
 			FileOutputStream out = new FileOutputStream(f);

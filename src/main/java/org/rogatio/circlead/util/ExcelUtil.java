@@ -16,9 +16,12 @@ import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
@@ -28,6 +31,7 @@ import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.extensions.XSSFCellBorder.BorderSide;
 import org.rogatio.circlead.model.Parameter;
 
 /**
@@ -40,6 +44,44 @@ public class ExcelUtil {
 	/** The Constant LOGGER. */
 	private final static Logger LOGGER = LogManager.getLogger(ExcelUtil.class);
 
+	public static void setBorder(XSSFCellStyle cellStyle, BorderSide side, BorderStyle bs, int r, int g, int b) {
+		if (side==BorderSide.TOP) {
+			cellStyle.setBorderTop(bs);
+		}
+		if (side==BorderSide.BOTTOM) {
+			cellStyle.setBorderBottom(bs);
+		}
+		if (side==BorderSide.LEFT) {
+			cellStyle.setBorderLeft(bs);
+		}
+		if (side==BorderSide.RIGHT) {
+			cellStyle.setBorderRight(bs);
+		}
+		XSSFColor color = new XSSFColor();
+		color.setRGB(new byte[] { (byte) r, (byte) g, (byte) b });
+		cellStyle.setBorderColor(side, color);
+	}
+	
+	public static void setBorder(BorderStyle style, CellRangeAddress range, XSSFSheet sheet) {
+		RegionUtil.setBorderTop(BorderStyle.HAIR, range, sheet);
+		RegionUtil.setBorderBottom(BorderStyle.HAIR, range, sheet);
+		RegionUtil.setBorderLeft(BorderStyle.HAIR, range, sheet);
+		RegionUtil.setBorderRight(BorderStyle.HAIR, range, sheet);
+	}
+	
+	public static void setBorder(XSSFCellStyle cellStyle, BorderStyle bs, int r, int g, int b) {
+		cellStyle.setBorderBottom(bs);
+		cellStyle.setBorderLeft(bs);
+		cellStyle.setBorderRight(bs);
+		cellStyle.setBorderTop(bs);
+		XSSFColor color = new XSSFColor();
+		color.setRGB(new byte[] { (byte) r, (byte) g, (byte) b });
+		cellStyle.setBorderColor(BorderSide.BOTTOM, color);
+		cellStyle.setBorderColor(BorderSide.TOP, color);
+		cellStyle.setBorderColor(BorderSide.LEFT, color);
+		cellStyle.setBorderColor(BorderSide.RIGHT, color);
+	}
+	
 	/**
 	 * Adds the color background.
 	 *
