@@ -101,7 +101,7 @@ public class GroovyUtil {
 	}
 
 	/**
-	 * Load and run script.
+	 * Load and run groovy-script.
 	 *
 	 * @param fileName the file name
 	 * @return the object
