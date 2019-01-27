@@ -1,6 +1,7 @@
 // Version: v1.0.0
 // Author: Matthias Wegner
 
+// Load application default role identifier
 def roleIdentifier = PropertyUtil.getInstance().getApplicationDefaultRoleReport()
 
 // Name of report
