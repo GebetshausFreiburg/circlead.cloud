@@ -1,5 +1,12 @@
+// Version: v1.0.0
+// Author: Matthias Wegner
+
+// Name of report
 name = "Team Category Report"
+
+// Description of report
 description = "Zeigt die Teams der Kategorie '" + PropertyUtil.getApplicationDefaultTeamcategory() + "' an und stellt diese in einem stundengenauen Wochenplan dar."
+
 stylesheet = "stylesCategoryReport.css"
 
 import java.util.ArrayList;

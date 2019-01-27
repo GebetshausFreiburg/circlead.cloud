@@ -1,6 +1,12 @@
+// Version: v1.0.0
+// Author: Matthias Wegner
+
 Rolegroup rolegroup = Repository.getInstance().getRolegroup(rolegroupIdentifier);
 
+// Name of report
 name = "Report '" + rolegroup.getTitle() + "'"
+
+// Name of report
 description = "(Druckfähige) Zusammenfassung der Rollengruppe '" + rolegroupIdentifier
 					+ "' mit allen enthaltenen Rollen"
 

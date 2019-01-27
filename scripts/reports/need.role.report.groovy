@@ -1,4 +1,10 @@
+// Version: v1.0.0
+// Author: Matthias Wegner
+
+// Name of report
 name = "Role Need Report"
+
+// Description of report
 description = "Liste aller Bedarfe bzgl. Rollen."
 
 import java.util.ArrayList;

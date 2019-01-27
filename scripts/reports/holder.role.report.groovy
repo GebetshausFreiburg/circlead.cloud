@@ -1,4 +1,10 @@
+// Version: v1.0.0
+// Author: Matthias Wegner
+
+// Name of report
 name = "RoleHolder Report"
+
+// Description of report
 description = "Bericht über den Status der Rollenträger, wenn diese in der Organisation noch nicht ausgeprägt sind."
 
 import java.util.ArrayList;

@@ -1,3 +1,7 @@
+// Export Teamhours which are related to one person which are 12 hours later
+// Version: v1.0.0
+// Author: Matthias Wegner
+
 import org.rogatio.circlead.model.work.Role
 import java.util.List
 import org.jsoup.nodes.Element

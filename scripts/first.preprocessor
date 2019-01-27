@@ -1,17 +1,10 @@
+// First Preprocessor before application starts
+// Version: v1.0.0
+// Author: Matthias Wegner
+
 import java.util.*
 import org.jsoup.*;
 import org.rogatio.circlead.*;
 import java.nio.file.*;
-
-String content = "FIRST PREPROCESSOR";
-
-//String set = StringUtil.detectCharset(content);
-//LOG.debug(set+": "+content);
-
-//String c = StringUtil.convertEncoding(content ,set, "UTF-8");
-//set = StringUtil.detectCharset(c);
-//LOG.debug(set+": "+c);
-
-//System.exit(0);
 
 return "ok"

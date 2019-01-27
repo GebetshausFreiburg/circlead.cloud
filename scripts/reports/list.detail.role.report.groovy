@@ -1,4 +1,10 @@
+// Version: v1.0.0
+// Author: Matthias Wegner
+
+// Name of report
 name = "RoleList Report Details"
+
+// Description of report
 description = "Detaillierte Liste aller Rollen die den Status und die Besetzung ausweist."
 
 import org.jsoup.nodes.Element;

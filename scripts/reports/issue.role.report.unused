@@ -1,4 +1,10 @@
+// Version: v1.0.0
+// Author: Matthias Wegner
+
+// Name of report
 name = "Issue by Role-Label Report"
+
+// Description of report
 description = "Jira-Vorgangsübersicht nach Rollen klassifiziert"
 
 import java.util.ArrayList;

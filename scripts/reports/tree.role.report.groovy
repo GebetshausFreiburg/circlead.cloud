@@ -1,4 +1,10 @@
+// Version: v1.0.0
+// Author: Matthias Wegner
+
+// Name of report
 name = "RoleTree Report"
+
+// Description of report
 description = "Phylogenetischer Rollenbaum der Rollen. Zeigt die Vererbungshierarchie der Rollen an. Von Links nach Rechts nimmt der Kompetenzgrad und die Spezialisierung der Rollen zu."
 
 import java.util.List;

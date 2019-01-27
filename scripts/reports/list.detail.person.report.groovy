@@ -1,4 +1,10 @@
+// Version: v1.0.0
+// Author: Matthias Wegner
+
+// Name of report
 name = "PersonList Report Details"
+
+// Description of report
 description = "Detaillierte Mitarbeiterliste (inkl. Auslastung und Rollenanzahl)"
 
 import java.util.ArrayList;

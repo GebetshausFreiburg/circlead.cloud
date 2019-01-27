@@ -1,4 +1,10 @@
+// Version: v1.0.0
+// Author: Matthias Wegner
+
+// Name of report
 name = "PersonList Report"
+
+// Description of report
 description = "Adressliste aller Mitarbeiter in der Organisation"
 
 import org.jsoup.nodes.Element;

@@ -1,6 +1,12 @@
+// Version: v1.0.0
+// Author: Matthias Wegner
+
 String category = PropertyUtil.getInstance().getApplicationDefaultTeamcategory()
 
+// Name of report
 name = "Team Category Analysis Report"
+
+// Description of report
 description = "Zeigt alle Teams der Kategorie '"+category+"' an bedarfsorientierten Wochenbericht."
 	
 import java.util.List;

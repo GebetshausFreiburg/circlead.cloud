@@ -1,6 +1,12 @@
+// Version: v1.0.0
+// Author: Matthias Wegner
+
 def roleIdentifier = PropertyUtil.getInstance().getApplicationDefaultRoleReport()
 
+// Name of report
 name = "Person Role "+roleIdentifier+" Report"
+
+// Name of report
 description = "Druckvorlage Personen die mindestens die Rolle "+roleIdentifier+" tragen"
 
 import java.util.List;

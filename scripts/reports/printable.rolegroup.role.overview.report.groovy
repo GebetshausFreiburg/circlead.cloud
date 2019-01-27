@@ -1,4 +1,10 @@
+// Version: v1.0.0
+// Author: Matthias Wegner
+
+// Name of report
 name = "Overview Report"
+
+// Description of report
 description = "Druckvorlage aller Rollengruppen und Rollen (mit Seitenumbruch nach jedem Workitem)"
 
 import java.util.List;

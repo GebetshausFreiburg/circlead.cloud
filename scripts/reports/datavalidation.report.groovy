@@ -1,4 +1,10 @@
+// Version: v1.0.0
+// Author: Matthias Wegner
+
+// Name of report
 name = "Validation Report"
+
+// Description of report
 description = "Bericht über invalide Daten des Rollenmodells."
 
 import java.util.List;

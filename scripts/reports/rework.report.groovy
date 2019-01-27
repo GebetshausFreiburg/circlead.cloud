@@ -1,4 +1,10 @@
+// Version: v1.0.0
+// Author: Matthias Wegner
+
+// Name of report
 name = "Rework Report"
+
+// Description of report
 description = "Anzeige aller Workitems (Rollen und Rollengruppen) die nicht Aktiv sind"
 
 import java.util.ArrayList;

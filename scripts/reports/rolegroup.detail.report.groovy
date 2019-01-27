@@ -1,4 +1,10 @@
+// Version: v1.0.0
+// Author: Matthias Wegner
+
+// Name of report
 name = "Rolegroup-Summary Report"
+
+// Description of report
 description = "Tabellarische Übersicht aller Rollengruppen mit der Auflistung aller enthaltenen Rollen"
 
 import java.util.List;
