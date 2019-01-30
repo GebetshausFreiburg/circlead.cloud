@@ -20,8 +20,8 @@ import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.report.DefaultReport;
 
 /**
- * The Main Console Launcher for Circlead Application
- * 
+ * The Main Console Launcher for Circlead Application.
+ *
  * @author Matthias Wegner
  */
 public class Launcher {
@@ -30,7 +30,7 @@ public class Launcher {
 	private final static Logger LOGGER = LogManager.getLogger(Launcher.class);
 
 	/**
-	 * The main method of circlead
+	 * The main method of circlead.
 	 *
 	 * @param args the arguments
 	 */
@@ -67,6 +67,9 @@ public class Launcher {
 		 * Go forward if arguments are set
 		 */
 		if (args != null && args.length > 0) {
+			
+			System.out.println(starterLogo());
+			
 			/*
 			 * StringBuilder to summarize corresponding argument and value together
 			 */
@@ -397,7 +400,54 @@ public class Launcher {
 	}
 
 	/**
-	 * Create help text for console when application is started without arguments
+	 * Starter logo.
+	 *
+	 * @return the string
+	 */
+	private static String starterLogo() {
+		return "                         &&&&&&&&&&&&\n" + 
+				"                     %(((((((((###(((((((((##\n" + 
+				"                 &#((((#%%&&&&%%%%%&&&&&%%#((((&*  \n" + 
+				"              /((((%&&&%%%%&&&&&&&%%%#((((#&&%#(((#   \n" + 
+				"            *#((#%&&&%%#(((##%%%%%%##%%&&%%((#&%#(((&   \n" + 
+				"          /(((#&&%((#%%&&%%((((((((#%%&&%%#%&&%(%&%(((/  \n" + 
+				"         &(((%&(((%&&%(((((((((((((((((((%&&%##&%#%%(((#  \n" + 
+				"       (#((%&%(%&%(((((/              /((((((%&%%%&%&#((*  \n" + 
+				"       (((%&#%&&#(((#                     *((((#%&&%%%((#   \n" + 
+				"      #((%&%&&%((((                           ((((#&%&%((#   \n" + 
+				"     #((%&%&&%(((#                             */((%&&&(((/  \n" + 
+				"    %((%&&&%&(((*                                #((&&&#((#  \n" + 
+				"   /(((&%&#&%(((                                 #((%&&&#((  \n" + 
+				"   #((%%%%#&(((                                  &((%&&&%((  \n" + 
+				"   #((%%%%#%(((                                  #((%&&%&((  \n" + 
+				"   #((&#%%#&(((                                  #(#&&%%%((  \n" + 
+				"   #((&#%&#&#((                                 (((%&&%&%((  \n" + 
+				"   #((%%(%%%%((##                              /(((&&%%%(((  \n" + 
+				"   /(((&##&%&%((%                              #((#&%%&((((  \n" + 
+				"    (((%&%#&%&%(((&                           %((#&&&%(((/  \n" + 
+				"     /((#&%%&%%%(((&                       &(((#%&&%(((/  \n" + 
+				"      /((((&&&&%&%((((#                %(((((%&&&%((((/  \n" + 
+				"       #*(((#%&&%%&%((((((###&&####(((((((#&&&&%(((#(   \n" + 
+				"          ((((((%&&&&&&%%##(((((((##%%&&&&&%&&#((##   \n" + 
+				"             *(((((%&&&&&&&&&&&&&&&&&&&%%%&%((((#\n" + 
+				"                ((((((#%&&&%%%%%%%%%&&&%#(((((/\n" + 
+				"                   *((((((((#######(((((((((\n" + 
+				"                         *(((((((((((*\n" + 
+				"\n" + 
+				"Starting ...\n" +
+				"\n"+
+				"          d8b                 888                        888 \n" + 
+				"          Y8P                 888                        888 \n" + 
+				"                              888                        888 \n" + 
+				"  .d8888b 888 888d888 .d8888b 888  .d88b.   8888b.   .d88888 \n" + 
+				" d88P\"    888 888P\"  d88P\"    888 d8P  Y8b     \"88b d88\" 888 \n" + 
+				" 888      888 888    888      888 88888888 .d888888 888  888 \n" + 
+				" Y88b.    888 888    Y88b.    888 Y8b.     888  888 Y88b 888 \n" + 
+				"  \"Y8888P 888 888     \"Y8888P 888  \"Y8888  \"Y888888  \"Y88888";
+	}
+	
+	/**
+	 * Create help text for console when application is started without arguments.
 	 *
 	 * @return help text
 	 */
@@ -434,7 +484,7 @@ public class Launcher {
 	}
 
 	/**
-	 * Builds arguments when argument has parameter and value
+	 * Builds arguments when argument has parameter and value.
 	 *
 	 * @param value the value of the argument
 	 * @param key   the key of the argument
