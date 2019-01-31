@@ -29,7 +29,7 @@ public class PropertyUtil {
 
 	/** The application version. Use Sematic Versioning (https://semver.org/). */
 	/* IF CHANGED, THEN CHANGE ALSO IN POM. */
-	public static String APPLICATION_VERSION = "1.1.0.patch20190127";
+	public static String APPLICATION_VERSION = "1.1.1";
 
 	/** The application name. */
 	public static String APPLICATION_NAME = "Circlead";
@@ -538,8 +538,9 @@ public class PropertyUtil {
 	 */
 	public String getApplicationDefaultTeamMessage() {
 		String message = getApplicationValue(APPLICATION_DEFAULT_TEAMMESSAGE);
-		if (!StringUtil.detectCharset(message).equals("UTF-8")) {
-			LOGGER.warn("Team-Message is not UTF-8-Encoded: "+message);
+		String encoding = StringUtil.detectCharset(message);
+		if (!(encoding.equals("UTF-8")||encoding.equals("CESU-8"))) {
+			LOGGER.warn("Team-Message is not UTF-8-Encoded ("+encoding+"): "+message);
 		}
 		return message;
 	}
