@@ -163,14 +163,15 @@ public class PropertyUtil {
 	/** The instance. */
 	private static PropertyUtil instance = null;
 
-	/** The ApplicationProperties. */
+	/** The Application Properties */
 	private Properties applicationProperties = new Properties();
 
-	/** The runtime properties. */
+	/** The Runtime Properties */
 	private Properties runtimeProperties = new Properties();
 
 	static {
 		LOGGER.info("" + APPLICATION_NAME + " (v" + APPLICATION_VERSION + ")");
+		LOGGER.info("Copyright by Matthias Wegner, Gebetshaus Freiburg (open skies e.V.)");
 		LOGGER.info("Default Rolegroup: " + PropertyUtil.getInstance().getApplicationDefaultRolegroup());
 		LOGGER.info("Default Teamcategory: " + PropertyUtil.getInstance().getApplicationDefaultTeamcategory());
 		LOGGER.info("Application-Update-Mode is '" + PropertyUtil.getInstance().getApplicationUpdateMode() + "'");
