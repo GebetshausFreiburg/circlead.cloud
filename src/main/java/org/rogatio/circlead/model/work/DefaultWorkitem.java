@@ -90,6 +90,18 @@ public class DefaultWorkitem implements IWorkitem, Comparable<DefaultWorkitem> {
 	}
 
 	/**
+	 * Checks if is exclusive.
+	 *
+	 * @return true, if is exclusive
+	 */
+	public boolean isExclusive() {
+		if (this.getTitle().contains(PropertyUtil.getInstance().getApplicationExclusiveChar())) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
 	 * Checks if is specialized.
 	 *
 	 * @return true, if is specialized

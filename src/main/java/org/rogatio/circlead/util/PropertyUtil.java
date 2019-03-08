@@ -29,7 +29,7 @@ public class PropertyUtil {
 
 	/** The application version. Use Sematic Versioning (https://semver.org/). */
 	/* IF CHANGED, THEN CHANGE ALSO IN POM. */
-	public static String APPLICATION_VERSION = "1.1.1";
+	public static String APPLICATION_VERSION = "1.2.0";
 
 	/** The application name. */
 	public static String APPLICATION_NAME = "Circlead";
@@ -151,6 +151,9 @@ public class PropertyUtil {
 	/** The application default role corememberorganisation. */
 	public static String APPLICATION_DEFAULT_ROLE_COREMEMBERORGANISATION = "application.default.role.core";
 
+	/** The application exclusive char. */
+	public static String APPLICATION_EXCLUSIVE_CHAR = "application.exclusive.char";
+	
 	/** The application specialized char. */
 	public static String APPLICATION_SPECIALIZED_CHAR = "application.specialized.char";
 
@@ -564,6 +567,19 @@ public class PropertyUtil {
 		return getApplicationValue(APPLICATION_DEFAULT_ROLE_COREMEMBERORGANISATION);
 	}
 
+	/**
+	 * Gets the application specialized char.
+	 *
+	 * @return the application specialized char
+	 */
+	public String getApplicationExclusiveChar() {
+		String c = getApplicationValue(APPLICATION_EXCLUSIVE_CHAR);
+		if (c == null) {
+			return "UNKNOWN_EXCLUSIVE_CHAR";
+		}
+		return c.trim();
+	}
+	
 	/**
 	 * Gets the application specialized char.
 	 *

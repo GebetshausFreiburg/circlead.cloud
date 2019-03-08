@@ -106,29 +106,39 @@ import org.rogatio.circlead.util.StringUtil;
 				durrationTime = d;
 			}
 		}
-
+		
+		boolean internal = false;
+		// if internal, then set
 		if (team != null) {
 			if (team.getTeamSize() < 2) {
-				addition = " internal";
+				//addition = " internal";
+				addition = " empty";
+				internal = true;
 			}
+		}
+		
+		if (team != null) {
+	    	if (team.isExclusive()) {
+		       addition = " empty";
+		   }
 		}
 
 		Element li = ul.appendElement("li").attr("class", duration + addition);
 		String h = StringUtil.addSpace(hour + "", 2, '0');
 
-		String spanTitle = "";
-		if (team != null) {
-			// spanTitle = "" + StringUtil.join(team.getTeamMembers()) + "";
-		}
+        li.appendElement("span").attr("title", "").appendText(h + ":00");
+        if (team != null) {
+		 if (!team.isExclusive()&&!internal) {
+			if (StringUtil.isNotNullAndNotEmpty(s)) {
+				li.appendText(" "+s);
+			}
 
-		li.appendElement("span").attr("title", spanTitle).appendText(h + ":00");
-		if (StringUtil.isNotNullAndNotEmpty(s)) {
-			li.appendText(" "+s);
+			if (StringUtil.isNotNullAndNotEmpty(st)) {
+				li.appendElement("span").appendText(" "+st);
+			}
+		 }
 		}
-
-		if (StringUtil.isNotNullAndNotEmpty(st)) {
-			li.appendElement("span").appendText(" "+st);
-		}
+		
 		return durrationTime;
 	}
 
