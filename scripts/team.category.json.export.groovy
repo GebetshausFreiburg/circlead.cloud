@@ -85,10 +85,28 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+class Hours {
+  private List<Hour> hours = new ArrayList<Hour>();
+  
+  public void addHour(Hour hour) {
+    hours.add(hour);
+  }
+		
+  public void setHours(List<Hour> hours) {
+    this.hours = hours;
+  }
+  
+   public List<Hour> getHours() {
+    return hours;
+  }
+  
+}
+
 class Day {
   private List<Hour> hours = new ArrayList<Hour>();
   private int id;
   private String nameOfDay;
+ 
   public List<Hour> getHours() {
     return hours;
   }
@@ -124,6 +142,25 @@ class Hour {
   private int duration;
   private String title;
   private String subtitle;
+  private int idOfDay;
+  private String nameOfDay;
+  
+  public String getNameOfDay() {
+    return nameOfDay;
+  }
+  
+  public void setNameOfDay(String nameOfDay) {
+    this.nameOfDay = nameOfDay;
+  }
+  
+  public int getIdOfDay() {
+    return idOfDay;
+  }
+  
+  public void setIdOfDay(int idOfDay) {
+    this.idOfDay = idOfDay;
+  }
+  
   public int getHour() {
     return hour;
   }
@@ -190,6 +227,7 @@ for (int i = 0; i < 24; i++) {
   }
 }
 
+Hours hours = new Hours();
 Week week = new Week();
     for (int j = 1; j <= 7; j++) {
 		Day day = new Day();
@@ -253,6 +291,8 @@ Week week = new Week();
 								
 								Hour hourobj = new Hour();
                                hourobj.setHour(hour);
+                               hourobj.setIdOfDay(day.getId());
+                               hourobj.setNameOfDay(day.getNameOfDay());
                                hourobj.setDuration(crr.getDuration());
                                hourobj.setTitle(team.getTeamType()+appendix);
                                hourobj.setSubtitle(team.getTeamSubtype());
@@ -260,6 +300,7 @@ Week week = new Week();
 								if (team.getTeamSize() == 1&&(!team.isSpecialized())) {
 								} else {
 								   day.addHour(hourobj);
+								   hours.addHour(hourobj);
 								}
 								
 								found = true;
@@ -269,9 +310,12 @@ Week week = new Week();
 					if (writeable[i][j] && !found) {
 						Hour hourobj = new Hour();
                                hourobj.setHour(i);
+                               hourobj.setIdOfDay(day.getId());
+                               hourobj.setNameOfDay(day.getNameOfDay());
                                hourobj.setDuration(1);
                                hourobj.setTitle("Unbesetzt");
                               day.addHour(hourobj);
+                              hours.addHour(hourobj);
 					}
 				}
 			}
@@ -286,4 +330,4 @@ f.createNewFile();
 ObjectMapper mapper = new ObjectMapper();
 mapper.setSerializationInclusion(Include.NON_NULL);
 mapper.enable(SerializationFeature.INDENT_OUTPUT);
-mapper.writeValue(f, week);
+mapper.writeValue(f, hours);
