@@ -36,6 +36,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
+import org.rogatio.circlead.control.synchronizer.SynchronizerMode;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.ListParserElement;
 import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.control.validator.IValidator;
@@ -638,55 +639,59 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 
 		boolean foundSomeRoleResponsible = false;
 		if (ObjectUtil.isListNotNullAndEmpty(this.getPersonIdentifiers())) {
-			renderer.addH2(element,
-					ROLEPERSONSINORGANISATION.toString() + " (" + this.getPersonIdentifiers().size() + ")");
-			renderer.addPersonList(element, this.getPersonIdentifiers(), this);
+			if (synchronizer.getMode() == SynchronizerMode.FULL) {
+				renderer.addH2(element,
+						ROLEPERSONSINORGANISATION.toString() + " (" + this.getPersonIdentifiers().size() + ")");
+				renderer.addPersonList(element, this.getPersonIdentifiers(), this);
+			}
 			foundSomeRoleResponsible = true;
 		}
 
 		/*
 		 * Only show team roles if 'application.display.role.inteam = true'
 		 */
-		if (PropertyUtil.getInstance().isApplicationDisplayTeamRolesInRole()) {
-			/*
-			 * get teams which include role
-			 */
-			List<Team> foundTeams = R.getTeamsWithRole(this);
-			if (ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
+		if (synchronizer.getMode() == SynchronizerMode.FULL) {
+			if (PropertyUtil.getInstance().isApplicationDisplayTeamRolesInRole()) {
 				/*
-				 * display heading for role in teams
+				 * get teams which include role
 				 */
-				renderer.addH2(element,
-						ROLEPERSONSINTEAM.toString() + " (" + R.getTeamPersonsWithRole(this).size() + ")");
-
-				Element ul = element.appendElement("ul");
-				for (Team team : foundTeams) {
-					Element li = ul.appendElement("li");
-
+				List<Team> foundTeams = R.getTeamsWithRole(this);
+				if (ObjectUtil.isListNotNullAndEmpty(foundTeams)) {
 					/*
-					 * add link to team
+					 * display heading for role in teams
 					 */
-					renderer.addTeamLink(li, team);
+					renderer.addH2(element,
+							ROLEPERSONSINTEAM.toString() + " (" + R.getTeamPersonsWithRole(this).size() + ")");
 
-					/*
-					 * add status for team
-					 */
-					li.append("&nbsp;");
-					renderer.addStatus(li, team.getStatus());
+					Element ul = element.appendElement("ul");
+					for (Team team : foundTeams) {
+						Element li = ul.appendElement("li");
 
-					/*
-					 * add teamentry for team
-					 */
-					List<TeamEntry> entries = team.getTeamEntries();
-					Element ul2 = li.appendElement("ul");
-					for (TeamEntry e : entries) {
-						if (e.getRoleIdentifier().equals(this.getTitle())) {
-							List<String> pi = e.getPersons();
-							if (ObjectUtil.isListNotNullAndEmpty(pi)) {
-								for (String p : pi) {
-									Element li2 = ul2.appendElement("li");
-									renderer.addPersonItem(li2, null, p);
-									foundSomeRoleResponsible = true;
+						/*
+						 * add link to team
+						 */
+						renderer.addTeamLink(li, team);
+
+						/*
+						 * add status for team
+						 */
+						li.append("&nbsp;");
+						renderer.addStatus(li, team.getStatus());
+
+						/*
+						 * add teamentry for team
+						 */
+						List<TeamEntry> entries = team.getTeamEntries();
+						Element ul2 = li.appendElement("ul");
+						for (TeamEntry e : entries) {
+							if (e.getRoleIdentifier().equals(this.getTitle())) {
+								List<String> pi = e.getPersons();
+								if (ObjectUtil.isListNotNullAndEmpty(pi)) {
+									for (String p : pi) {
+										Element li2 = ul2.appendElement("li");
+										renderer.addPersonItem(li2, null, p);
+										foundSomeRoleResponsible = true;
+									}
 								}
 							}
 						}
@@ -695,13 +700,15 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 			}
 		}
 
-		if (!foundSomeRoleResponsible) {
-			if (this.isSituational()) {
-				renderer.addH2(element, ROLEPERSONS.toString());
-				renderer.addStatus(element, SITUATIONAL.toString());
-			} else {
-				renderer.addH2(element, ROLEPERSONS.toString());
-				renderer.addStatus(element, UNRELATED.toString());
+		if (synchronizer.getMode() == SynchronizerMode.FULL) {
+			if (!foundSomeRoleResponsible) {
+				if (this.isSituational()) {
+					renderer.addH2(element, ROLEPERSONS.toString());
+					renderer.addStatus(element, SITUATIONAL.toString());
+				} else {
+					renderer.addH2(element, ROLEPERSONS.toString());
+					renderer.addStatus(element, UNRELATED.toString());
+				}
 			}
 		}
 

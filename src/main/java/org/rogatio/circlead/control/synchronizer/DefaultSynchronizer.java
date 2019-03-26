@@ -9,7 +9,6 @@
 package org.rogatio.circlead.control.synchronizer;
 
 import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.rogatio.circlead.model.WorkitemType;
@@ -27,6 +26,8 @@ public class DefaultSynchronizer implements ISynchronizer {
 	/** The Constant logger. */
 	@SuppressWarnings("unused")
 	private final static Logger LOGGER = LogManager.getLogger(DefaultSynchronizer.class);
+	
+	private SynchronizerMode mode = SynchronizerMode.FULL;
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
@@ -144,6 +145,21 @@ public class DefaultSynchronizer implements ISynchronizer {
 	 */
 	@Override
 	public void writeIndex() {
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.control.synchronizer.ISynchronizer#getMode()
+	 */
+	public SynchronizerMode getMode() {
+		return mode;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.control.synchronizer.ISynchronizer#setMode(org.rogatio.circlead.control.synchronizer.SynchronizerMode)
+	 */
+	@Override
+	public void setMode(SynchronizerMode mode) {
+		this.mode = mode;
 	}
 
 }

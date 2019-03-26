@@ -2,10 +2,10 @@
 // Author: Matthias Wegner
 
 // Name of report
-name = "Overview Report"
+name = "Overview Anonymous Report"
 
 // Description of report
-description = "Druckvorlage aller Rollengruppen und Rollen (mit Seitenumbruch nach jedem Workitem)"
+description = "Druckvorlage aller Rollengruppen und Rollen ohne Personendaten (mit Seitenumbruch nach jedem Workitem)"
 
 import java.util.List;
 import org.rogatio.circlead.control.validator.ValidationMessage;
@@ -17,6 +17,7 @@ import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
+import org.rogatio.circlead.control.synchronizer.SynchronizerMode;
 
 	ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 		Element element = new Element("p");
@@ -26,6 +27,7 @@ import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
 		}
 
 		if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
+		    synchronizer.setMode(SynchronizerMode.ANONYMOUS);
 			element.append("<p style=\"page-break-before: always\">");
 
 			if (R.getRolegroups().size() > 0) {
@@ -64,5 +66,7 @@ import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
 				}
 			}
 		}
+
+        synchronizer.setMode(SynchronizerMode.FULL);
 
 		return element;

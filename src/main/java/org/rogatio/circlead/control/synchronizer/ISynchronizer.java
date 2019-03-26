@@ -87,7 +87,7 @@ public interface ISynchronizer {
 	 * @return the synchronizer result
 	 * @throws SynchronizerException the synchronizer exception
 	 */
-	public SynchronizerResult update(IWorkitem workitem) throws SynchronizerException ;
+	public SynchronizerResult update(IWorkitem workitem) throws SynchronizerException;
 	
 	/**
 	 * Gets the pattern for valid id as regular expression which is allowed for synchronized system.
@@ -95,6 +95,20 @@ public interface ISynchronizer {
 	 * @return the id pattern
 	 */
 	public String getIdPattern();
+	
+	/**
+	 * Gets the mode.
+	 *
+	 * @return the mode
+	 */
+	public SynchronizerMode getMode();
+	
+	/**
+	 * Sets the mode.
+	 *
+	 * @param mode the new mode
+	 */
+	public void setMode(SynchronizerMode mode);
 	
 	/**
 	 * Gets the renderer which is used to render workitems and reports for target system.

@@ -24,6 +24,7 @@ import java.util.TreeMap;
 
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
+import org.rogatio.circlead.control.synchronizer.SynchronizerMode;
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
 import org.rogatio.circlead.model.Parameter;
@@ -52,13 +53,12 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 	/**
 	 * Instantiates a new rolegroup.
 	 *
-	 * @param dataitem
-	 *            the dataitem of the rolegroup of class  
-	 * {@link org.rogatio.circlead.model.data.RolegroupDataitem}
+	 * @param dataitem the dataitem of the rolegroup of class
+	 *                 {@link org.rogatio.circlead.model.data.RolegroupDataitem}
 	 */
 	public Rolegroup(IDataitem dataitem) {
 		super(dataitem);
-		
+
 		if (!(dataitem instanceof RolegroupDataitem)) {
 			throw new IllegalArgumentException("IDataitem must be of type RolegroupDataitem");
 		}
@@ -85,8 +85,7 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 	/**
 	 * Sets the lead identifier.
 	 *
-	 * @param lead
-	 *            the new lead identifier
+	 * @param lead the new lead identifier
 	 */
 	public void setLeadIdentifier(String lead) {
 		this.getDataitem().setLead(lead);
@@ -95,38 +94,37 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 	/**
 	 * Sets the parent identifier.
 	 *
-	 * @param parentIdentifier
-	 *            the new parent identifier
+	 * @param parentIdentifier the new parent identifier
 	 */
 	public void setParentIdentifier(String parentIdentifier) {
 		this.getDataitem().setParent(parentIdentifier);
 	}
-	
+
 	@Override
 	public List<IWorkitem> getReferencedItems() {
 		List<IWorkitem> references = new ArrayList<IWorkitem>();
-		
+
 		if (StringUtil.isNotNullAndNotEmpty(this.getParentIdentifier())) {
 			Rolegroup rolegroup = R.getRolegroup(this.getParentIdentifier());
-			if (rolegroup!=null) {
+			if (rolegroup != null) {
 				references.add(rolegroup);
 			}
 		}
-		
+
 		if (StringUtil.isNotNullAndNotEmpty(this.getResponsibleIdentifier())) {
 			Role role = R.getRole(this.getResponsibleIdentifier());
-			if (role!=null) {
+			if (role != null) {
 				references.add(role);
 			}
 		}
-		
+
 		if (StringUtil.isNotNullAndNotEmpty(this.getLeadIdentifier())) {
 			Person person = R.getPerson(this.getLeadIdentifier());
-			if (person!=null) {
+			if (person != null) {
 				references.add(person);
 			}
 		}
-		
+
 		return references;
 	}
 
@@ -142,13 +140,12 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 	/**
 	 * Sets the summary.
 	 *
-	 * @param summary
-	 *            the new summary
+	 * @param summary the new summary
 	 */
 	public void setSummary(String summary) {
 		this.getDataitem().setSummary(summary);
 	}
-	
+
 	/**
 	 * Gets the abbreviation.
 	 *
@@ -157,12 +154,11 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 	public String getAbbreviation() {
 		return this.getDataitem().getAbbreviation();
 	}
-	
+
 	/**
 	 * Sets the abbreviation.
 	 *
-	 * @param abbreviation
-	 *            the new abbreviation
+	 * @param abbreviation the new abbreviation
 	 */
 	public void setAbbreviation(String abbreviation) {
 		this.getDataitem().setAbbreviation(abbreviation);
@@ -180,13 +176,12 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 	/**
 	 * Sets the responsible identifier.
 	 *
-	 * @param identifier
-	 *            the new responsible identifier
+	 * @param identifier the new responsible identifier
 	 */
 	public void setResponsibleIdentifier(String identifier) {
 		this.getDataitem().setResponsible(identifier);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -215,21 +210,23 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 	@Override
 	public Element render(ISynchronizer synchronizer) {
 		ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
-		
+
 		Element element = new Element("p");
 
-		if (StringUtil.isNotNullAndNotEmpty(this.getResponsibleIdentifier())) {
-			Role role = R.getRole(this.getResponsibleIdentifier());
-			if (role != null) { 
-				renderer.addRoleItem(element, RESPONSIBLEROLE.toString(), this.getResponsibleIdentifier());
+		if (synchronizer.getMode() == SynchronizerMode.FULL) {
+			if (StringUtil.isNotNullAndNotEmpty(this.getResponsibleIdentifier())) {
+				Role role = R.getRole(this.getResponsibleIdentifier());
+				if (role != null) {
+					renderer.addRoleItem(element, RESPONSIBLEROLE.toString(), this.getResponsibleIdentifier());
 
-				List<String> personIdentifiers = role.getPersonIdentifiers();
-				renderer.addPersonList(element, personIdentifiers, role, this.getLeadIdentifier());
+					List<String> personIdentifiers = role.getPersonIdentifiers();
+					renderer.addPersonList(element, personIdentifiers, role, this.getLeadIdentifier());
+				}
 			}
 		}
 
 		if (StringUtil.isNotNullAndNotEmpty(this.getParentIdentifier())) {
-			renderer.addRolegroupItem(element, PARENT.toString()+": ", this.getParentIdentifier());
+			renderer.addRolegroupItem(element, PARENT.toString() + ": ", this.getParentIdentifier());
 		}
 		if (StringUtil.isNotNullAndNotEmpty(this.getAbbreviation())) {
 			renderer.addItem(element, ABBREVIATION.toString(), this.getAbbreviation());
@@ -273,17 +270,17 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 			Role rg = R.getRole(this.getResponsibleIdentifier());
 			if (rg == null) {
 				ValidationMessage m = new ValidationMessage(this);
-				m.warning("Responsible role not found",
-						"Responsible role '" + this.getResponsibleIdentifier() + "' not found for Rolegroup '" + this.getTitle() + "'");
+				m.warning("Responsible role not found", "Responsible role '" + this.getResponsibleIdentifier()
+						+ "' not found for Rolegroup '" + this.getTitle() + "'");
 				messages.add(m);
 			}
 		}
-		
-		/*if (this.getTitle().contains(" ")) {
-			ValidationMessage m = new ValidationMessage(this);
-			m.warning("Title has Whitespace", "Rolegroup '" + this.getTitle() + "' has whitespace in title");
-			messages.add(m);
-		}*/
+
+		/*
+		 * if (this.getTitle().contains(" ")) { ValidationMessage m = new
+		 * ValidationMessage(this); m.warning("Title has Whitespace", "Rolegroup '" +
+		 * this.getTitle() + "' has whitespace in title"); messages.add(m); }
+		 */
 
 		List<Role> roles = R.getRoles(this.getTitle());
 		if (roles.size() == 0) {
@@ -311,8 +308,8 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 					}
 					if (!found) {
 						ValidationMessage m = new ValidationMessage(this);
-						m.warning("Lead not in role", "Rolegroup '" + this.getTitle() + "' has lead person '" + this.getLeadIdentifier() + "' not set in role '"
-								+ role.getTitle() + "'");
+						m.warning("Lead not in role", "Rolegroup '" + this.getTitle() + "' has lead person '"
+								+ this.getLeadIdentifier() + "' not set in role '" + role.getTitle() + "'");
 						messages.add(m);
 					}
 				}
@@ -321,7 +318,7 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 
 		return messages;
 	}
-	
+
 	/**
 	 * Gets the synonyms.
 	 *
@@ -330,7 +327,7 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 	public List<String> getSynonyms() {
 		return this.getDataitem().getSynonyms();
 	}
-	
+
 	/**
 	 * Sets the synonyms.
 	 *
@@ -344,14 +341,15 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 	/**
 	 * Sets the synonyms.
 	 *
-	 * @param synonyms
-	 *            the new synonyms
+	 * @param synonyms the new synonyms
 	 */
 	public void setSynonyms(List<String> synonyms) {
 		this.getDataitem().setSynonyms(synonyms);
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.model.data.IDataRow#getDataRow()
 	 */
 	@Override
@@ -365,16 +363,16 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 		addDataRowElement(this.getSummary(), Parameter.SUMMARY, map);
 		addDataRowElement(this.getParentIdentifier(), Parameter.PARENT, map);
 		addDataRowElement(this.getResponsibleIdentifier(), Parameter.RESPONSIBLEROLE, map);
-		
+
 		return map;
 	}
 
 	/**
 	 * Adds the data row element.
 	 *
-	 * @param values the values
+	 * @param values    the values
 	 * @param parameter the parameter
-	 * @param map the map
+	 * @param map       the map
 	 */
 	private void addDataRowElement(List<String> values, Parameter parameter, Map<Parameter, Object> map) {
 		if (ObjectUtil.isListNotNullAndEmpty(values)) {
@@ -382,17 +380,17 @@ public class Rolegroup extends DefaultWorkitem implements IWorkitemRenderer, IVa
 			for (String value : values) {
 				sb.append(" - ").append(value).append("\n");
 			}
-			
+
 			map.put(parameter, sb.toString());
 		}
 	}
-	
+
 	/**
 	 * Adds the data row element.
 	 *
-	 * @param value the value
+	 * @param value     the value
 	 * @param parameter the parameter
-	 * @param map the map
+	 * @param map       the map
 	 */
 	private void addDataRowElement(String value, Parameter parameter, Map<Parameter, Object> map) {
 		if (StringUtil.isNotNullAndNotEmpty(value)) {
