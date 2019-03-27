@@ -31,6 +31,7 @@ ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 			element.append("<p style=\"page-break-before: always\">");
 
 			Role roleSet = R.getRole(roleIdentifier);
+                        if (roleSet!=null) {
 			List<String> personIdentifiers = roleSet.getPersonIdentifiers();
 			if (ObjectUtil.isListNotNullAndEmpty(personIdentifiers)) {
 				for (int i = 0; i < personIdentifiers.size(); i++) {
@@ -68,6 +69,7 @@ ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 						
 					}
 				}
+                            }
 			}
 		}
 
