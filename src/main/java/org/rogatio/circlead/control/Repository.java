@@ -108,8 +108,8 @@ public final class Repository {
 	/**
 	 * Gets the next team.
 	 *
-	 * @param hour the hour 
-	 * @param day  the day 
+	 * @param hour the hour
+	 * @param day  the day
 	 * @param day  the day
 	 * @return the next team
 	 */
@@ -169,7 +169,7 @@ public final class Repository {
 	public Team getTeam(int hour, String day) {
 		return getTeam(hour, day, PropertyUtil.getInstance().getApplicationDefaultTeamcategory());
 	}
-	
+
 	/**
 	 * Gets the team if it has a periodically reccurence pattern and a set hour and
 	 * weekday.
@@ -2114,6 +2114,9 @@ public final class Repository {
 	 */
 	public List<ValidationMessage> validate() {
 
+		// For Developers
+		boolean logValidation = false;
+
 		/*
 		 * Initialize empty list of validators
 		 */
@@ -2165,32 +2168,34 @@ public final class Repository {
 				/*
 				 * set message to logger
 				 */
-				if (m.getType() == Type.INFO) {
-					if (m.getSolution() != null) {
-						LOGGER.info("" + m.getMessage() + " -> " + m.getSolution());
-					} else {
-						LOGGER.info("" + m.getMessage());
+				if (logValidation) {
+					if (m.getType() == Type.INFO) {
+						if (m.getSolution() != null) {
+							LOGGER.info("" + m.getMessage() + " -> " + m.getSolution());
+						} else {
+							LOGGER.info("" + m.getMessage());
+						}
 					}
-				}
-				if (m.getType() == Type.WARNING) {
-					if (m.getSolution() != null) {
-						LOGGER.warn("" + m.getMessage() + " -> " + m.getSolution());
-					} else {
-						LOGGER.warn(m.getCause() + ": " + m.getMessage());
+					if (m.getType() == Type.WARNING) {
+						if (m.getSolution() != null) {
+							LOGGER.warn("" + m.getMessage() + " -> " + m.getSolution());
+						} else {
+							LOGGER.warn(m.getCause() + ": " + m.getMessage());
+						}
 					}
-				}
-				if (m.getType() == Type.ERROR) {
-					if (m.getSolution() != null) {
-						LOGGER.error("" + m.getMessage() + " -> " + m.getSolution());
-					} else {
-						LOGGER.error(m.getCause() + ": " + m.getMessage());
+					if (m.getType() == Type.ERROR) {
+						if (m.getSolution() != null) {
+							LOGGER.error("" + m.getMessage() + " -> " + m.getSolution());
+						} else {
+							LOGGER.error(m.getCause() + ": " + m.getMessage());
+						}
 					}
-				}
-				if (m.getType() == Type.DEBUG) {
-					if (m.getSolution() != null) {
-						LOGGER.debug("" + m.getMessage() + " -> " + m.getSolution());
-					} else {
-						LOGGER.debug(m.getMessage());
+					if (m.getType() == Type.DEBUG) {
+						if (m.getSolution() != null) {
+							LOGGER.debug("" + m.getMessage() + " -> " + m.getSolution());
+						} else {
+							LOGGER.debug(m.getMessage());
+						}
 					}
 				}
 			}
