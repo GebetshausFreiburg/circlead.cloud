@@ -119,6 +119,11 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 		return this.circleadSpace;
 	}
 
+	public AtlassianSynchronizer() {
+		circleadSpace = PropertyUtil.getInstance().getConfluenceSpace();
+		confluenceClient = new ConfluenceClient();
+	}
+
 	/**
 	 * Instantiates a new atlassian synchronizer.
 	 *
@@ -1169,14 +1174,20 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 
 			// To Avoid loading of wrong labeld pages (and simplify writing) the loading of
 			// index is reduced to space of circlead.
-			// THis must be done here, because the url seems not be always correct. It not
+			// This must be done here, because the url seems not be always correct. It not
 			// always includes space in url. It seems it only works correct on
 			// cloud-version. On dedicated server german umlaute have different urls
 			SynchronizerResult results = confluenceClient
 					.search("space = \"" + circleadSpace + "\" AND label = \"" + type + "\"");
-
-			if (results == null | results.getContent() == null) {
-				LOGGER.error("Error occured: Loading Index returns no content in result-set.");
+			
+			if (results != null) {
+				if (results.getContent() == null) {
+					LOGGER.error("Error occured: Loading Index returns no content in result-set.");
+					return fileIndex;
+				}
+			} else {
+				LOGGER.error("Error occured: Loading Index returns null result-set.");
+				return fileIndex;
 			}
 
 			ObjectMapper mapper = new ObjectMapper();

@@ -42,7 +42,7 @@ public class PrayHourImporter {
 
 		Repository repository = Repository.getInstance();
 		FileSynchronizer fsynchronizer = new FileSynchronizer("data");
-		AtlassianSynchronizer asynchronizer = new AtlassianSynchronizer("CIRCLEAD");
+		AtlassianSynchronizer asynchronizer = new AtlassianSynchronizer();
 		repository.addSynchronizer(asynchronizer);
 		repository.addSynchronizer(fsynchronizer);
 

@@ -26,7 +26,7 @@ public class DeleteHistoricPageVersions {
 	 * @throws SynchronizerException the synchronizer exception
 	 */
 	public static void main(String[] args) throws JsonParseException, JsonMappingException, IOException, SynchronizerException {
-		AtlassianSynchronizer asynchronizer = new AtlassianSynchronizer("CIRCLEAD");
+		AtlassianSynchronizer asynchronizer = new AtlassianSynchronizer();
  
 		asynchronizer.deleteVersions(WorkitemType.ACTIVITY);
 		asynchronizer.deleteVersions(WorkitemType.ROLE);

@@ -199,7 +199,7 @@ public class Launcher {
 					/*
 					 * Set system-location of data to 'CIRCLEAD'-space
 					 */
-					asynchronizer = new AtlassianSynchronizer("CIRCLEAD");
+					asynchronizer = new AtlassianSynchronizer();
 					repository.addSynchronizer(asynchronizer);
 
 					LOGGER.info("AtlassianSynchronizer - Read-Mode '"

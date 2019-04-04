@@ -29,7 +29,7 @@ public class PropertyUtil {
 
 	/** The application version. Use Sematic Versioning (https://semver.org/). */
 	/* IF CHANGED, THEN CHANGE ALSO IN POM. */
-	public static String APPLICATION_VERSION = "1.3.2";
+	public static String APPLICATION_VERSION = "1.4.0";
 
 	/** The application name. */
 	public static String APPLICATION_NAME = "Circlead";
@@ -72,6 +72,8 @@ public class PropertyUtil {
 	
 	/**  The backgroundcolor of the slides. */
 	public static String SLIDESHOW_COLOR = "slideshow.color";
+	
+	public static String CONFLUENCE_SPACE = "atlassian.confluence.space";
 	
 	/**  Text to display for default categorized hours. */
 	public static String SLIDESHOW_TEXT = "slideshow.text";
@@ -182,8 +184,10 @@ public class PropertyUtil {
 		if (PropertyUtil.getInstance().isAtlassianSynchronizerEnabled()) {
 			LOGGER.info("URL of Jira is set to '" + PropertyUtil.getInstance().getJiraUrl() + "'");
 			LOGGER.info("URL of Confluence is set to '" + PropertyUtil.getInstance().getConfluenceUrl() + "'");
+			LOGGER.info("SPACE is '" + PropertyUtil.getInstance().getConfluenceSpace() + "'");
+			LOGGER.info("SERVER is dedicated: " + PropertyUtil.getInstance().isDedicatedServer() + "");
 			LOGGER.info("USER is set to '" + PropertyUtil.getInstance().getAtlassianUser() + "'");
-
+			
 			boolean pswdNotSet = true;
 			if (PropertyUtil.getInstance().getAtlassianPassword() != null) {
 				if (!PropertyUtil.getInstance().getAtlassianPassword().equalsIgnoreCase("password")) {
@@ -227,6 +231,7 @@ public class PropertyUtil {
 		}
 
 		LOGGER.info("Default charset is '"+Charset.defaultCharset().name()+"'");
+		
 	}
 
 	/**
@@ -638,6 +643,16 @@ public class PropertyUtil {
 		return getApplicationValue(DROPBOX_CREDENTIALS_ACCESSTOKEN);
 	}
 
+	
+	/**
+	 * Gets the confluence space.
+	 *
+	 * @return the confluence space
+	 */
+	public String getConfluenceSpace() {
+		return getApplicationValue(CONFLUENCE_SPACE);
+	}
+	
 	/**
 	 * Gets the webserver directory.
 	 *

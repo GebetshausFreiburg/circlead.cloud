@@ -94,7 +94,7 @@ public class SyncCirclead {
 		 * one for the Filesystem in folder 'data'
 		 */
 		FileSynchronizer fsynchronizer = new FileSynchronizer("data");
-		AtlassianSynchronizer asynchronizer = new AtlassianSynchronizer("CIRCLEAD");
+		AtlassianSynchronizer asynchronizer = new AtlassianSynchronizer();
 		repository.addSynchronizer(asynchronizer);
 		repository.addSynchronizer(fsynchronizer);
 

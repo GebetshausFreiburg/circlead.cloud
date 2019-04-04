@@ -231,7 +231,7 @@ public class Slideshow extends JFrame {
 				}
 
 				repository = Repository.getInstance();
-				AtlassianSynchronizer asynchronizer = new AtlassianSynchronizer("CIRCLEAD");
+				AtlassianSynchronizer asynchronizer = new AtlassianSynchronizer();
 				repository.addSynchronizer(asynchronizer);
 				repository.loadTeams();
 
