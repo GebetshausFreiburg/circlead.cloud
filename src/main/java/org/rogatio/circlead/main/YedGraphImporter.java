@@ -103,9 +103,9 @@ public class YedGraphImporter {
 	 * @param args the arguments
 	 */
 	public static void main(String... args) {
-
+		
 		readSynonyms();
-
+		
 		YedGraphImporter ygi = new YedGraphImporter("/home/matthias/Schreibtisch/Prozesse/01_Prozessvisualisierungen");
 
 		Repository repository = Repository.getInstance();
@@ -118,7 +118,7 @@ public class YedGraphImporter {
 
 		List<Activity> activities = ygi.iterateDir();
 		repository.addActivityItems(activities);
-
+//
 		repository.updateWorkitems();
 
 		fsynchronizer.writeReportRendered(new IndexWorkitems(WorkitemType.ROLE));
