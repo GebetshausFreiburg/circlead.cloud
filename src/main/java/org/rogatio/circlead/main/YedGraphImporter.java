@@ -3,6 +3,7 @@ package org.rogatio.circlead.main;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -13,6 +14,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.LineIterator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdom2.Attribute;
@@ -21,6 +24,7 @@ import org.jdom2.Element;
 import org.jdom2.Namespace;
 import org.jdom2.filter.ElementFilter;
 import org.jdom2.input.DOMBuilder;
+import org.rogatio.circlead.control.Comparators;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.model.WorkitemType;
@@ -37,7 +41,7 @@ import org.xml.sax.SAXException;
  * @author Matthias Wegner
  */
 public class YedGraphImporter {
-	
+
 	/** The Constant logger. */
 	private final static Logger LOGGER = LogManager.getLogger(YedGraphImporter.class);
 
@@ -52,15 +56,46 @@ public class YedGraphImporter {
 
 	/** The home dir of the GraphML-Files */
 	private String homeDir;
-	
+
 	/** The document. */
 	private Document document;
 
 	/** The nodes of the graph */
 	private List<TableNode> tableNodes = new ArrayList<TableNode>();
-	
+
 	/** The edges of the graph */
 	private List<TableEdge> tableEdges = new ArrayList<TableEdge>();
+
+	private static Map<String, List<String>> roleSynonyms = new HashMap<String, List<String>>();
+
+	private static void readSynonyms() {
+		LineIterator lineIterator = null;
+		try {
+			lineIterator = FileUtils.lineIterator(new File("role.synonyms"), "utf-8");// second parameter is
+																						// optionanl
+			while (lineIterator.hasNext()) {
+				String currentLine = lineIterator.next();
+				List<String> list = StringUtil.toList(currentLine);
+				if (list != null) {
+					if (list.size() > 0) {
+						roleSynonyms.put(list.get(0), list);
+
+						Role role = new Role();
+						role.setId(UUID.randomUUID().toString(), new FileSynchronizer(""));
+						role.setTitle(list.get(0));
+						role.setSynonyms(list);
+						Repository.getInstance().addRoleItem(role);
+
+						LOGGER.debug(role.getTitle() + ": " + role.getSynonyms());
+					}
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			LineIterator.closeQuietly(lineIterator);
+		}
+	}
 
 	/**
 	 * The main method.
@@ -68,11 +103,17 @@ public class YedGraphImporter {
 	 * @param args the arguments
 	 */
 	public static void main(String... args) {
+
+		readSynonyms();
+
 		YedGraphImporter ygi = new YedGraphImporter("/home/matthias/Schreibtisch/Prozesse/01_Prozessvisualisierungen");
-	
+
 		Repository repository = Repository.getInstance();
 
 		FileSynchronizer fsynchronizer = new FileSynchronizer("yed");
+
+		fsynchronizer.setWebDirectory("yed" + File.separatorChar + "web");
+
 		repository.addSynchronizer(fsynchronizer);
 
 		List<Activity> activities = ygi.iterateDir();
@@ -110,7 +151,7 @@ public class YedGraphImporter {
 	/**
 	 * Reccursive method to scan for graphML-Files
 	 *
-	 * @param files the files
+	 * @param files      the files
 	 * @param activities the activities
 	 * @return the file
 	 */
@@ -128,6 +169,56 @@ public class YedGraphImporter {
 				}
 			}
 		}
+	}
+
+	public void addChildren(ActivityDataitem item, List<ActivityDataitem> activities, List<ActivityDataitem> sorted) {
+//		List<ActivityDataitem> x = new ArrayList<ActivityDataitem>();
+
+		if (!sorted.contains(item)) {
+			sorted.add(item);
+		}
+		if (item.getChild() != null) {
+			List<String> c = StringUtil.toList(item.getChild());
+			for (String s : c) {
+				for (ActivityDataitem activityDataitem : activities) {
+					if (s.trim().equals(activityDataitem.getAid())) {
+						// if (!sorted.contains(activityDataitem)) {
+						// sorted.add(activityDataitem);
+						// }/
+						if (activityDataitem.getChild() != null) {
+							if (!sorted.contains(activityDataitem)) {
+								addChildren(activityDataitem, activities, sorted);
+							}
+						}
+					}
+				}
+			}
+		}
+
+	}
+
+	public List<ActivityDataitem> getStarts(List<ActivityDataitem> activities) {
+		List<ActivityDataitem> x = new ArrayList<ActivityDataitem>();
+
+		for (ActivityDataitem activityDataitem : activities) {
+			if (activityDataitem.getBpmn() != null) {
+				if (activityDataitem.getBpmn().contains("start-event-none")) {
+					x.add(activityDataitem);
+				}
+			}
+		}
+
+		for (ActivityDataitem activityDataitem : activities) {
+			if (activityDataitem.getBpmn() != null) {
+				if (activityDataitem.getBpmn().contains("start")) {
+					if (!x.contains(activityDataitem)) {
+						x.add(activityDataitem);
+					}
+				}
+			}
+		}
+
+		return x;
 	}
 
 	/**
@@ -169,7 +260,7 @@ public class YedGraphImporter {
 						Role role = new Role();
 						role.setId(UUID.randomUUID().toString(), new FileSynchronizer(""));
 						role.setTitle(res);
-						
+
 						Repository.getInstance().addRoleItem(role);
 					}
 				}
@@ -184,8 +275,6 @@ public class YedGraphImporter {
 			}
 
 		}
-
-		activity.setSubactivities(subactivities);
 
 		for (TableEdge tableEdge : tableEdges) {
 			TableNode sn = tableEdge.getSource();
@@ -228,6 +317,29 @@ public class YedGraphImporter {
 			}
 
 		}
+
+		List<ActivityDataitem> sorted = new ArrayList<ActivityDataitem>();
+
+		List<ActivityDataitem> starts = this.getStarts(subactivities);
+		for (ActivityDataitem start : starts) {
+			this.addChildren(start, subactivities, sorted);
+		}
+		// Collections.sort(subactivities, Comparators.SUBACTIVITYFLOW);
+
+		for (ActivityDataitem a : subactivities) {
+			if (!sorted.contains(a)) {
+				sorted.add(a);
+			}
+		}
+
+		if (name.equals("0301_Bürobedarfbestellung")) {
+			for (ActivityDataitem a : sorted) {
+				System.out.println(a.getAid() + ": " + a.getChild() + " (" + a.getBpmn() + ")");
+			}
+		}
+
+		activity.setSubactivities(sorted);
+//		activity.setSubactivities(subactivities);
 
 		return activity;
 	}
@@ -293,28 +405,30 @@ public class YedGraphImporter {
 		Element node = graph.getChild("node", ns);
 		Element data = node.getChild("data", ns);
 		Element table = data.getChild("TableNode", y);
-		List<Element> labels = table.getChildren("NodeLabel", y);
-		for (Element label : labels) {
-			if (isRow(label)) {
-				TableRow tableRow = createNewTableRow();
-				tableRow.setYOffset(table.getChild("Geometry", y).getAttributeValue("y"));
-				tableRow.setId(this.getRowId(label));
-				tableRow.setName(label.getText().trim().replace("\n", ""));
-				tableRow.setyPos(label.getAttributeValue("y"));
-				tableRows.add(tableRow);
+		if (table != null) {
+			List<Element> labels = table.getChildren("NodeLabel", y);
+			for (Element label : labels) {
+				if (isRow(label)) {
+					TableRow tableRow = createNewTableRow();
+					tableRow.setYOffset(table.getChild("Geometry", y).getAttributeValue("y"));
+					tableRow.setId(this.getRowId(label));
+					tableRow.setName(label.getText().trim().replace("\n", ""));
+					tableRow.setyPos(label.getAttributeValue("y"));
+					tableRows.add(tableRow);
+				}
 			}
-		}
-		Element rows = table.getChild("Table", y).getChild("Rows", y);
-		List<Element> rowElements = rows.getChildren("Row", y);
-		for (Element row : rowElements) {
-			String id = row.getAttributeValue("id");
-			TableRow tableRow = this.getTableRow(id);
-			String height = row.getAttributeValue("height");
+			Element rows = table.getChild("Table", y).getChild("Rows", y);
+			List<Element> rowElements = rows.getChildren("Row", y);
+			for (Element row : rowElements) {
+				String id = row.getAttributeValue("id");
+				TableRow tableRow = this.getTableRow(id);
+				String height = row.getAttributeValue("height");
 
-			if (tableRow != null) {
-				tableRow.setHeight(height);
-			} else {
-				LOGGER.error("Could not find swimlane with id '" + id + "'");
+				if (tableRow != null) {
+					tableRow.setHeight(height);
+				} else {
+					LOGGER.error("Could not find swimlane with id '" + id + "'");
+				}
 			}
 		}
 
@@ -489,28 +603,28 @@ public class YedGraphImporter {
 	 * The Class TableNode.
 	 */
 	class TableNode {
-		
+
 		/** The id. */
 		private String id;
-		
+
 		/** The configuration. */
 		private String configuration;
-		
+
 		/** The parent. */
 		private TableRow parent;
-		
+
 		/** The y pos. */
 		private double yPos;
-		
+
 		/** The x pos. */
 		private double xPos;
-		
+
 		/** The eventcharacteristic. */
 		private String eventcharacteristic;
-		
+
 		/** The eventtype. */
 		private String eventtype;
-		
+
 		/** The label. */
 		private String label;
 
@@ -727,7 +841,9 @@ public class YedGraphImporter {
 			this.label = label;
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see java.lang.Object#toString()
 		 */
 		public String toString() {
@@ -747,7 +863,7 @@ public class YedGraphImporter {
 	/**
 	 * Checks if is in row.
 	 *
-	 * @param row the row
+	 * @param row  the row
 	 * @param node the node
 	 * @return true, if is in row
 	 */
@@ -766,16 +882,16 @@ public class YedGraphImporter {
 	 * The Class TableEdge.
 	 */
 	class TableEdge {
-		
+
 		/** The id. */
 		private String id;
-		
+
 		/** The source id. */
 		private String sourceId;
-		
+
 		/** The target id. */
 		private String targetId;
-		
+
 		/** The label. */
 		private String label;
 
@@ -869,7 +985,9 @@ public class YedGraphImporter {
 			this.label = label;
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see java.lang.Object#toString()
 		 */
 		public String toString() {
@@ -881,19 +999,19 @@ public class YedGraphImporter {
 	 * The Class TableRow.
 	 */
 	class TableRow {
-		
+
 		/** The id. */
 		private String id;
-		
+
 		/** The name. */
 		private String name;
-		
+
 		/** The height. */
 		private double height;
-		
+
 		/** The y pos. */
 		private double yPos;
-		
+
 		/** The y offset. */
 		private double yOffset;
 
@@ -1016,7 +1134,9 @@ public class YedGraphImporter {
 			this.yPos = Double.parseDouble(yPos);
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see java.lang.Object#toString()
 		 */
 		public String toString() {

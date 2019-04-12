@@ -76,8 +76,20 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 	/** The Constant LOGGER. */
 	private final static Logger LOGGER = LogManager.getLogger(FileSynchronizer.class);
 
+	/** The web directory. */
+	private String webDirectory = "web";
+	
 	/** The data directory. */
 	private String dataDirectory;
+	
+	/**
+	 * Sets the web directory.
+	 *
+	 * @param webDirectory the new web directory
+	 */
+	public void setWebDirectory(String webDirectory) {
+		this.webDirectory = webDirectory;
+	}
 
 	/**
 	 * Gets the data directory.
@@ -346,11 +358,11 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 			renderer.render(this).appendTo(body);
 
 			try {
-				String f = "web/" + filename + ".html";
+				String f = webDirectory+ File.separatorChar + filename + ".html";
 
 				LOGGER.info("Write/Update file '" + f + "'");
 
-				File ff = new File("web");
+				File ff = new File(webDirectory);
 				ff.mkdirs();
 				Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"));
 				try {
@@ -407,8 +419,8 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 			renderer.render(this).appendTo(body);
 
 			try {
-				String f = "web/" + filename + ".html";
-				File ff = new File("web");
+				String f = webDirectory+ File.separatorChar + filename + ".html";
+				File ff = new File(webDirectory);
 				ff.mkdirs();
 				Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"));
 				try {
@@ -440,7 +452,7 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 			if (WorkitemType.ROLE == workitemType) {
 				fileIndex = readFolder("roles");
 			} else if (WorkitemType.REPORT == workitemType) {
-				List<String> files = readFolder("web");
+				List<String> files = readFolder(webDirectory);
 				for (String f : files) {
 					File file = new File(f);
 					HowTo ht = new HowTo();
@@ -716,7 +728,7 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 				"intermediate-event-none.png", "end-event-multiple.png", "space-tool.png", "end-event-link.png" };
 		for (String file : bpmnFiles) {
 			Path p = Paths.get(
-					"web" + File.separatorChar + "images" + File.separatorChar + "bpmn" + File.separatorChar + file);
+					webDirectory + File.separatorChar + "images" + File.separatorChar + "bpmn" + File.separatorChar + file);
 			if (!Files.exists(p)) {
 				ValidationMessage m = new ValidationMessage(this);
 				m.error("File missing",
@@ -728,7 +740,7 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 		String reportImageFiles[] = { "child.png", "group.png", "groupchild.png", "groupparent.png",
 				"groupwithrole.png", "parent.png", "role.png" };
 		for (String file : reportImageFiles) {
-			Path p = Paths.get("web" + File.separatorChar + "images" + File.separatorChar + file);
+			Path p = Paths.get(webDirectory + File.separatorChar + "images" + File.separatorChar + file);
 			if (!Files.exists(p)) {
 				ValidationMessage m = new ValidationMessage(this);
 				m.error("File missing",
@@ -737,14 +749,14 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 			}
 		}
 
-		Path p = Paths.get("web" + File.separatorChar + "stylesCategoryReport.css");
+		Path p = Paths.get(webDirectory + File.separatorChar + "stylesCategoryReport.css");
 		if (!Files.exists(p)) {
 			ValidationMessage m = new ValidationMessage(this);
 			m.error("File missing", "File '" + p.toString() + "' is missing for usage in FileSynchronizer (Reports)");
 			messages.add(m);
 		}
 
-		p = Paths.get("web" + File.separatorChar + "styles.css");
+		p = Paths.get(webDirectory + File.separatorChar + "styles.css");
 		if (!Files.exists(p)) {
 			ValidationMessage m = new ValidationMessage(this);
 			m.error("File missing", "File '" + p.toString() + "' is missing for usage in FileSynchronizer (Websites)");

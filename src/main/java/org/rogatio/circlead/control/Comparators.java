@@ -10,6 +10,8 @@ package org.rogatio.circlead.control;
 
 import java.util.Comparator;
 
+import org.rogatio.circlead.model.data.ActivityDataitem;
+import org.rogatio.circlead.model.work.Activity;
 import org.rogatio.circlead.model.work.DefaultWorkitem;
 import org.rogatio.circlead.model.work.Role;
 
@@ -20,7 +22,7 @@ import org.rogatio.circlead.model.work.Role;
  */
 public class Comparators {
 
-	/**  Sorts workitems by title. */
+	/** Sorts workitems by title. */
 	public final static Comparator<DefaultWorkitem> TITLE = new Comparator<DefaultWorkitem>() {
 		@Override
 		public int compare(DefaultWorkitem o1, DefaultWorkitem o2) {
@@ -28,19 +30,19 @@ public class Comparators {
 		}
 	};
 
-	/**  Sorts workitems by status. */
+	/** Sorts workitems by status. */
 	public final static Comparator<DefaultWorkitem> STATUS = new Comparator<DefaultWorkitem>() {
 		@Override
 		public int compare(DefaultWorkitem o1, DefaultWorkitem o2) {
 			return o1.getStatus().compareTo(o2.getStatus());
 		}
 	};
-	
-	/**  Sorts roles by redundance. */
+
+	/** Sorts roles by redundance. */
 	public final static Comparator<Role> REDUNDANCE = new Comparator<Role>() {
 		@Override
 		public int compare(Role o1, Role o2) {
-			return ((Double)o2.getRedundance()).compareTo(((Double)o1.getRedundance()));
+			return ((Double) o2.getRedundance()).compareTo(((Double) o1.getRedundance()));
 		}
 	};
 
