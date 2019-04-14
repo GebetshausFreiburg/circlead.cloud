@@ -3,26 +3,58 @@ package org.rogatio.circlead.view.graph;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import org.apache.batik.anim.dom.SVGDOMImplementation;
+import org.apache.batik.constants.XMLConstants;
+import org.apache.batik.dom.GenericDOMImplementation;
+import org.apache.batik.svggen.CachedImageHandlerBase64Encoder;
+import org.apache.batik.svggen.GenericImageHandler;
+import org.apache.batik.svggen.SVGGeneratorContext;
+import org.apache.batik.svggen.SVGGraphics2D;
+import org.apache.batik.svggen.SVGSyntax;
+import org.w3c.dom.CDATASection;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.svg.SVGDocument;
+import org.w3c.dom.svg.SVGSVGElement;
+
+import com.yworks.yfiles.geometry.InsetsD;
 import com.yworks.yfiles.geometry.RectD;
 import com.yworks.yfiles.graph.IEdge;
 import com.yworks.yfiles.graph.INode;
+import com.yworks.yfiles.view.CanvasComponent;
+import com.yworks.yfiles.view.ContextConfigurator;
+import com.yworks.yfiles.view.IRenderContext;
 
+import de.alsclo.voronoi.graph.Edge;
 import de.alsclo.voronoi.graph.Point;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class VoronoiGraph.
  */
-public class VoronoiGraph extends Component {
+public class VoronoiGraph extends CanvasComponent {
 
 	/** The Constant POINT_SIZE. */
 	private static final double POINT_SIZE = 5.0;
@@ -69,6 +101,17 @@ public class VoronoiGraph extends Component {
 			points.add(p);
 		}
 
+		boolean drawgrid = false;
+		if (drawgrid) {
+			int step = 10;
+			for (int i = step; i < h - step; i += step) {
+				for (int ii = step; ii < w - step; ii += step) {
+					Point p = new Point(ii, i);
+					points.add(p);
+				}
+			}
+		}
+
 		this.diagram = new VoronoiExtended(points);
 		diagram.setProcessGraph(processGraph);
 		diagram.relax().relax();
@@ -91,18 +134,58 @@ public class VoronoiGraph extends Component {
 		}
 	}
 
+	/**
+	 * Export svg.
+	 *
+	 * @param filename the filename
+	 */
+	public void exportSvg(String filename) {
+		DOMImplementation domImpl = SVGDOMImplementation.getDOMImplementation();
+
+		// Create a document with the appropriate namespace
+		SVGDocument document = (SVGDocument) domImpl.createDocument(SVGDOMImplementation.SVG_NAMESPACE_URI, "svg",
+				null);
+
+		// Create an instance of the SVG Generator
+		SVGGraphics2D graphics = new SVGGraphics2D(document);
+		// draw onto the SVG Graphics object
+		graphics.setSVGCanvasSize(new Dimension(this.getWidth(), this.getHeight()));
+		// graphics.setBackground(Color.BLACK);
+		this.paint(graphics);
+
+		// Finally, stream out SVG to the standard output using UTF-8
+		// character to byte encoding
+		boolean useCSS = true; // we want to use CSS style attribute
+		try {
+			Writer out = new OutputStreamWriter(new FileOutputStream(filename), "UTF-8");
+			graphics.stream(out, useCSS);
+			out.flush();
+			out.close();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see java.awt.Component#paint(java.awt.Graphics)
 	 */
 	public void paint(Graphics g) {
+
+		Color background = new Color(255, 255, 255, 0);
+
 		Graphics2D g2 = (Graphics2D) g;
 
 		ArrayList<VoronoiCell> cells = this.diagram.getCells();
 		for (VoronoiCell cell : cells) {
 
-			Color c = Color.BLACK;
+			Color c = background;
 			if (cell.getCenter() instanceof CellPoint) {
 				c = processGraph.getColor(((CellPoint) cell.getCenter()).getNode());// graph.getColor(diagram.getNode(cell));
 			}
@@ -111,11 +194,13 @@ public class VoronoiGraph extends Component {
 			g2.setPaint(c);
 			g2.fill(cell);
 
-			/*
-			 * List<Edge> edges = cell.getEdges(); for (Edge edge : edges) {
-			 * g2.setPaint(Color.LIGHT_GRAY); g2.drawLine((int) edge.getSite1().x, (int)
-			 * edge.getSite1().y, (int) edge.getSite2().x, (int) edge.getSite2().y ); }
-			 */
+//			List<Edge> edges = cell.getEdges();
+//			for (Edge edge : edges) {
+//				g2.setStroke(new BasicStroke(3));
+//				g2.setPaint(Color.DARK_GRAY);
+//				g2.drawLine((int) edge.getSite1().x, (int) edge.getSite1().y, (int) edge.getSite2().x,
+//						(int) edge.getSite2().y);
+//			}
 
 		}
 
@@ -134,7 +219,7 @@ public class VoronoiGraph extends Component {
 							(int) POINT_SIZE, (int) POINT_SIZE);
 				}
 			} else {
-				g2.setPaint(Color.BLACK);
+				g2.setPaint(background);
 				double size = 0.5;
 				g2.fillOval((int) Math.round(site.x - (int) (size * POINT_SIZE / 2)),
 						(int) Math.round(site.y - (int) (size * POINT_SIZE / 2)), (int) (size * POINT_SIZE),
@@ -143,15 +228,16 @@ public class VoronoiGraph extends Component {
 
 		}
 
-		g2.setStroke(new BasicStroke());
-		g2.setPaint(Color.BLACK);
+		/*g2.setStroke(new BasicStroke(1));
+		g2.setPaint(Color.DARK_GRAY);
 
 		diagram.getGraph().edgeStream().filter(e -> e.getA() != null && e.getB() != null).forEach(e -> {
 			Point a = e.getA().getLocation();
 			Point b = e.getB().getLocation();
 			g2.drawLine((int) a.x, (int) a.y, (int) b.x, (int) b.y);
-		});
+		});*/
 
+		g2.setStroke(new BasicStroke());
 		g2.setPaint(Color.WHITE);
 		for (Point site : diagram.getGraph().getSitePoints()) {
 			if (site instanceof CellPoint) {
@@ -179,6 +265,12 @@ public class VoronoiGraph extends Component {
 
 	}
 
+	/**
+	 * Gets the start.
+	 *
+	 * @param edge the edge
+	 * @return the start
+	 */
 	private Point getStart(IEdge edge) {
 		for (Point site : this.diagram.getGraph().getSitePoints()) {
 			if (site instanceof CellPoint) {
@@ -193,6 +285,12 @@ public class VoronoiGraph extends Component {
 		return null;
 	}
 
+	/**
+	 * Gets the end.
+	 *
+	 * @param edge the edge
+	 * @return the end
+	 */
 	private Point getEnd(IEdge edge) {
 		for (Point site : this.diagram.getGraph().getSitePoints()) {
 			if (site instanceof CellPoint) {

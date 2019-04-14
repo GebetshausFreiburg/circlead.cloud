@@ -17,7 +17,7 @@ import de.alsclo.voronoi.graph.Point;
  * The Class VoronoiCell.
  */
 public class VoronoiCell implements Shape {
-	
+
 	/** The path. */
 	private GeneralPath path = new GeneralPath();
 
@@ -29,7 +29,7 @@ public class VoronoiCell implements Shape {
 
 	/** The center. */
 	private Point center;
-	
+
 	/**
 	 * Gets the edges.
 	 *
@@ -61,12 +61,12 @@ public class VoronoiCell implements Shape {
 	 * Instantiates a new voronoi cell.
 	 *
 	 * @param center the center
-	 * @param edges the edges
+	 * @param edges  the edges
 	 */
 	public VoronoiCell(Point center, ArrayList<Edge> edges) {
 
 		this.center = center;
-		
+
 		for (Edge edge : edges) {
 			Point a = edge.getA().getLocation();
 			Point b = edge.getB().getLocation();
@@ -81,7 +81,7 @@ public class VoronoiCell implements Shape {
 
 		this.edges = edges;
 
-		if (points.size()==0) {
+		if (points.size() == 0) {
 			return;
 		}
 
@@ -94,6 +94,23 @@ public class VoronoiCell implements Shape {
 				path.lineTo(p.x, p.y);
 			}
 			path.closePath();
+
+			double cx = path.getBounds2D().getCenterX();
+			double cy = path.getBounds2D().getCenterY();
+			double zoom = 0.95;
+
+			AffineTransform tr = new AffineTransform();
+			tr.translate(-cx, -cy);
+			path.transform(tr);
+			
+			tr = new AffineTransform();
+			tr.scale(zoom, zoom);
+			path.transform(tr);
+			
+			tr = new AffineTransform();
+			tr.translate(+cx, +cy);
+			path.transform(tr);
+			
 		}
 
 	}
@@ -105,16 +122,16 @@ public class VoronoiCell implements Shape {
 	 * @return the point
 	 */
 	private Point findCentroid(List<Point> points) {
-		
-	    int x = 0;
-	    int y = 0;
-	    for (Point p : points) {
-	        x += p.x;
-	        y += p.y;
-	    }
-	    int cx = x / points.size();
-	    int cy = y / points.size();
-	    return new Point(cx, cy);
+
+		int x = 0;
+		int y = 0;
+		for (Point p : points) {
+			x += p.x;
+			y += p.y;
+		}
+		int cx = x / points.size();
+		int cy = y / points.size();
+		return new Point(cx, cy);
 	}
 
 	/**
@@ -124,16 +141,18 @@ public class VoronoiCell implements Shape {
 	 * @return the list
 	 */
 	private List<Point> sortVertices(List<Point> points) {
-	    Point center = findCentroid(points);
-	    Collections.sort(points, (a, b) -> {
-	        double a1 = (Math.toDegrees(Math.atan2(a.x - center.x, a.y - center.y)) + 360) % 360;
-	        double a2 = (Math.toDegrees(Math.atan2(b.x - center.x, b.y - center.y)) + 360) % 360;
-	        return (int) (a1 - a2);
-	    });
-	    return points;
+		Point center = findCentroid(points);
+		Collections.sort(points, (a, b) -> {
+			double a1 = (Math.toDegrees(Math.atan2(a.x - center.x, a.y - center.y)) + 360) % 360;
+			double a2 = (Math.toDegrees(Math.atan2(b.x - center.x, b.y - center.y)) + 360) % 360;
+			return (int) (a1 - a2);
+		});
+		return points;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.awt.Shape#getBounds()
 	 */
 	@Override
@@ -141,7 +160,9 @@ public class VoronoiCell implements Shape {
 		return path.getBounds();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.awt.Shape#getBounds2D()
 	 */
 	@Override
@@ -149,7 +170,9 @@ public class VoronoiCell implements Shape {
 		return path.getBounds2D();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.awt.Shape#contains(double, double)
 	 */
 	@Override
@@ -157,7 +180,9 @@ public class VoronoiCell implements Shape {
 		return path.contains(x, y);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.awt.Shape#contains(java.awt.geom.Point2D)
 	 */
 	@Override
@@ -165,7 +190,9 @@ public class VoronoiCell implements Shape {
 		return path.contains(p);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.awt.Shape#intersects(double, double, double, double)
 	 */
 	@Override
@@ -173,7 +200,9 @@ public class VoronoiCell implements Shape {
 		return path.intersects(x, y, w, h);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.awt.Shape#intersects(java.awt.geom.Rectangle2D)
 	 */
 	@Override
@@ -181,7 +210,9 @@ public class VoronoiCell implements Shape {
 		return path.intersects(r);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.awt.Shape#contains(double, double, double, double)
 	 */
 	@Override
@@ -189,7 +220,9 @@ public class VoronoiCell implements Shape {
 		return path.contains(x, y, w, h);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.awt.Shape#contains(java.awt.geom.Rectangle2D)
 	 */
 	@Override
@@ -197,7 +230,9 @@ public class VoronoiCell implements Shape {
 		return path.contains(r);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.awt.Shape#getPathIterator(java.awt.geom.AffineTransform)
 	 */
 	@Override
@@ -205,7 +240,9 @@ public class VoronoiCell implements Shape {
 		return path.getPathIterator(at);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.awt.Shape#getPathIterator(java.awt.geom.AffineTransform, double)
 	 */
 	@Override

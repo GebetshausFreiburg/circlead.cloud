@@ -53,7 +53,10 @@ import com.yworks.yfiles.graph.styles.IEdgeStyle;
 import com.yworks.yfiles.graph.styles.PolylineEdgeStyle;
 import com.yworks.yfiles.graph.styles.ShapeNodeShape;
 import com.yworks.yfiles.graph.styles.ShapeNodeStyle;
+import com.yworks.yfiles.layout.circular.CircularLayout;
 import com.yworks.yfiles.layout.organic.OrganicLayout;
+import com.yworks.yfiles.layout.organic.RemoveOverlapsStage;
+import com.yworks.yfiles.layout.organic.StarSubstructureStyle;
 import com.yworks.yfiles.utils.IListEnumerable;
 import com.yworks.yfiles.view.CanvasComponent;
 import com.yworks.yfiles.view.ContextConfigurator;
@@ -135,9 +138,14 @@ public class ProcessGraph {
 		g.getNodeDefaults().setStyle(defaultNodeStyle);
 		g.getNodeDefaults().setSize(new SizeD(5, 5));
 
-		roleNodeStyle = new ShapeNodeStyle();
-		roleNodeStyle.setPaint(Color.decode("#0000DD"));
-		roleNodeStyle.setShape(ShapeNodeShape.ELLIPSE);
+		roleNucleusNodeStyle = new ShapeNodeStyle();
+		roleNucleusNodeStyle.setPaint(Color.decode("#0000DD"));
+		roleNucleusNodeStyle.setShape(ShapeNodeShape.ELLIPSE);
+
+		roleCellgroupNodeStyle = new ShapeNodeStyle();
+		roleCellgroupNodeStyle.setPaint(Color.decode("#FFFFFF"));
+		roleCellgroupNodeStyle.setPen(Pen.getWhite());
+		roleCellgroupNodeStyle.setShape(ShapeNodeShape.ELLIPSE);
 
 		activityNodeStyle = new ShapeNodeStyle();
 		activityNodeStyle.setPaint(Color.decode("#FFFFFF"));
@@ -167,7 +175,9 @@ public class ProcessGraph {
 	private ShapeNodeStyle activityNodeStyle;
 
 	/** The role node style. */
-	private ShapeNodeStyle roleNodeStyle;
+	private ShapeNodeStyle roleNucleusNodeStyle;
+
+	private ShapeNodeStyle roleCellgroupNodeStyle;
 
 	/** The nodes 2 roles. */
 	private Map<INode, Role> nodes2roles = new HashMap<INode, Role>();
@@ -304,6 +314,8 @@ public class ProcessGraph {
 		nodes2roles.put(node, role);
 	}
 
+	private boolean USEGROUPING = false;
+
 	/**
 	 * Adds the role.
 	 *
@@ -313,6 +325,13 @@ public class ProcessGraph {
 		INode roleNode = addRoleNode(role.getTitle());
 
 		mapRole(role, roleNode);
+
+		INode groupNode = null;
+		if (USEGROUPING) {
+			groupNode = this.graphComponent.getGraph().createGroupNode();
+			this.graphComponent.getGraph().setStyle(groupNode, roleCellgroupNodeStyle);
+			this.graphComponent.getGraph().setParent(roleNode, groupNode);
+		}
 
 //		List<String> localRoleActivities = role.getActivities();
 		// List<Activity> globalRoleActivities =
@@ -325,6 +344,11 @@ public class ProcessGraph {
 			List<ActivityDataitem> processActivities = subactivities.get(process);
 			for (ActivityDataitem activityDataitem : processActivities) {
 				INode activityNode = this.addActivityNode();
+
+				if (USEGROUPING) {
+					this.graphComponent.getGraph().setParent(activityNode, groupNode);
+				}
+
 				this.mapActivity(activityDataitem, activityNode);
 
 				ShapeNodeStyle sns = this.activityNodeStyle.clone();
@@ -383,7 +407,7 @@ public class ProcessGraph {
 		IEdge e = g.createEdge(n1, n2, style);
 
 //		if (!this.isRole(n1)) {
-			activityEdges.add(e);
+		activityEdges.add(e);
 //		}
 
 		return e;
@@ -468,7 +492,7 @@ public class ProcessGraph {
 
 		Color randomColour = new Color(red, green, blue);
 
-		ShapeNodeStyle sns = roleNodeStyle.clone();
+		ShapeNodeStyle sns = roleNucleusNodeStyle.clone();
 		sns.setPaint(randomColour);
 
 		INode n = g.createNode(new PointD(0, 0), sns);
@@ -511,10 +535,19 @@ public class ProcessGraph {
 	 */
 	public void layout() {
 		IGraph g = graphComponent.getGraph();
+
 		OrganicLayout layout = new OrganicLayout();
 		layout.setCompactnessFactor(1.0);
 		layout.setMinimumNodeDistance(20.0);
+		layout.setStarSubstructureStyle(layout.getStarSubstructureStyle().RADIAL);
+		layout.setGroupNodeCompactness(1.0);
+		layout.setAutomaticGroupNodeCompactionEnabled(true);
+		layout.setClusteringQuality(1.0);
+		layout.setSmartComponentLayoutEnabled(true);
 		g.applyLayout(layout);
+		
+		RemoveOverlapsStage r = new RemoveOverlapsStage(10);
+		g.applyLayout(r);
 	}
 
 	/**

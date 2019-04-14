@@ -18,5 +18,6 @@ import org.rogatio.circlead.view.graph.VoronoiGraph;
 		
 		VoronoiGraph g = new VoronoiGraph(v);
 		g.exportPng("exports"+ File.separatorChar +"voronoigraph.png");
+        g.exportSvg("exports"+ File.separatorChar +"voronoigraph.svg");
 
 return "sucessfully used graph.export"
