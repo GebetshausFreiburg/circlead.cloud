@@ -7,9 +7,11 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Paint;
+import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -228,14 +230,14 @@ public class VoronoiGraph extends CanvasComponent {
 
 		}
 
-		/*g2.setStroke(new BasicStroke(1));
-		g2.setPaint(Color.DARK_GRAY);
-
-		diagram.getGraph().edgeStream().filter(e -> e.getA() != null && e.getB() != null).forEach(e -> {
-			Point a = e.getA().getLocation();
-			Point b = e.getB().getLocation();
-			g2.drawLine((int) a.x, (int) a.y, (int) b.x, (int) b.y);
-		});*/
+		/*
+		 * g2.setStroke(new BasicStroke(1)); g2.setPaint(Color.DARK_GRAY);
+		 * 
+		 * diagram.getGraph().edgeStream().filter(e -> e.getA() != null && e.getB() !=
+		 * null).forEach(e -> { Point a = e.getA().getLocation(); Point b =
+		 * e.getB().getLocation(); g2.drawLine((int) a.x, (int) a.y, (int) b.x, (int)
+		 * b.y); });
+		 */
 
 		g2.setStroke(new BasicStroke());
 		g2.setPaint(Color.WHITE);
@@ -254,12 +256,30 @@ public class VoronoiGraph extends CanvasComponent {
 			}
 		}
 
+		Polygon arrowHead = new Polygon();
+		arrowHead.addPoint(0, -4);
+		arrowHead.addPoint(-2, -7);
+		arrowHead.addPoint(2, -7);
+
 		g2.setPaint(Color.WHITE);
 		for (IEdge edge : this.processGraph.getActivityEdges()) {
 			Point a = this.getStart(edge);
 			Point b = this.getEnd(edge);
 			if (!processGraph.isRole(edge.getSourceNode())) {
-				g2.drawLine((int) a.x, (int) a.y, (int) b.x, (int) b.y);
+				Line2D.Double line = new Line2D.Double((int) a.x, (int) a.y, (int) b.x, (int) b.y);
+				//g2.drawLine(arg0, arg1, arg2, arg3);
+				g2.drawLine((int) a.x, (int) a.y, (int) b.x, (int) b.y);			
+				
+				AffineTransform tx = new AffineTransform();
+				tx.setToIdentity();
+				double angle = Math.atan2(line.y2 - line.y1, line.x2 - line.x1);
+				tx.translate(line.x2, line.y2);
+				tx.rotate((angle - Math.PI / 2d));
+
+				Graphics2D gr = (Graphics2D) g2.create();
+				gr.setTransform(tx);  			
+				gr.fill(arrowHead);
+				gr.dispose();
 			}
 		}
 
