@@ -78,6 +78,7 @@ import org.rogatio.circlead.view.report.IndexCirclead;
 import org.rogatio.circlead.view.report.IndexRbs;
 import org.rogatio.circlead.view.report.IndexRrgs;
 import org.rogatio.circlead.view.report.IndexWorkitems;
+import org.jsoup.nodes.Element;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -216,6 +217,7 @@ class Week {
 
 List<Team> teams = R.getTeamsWithCategory(category);
 if (!ObjectUtil.isListNotNullAndEmpty(teams)) {
+  Element element = new Element("");
   element.appendText("Report not created, because no team found with category '"+category+"'");
   return element;
 }		

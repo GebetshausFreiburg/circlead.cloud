@@ -29,7 +29,7 @@ public class PropertyUtil {
 
 	/** The application version. Use Sematic Versioning (https://semver.org/). */
 	/* IF CHANGED, THEN CHANGE ALSO IN POM. */
-	public static String APPLICATION_VERSION = "1.5.2";
+	public static String APPLICATION_VERSION = "1.5.3";
 
 	/** The application name. */
 	public static String APPLICATION_NAME = "Circlead";
@@ -176,6 +176,7 @@ public class PropertyUtil {
 
 	static {
 		LOGGER.info("" + APPLICATION_NAME + " (v" + APPLICATION_VERSION + ")");
+		LOGGER.info("Java Version "+System.getProperty("java.version"));
 		LOGGER.info("Copyright by Matthias Wegner, Gebetshaus Freiburg (open skies e.V.)");
 		LOGGER.info("Default Rolegroup: " + PropertyUtil.getInstance().getApplicationDefaultRolegroup());
 		LOGGER.info("Default Teamcategory: " + PropertyUtil.getInstance().getApplicationDefaultTeamcategory());

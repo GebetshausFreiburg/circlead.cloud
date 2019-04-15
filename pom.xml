@@ -5,7 +5,7 @@
 
 	<groupId>org.rogatio</groupId>
 	<artifactId>circlead-cloud</artifactId>
-	<version>1.5.2</version><!-- If version changed, then change also in PropertyUtil-Class. -->
+	<version>1.5.3</version><!-- If version changed, then change also in PropertyUtil-Class. -->
 	<packaging>jar</packaging>
 	<name>circlead-cloud</name>
 	<url>http://maven.apache.org</url>
