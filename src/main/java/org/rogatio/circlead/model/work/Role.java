@@ -51,7 +51,7 @@ import org.rogatio.circlead.model.data.TeamEntry;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.PropertyUtil;
 import org.rogatio.circlead.util.StringUtil;
-import org.rogatio.circlead.view.SvgBuilder;
+import org.rogatio.circlead.view.items.competence.DnaBuilder;
 import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.renderer.IWorkitemRenderer;
 
@@ -766,7 +766,7 @@ public class Role extends DefaultWorkitem implements IWorkitemRenderer, IValidat
 
 		renderer.addH2(element, COMPETENCIES.toString());
 		if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
-			element.append(SvgBuilder.createRoleDnaProfile(this, 512).toString());
+			element.append(DnaBuilder.createRoleDnaProfile(this, 512).toString());
 		}
 		if (ObjectUtil.isListNotNullAndEmpty(this.getCompetences())) {
 			renderer.addList(element, this.getCompetences());

@@ -1,16 +1,17 @@
-package org.rogatio.circlead.view.graph;
+package org.rogatio.circlead.view.items.voronoi;
 
-import com.yworks.yfiles.graph.INode;
+import org.rogatio.circlead.view.items.ICell;
 
 import de.alsclo.voronoi.graph.Point;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class CellPoint.
  */
 public class CellPoint extends Point {
 
-	/** The node. */
-	private INode node;
+	/** The graph cell. */
+	private ICell graphCell;
 	
 	/**
 	 * Instantiates a new cell point.
@@ -38,8 +39,8 @@ public class CellPoint extends Point {
 	 *
 	 * @param node the node
 	 */
-	public void addNode(INode node) {
-		this.node = node;
+	public void addNode(ICell node) {
+		this.graphCell = node;
 	}
 	
 	/**
@@ -47,8 +48,8 @@ public class CellPoint extends Point {
 	 *
 	 * @return the node
 	 */
-	public INode getNode() {
-		return node;
+	public ICell getNode() {
+		return graphCell;
 	}
 
 }

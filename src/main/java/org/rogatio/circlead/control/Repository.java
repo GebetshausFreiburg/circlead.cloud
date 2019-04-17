@@ -108,9 +108,9 @@ public final class Repository {
 	/**
 	 * Gets the next team.
 	 *
-	 * @param hour the hour
-	 * @param day  the day
-	 * @param day  the day
+	 * @param hour     the hour
+	 * @param day      the day
+	 * @param category the category
 	 * @return the next team
 	 */
 	public Team getNextTeam(int hour, String day, String category) {
@@ -161,11 +161,16 @@ public final class Repository {
 			hour++;
 		}
 
-//		LOGGER.debug(t);
-
 		return t;
 	}
 
+	/**
+	 * Gets the team.
+	 *
+	 * @param hour the hour
+	 * @param day  the day
+	 * @return the team
+	 */
 	public Team getTeam(int hour, String day) {
 		return getTeam(hour, day, PropertyUtil.getInstance().getApplicationDefaultTeamcategory());
 	}
@@ -174,8 +179,10 @@ public final class Repository {
 	 * Gets the team if it has a periodically reccurence pattern and a set hour and
 	 * weekday.
 	 *
-	 * @param hour the hour must be value between 0 and 23
-	 * @param day  the day must be a string value in german weekdays, i.e. "Montag"
+	 * @param hour     the hour must be value between 0 and 23
+	 * @param day      the day must be a string value in german weekdays, i.e.
+	 *                 "Montag"
+	 * @param category the category
 	 * @return the first found team which has the occurence of hour and day
 	 */
 	public Team getTeam(int hour, String day, String category) {
@@ -194,6 +201,23 @@ public final class Repository {
 	}
 
 	/**
+	 * Gets the role titles. Includes all role-workitems and all named roles in subactivities
+	 *
+	 * @return the role titles
+	 */
+	public List<String> getRoleTitles() {
+		List<String> roleTitles = getRoleTitlesFromSubactivities();
+		List<Role> roles = getRoles();
+		for (Role role : roles) {
+			if (!roleTitles.contains(role.getTitle())) {
+				roleTitles.add(role.getTitle());
+			}
+		}
+		Collections.sort(roleTitles);
+		return roleTitles;
+	}
+	
+	/**
 	 * Gets the roles by a status.
 	 *
 	 * @param status the status of the role as enum {@link WorkitemStatusParameter}
@@ -211,6 +235,69 @@ public final class Repository {
 			}
 		}
 		return roles;
+	}
+
+	/**
+	 * Gets the map of subactivities to role title.
+	 *
+	 * @return the map of subactivities to role title
+	 */
+	public Map<ActivityDataitem, String> getMapOfSubactivitiesToRoleTitle() {
+
+		Map<ActivityDataitem, String> map = new HashMap<ActivityDataitem, String>();
+
+		List<Activity> activities = this.getActivities();
+		if (ObjectUtil.isListNotNullAndEmpty(activities)) {
+			for (Activity activity : activities) {
+				List<ActivityDataitem> subactivities = activity.getSubactivities();
+				if (ObjectUtil.isListNotNullAndEmpty(subactivities)) {
+					for (ActivityDataitem activityDataitem : subactivities) {
+						String r = activityDataitem.getResponsible();
+						if (StringUtil.isNotNullAndNotEmpty(r)) {
+							map.put(activityDataitem, r);
+						} else {
+							r = activity.getNeighbourResponsibilitySubactivity(activityDataitem);
+							if (StringUtil.isNotNullAndNotEmpty(r)) {
+								map.put(activityDataitem, r);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return map;
+	}
+	
+	/**
+	 * Gets the role titles from subactivities. The subactivities could contain
+	 * roles which are not defined as own objects, the the sum of all named roles in
+	 * subactivities is equals or bigger than the sum of all role-workitems.
+	 *
+	 * @return the role titles from subactivities
+	 */
+	public List<String> getRoleTitlesFromSubactivities() {
+
+		List<String> roleTitles = new ArrayList<String>();
+
+		List<Activity> activities = this.getActivities();
+		if (ObjectUtil.isListNotNullAndEmpty(activities)) {
+			for (Activity activity : activities) {
+				List<ActivityDataitem> subactivities = activity.getSubactivities();
+				if (ObjectUtil.isListNotNullAndEmpty(subactivities)) {
+					for (ActivityDataitem activityDataitem : subactivities) {
+						String r = activityDataitem.getResponsible();
+						if (StringUtil.isNotNullAndNotEmpty(r)) {
+							if (!roleTitles.contains(r)) {
+								roleTitles.add(r);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return roleTitles;
 	}
 
 	/**

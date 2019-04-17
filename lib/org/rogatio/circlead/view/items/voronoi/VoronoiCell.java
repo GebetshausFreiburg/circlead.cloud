@@ -1,4 +1,4 @@
-package org.rogatio.circlead.view.graph;
+package org.rogatio.circlead.view.items.voronoi;
 
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
@@ -10,14 +10,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.rogatio.circlead.view.items.DefaultCell;
+import org.rogatio.circlead.view.items.ICell;
+import org.rogatio.circlead.view.items.graph.GraphCanvas;
+import org.rogatio.circlead.view.items.graph.GraphCell;
+
 import de.alsclo.voronoi.graph.Edge;
 import de.alsclo.voronoi.graph.Point;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class VoronoiCell.
  */
-public class VoronoiCell implements Shape {
-
+public class VoronoiCell extends DefaultCell implements Shape {
 	/** The path. */
 	private GeneralPath path = new GeneralPath();
 
@@ -58,13 +63,26 @@ public class VoronoiCell implements Shape {
 	}
 
 	/**
+	 * Gets the data cell.
+	 *
+	 * @return the data cell
+	 */
+	public ICell getDataCell() {
+		if (center instanceof CellPoint) {
+			CellPoint c = (CellPoint)center;
+			return c.getNode();
+		}
+		return null;
+	}
+	
+	/**
 	 * Instantiates a new voronoi cell.
 	 *
 	 * @param center the center
 	 * @param edges  the edges
 	 */
 	public VoronoiCell(Point center, ArrayList<Edge> edges) {
-
+		
 		this.center = center;
 
 		for (Edge edge : edges) {

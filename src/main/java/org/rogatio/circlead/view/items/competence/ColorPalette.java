@@ -1,4 +1,4 @@
-package org.rogatio.circlead.view;
+package org.rogatio.circlead.view.items.competence;
 
 /*******************************************************************************
  * Copyright (c) 2010 Haifeng Li

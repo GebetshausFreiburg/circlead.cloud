@@ -42,7 +42,7 @@ import org.rogatio.circlead.model.data.Timeslice;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.PropertyUtil;
 import org.rogatio.circlead.util.StringUtil;
-import org.rogatio.circlead.view.SvgBuilder;
+import org.rogatio.circlead.view.items.competence.DnaBuilder;
 import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.renderer.IWorkitemRenderer;
 
@@ -576,7 +576,7 @@ public class Person extends DefaultWorkitem implements IWorkitemRenderer, IValid
 		 * Add person-dna-profile if system can handle svg
 		 */
 		if (synchronizer instanceof FileSynchronizer) {
-			element.append(SvgBuilder.createPersonDnaProfile(this, 512).toString());
+			element.append(DnaBuilder.createPersonDnaProfile(this, 512).toString());
 		}
 
 		/*

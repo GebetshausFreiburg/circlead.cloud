@@ -79,8 +79,8 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	}
 
 	/**
-	 * Instantiates a new activity from mapped data. Key must be a string-representation of
-	 * {@link org.rogatio.circlead.model.Parameter}.
+	 * Instantiates a new activity from mapped data. Key must be a
+	 * string-representation of {@link org.rogatio.circlead.model.Parameter}.
 	 *
 	 * @param data the data to set the item
 	 */
@@ -474,6 +474,74 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 			}
 		}
 		return list;
+	}
+
+	public String getNeighbourResponsibilitySubactivity(ActivityDataitem subactivity) {
+		
+		List<ActivityDataitem> list = this.getSubactivities();
+		
+		if (StringUtil.isNotNullAndNotEmpty(subactivity.getResponsible())) {
+			return subactivity.getResponsible();
+		}
+		
+		if (ObjectUtil.isListNotNullAndEmpty(list)) {
+			int index = list.indexOf(subactivity);
+			if (index+1<list.size()) {
+				ActivityDataitem s = list.get(index+1);
+				if (StringUtil.isNotNullAndNotEmpty(s.getResponsible())) {
+					return s.getResponsible();
+				}
+			}
+			if (index>1) {
+				ActivityDataitem s = list.get(index-1);
+				if (StringUtil.isNotNullAndNotEmpty(s.getResponsible())) {
+					return s.getResponsible();
+				}
+			}
+			if (index+2<list.size()) {
+				ActivityDataitem s = list.get(index+2);
+				if (StringUtil.isNotNullAndNotEmpty(s.getResponsible())) {
+					return s.getResponsible();
+				}
+			}
+			if (index>2) {
+				ActivityDataitem s = list.get(index-2);
+				if (StringUtil.isNotNullAndNotEmpty(s.getResponsible())) {
+					return s.getResponsible();
+				}
+			}
+		}
+
+		return null;
+	}
+	
+	public List<ActivityDataitem> getChildSubactivities(ActivityDataitem subactivity) {
+		List<ActivityDataitem> list = new ArrayList<ActivityDataitem>();
+		String childrenString = subactivity.getChild();
+		List<String> childrenList = StringUtil.toList(childrenString);
+		if (childrenList != null) {
+			for (String childAid : childrenList) {
+				ActivityDataitem c = getSubactivityWithAid(childAid);
+				if (!list.contains(c)) {
+					list.add(c);
+				}
+			}
+		}
+
+		return list;
+	}
+
+	public ActivityDataitem getSubactivityWithAid(String aid) {
+		if (StringUtil.isNotNullAndNotEmpty(aid)) {
+			if (ObjectUtil.isListNotNullAndEmpty(this.getSubactivities())) {
+				for (ActivityDataitem sub : this.getSubactivities()) {
+					if (aid.equals(sub.getAid())) {
+						return sub;
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 	/**

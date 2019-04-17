@@ -1,4 +1,4 @@
-package org.rogatio.circlead.view;
+package org.rogatio.circlead.view.items.competence;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import org.rogatio.circlead.util.ObjectUtil;
 
 /**
  * The Class TreeNode is a subclass of the
- * {@link org.rogatio.circlead.view.WorkitemTree}. Holds the nested workitem and
+ * {@link org.rogatio.circlead.view.items.competence.WorkitemTree}. Holds the nested workitem and
  * the calculated color of the item
  * 
  * @author Matthias Wegner

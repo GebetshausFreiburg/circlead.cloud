@@ -32,7 +32,7 @@ import org.rogatio.circlead.model.work.Rolegroup;
 import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.ObjectUtil;
 import org.rogatio.circlead.util.StringUtil;
-import org.rogatio.circlead.view.ColorPalette;
+import org.rogatio.circlead.view.items.competence.ColorPalette;
 import org.rogatio.circlead.view.report.IReport;
 
 /**

@@ -1,4 +1,4 @@
-package org.rogatio.circlead.view.graph;
+package org.rogatio.circlead.view.items.voronoi;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -9,24 +9,30 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.yworks.yfiles.graph.IEdge;
-import com.yworks.yfiles.graph.INode;
+import org.rogatio.circlead.view.items.graph.GraphCanvas;
 
 import de.alsclo.voronoi.Voronoi;
 import de.alsclo.voronoi.graph.Edge;
 import de.alsclo.voronoi.graph.Point;
 import de.alsclo.voronoi.graph.Vertex;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class VoronoiExtended.
  */
-public class VoronoiExtended extends Voronoi {
+public class VoronoiDiagram extends Voronoi {
+
+//	private GraphCanvas graphCanvas;
+	
+//	public void setGraphCanvas(GraphCanvas graphCanvas) {
+//		this.graphCanvas = graphCanvas;
+//	}
 
 	/* (non-Javadoc)
 	 * @see de.alsclo.voronoi.Voronoi#relax()
 	 */
 	@Override
-	public VoronoiExtended relax() {
+	public VoronoiDiagram relax() {
 		Map<Point, Set<Edge>> edges = new HashMap<>();
 		getGraph().getSitePoints().forEach(p -> edges.put(p, new HashSet<>()));
 		getGraph().edgeStream().forEach(e -> {
@@ -45,7 +51,7 @@ public class VoronoiExtended extends Voronoi {
 				return new Point(avgX, avgY);
 			}
 		}).collect(Collectors.toList());
-		return new VoronoiExtended(newPoints);
+		return new VoronoiDiagram(newPoints);
 	}
 
 	/** The cells. */
@@ -60,24 +66,12 @@ public class VoronoiExtended extends Voronoi {
 		return cells;
 	}
 	
-	/** The process graph. */
-	private ProcessGraph processGraph;
-	
-	/**
-	 * Sets the process graph.
-	 *
-	 * @param processGraph the new process graph
-	 */
-	public void setProcessGraph(ProcessGraph processGraph) {
-		this.processGraph = processGraph;
-	}
-
 	/**
 	 * Instantiates a new voronoi extended.
 	 *
 	 * @param points the points
 	 */
-	public VoronoiExtended(Collection<Point> points) {
+	public VoronoiDiagram(Collection<Point> points) {
 		super(points);
 		
 		for (Point site : this.getGraph().getSitePoints()) {

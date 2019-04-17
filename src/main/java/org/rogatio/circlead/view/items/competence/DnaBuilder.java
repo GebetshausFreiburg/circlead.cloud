@@ -1,4 +1,4 @@
-package org.rogatio.circlead.view;
+package org.rogatio.circlead.view.items.competence;
 
 import java.awt.Color;
 import java.util.List;
@@ -19,7 +19,7 @@ import org.rogatio.circlead.util.ObjectUtil;
  * 
  * @author Matthias Wegner
  */
-public class SvgBuilder {
+public class DnaBuilder {
 
 	/**
 	 * Creates the svg element.
@@ -60,13 +60,13 @@ public class SvgBuilder {
 					List<String> competencies = role.getCompetences();
 
 					for (String competence : competencies) {
-						SvgBuilder.addSvgCompetence(competence, size, element, tree);
+						DnaBuilder.addSvgCompetence(competence, size, element, tree);
 						List<Role> f = Repository.getInstance().getParentRoles(role);
 						for (Role rx : f) {
 							if (rx.getCompetences() != null) {
 								List<String> co = rx.getCompetences();
 								for (String c : co) {
-									SvgBuilder.addSvgImplicitCompetence(rx, c, size, element, tree);
+									DnaBuilder.addSvgImplicitCompetence(rx, c, size, element, tree);
 								}
 							}
 						}
@@ -91,7 +91,7 @@ public class SvgBuilder {
 		Element element = createSvgElement(size);
 
 		for (String competence : competencies) {
-			SvgBuilder.addSvgPersonCompetence(person, competence, size, element, tree);
+			DnaBuilder.addSvgPersonCompetence(person, competence, size, element, tree);
 
 			List<Role> implicitRoles = Repository.getInstance().getRolesWithCompetence(person, competence);
 			for (Role r : implicitRoles) {
@@ -99,7 +99,7 @@ public class SvgBuilder {
 				for (Role rx : f) {
 					List<String> co = rx.getCompetences();
 					for (String c : co) {
-						SvgBuilder.addSvgPersonImplicitCompetence(person, c, size, element, tree);
+						DnaBuilder.addSvgPersonImplicitCompetence(person, c, size, element, tree);
 					}
 				}
 
@@ -123,13 +123,13 @@ public class SvgBuilder {
 		Element element = createSvgElement(size);
 
 		for (String competence : competencies) {
-			SvgBuilder.addSvgCompetence(competence, size, element, tree);
+			DnaBuilder.addSvgCompetence(competence, size, element, tree);
 			List<Role> f = Repository.getInstance().getParentRoles(role);
 			for (Role rx : f) {
 				if (rx.getCompetences() != null) {
 					List<String> co = rx.getCompetences();
 					for (String c : co) {
-						SvgBuilder.addSvgImplicitCompetence(rx, c, size, element, tree);
+						DnaBuilder.addSvgImplicitCompetence(rx, c, size, element, tree);
 					}
 				}
 			}
