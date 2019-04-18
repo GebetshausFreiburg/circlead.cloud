@@ -1,5 +1,8 @@
 package org.rogatio.circlead.view.items.voronoi;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
@@ -18,7 +21,6 @@ import org.rogatio.circlead.view.items.graph.GraphCell;
 import de.alsclo.voronoi.graph.Edge;
 import de.alsclo.voronoi.graph.Point;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class VoronoiCell.
  */
@@ -62,6 +64,38 @@ public class VoronoiCell extends DefaultCell implements Shape {
 		return center;
 	}
 
+	protected Color background = new Color(255, 255, 255, 0);
+	
+	protected Graphics2D graphics;
+	
+	public void setGraphics(Graphics2D g) {
+		this.graphics = g;
+	}
+	
+	@Override
+	public Object create() {
+		
+		double POINT_SIZE = 5.0;
+		
+		if (this.getCenter() instanceof CellPoint) {
+			Color c = background;
+			c = (Color) this.getDataCell().getData("color");
+			this.graphics.setStroke(new BasicStroke());
+			this.graphics.setPaint(c);
+			this.graphics.fill(this);
+		} else {
+			
+		}
+		
+		graphics.setPaint(background);
+		double size = 0.5;
+		graphics.fillOval((int) Math.round(this.getCenter().x - (int) (size * POINT_SIZE / 2)),
+				(int) Math.round(this.getCenter().y - (int) (size * POINT_SIZE / 2)), (int) (size * POINT_SIZE),
+				(int) (size * POINT_SIZE));
+		
+		return null;
+	}
+	
 	/**
 	 * Gets the data cell.
 	 *
@@ -70,7 +104,7 @@ public class VoronoiCell extends DefaultCell implements Shape {
 	public ICell getDataCell() {
 		if (center instanceof CellPoint) {
 			CellPoint c = (CellPoint)center;
-			return c.getNode();
+			return c.getCell();
 		}
 		return null;
 	}
@@ -115,7 +149,7 @@ public class VoronoiCell extends DefaultCell implements Shape {
 
 			double cx = path.getBounds2D().getCenterX();
 			double cy = path.getBounds2D().getCenterY();
-			double zoom = 0.95;
+			double zoom = 0.98;
 
 			AffineTransform tr = new AffineTransform();
 			tr.translate(-cx, -cy);

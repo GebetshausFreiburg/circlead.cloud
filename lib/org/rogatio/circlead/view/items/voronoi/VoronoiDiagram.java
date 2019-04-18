@@ -9,24 +9,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.rogatio.circlead.view.items.graph.GraphCanvas;
+import org.rogatio.circlead.view.items.CellType;
 
 import de.alsclo.voronoi.Voronoi;
 import de.alsclo.voronoi.graph.Edge;
 import de.alsclo.voronoi.graph.Point;
 import de.alsclo.voronoi.graph.Vertex;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class VoronoiExtended.
- */
 public class VoronoiDiagram extends Voronoi {
-
-//	private GraphCanvas graphCanvas;
-	
-//	public void setGraphCanvas(GraphCanvas graphCanvas) {
-//		this.graphCanvas = graphCanvas;
-//	}
 
 	/* (non-Javadoc)
 	 * @see de.alsclo.voronoi.Voronoi#relax()
@@ -56,7 +46,7 @@ public class VoronoiDiagram extends Voronoi {
 
 	/** The cells. */
 	private ArrayList<VoronoiCell> cells = new ArrayList<VoronoiCell>();
-
+	
 	/**
 	 * Gets the cells.
 	 *
@@ -91,8 +81,28 @@ public class VoronoiDiagram extends Voronoi {
 
 			});
 
-			VoronoiCell t = new VoronoiCell(site, edges);
-			cells.add(t);
+			VoronoiCell cell = new VoronoiCell(site, edges);
+
+			if (site instanceof CellPoint) {
+				CellPoint cp = (CellPoint)site;
+				if (cp.getCell().getType()==CellType.ROLE) {
+					cell = new RoleCell(site, edges);
+				}
+				if (cp.getCell().getType()==CellType.ACTIVITY) {
+					cell = new ActivityCell(site, edges);
+				}
+				if (cp.getCell().getType()==CellType.GATEWAY) {
+					cell = new GatewayCell(site, edges);
+				}
+				if (cp.getCell().getType()==CellType.EVENT_START) {
+					cell = new EventStartCell(site, edges);
+				}
+				if (cp.getCell().getType()==CellType.EVENT_END) {
+					cell = new EventEndCell(site, edges);
+				}
+			}
+			
+			cells.add(cell);
 			
 		}
 	}

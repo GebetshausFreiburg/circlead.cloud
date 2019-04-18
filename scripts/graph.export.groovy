@@ -17,10 +17,8 @@ import org.rogatio.circlead.view.items.voronoi.VoronoiCanvas;
 		canvas.layout();
 		canvas.export("exports" + File.separatorChar + "processgraph.svg");
 
-		VoronoiCanvas vc = new VoronoiCanvas(canvas.getCells());
-		vc.setBounds(canvas.getBounds());
-		vc.setGraphCanvas(canvas);
+		VoronoiCanvas vc = new VoronoiCanvas(canvas);
 		vc.layout();
 		vc.export("exports" + File.separatorChar + "voronoigraph.svg");
-
+		
 return "sucessfully used graph.export"

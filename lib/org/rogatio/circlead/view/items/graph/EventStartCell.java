@@ -20,7 +20,6 @@ import com.yworks.yfiles.graph.styles.ShapeNodeStyle;
 import com.yworks.yfiles.view.GraphComponent;
 import com.yworks.yfiles.view.Pen;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class EventStartCell.
  */
@@ -56,6 +55,9 @@ public class EventStartCell extends GraphCell {
 		
 		canvas.setNodeSize(5);
 
+		Color color = canvas.getColorOfRole(this.getData("roletitle").toString());
+		setData("color", color);	
+		
 		INode n = graph.createNode(new PointD(0, 0), style);
 
 		if (getName() != null) {

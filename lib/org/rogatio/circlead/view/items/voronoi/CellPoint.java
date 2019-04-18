@@ -34,21 +34,11 @@ public class CellPoint extends Point {
 		super(x, y);
 	}
 	
-	/**
-	 * Adds the node.
-	 *
-	 * @param node the node
-	 */
-	public void addNode(ICell node) {
+	public void addCell(ICell node) {
 		this.graphCell = node;
 	}
 	
-	/**
-	 * Gets the node.
-	 *
-	 * @return the node
-	 */
-	public ICell getNode() {
+	public ICell getCell() {
 		return graphCell;
 	}
 

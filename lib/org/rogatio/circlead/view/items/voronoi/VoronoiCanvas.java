@@ -8,7 +8,9 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
+import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -26,7 +28,6 @@ import org.rogatio.circlead.view.items.DefaultCanvas;
 import org.rogatio.circlead.view.items.ICell;
 import org.rogatio.circlead.view.items.ILink;
 import org.rogatio.circlead.view.items.graph.GraphCanvas;
-import org.rogatio.circlead.view.items.graph.GraphCell;
 import org.rogatio.circlead.view.items.graph.RoleCell;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.svg.SVGDocument;
@@ -37,7 +38,6 @@ import com.yworks.yfiles.view.CanvasComponent;
 
 import de.alsclo.voronoi.graph.Point;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class VoronoiCanvas.
  */
@@ -58,14 +58,8 @@ public class VoronoiCanvas extends DefaultCanvas {
 	/** The points. */
 	private List<Point> points = new ArrayList<Point>();
 
-	/**
-	 * Sets the graph canvas.
-	 *
-	 * @param graphCanvas the new graph canvas
-	 */
-	public void setGraphCanvas(GraphCanvas graphCanvas) {
-		this.graphCanvas = graphCanvas;
-	}
+	private double maxX = 0;
+	private double maxY = 0;
 
 	/*
 	 * (non-Javadoc)
@@ -79,13 +73,20 @@ public class VoronoiCanvas extends DefaultCanvas {
 		for (ICell cell : cells) {
 			double x = cell.getPosition().getX();
 			double y = cell.getPosition().getY();
-			CellPoint p = new CellPoint(x, y);
-			p.addNode(cell);
+
+			maxX = Math.max(x, maxX);
+			maxY = Math.max(y, maxY);
+
+			double offX = (this.getBounds().getWidth() - maxX) / 2;
+			double offY = (this.getBounds().getHeight() - maxY) / 2;
+
+			CellPoint p = new CellPoint(x + offX, y + offY);
+			p.addCell(cell);
 			cell.setData("point", p);
 			points.add(p);
 		}
 
-		this.cells = tcells;	
+		this.cells = tcells;
 	}
 
 	/**
@@ -93,10 +94,12 @@ public class VoronoiCanvas extends DefaultCanvas {
 	 *
 	 * @param cells the cells
 	 */
-	public VoronoiCanvas(List<ICell> cells) {
-		this.setCells(cells);
+	public VoronoiCanvas(GraphCanvas canvas) {
+		this.graphCanvas = canvas;
+		this.cells = canvas.getCells();
+		this.component = new CanvasComponent();
+		setBounds(canvas.getBounds());
 		this.diagram = new VoronoiDiagram(this.points);
-		component = new CanvasComponent();
 	}
 
 	/*
@@ -107,30 +110,46 @@ public class VoronoiCanvas extends DefaultCanvas {
 	 */
 	@Override
 	public void setBounds(Rectangle2D bounds) {
-		this.bounds = bounds;
-		component.setBounds(new Rectangle((int) bounds.getWidth(), (int) bounds.getHeight()));
-		
-		int offset = 50;
+		double hs = bounds.getHeight() + Math.abs(bounds.getX());
+		double ws = bounds.getWidth() + Math.abs(bounds.getY());
 
-		int w = (int) this.bounds.getWidth() + offset * 2;
-		int h = (int) this.bounds.getHeight() + offset * 2;
-		
-		for (int i = 0; i < w; i += 50) {
+		this.bounds = new Rectangle2D.Double(0, 0, ws, hs);
+
+		this.setCells(cells);
+
+		component.setBounds(new Rectangle((int) ws, (int) hs));
+
+		int w = (int) this.bounds.getWidth();
+		int h = (int) this.bounds.getHeight();
+
+		int stepWidthBorder = 20;
+
+		for (int i = 0; i < w; i += stepWidthBorder) {
 			Point p = new Point(i, 0);
-			points.add(p);
+			if (!points.contains(p)) {
+				points.add(p);
+			}
 		}
-		for (int i = 0; i < h; i += 50) {
+		for (int i = 0; i < h; i += stepWidthBorder) {
 			Point p = new Point(0, i);
-			points.add(p);
+			if (!points.contains(p)) {
+				points.add(p);
+			}
 		}
-		for (int i = 0; i < h - 50; i += 50) {
-			Point p = new Point(i, h - 50);
-			points.add(p);
+		for (int i = 0; i < h - stepWidthBorder; i += stepWidthBorder) {
+			Point p = new Point(w - stepWidthBorder, i);
+			if (!points.contains(p)) {
+				points.add(p);
+			}
 		}
-		for (int i = 0; i < w - 50; i += 50) {
-			Point p = new Point(w - 50, i);
-			points.add(p);
+		for (int i = 0; i < w - stepWidthBorder; i += stepWidthBorder) {
+			Point p = new Point(i, h - stepWidthBorder);
+			if (!points.contains(p)) {
+				points.add(p);
+			}
 		}
+
+		this.diagram = new VoronoiDiagram(this.points);
 	}
 
 	/*
@@ -140,14 +159,10 @@ public class VoronoiCanvas extends DefaultCanvas {
 	 */
 	@Override
 	public void layout() {
+
 		diagram.relax().relax();
 	}
 
-	/**
-	 * Paint.
-	 *
-	 * @param g the g
-	 */
 	private void paint(Graphics g) {
 		Color background = new Color(255, 255, 255, 0);
 
@@ -155,43 +170,10 @@ public class VoronoiCanvas extends DefaultCanvas {
 
 		ArrayList<VoronoiCell> cells = this.diagram.getCells();
 		for (VoronoiCell cell : cells) {
-
-			Color c = background;
-			if (cell.getCenter() instanceof CellPoint) {
-				c = (Color) cell.getDataCell().getData("color");
-			}
-
-			g2.setStroke(new BasicStroke());
-			g2.setPaint(c);
-			g2.fill(cell);
-
+			cell.setGraphics(g2);
+			cell.create();
 		}
-
-		for (Point site : diagram.getGraph().getSitePoints()) {
-			g2.setStroke(new BasicStroke());
-
-			if (site instanceof CellPoint) {
-				g2.setPaint(Color.WHITE);
-
-				if (((CellPoint) site).getNode() instanceof RoleCell) {
-					int size = 3;
-					g2.fillOval((int) Math.round(site.x - (int) (size * POINT_SIZE / 2)),
-							(int) Math.round(site.y - (int) (size * POINT_SIZE / 2)), (int) (size * POINT_SIZE),
-							(int) (size * POINT_SIZE));
-				} else {
-					g2.fillRect((int) Math.round(site.x - POINT_SIZE / 2), (int) Math.round(site.y - POINT_SIZE / 2),
-							(int) POINT_SIZE, (int) POINT_SIZE);
-				}
-			} else {
-				g2.setPaint(background);
-				double size = 0.5;
-				g2.fillOval((int) Math.round(site.x - (int) (size * POINT_SIZE / 2)),
-						(int) Math.round(site.y - (int) (size * POINT_SIZE / 2)), (int) (size * POINT_SIZE),
-						(int) (size * POINT_SIZE));
-			}
-
-		}
-
+		
 		/*
 		 * g2.setStroke(new BasicStroke(1)); g2.setPaint(Color.DARK_GRAY);
 		 * 
@@ -201,27 +183,11 @@ public class VoronoiCanvas extends DefaultCanvas {
 		 * b.y); });
 		 */
 
-		g2.setStroke(new BasicStroke());
-		g2.setPaint(Color.WHITE);
-		for (Point site : diagram.getGraph().getSitePoints()) {
-			if (site instanceof CellPoint) {
-				if (((CellPoint) site).getNode().getType() == CellType.ROLE) {
-					String label = "";
-					try {
-						label = ((CellPoint) site).getNode().getName();
-					} catch (Exception e) {
-
-					}
-					g2.drawString(label, (int) site.x, (int) site.y + 20);
-				}
-			}
-		}
-
 		Polygon arrowHead = new Polygon();
 		arrowHead.addPoint(0, -4);
-		arrowHead.addPoint(-2, -7);
-		arrowHead.addPoint(2, -7);
-
+		arrowHead.addPoint(-3, -9);
+		arrowHead.addPoint(3, -9);
+		
 		g2.setPaint(Color.WHITE);
 
 		List<ILink> links = graphCanvas.getActivityLinks();
@@ -229,24 +195,30 @@ public class VoronoiCanvas extends DefaultCanvas {
 			IEdge edge = (IEdge) iLink.getData("edge");
 			Point a = this.getStart(edge);
 			Point b = this.getEnd(edge);
-
+		
 			if (a != null && b != null) {
 				Line2D.Double line = new Line2D.Double((int) a.x, (int) a.y, (int) b.x, (int) b.y);
-				g2.drawLine((int) a.x, (int) a.y, (int) b.x, (int) b.y);
-
+				
 				AffineTransform tx = new AffineTransform();
 				tx.setToIdentity();
 				double angle = Math.atan2(line.y2 - line.y1, line.x2 - line.x1);
 				tx.translate(line.x2, line.y2);
 				tx.rotate((angle - Math.PI / 2d));
-
+				
 				Graphics2D gr = (Graphics2D) g2.create();
+				gr.setPaint(Color.WHITE);
 				gr.setTransform(tx);
 				gr.fill(arrowHead);
+				
+				int dX = (int) (Math.round(0 + (4 * Math.cos(angle))));
+				int dY = (int) (Math.round(0 + (4 * Math.sin(angle))));
 				gr.dispose();
+				
+				g2.drawLine((int) a.x+dX, (int) a.y+dY, (int) b.x-dX, (int) b.y-dY);
+				
 			}
 		}
-
+		
 	}
 
 	/**
@@ -299,7 +271,7 @@ public class VoronoiCanvas extends DefaultCanvas {
 		for (Point site : this.diagram.getGraph().getSitePoints()) {
 			if (site instanceof CellPoint) {
 				CellPoint p = (CellPoint) site;
-				INode n = (INode) p.getNode().getData("node");
+				INode n = (INode) p.getCell().getData("node");
 				if (n != null) {
 					if (n.equals(edge.getSourceNode())) {
 						return site;
@@ -323,7 +295,7 @@ public class VoronoiCanvas extends DefaultCanvas {
 		for (Point site : this.diagram.getGraph().getSitePoints()) {
 			if (site instanceof CellPoint) {
 				CellPoint p = (CellPoint) site;
-				INode n = (INode) p.getNode().getData("node");
+				INode n = (INode) p.getCell().getData("node");
 				if (n != null) {
 					if (n.equals(edge.getTargetNode())) {
 						return site;

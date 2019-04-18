@@ -19,7 +19,6 @@ import com.yworks.yfiles.graph.styles.ShapeNodeStyle;
 import com.yworks.yfiles.view.GraphComponent;
 import com.yworks.yfiles.view.Pen;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ActivityCell.
  */
