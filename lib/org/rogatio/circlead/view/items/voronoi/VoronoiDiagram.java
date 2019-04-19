@@ -16,6 +16,9 @@ import de.alsclo.voronoi.graph.Edge;
 import de.alsclo.voronoi.graph.Point;
 import de.alsclo.voronoi.graph.Vertex;
 
+/**
+ * The Class VoronoiDiagram.
+ */
 public class VoronoiDiagram extends Voronoi {
 
 	/* (non-Javadoc)
@@ -57,7 +60,7 @@ public class VoronoiDiagram extends Voronoi {
 	}
 	
 	/**
-	 * Instantiates a new voronoi extended.
+	 * Instantiates a new voronoi diagram.
 	 *
 	 * @param points the points
 	 */
@@ -66,6 +69,7 @@ public class VoronoiDiagram extends Voronoi {
 		
 		for (Point site : this.getGraph().getSitePoints()) {
 
+			// Add all edges corresponding to the cell
 			ArrayList<Edge> edges = new ArrayList<Edge>();
 			this.getGraph().edgeStream().filter(e -> e.getA() != null && e.getB() != null).forEach(e -> {
 				Edge edge = null;
@@ -81,8 +85,10 @@ public class VoronoiDiagram extends Voronoi {
 
 			});
 
+			// Create VoronoiCell on given site with coressponding edges
 			VoronoiCell cell = new VoronoiCell(site, edges);
 
+			// if cell is also defined in GraphCanvas, then set more specific voronoi-cell
 			if (site instanceof CellPoint) {
 				CellPoint cp = (CellPoint)site;
 				if (cp.getCell().getType()==CellType.ROLE) {

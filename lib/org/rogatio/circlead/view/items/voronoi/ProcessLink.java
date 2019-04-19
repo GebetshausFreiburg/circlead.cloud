@@ -6,7 +6,6 @@ import java.awt.Polygon;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 
-import org.apache.batik.svggen.SVGGraphics2D;
 import org.rogatio.circlead.view.items.DefaultLink;
 import org.rogatio.circlead.view.items.ILink;
 
@@ -48,6 +47,7 @@ public class ProcessLink extends DefaultLink {
 	@Override
 	public Object create() {
 
+		// create simple arrow
 		Polygon arrowHead = new Polygon();
 		arrowHead.addPoint(0, -4);
 		arrowHead.addPoint(-3, -9);
@@ -73,6 +73,7 @@ public class ProcessLink extends DefaultLink {
 			gr.setTransform(tx);
 			gr.fill(arrowHead);
 
+			// cut length of arrow, so it not conflicts with node-cell
 			int dX = (int) (Math.round(0 + (4 * Math.cos(angle))));
 			int dY = (int) (Math.round(0 + (4 * Math.sin(angle))));
 			gr.dispose();

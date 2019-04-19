@@ -66,19 +66,28 @@ public class VoronoiCell extends DefaultCell implements Shape {
 		return center;
 	}
 
+	/** The background. */
 	protected Color background = new Color(255, 255, 255, 0);
 
+	/** The graphics. */
 	protected Graphics2D graphics;
 
+	/**
+	 * Sets the graphics.
+	 *
+	 * @param g the new graphics
+	 */
 	public void setGraphics(Graphics2D g) {
 		this.graphics = g;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.items.DefaultCell#create()
+	 */
 	@Override
 	public Object create() {
-
-		double POINT_SIZE = 5.0;
-
+	
+		// if cell is part of graph, then use set color
 		if (this.getCenter() instanceof CellPoint) {
 			Color c = background;
 			c = (Color) this.getDataCell().getData("color");
@@ -87,11 +96,12 @@ public class VoronoiCell extends DefaultCell implements Shape {
 			this.graphics.fill(this);
 		}
 
+		// if point in voronoi in not in graph, then set transparent (to create border)
 		graphics.setPaint(background);
-		double size = 0.5;
-		graphics.fillOval((int) Math.round(this.getCenter().x - (int) (size * POINT_SIZE / 2)),
-				(int) Math.round(this.getCenter().y - (int) (size * POINT_SIZE / 2)), (int) (size * POINT_SIZE),
-				(int) (size * POINT_SIZE));
+		double size = 1;
+		graphics.fillOval((int) Math.round(this.getCenter().x - (int) (size  / 2)),
+				(int) Math.round(this.getCenter().y - (int) (size / 2)), (int) (size),
+				(int) (size));
 		
 		return null;
 	}
@@ -137,9 +147,11 @@ public class VoronoiCell extends DefaultCell implements Shape {
 			return;
 		}
 
+		// sort vertices
 		points = sortVertices(points);
 
 		if (points.size() > 0) {
+			// caclulate shape-path of voronoi-cell
 			path.moveTo(points.get(0).x, points.get(0).y);
 			for (int i = 1; i < points.size(); i++) {
 				Point p = points.get(i);
@@ -147,6 +159,7 @@ public class VoronoiCell extends DefaultCell implements Shape {
 			}
 			path.closePath();
 
+			// Scale cell down, so it builds 'natural' transparent border
 			double cx = path.getBounds2D().getCenterX();
 			double cy = path.getBounds2D().getCenterY();
 			double zoom = 0.98;
@@ -168,7 +181,7 @@ public class VoronoiCell extends DefaultCell implements Shape {
 	}
 
 	/**
-	 * Find centroid.
+	 * Find centroid of the shape.
 	 *
 	 * @param points the points
 	 * @return the point
@@ -187,7 +200,7 @@ public class VoronoiCell extends DefaultCell implements Shape {
 	}
 
 	/**
-	 * Sort vertices.
+	 * Sort vertices, so all points are in one direction to avoid cuts if the shape is filled
 	 *
 	 * @param points the points
 	 * @return the list

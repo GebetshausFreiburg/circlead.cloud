@@ -29,23 +29,23 @@ import com.yworks.yfiles.view.CanvasComponent;
 import de.alsclo.voronoi.graph.Point;
 
 /**
- * The Class VoronoiCanvas.
+ * The Class VoronoiCanvas is used to draw all cells onto it and export them to a svg-image
  */
 public class VoronoiCanvas extends DefaultCanvas {
-
-	/** The component. */
-	private CanvasComponent component;
-
-	/** The diagram. */
+	
+	/** The diagram which calculate the voronoi-structure */
 	private VoronoiDiagram diagram;
 
-	/** The graph canvas. */
+	/** The graph canvas which gives the starting points for the voronoi-diagram */
 	private GraphCanvas graphCanvas;
 
-	/** The points. */
+	/** The points which are set to the voronoi-diagram */
 	private List<Point> points = new ArrayList<Point>();
 
+	/** The max x-value in the diagram */
 	private double maxX = 0;
+	
+	/** The max y-value in the diagram */
 	private double maxY = 0;
 
 	/*
@@ -58,33 +58,37 @@ public class VoronoiCanvas extends DefaultCanvas {
 		List<ICell> tcells = new ArrayList<ICell>();
 
 		for (ICell cell : cells) {
+			// get x and y of a cell
 			double x = cell.getPosition().getX();
 			double y = cell.getPosition().getY();
 
+			// calculate the maximum point-dimensions
 			maxX = Math.max(x, maxX);
 			maxY = Math.max(y, maxY);
 
+			// center all points by calculate an offset to the outer canvas
 			double offX = (this.getBounds().getWidth() - maxX) / 2;
 			double offY = (this.getBounds().getHeight() - maxY) / 2;
 
+			//add new points to cell
 			CellPoint p = new CellPoint(x + offX, y + offY);
 			p.addCell(cell);
 			cell.setData("point", p);
 			points.add(p);
 		}
 
+		// replace cells with cells and offset-correction
 		this.cells = tcells;
 	}
 
 	/**
 	 * Instantiates a new voronoi canvas.
 	 *
-	 * @param cells the cells
+	 * @param canvas the canvas
 	 */
 	public VoronoiCanvas(GraphCanvas canvas) {
 		this.graphCanvas = canvas;
 		this.cells = canvas.getCells();
-		this.component = new CanvasComponent();
 		setBounds(canvas.getBounds());
 		this.diagram = new VoronoiDiagram(this.points);
 	}
@@ -97,20 +101,21 @@ public class VoronoiCanvas extends DefaultCanvas {
 	 */
 	@Override
 	public void setBounds(Rectangle2D bounds) {
+		// caclulate the outer bounds of the canvas
 		double hs = bounds.getHeight() + Math.abs(bounds.getX());
 		double ws = bounds.getWidth() + Math.abs(bounds.getY());
 
+		// set bounds
 		this.bounds = new Rectangle2D.Double(0, 0, ws, hs);
 
+		//set offset-correction to given bounds
 		this.setCells(cells);
-
-		component.setBounds(new Rectangle((int) ws, (int) hs));
-
+	
 		int w = (int) this.bounds.getWidth();
 		int h = (int) this.bounds.getHeight();
 
+		// calculate the outer points in voronoi-diagram to beautify used voronoi-cells
 		int stepWidthBorder = 20;
-
 		for (int i = 0; i < w; i += stepWidthBorder) {
 			Point p = new Point(i, 0);
 			if (!points.contains(p)) {
@@ -136,6 +141,7 @@ public class VoronoiCanvas extends DefaultCanvas {
 			}
 		}
 
+		// instantiates voronoi-diagram
 		this.diagram = new VoronoiDiagram(this.points);
 	}
 
@@ -146,10 +152,14 @@ public class VoronoiCanvas extends DefaultCanvas {
 	 */
 	@Override
 	public void layout() {
-
 		diagram.relax().relax();
 	}
 
+	/**
+	 * Paint method
+	 *
+	 * @param g the g
+	 */
 	private void paint(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 
@@ -178,7 +188,7 @@ public class VoronoiCanvas extends DefaultCanvas {
 
 	
 	/**
-	 * Export.
+	 * Export to svg
 	 *
 	 * @param filename the filename
 	 */

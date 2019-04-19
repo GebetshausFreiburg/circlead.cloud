@@ -2,11 +2,8 @@ package org.rogatio.circlead.view.items.voronoi;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Polygon;
-import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
 import de.alsclo.voronoi.graph.Edge;
