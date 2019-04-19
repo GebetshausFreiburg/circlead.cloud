@@ -12,12 +12,27 @@ import java.util.ArrayList;
 import de.alsclo.voronoi.graph.Edge;
 import de.alsclo.voronoi.graph.Point;
 
+/**
+ * The Class GatewayCell.
+ */
 public class GatewayCell extends VoronoiCell {
 
+	/**
+	 * Instantiates a new gateway cell.
+	 *
+	 * @param center the center
+	 * @param edges the edges
+	 */
 	public GatewayCell(Point center, ArrayList<Edge> edges) {
 		super(center, edges);
 	}
 
+	/**
+	 * Creates the diamond.
+	 *
+	 * @param s the s
+	 * @return the general path
+	 */
 	public static GeneralPath createDiamond(final float s) {
 	      final GeneralPath p0 = new GeneralPath();
 	      p0.moveTo(0.0f, -s);
@@ -28,6 +43,9 @@ public class GatewayCell extends VoronoiCell {
 	      return p0;
 	  }
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.items.voronoi.VoronoiCell#create()
+	 */
 	@Override
 	public Object create() {
 

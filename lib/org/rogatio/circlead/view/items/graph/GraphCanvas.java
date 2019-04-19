@@ -51,7 +51,6 @@ import com.yworks.yfiles.view.ContextConfigurator;
 import com.yworks.yfiles.view.GraphComponent;
 import com.yworks.yfiles.view.IRenderContext;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class GraphCanvas.
  */
@@ -135,7 +134,7 @@ public class GraphCanvas extends DefaultCanvas {
 
 	/** The map node 2 cell. */
 	private Map<INode, ICell> map_Node2Cell = new HashMap<INode, ICell>();
-	
+
 	/** The map activity 2 cell. */
 	private Map<ActivityDataitem, ICell> map_Activity2Cell = new HashMap<ActivityDataitem, ICell>();
 
@@ -148,8 +147,12 @@ public class GraphCanvas extends DefaultCanvas {
 		graph = graphComponent.getGraph();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.view.items.DefaultCanvas#createCell(org.rogatio.circlead.view.items.CellType)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.rogatio.circlead.view.items.DefaultCanvas#createCell(org.rogatio.circlead
+	 * .view.items.CellType)
 	 */
 	@Override
 	public ICell createCell(CellType type) {
@@ -244,8 +247,12 @@ public class GraphCanvas extends DefaultCanvas {
 		return this.addLink(s, t);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.view.items.DefaultCanvas#addLink(org.rogatio.circlead.view.items.ICell, org.rogatio.circlead.view.items.ICell)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.rogatio.circlead.view.items.DefaultCanvas#addLink(org.rogatio.circlead.
+	 * view.items.ICell, org.rogatio.circlead.view.items.ICell)
 	 */
 	@Override
 	public ILink addLink(ICell source, ICell target) {
@@ -257,7 +264,9 @@ public class GraphCanvas extends DefaultCanvas {
 		return link;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.view.items.DefaultCanvas#getBounds()
 	 */
 	public Rectangle2D getBounds() {
@@ -321,15 +330,22 @@ public class GraphCanvas extends DefaultCanvas {
 				List<ActivityDataitem> childs = activity.getChildSubactivities(subactivity);
 				for (ActivityDataitem targetActivity : childs) {
 					ILink link = addLink(subactivity, targetActivity);
+					link.setData("process", activity);
+					if (link.getSource() != null) {
+						link.getSource().setData("process", activity);
+					}
+					if (link.getTarget() != null) {
+						link.getTarget().setData("process", activity);
+					}
 					activityLinks.add(link);
 				}
 			}
 		}
 	}
-	
+
 	/** The activity links. */
 	private List<ILink> activityLinks = new ArrayList<ILink>();
-	
+
 	/**
 	 * Gets the activity links.
 	 *
@@ -339,8 +355,12 @@ public class GraphCanvas extends DefaultCanvas {
 		return activityLinks;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.rogatio.circlead.view.items.DefaultCanvas#addCell(org.rogatio.circlead.view.items.ICell)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.rogatio.circlead.view.items.DefaultCanvas#addCell(org.rogatio.circlead.
+	 * view.items.ICell)
 	 */
 	@Override
 	public void addCell(ICell cell) {
@@ -363,7 +383,9 @@ public class GraphCanvas extends DefaultCanvas {
 		this.writeSVG2File(filename);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.rogatio.circlead.view.items.DefaultCanvas#layout()
 	 */
 	@Override
@@ -470,7 +492,7 @@ public class GraphCanvas extends DefaultCanvas {
 	 * Paint.
 	 *
 	 * @param canvas the canvas
-	 * @param gfx the gfx
+	 * @param gfx    the gfx
 	 */
 	private void paint(CanvasComponent canvas, Graphics2D gfx) {
 		gfx.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

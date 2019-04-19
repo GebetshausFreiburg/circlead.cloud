@@ -4,7 +4,6 @@ import org.rogatio.circlead.view.items.ICell;
 
 import de.alsclo.voronoi.graph.Point;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class CellPoint.
  */

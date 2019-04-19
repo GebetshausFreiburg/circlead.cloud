@@ -3,7 +3,6 @@ package org.rogatio.circlead.view.items;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface ICanvas.
  */
@@ -62,7 +61,7 @@ public interface ICanvas {
 	public void setBounds(Rectangle2D bounds);
 	
 	/**
-	 * Layout.
+	 * Layouts the canvas for all cells and links
 	 */
 	public void layout();
 }

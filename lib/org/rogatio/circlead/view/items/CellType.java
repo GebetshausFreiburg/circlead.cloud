@@ -1,6 +1,5 @@
 package org.rogatio.circlead.view.items;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Enum CellType.
  */

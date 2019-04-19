@@ -14,7 +14,6 @@ import com.yworks.yfiles.graph.styles.ShapeNodeShape;
 import com.yworks.yfiles.graph.styles.ShapeNodeStyle;
 import com.yworks.yfiles.view.GraphComponent;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class RoleCell.
  */

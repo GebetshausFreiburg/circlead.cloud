@@ -7,12 +7,24 @@ import java.util.ArrayList;
 import de.alsclo.voronoi.graph.Edge;
 import de.alsclo.voronoi.graph.Point;
 
+/**
+ * The Class EventEndCell.
+ */
 public class EventEndCell extends VoronoiCell {
 
+	/**
+	 * Instantiates a new event end cell.
+	 *
+	 * @param center the center
+	 * @param edges the edges
+	 */
 	public EventEndCell(Point center, ArrayList<Edge> edges) {
 		super(center, edges);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.rogatio.circlead.view.items.voronoi.VoronoiCell#create()
+	 */
 	@Override
 	public Object create() {
 		
