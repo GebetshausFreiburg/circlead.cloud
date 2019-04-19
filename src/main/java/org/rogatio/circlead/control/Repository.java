@@ -201,7 +201,8 @@ public final class Repository {
 	}
 
 	/**
-	 * Gets the role titles. Includes all role-workitems and all named roles in subactivities
+	 * Gets the role titles. Includes all role-workitems and all named roles in
+	 * subactivities
 	 *
 	 * @return the role titles
 	 */
@@ -216,7 +217,7 @@ public final class Repository {
 		Collections.sort(roleTitles);
 		return roleTitles;
 	}
-	
+
 	/**
 	 * Gets the roles by a status.
 	 *
@@ -268,7 +269,7 @@ public final class Repository {
 
 		return map;
 	}
-	
+
 	/**
 	 * Gets the role titles from subactivities. The subactivities could contain
 	 * roles which are not defined as own objects, the the sum of all named roles in

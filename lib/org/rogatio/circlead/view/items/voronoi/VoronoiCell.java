@@ -13,10 +13,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.batik.svggen.SVGGraphics2D;
 import org.rogatio.circlead.view.items.DefaultCell;
 import org.rogatio.circlead.view.items.ICell;
 import org.rogatio.circlead.view.items.graph.GraphCanvas;
 import org.rogatio.circlead.view.items.graph.GraphCell;
+import org.w3c.dom.Node;
 
 import de.alsclo.voronoi.graph.Edge;
 import de.alsclo.voronoi.graph.Point;
@@ -65,28 +67,26 @@ public class VoronoiCell extends DefaultCell implements Shape {
 	}
 
 	protected Color background = new Color(255, 255, 255, 0);
-	
+
 	protected Graphics2D graphics;
-	
+
 	public void setGraphics(Graphics2D g) {
 		this.graphics = g;
 	}
-	
+
 	@Override
 	public Object create() {
-		
+
 		double POINT_SIZE = 5.0;
-		
+
 		if (this.getCenter() instanceof CellPoint) {
 			Color c = background;
 			c = (Color) this.getDataCell().getData("color");
 			this.graphics.setStroke(new BasicStroke());
 			this.graphics.setPaint(c);
 			this.graphics.fill(this);
-		} else {
-			
 		}
-		
+
 		graphics.setPaint(background);
 		double size = 0.5;
 		graphics.fillOval((int) Math.round(this.getCenter().x - (int) (size * POINT_SIZE / 2)),
@@ -95,7 +95,7 @@ public class VoronoiCell extends DefaultCell implements Shape {
 		
 		return null;
 	}
-	
+
 	/**
 	 * Gets the data cell.
 	 *
@@ -103,12 +103,12 @@ public class VoronoiCell extends DefaultCell implements Shape {
 	 */
 	public ICell getDataCell() {
 		if (center instanceof CellPoint) {
-			CellPoint c = (CellPoint)center;
+			CellPoint c = (CellPoint) center;
 			return c.getCell();
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Instantiates a new voronoi cell.
 	 *
@@ -116,7 +116,7 @@ public class VoronoiCell extends DefaultCell implements Shape {
 	 * @param edges  the edges
 	 */
 	public VoronoiCell(Point center, ArrayList<Edge> edges) {
-		
+
 		this.center = center;
 
 		for (Edge edge : edges) {
@@ -154,15 +154,15 @@ public class VoronoiCell extends DefaultCell implements Shape {
 			AffineTransform tr = new AffineTransform();
 			tr.translate(-cx, -cy);
 			path.transform(tr);
-			
+
 			tr = new AffineTransform();
 			tr.scale(zoom, zoom);
 			path.transform(tr);
-			
+
 			tr = new AffineTransform();
 			tr.translate(+cx, +cy);
 			path.transform(tr);
-			
+
 		}
 
 	}

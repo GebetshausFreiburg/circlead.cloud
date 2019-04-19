@@ -3,7 +3,6 @@ package org.rogatio.circlead.view.items;
 import java.util.HashMap;
 import java.util.Map;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class DefaultLink.
  */

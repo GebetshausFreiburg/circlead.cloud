@@ -49,7 +49,6 @@ import com.yworks.yfiles.view.IRenderContext;
 import com.yworks.yfiles.view.IVisual;
 import com.yworks.yfiles.view.Pen;
 
-// TODO: Auto-generated Javadoc
 /**
  * A simple implementation of an {@link com.yworks.yfiles.graph.styles.ILabelStyle} that uses the convenience class {@link
  * com.yworks.yfiles.graph.styles.AbstractLabelStyle} as the base class.

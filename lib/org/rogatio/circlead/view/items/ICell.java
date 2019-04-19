@@ -2,14 +2,13 @@ package org.rogatio.circlead.view.items;
 
 import java.awt.geom.Point2D;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Interface ICell.
+ * The Interface ICell represents a cell/node
  */
 public interface ICell {
 
 	/**
-	 * Sets the name.
+	 * Sets the name of the cell
 	 *
 	 * @param name the new name
 	 */
@@ -32,28 +31,28 @@ public interface ICell {
 	public Object getData(String key);
 	
 	/**
-	 * Gets the name.
+	 * Gets the name of the cell
 	 *
 	 * @return the name
 	 */
 	public String getName();
 	
 	/**
-	 * Gets the type.
+	 * Gets the type of a cell
 	 *
 	 * @return the type
 	 */
 	public CellType getType();
 	
 	/**
-	 * Creates the.
+	 * Creates the visible representation of the cell/node
 	 *
 	 * @return the object
 	 */
 	public Object create();
 	
 	/**
-	 * Gets the position.
+	 * Gets the position of the cell
 	 *
 	 * @return the position
 	 */
