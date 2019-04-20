@@ -1,4 +1,4 @@
-package org.rogatio.circlead.view.items.graph;
+package org.rogatio.circlead.view.items.cellgroup;
 
 import java.awt.Color;
 
@@ -7,6 +7,7 @@ import org.rogatio.circlead.view.items.CellType;
 import org.rogatio.circlead.view.items.DefaultCell;
 import org.rogatio.circlead.view.items.ICell;
 import org.rogatio.circlead.view.items.ILink;
+import org.rogatio.circlead.view.items.process.bpmn.SmallLabelStyle;
 
 import com.yworks.yfiles.geometry.PointD;
 import com.yworks.yfiles.geometry.SizeD;
@@ -21,19 +22,19 @@ import com.yworks.yfiles.view.GraphComponent;
 import com.yworks.yfiles.view.Pen;
 
 /**
- * The Class EventEndCell.
+ * The Class EventStartCell.
  */
-public class EventEndCell extends GraphCell {
+public class EventStartCell extends CellgroupCell {
 
 	/**
-	 * Instantiates a new event end cell.
+	 * Instantiates a new event start cell.
 	 *
 	 * @param canvas the canvas
 	 */
-	public EventEndCell(GraphCanvas canvas) {
+	public EventStartCell(CellgroupCanvas canvas) {
 		super(canvas);
 		style = new ShapeNodeStyle();
-		style.setPaint(Color.RED);
+		style.setPaint(Color.GREEN);
 		style.setPen(Pen.getBlack());
 		style.setShape(ShapeNodeShape.ELLIPSE);
 	}
@@ -43,7 +44,7 @@ public class EventEndCell extends GraphCell {
 	 */
 	@Override
 	public CellType getType() {
-		return CellType.EVENT_END;
+		return CellType.EVENT_START;
 	}
 	
 	/* (non-Javadoc)
@@ -51,9 +52,10 @@ public class EventEndCell extends GraphCell {
 	 */
 	@Override
 	public Object create() {
-		//ActivityDataitem activityDataitem = (ActivityDataitem) getData("activity");
+	//	ActivityDataitem activityDataitem = (ActivityDataitem) getData("activity");
 		
 		canvas.setNodeSize(5);
+
 		Color color = canvas.getColorOfRole(this.getData("roletitle").toString());
 		setData("color", color);	
 		
@@ -69,7 +71,7 @@ public class EventEndCell extends GraphCell {
 
 		ICell rc = canvas.getCellOfRole((String) this.getData("roletitle"));
 
-		GraphLink gl = new GraphLink(canvas);
+		CellgroupLink gl = new CellgroupLink(canvas);
 		gl.setSource(rc);
 		gl.setTarget(this);
 		gl.create();

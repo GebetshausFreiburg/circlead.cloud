@@ -30,6 +30,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Element;
+import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.ActivityTableParserElement;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
@@ -543,7 +544,21 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 		}
 		return null;
 	}
-
+	
+	public List<String> getResponsiblesFromSubactivities() {
+		List<String> list = new ArrayList<String>();
+		if (ObjectUtil.isListNotNullAndEmpty(this.getSubactivities())) {
+			for (ActivityDataitem sub : this.getSubactivities()) {
+				if (StringUtil.isNotNullAndNotEmpty(sub.getResponsible())) {
+					if (!list.contains(sub.getResponsible())) {
+						list.add(sub.getResponsible());
+					}
+				}
+			}
+		}
+		return list;
+	}
+	
 	/**
 	 * Gets the subactivities with responsible.
 	 *

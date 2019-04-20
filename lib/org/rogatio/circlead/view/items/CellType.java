@@ -16,5 +16,5 @@ public enum CellType {
 	/** The event end. */
 	EVENT_END,
 	/** The gateway. */
-	GATEWAY;
+	GATEWAY, POOL;
 }

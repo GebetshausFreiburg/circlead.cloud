@@ -1,4 +1,4 @@
-package org.rogatio.circlead.view.items.graph;
+package org.rogatio.circlead.view.items.cellgroup;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
@@ -15,7 +15,7 @@ import com.yworks.yfiles.view.GraphComponent;
 /**
  * The Class GraphCell.
  */
-public class GraphCell extends DefaultCell {
+public class CellgroupCell extends DefaultCell {
 
 	/** The style. */
 	protected ShapeNodeStyle style;
@@ -27,14 +27,14 @@ public class GraphCell extends DefaultCell {
 	protected IGraph graph;
 	
 	/** The canvas. */
-	protected GraphCanvas canvas;
+	protected CellgroupCanvas canvas;
 
 	/**
 	 * Instantiates a new graph cell.
 	 *
 	 * @param canvas the canvas
 	 */
-	public GraphCell(GraphCanvas canvas) {
+	public CellgroupCell(CellgroupCanvas canvas) {
 		this.graphComponent = canvas.getGraphComponent();
 		this.graph = graphComponent.getGraph();
 		this.canvas = canvas;

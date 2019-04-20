@@ -29,7 +29,7 @@ public class PropertyUtil {
 
 	/** The application version. Use Sematic Versioning (https://semver.org/). */
 	/* IF CHANGED, THEN CHANGE ALSO IN POM. */
-	public static String APPLICATION_VERSION = "1.5.6";
+	public static String APPLICATION_VERSION = "1.5.7";
 
 	/** The application name. */
 	public static String APPLICATION_NAME = "Circlead";

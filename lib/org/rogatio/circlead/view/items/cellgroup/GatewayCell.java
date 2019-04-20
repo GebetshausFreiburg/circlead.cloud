@@ -1,12 +1,14 @@
-package org.rogatio.circlead.view.items.graph;
+package org.rogatio.circlead.view.items.cellgroup;
 
 import java.awt.Color;
 
 import org.rogatio.circlead.model.data.ActivityDataitem;
+import org.rogatio.circlead.util.ColorUtil;
 import org.rogatio.circlead.view.items.CellType;
 import org.rogatio.circlead.view.items.DefaultCell;
 import org.rogatio.circlead.view.items.ICell;
 import org.rogatio.circlead.view.items.ILink;
+import org.rogatio.circlead.view.items.process.bpmn.SmallLabelStyle;
 
 import com.yworks.yfiles.geometry.PointD;
 import com.yworks.yfiles.geometry.SizeD;
@@ -21,21 +23,21 @@ import com.yworks.yfiles.view.GraphComponent;
 import com.yworks.yfiles.view.Pen;
 
 /**
- * The Class EventStartCell.
+ * The Class GatewayCell.
  */
-public class EventStartCell extends GraphCell {
+public class GatewayCell extends CellgroupCell {
 
 	/**
-	 * Instantiates a new event start cell.
+	 * Instantiates a new gateway cell.
 	 *
 	 * @param canvas the canvas
 	 */
-	public EventStartCell(GraphCanvas canvas) {
+	public GatewayCell(CellgroupCanvas canvas) {
 		super(canvas);
 		style = new ShapeNodeStyle();
-		style.setPaint(Color.GREEN);
+		style.setPaint(Color.decode("#FFFFFF"));
 		style.setPen(Pen.getBlack());
-		style.setShape(ShapeNodeShape.ELLIPSE);
+		style.setShape(ShapeNodeShape.DIAMOND);
 	}
 
 	/* (non-Javadoc)
@@ -43,7 +45,7 @@ public class EventStartCell extends GraphCell {
 	 */
 	@Override
 	public CellType getType() {
-		return CellType.EVENT_START;
+		return CellType.GATEWAY;
 	}
 	
 	/* (non-Javadoc)
@@ -51,15 +53,17 @@ public class EventStartCell extends GraphCell {
 	 */
 	@Override
 	public Object create() {
-	//	ActivityDataitem activityDataitem = (ActivityDataitem) getData("activity");
+		//ActivityDataitem activityDataitem = (ActivityDataitem) getData("activity");
 		
-		canvas.setNodeSize(5);
+		canvas.setNodeSize(4);
 
+		ShapeNodeStyle sns = this.getStyle().clone();
 		Color color = canvas.getColorOfRole(this.getData("roletitle").toString());
-		setData("color", color);	
+		setData("color", color);		
+		sns.setPaint(color);
 		
-		INode n = graph.createNode(new PointD(0, 0), style);
-
+		INode n = graph.createNode(new PointD(0, 0), sns);
+		
 		if (getName() != null) {
 			graph.addLabel(n, getName(), ExteriorLabelModel.SOUTH, new SmallLabelStyle());
 		}
@@ -70,7 +74,7 @@ public class EventStartCell extends GraphCell {
 
 		ICell rc = canvas.getCellOfRole((String) this.getData("roletitle"));
 
-		GraphLink gl = new GraphLink(canvas);
+		CellgroupLink gl = new CellgroupLink(canvas);
 		gl.setSource(rc);
 		gl.setTarget(this);
 		gl.create();

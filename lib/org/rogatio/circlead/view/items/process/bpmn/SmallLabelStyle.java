@@ -1,33 +1,4 @@
-/****************************************************************************
- **
- ** This demo file is part of yFiles for Java 3.1.0.1.
- **
- ** Copyright (c) 2000-2018 by yWorks GmbH, Vor dem Kreuzberg 28,
- ** 72070 Tuebingen, Germany. All rights reserved.
- **
- ** yFiles demo files exhibit yFiles for Java functionalities. Any redistribution
- ** of demo files in source code or binary form, with or without
- ** modification, is not permitted.
- **
- ** Owners of a valid software license for a yFiles for Java version that this
- ** demo is shipped with are allowed to use the demo source code as basis
- ** for their own yFiles for Java powered applications. Use of such programs is
- ** governed by the rights and conditions as set out in the yFiles for Java
- ** license agreement.
- **
- ** THIS SOFTWARE IS PROVIDED ''AS IS'' AND ANY EXPRESS OR IMPLIED
- ** WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- ** MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN
- ** NO EVENT SHALL yWorks BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- ** SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
- ** TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- ** PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
- ** LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
- ** NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- ** SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- **
- ***************************************************************************/
-package org.rogatio.circlead.view.items.graph;
+package org.rogatio.circlead.view.items.process.bpmn;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -49,13 +20,6 @@ import com.yworks.yfiles.view.IRenderContext;
 import com.yworks.yfiles.view.IVisual;
 import com.yworks.yfiles.view.Pen;
 
-/**
- * A simple implementation of an {@link com.yworks.yfiles.graph.styles.ILabelStyle} that uses the convenience class {@link
- * com.yworks.yfiles.graph.styles.AbstractLabelStyle} as the base class.
- * The font for the label text can be set. The label text is drawn with black letters inside a blue rounded rectangle.
- * Also there is a customized button displayed in the label at certain zoom levels that enables editing of the label
- * text.
- */
 public class SmallLabelStyle extends AbstractLabelStyle {
   
   /** The Constant HORIZONTAL_INSET. */
@@ -70,9 +34,6 @@ public class SmallLabelStyle extends AbstractLabelStyle {
   /** The font. */
   private Font font;
 
-  /**
-   * Initializes a new <code>MySimpleLabelStyle</code> instance and sets a default font for the label.
-   */
   public SmallLabelStyle() {
     font = new Font("Dialog", Font.PLAIN, 4);
   }
@@ -169,25 +130,11 @@ public class SmallLabelStyle extends AbstractLabelStyle {
     }
   }
 
-  /**
-   * Provides an instance of {@link SmallLabelStyle.simplecustomstyle.MySimpleLabelStyle.EditActionButtonProvider}.
-   *
-   * @param label the label
-   * @param type the type
-   * @return the object
-   */
   @Override
   protected Object lookup(ILabel label, Class type) {
       return super.lookup(label, type);
   }
 
-  /**
-   * A {@link IVisual} that paints a label with text and a button to open the label editor. Note
-   * that we paint the label at the origin and move and rotate the graphics context to the current location and
-   * orientation of the label. We store the background shape, the text, the position and the size of the label and the
-   * visibility of the button as instance variables. The update method checks whether these values has been changed. If
-   * so, the instance variables are updated.
-   */
   private static class LabelVisual implements IVisual {
     
     /** The Constant FILL_COLOR. */
@@ -230,14 +177,6 @@ public class SmallLabelStyle extends AbstractLabelStyle {
       textPosition = PointD.ORIGIN;
     }
 
-    /**
-     * Checks if the properties of the label have been changed. If so, updates all items needed to paint the label.
-     * @param layout        the location and size of the label.
-     * @param text          the text the label shows
-     * @param font          the font to the render the text with
-     * @param transform     the transform that arranges of the label
-     * @param buttonVisible flag that specifies whether the button is visible or not
-     */
     public void update(IOrientedRectangle layout, String text, Font font, AffineTransform transform, boolean buttonVisible) {
 
       if (!equals(layout, this.labelLayout) || !text.equals(this.labelText) ||

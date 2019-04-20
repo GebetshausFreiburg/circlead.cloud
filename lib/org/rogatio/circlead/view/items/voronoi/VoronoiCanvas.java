@@ -20,7 +20,7 @@ import org.rogatio.circlead.util.PropertyUtil;
 import org.rogatio.circlead.view.items.DefaultCanvas;
 import org.rogatio.circlead.view.items.ICell;
 import org.rogatio.circlead.view.items.ILink;
-import org.rogatio.circlead.view.items.graph.GraphCanvas;
+import org.rogatio.circlead.view.items.cellgroup.CellgroupCanvas;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.svg.SVGDocument;
 
@@ -37,7 +37,7 @@ public class VoronoiCanvas extends DefaultCanvas {
 	private VoronoiDiagram diagram;
 
 	/** The graph canvas which gives the starting points for the voronoi-diagram */
-	private GraphCanvas graphCanvas;
+	private CellgroupCanvas graphCanvas;
 
 	/** The points which are set to the voronoi-diagram */
 	private List<Point> points = new ArrayList<Point>();
@@ -86,7 +86,7 @@ public class VoronoiCanvas extends DefaultCanvas {
 	 *
 	 * @param canvas the canvas
 	 */
-	public VoronoiCanvas(GraphCanvas canvas) {
+	public VoronoiCanvas(CellgroupCanvas canvas) {
 		this.graphCanvas = canvas;
 		this.cells = canvas.getCells();
 		setBounds(canvas.getBounds());
