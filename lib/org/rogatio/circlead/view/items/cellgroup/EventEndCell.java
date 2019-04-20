@@ -1,13 +1,13 @@
-package org.rogatio.circlead.view.items.graph;
+package org.rogatio.circlead.view.items.cellgroup;
 
 import java.awt.Color;
 
 import org.rogatio.circlead.model.data.ActivityDataitem;
-import org.rogatio.circlead.util.ColorUtil;
 import org.rogatio.circlead.view.items.CellType;
 import org.rogatio.circlead.view.items.DefaultCell;
 import org.rogatio.circlead.view.items.ICell;
 import org.rogatio.circlead.view.items.ILink;
+import org.rogatio.circlead.view.items.process.bpmn.SmallLabelStyle;
 
 import com.yworks.yfiles.geometry.PointD;
 import com.yworks.yfiles.geometry.SizeD;
@@ -22,21 +22,21 @@ import com.yworks.yfiles.view.GraphComponent;
 import com.yworks.yfiles.view.Pen;
 
 /**
- * The Class GatewayCell.
+ * The Class EventEndCell.
  */
-public class GatewayCell extends GraphCell {
+public class EventEndCell extends CellgroupCell {
 
 	/**
-	 * Instantiates a new gateway cell.
+	 * Instantiates a new event end cell.
 	 *
 	 * @param canvas the canvas
 	 */
-	public GatewayCell(GraphCanvas canvas) {
+	public EventEndCell(CellgroupCanvas canvas) {
 		super(canvas);
 		style = new ShapeNodeStyle();
-		style.setPaint(Color.decode("#FFFFFF"));
+		style.setPaint(Color.RED);
 		style.setPen(Pen.getBlack());
-		style.setShape(ShapeNodeShape.DIAMOND);
+		style.setShape(ShapeNodeShape.ELLIPSE);
 	}
 
 	/* (non-Javadoc)
@@ -44,7 +44,7 @@ public class GatewayCell extends GraphCell {
 	 */
 	@Override
 	public CellType getType() {
-		return CellType.GATEWAY;
+		return CellType.EVENT_END;
 	}
 	
 	/* (non-Javadoc)
@@ -54,15 +54,12 @@ public class GatewayCell extends GraphCell {
 	public Object create() {
 		//ActivityDataitem activityDataitem = (ActivityDataitem) getData("activity");
 		
-		canvas.setNodeSize(4);
-
-		ShapeNodeStyle sns = this.getStyle().clone();
+		canvas.setNodeSize(5);
 		Color color = canvas.getColorOfRole(this.getData("roletitle").toString());
-		setData("color", color);		
-		sns.setPaint(color);
+		setData("color", color);	
 		
-		INode n = graph.createNode(new PointD(0, 0), sns);
-		
+		INode n = graph.createNode(new PointD(0, 0), style);
+
 		if (getName() != null) {
 			graph.addLabel(n, getName(), ExteriorLabelModel.SOUTH, new SmallLabelStyle());
 		}
@@ -73,7 +70,7 @@ public class GatewayCell extends GraphCell {
 
 		ICell rc = canvas.getCellOfRole((String) this.getData("roletitle"));
 
-		GraphLink gl = new GraphLink(canvas);
+		CellgroupLink gl = new CellgroupLink(canvas);
 		gl.setSource(rc);
 		gl.setTarget(this);
 		gl.create();

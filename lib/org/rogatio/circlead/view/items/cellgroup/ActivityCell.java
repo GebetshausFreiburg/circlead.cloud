@@ -1,4 +1,4 @@
-package org.rogatio.circlead.view.items.graph;
+package org.rogatio.circlead.view.items.cellgroup;
 
 import java.awt.Color;
 
@@ -6,6 +6,7 @@ import org.rogatio.circlead.view.items.CellType;
 import org.rogatio.circlead.view.items.DefaultCell;
 import org.rogatio.circlead.view.items.ICell;
 import org.rogatio.circlead.view.items.ILink;
+import org.rogatio.circlead.view.items.process.bpmn.SmallLabelStyle;
 
 import com.yworks.yfiles.geometry.PointD;
 import com.yworks.yfiles.geometry.SizeD;
@@ -22,14 +23,14 @@ import com.yworks.yfiles.view.Pen;
 /**
  * The Class ActivityCell.
  */
-public class ActivityCell extends GraphCell {
+public class ActivityCell extends CellgroupCell {
 
 	/**
 	 * Instantiates a new activity cell.
 	 *
 	 * @param canvas the canvas
 	 */
-	public ActivityCell(GraphCanvas canvas) {
+	public ActivityCell(CellgroupCanvas canvas) {
 		super(canvas);
 		style = new ShapeNodeStyle();
 		style.setPaint(Color.decode("#FFFFFF"));
@@ -71,7 +72,7 @@ public class ActivityCell extends GraphCell {
 
 		ICell rc = canvas.getCellOfRole((String) this.getData("roletitle"));
 
-		GraphLink gl = new GraphLink(canvas);
+		CellgroupLink gl = new CellgroupLink(canvas);
 		gl.setSource(rc);
 		gl.setTarget(this);
 		gl.create();

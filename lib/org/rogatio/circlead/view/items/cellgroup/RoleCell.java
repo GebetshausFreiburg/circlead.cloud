@@ -1,4 +1,4 @@
-package org.rogatio.circlead.view.items.graph;
+package org.rogatio.circlead.view.items.cellgroup;
 
 import java.awt.Color;
 
@@ -17,14 +17,14 @@ import com.yworks.yfiles.view.GraphComponent;
 /**
  * The Class RoleCell.
  */
-public class RoleCell extends GraphCell {
+public class RoleCell extends CellgroupCell {
 
 	/**
 	 * Instantiates a new role cell.
 	 *
 	 * @param canvas the canvas
 	 */
-	public RoleCell(GraphCanvas canvas) {
+	public RoleCell(CellgroupCanvas canvas) {
 		super(canvas);
 		style = new ShapeNodeStyle();
 		style.setPaint(Color.decode("#0000DD"));

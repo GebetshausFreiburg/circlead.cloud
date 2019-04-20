@@ -1,4 +1,4 @@
-package org.rogatio.circlead.view.items.graph;
+package org.rogatio.circlead.view.items.cellgroup;
 
 import org.rogatio.circlead.view.items.DefaultLink;
 
@@ -11,9 +11,9 @@ import com.yworks.yfiles.view.GraphComponent;
 import com.yworks.yfiles.view.Pen;
 
 /**
- * The Class ProcessLink.
+ * The Class GraphLink.
  */
-public class ProcessLink extends DefaultLink {
+public class CellgroupLink extends DefaultLink {
 
 	/** The style. */
 	protected PolylineEdgeStyle style;
@@ -25,21 +25,23 @@ public class ProcessLink extends DefaultLink {
 	protected IGraph graph;
 	
 	/** The canvas. */
-	protected GraphCanvas canvas;
+	protected CellgroupCanvas canvas;
 
 	/**
-	 * Instantiates a new process link.
+	 * Instantiates a new graph link.
 	 *
 	 * @param canvas the canvas
 	 */
-	public ProcessLink(GraphCanvas canvas) {
+	public CellgroupLink(CellgroupCanvas canvas) {
 		this.graphComponent = canvas.getGraphComponent();
 		this.graph = graphComponent.getGraph();
 		this.canvas = canvas;
 
 		style = new PolylineEdgeStyle();
-		style.setPen(Pen.getBlack());
-		style.setTargetArrow(Arrow.DEFAULT);
+		style.setPen(Pen.getSilver());
+		style.setTargetArrow(Arrow.NONE);
+
+		graph.getEdgeDefaults().setStyle(style);
 	}
 
 	/* (non-Javadoc)

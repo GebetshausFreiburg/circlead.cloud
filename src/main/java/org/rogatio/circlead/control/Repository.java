@@ -271,6 +271,33 @@ public final class Repository {
 	}
 
 	/**
+	 * Gets the map of subactivities to role title.
+	 *
+	 * @param activity the activity
+	 * @return the map of subactivities to role title
+	 */
+	public Map<ActivityDataitem, String> getMapOfSubactivitiesToRoleTitle(Activity activity) {
+		Map<ActivityDataitem, String> map = new HashMap<ActivityDataitem, String>();
+
+		List<ActivityDataitem> subactivities = activity.getSubactivities();
+		if (ObjectUtil.isListNotNullAndEmpty(subactivities)) {
+			for (ActivityDataitem activityDataitem : subactivities) {
+				String r = activityDataitem.getResponsible();
+				if (StringUtil.isNotNullAndNotEmpty(r)) {
+					map.put(activityDataitem, r);
+				} else {
+					r = activity.getNeighbourResponsibilitySubactivity(activityDataitem);
+					if (StringUtil.isNotNullAndNotEmpty(r)) {
+						map.put(activityDataitem, r);
+					}
+				}
+			}
+		}
+
+		return map;
+	}
+
+	/**
 	 * Gets the role titles from subactivities. The subactivities could contain
 	 * roles which are not defined as own objects, the the sum of all named roles in
 	 * subactivities is equals or bigger than the sum of all role-workitems.

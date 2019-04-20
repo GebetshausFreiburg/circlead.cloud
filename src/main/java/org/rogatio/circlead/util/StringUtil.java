@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -106,6 +107,38 @@ public class StringUtil {
 	public static String beautify(String s) {
 		return s.substring(0, 1).toUpperCase() + s.substring(1, s.length());
 	}
+	
+	 /**
+ 	 * Break line.
+ 	 *
+ 	 * @param s the s
+ 	 * @param length the length
+ 	 * @param breaktoken the breaktoken
+ 	 * @return the string
+ 	 */
+ 	public static String breakLine(String s, int length, String breaktoken) {
+		 
+	        if (s.length() <= length) {
+	            return s;
+	        }
+	 
+	        StringBuilder sb = new StringBuilder();
+	        StringTokenizer st = new StringTokenizer(s, " ");
+	        String line = new String();
+	        while (st.hasMoreTokens()) {
+	            String token = st.nextToken();
+	            if ((line + token).length() > length) {
+	                sb.append(line + breaktoken+"\n");
+	                line = new String();
+	            }
+	            line = line + token + " ";
+	        }
+	 
+	        sb.append(line);
+	 
+	        return sb.toString();
+	    }
+	 
 
 	/**
 	 * Adds the space.
@@ -171,6 +204,13 @@ public class StringUtil {
 		return detectedCharset;
 	}
 	
+	/**
+	 * Convert encoding.
+	 *
+	 * @param value the value
+	 * @param toEncoding the to encoding
+	 * @return the string
+	 */
 	public static String convertEncoding(String value, String toEncoding) {
 		try {
 			return new String(value.getBytes(detectCharset(value)), toEncoding);

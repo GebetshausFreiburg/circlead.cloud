@@ -1,4 +1,4 @@
-package org.rogatio.circlead.view.items.graph;
+package org.rogatio.circlead.view.items.cellgroup;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -54,7 +54,7 @@ import com.yworks.yfiles.view.IRenderContext;
 /**
  * The Class GraphCanvas.
  */
-public class GraphCanvas extends DefaultCanvas {
+public class CellgroupCanvas extends DefaultCanvas {
 
 	/** The use rectangle. */
 	private boolean useRectangle = true;
@@ -141,7 +141,7 @@ public class GraphCanvas extends DefaultCanvas {
 	/**
 	 * Instantiates a new graph canvas.
 	 */
-	public GraphCanvas() {
+	public CellgroupCanvas() {
 		exportRect = new MutableRectangle(0, 0, width, height);
 		graphComponent = new GraphComponent();
 		graph = graphComponent.getGraph();
@@ -158,7 +158,7 @@ public class GraphCanvas extends DefaultCanvas {
 	public ICell createCell(CellType type) {
 
 		if (type == CellType.DEFAULT) {
-			return new GraphCell(this);
+			return new CellgroupCell(this);
 		}
 
 		if (type == CellType.ROLE) {
@@ -181,7 +181,7 @@ public class GraphCanvas extends DefaultCanvas {
 			return new EventEndCell(this);
 		}
 
-		return new GraphCell(this);
+		return new CellgroupCell(this);
 	}
 
 	/**

@@ -16,8 +16,8 @@ import java.util.List;
 import org.apache.batik.svggen.SVGGraphics2D;
 import org.rogatio.circlead.view.items.DefaultCell;
 import org.rogatio.circlead.view.items.ICell;
-import org.rogatio.circlead.view.items.graph.GraphCanvas;
-import org.rogatio.circlead.view.items.graph.GraphCell;
+import org.rogatio.circlead.view.items.cellgroup.CellgroupCanvas;
+import org.rogatio.circlead.view.items.cellgroup.CellgroupCell;
 import org.w3c.dom.Node;
 
 import de.alsclo.voronoi.graph.Edge;
