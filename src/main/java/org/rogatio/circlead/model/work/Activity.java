@@ -22,6 +22,13 @@ import static org.rogatio.circlead.model.Parameter.SUCCESSOR;
 import static org.rogatio.circlead.model.Parameter.SUPPORTER;
 import static org.rogatio.circlead.model.Parameter.USEDROLES;
 
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,14 +39,17 @@ import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.Repository;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
+import org.rogatio.circlead.control.synchronizer.SynchronizerFactory;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.ActivityTableParserElement;
 import org.rogatio.circlead.control.synchronizer.atlassian.parser.Parser;
+import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.control.validator.IValidator;
 import org.rogatio.circlead.control.validator.ValidationMessage;
 import org.rogatio.circlead.model.data.ActivityDataitem;
 import org.rogatio.circlead.model.data.HowTo;
 import org.rogatio.circlead.model.data.IDataitem;
 import org.rogatio.circlead.util.ObjectUtil;
+import org.rogatio.circlead.util.PropertyUtil;
 import org.rogatio.circlead.util.StringUtil;
 import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
 import org.rogatio.circlead.view.renderer.IWorkitemRenderer;
@@ -478,35 +488,35 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 	}
 
 	public String getNeighbourResponsibilitySubactivity(ActivityDataitem subactivity) {
-		
+
 		List<ActivityDataitem> list = this.getSubactivities();
-		
+
 		if (StringUtil.isNotNullAndNotEmpty(subactivity.getResponsible())) {
 			return subactivity.getResponsible();
 		}
-		
+
 		if (ObjectUtil.isListNotNullAndEmpty(list)) {
 			int index = list.indexOf(subactivity);
-			if (index+1<list.size()) {
-				ActivityDataitem s = list.get(index+1);
+			if (index + 1 < list.size()) {
+				ActivityDataitem s = list.get(index + 1);
 				if (StringUtil.isNotNullAndNotEmpty(s.getResponsible())) {
 					return s.getResponsible();
 				}
 			}
-			if (index>1) {
-				ActivityDataitem s = list.get(index-1);
+			if (index > 1) {
+				ActivityDataitem s = list.get(index - 1);
 				if (StringUtil.isNotNullAndNotEmpty(s.getResponsible())) {
 					return s.getResponsible();
 				}
 			}
-			if (index+2<list.size()) {
-				ActivityDataitem s = list.get(index+2);
+			if (index + 2 < list.size()) {
+				ActivityDataitem s = list.get(index + 2);
 				if (StringUtil.isNotNullAndNotEmpty(s.getResponsible())) {
 					return s.getResponsible();
 				}
 			}
-			if (index>2) {
-				ActivityDataitem s = list.get(index-2);
+			if (index > 2) {
+				ActivityDataitem s = list.get(index - 2);
 				if (StringUtil.isNotNullAndNotEmpty(s.getResponsible())) {
 					return s.getResponsible();
 				}
@@ -515,7 +525,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 
 		return null;
 	}
-	
+
 	public List<ActivityDataitem> getChildSubactivities(ActivityDataitem subactivity) {
 		List<ActivityDataitem> list = new ArrayList<ActivityDataitem>();
 		String childrenString = subactivity.getChild();
@@ -544,7 +554,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 		}
 		return null;
 	}
-	
+
 	public List<String> getResponsiblesFromSubactivities() {
 		List<String> list = new ArrayList<String>();
 		if (ObjectUtil.isListNotNullAndEmpty(this.getSubactivities())) {
@@ -558,7 +568,7 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 		}
 		return list;
 	}
-	
+
 	/**
 	 * Gets the subactivities with responsible.
 	 *
@@ -693,20 +703,6 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 			renderer.addItem(element, this.getResults());
 		}
 
-		if (ObjectUtil.isListNotNullAndEmpty(this.getSubactivities())) {
-			Element table = Parser.createActivityTable(this.getSubactivities(), synchronizer, true);
-
-			/*
-			 * for (ActivityDataitem subactivity : getSubactivities()) { Activity a =
-			 * R.getActivity(subactivity.getTitle()); if (a != null) { Elements es =
-			 * table.getElementsContainingText(subactivity.getTitle());
-			 * System.out.println(es); Element e = es.get(0); e.text("");
-			 * renderer.addActivityItem(e, null, subactivity.getTitle()); } }
-			 */
-
-			table.appendTo(element);
-		}
-
 		List<HowTo> howtos = R.getIndexHowTos();
 		if (this.getHowTos() != null) {
 			for (String ht : this.getHowTos()) {
@@ -720,6 +716,61 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 					}
 				}
 			}
+		}
+
+		if (ObjectUtil.isListNotNullAndEmpty(this.getSubactivities())) {
+			Element table = Parser.createActivityTable(this.getSubactivities(), synchronizer, true);
+			table.appendTo(element);
+
+			if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
+
+				try {
+					ClassLoader scl = ClassLoader.getSystemClassLoader();
+					Class<?> clazz = scl.loadClass("org.rogatio.circlead.view.items.process.ProcessCanvas");
+
+					Constructor<?> c = clazz.getConstructor(Activity.class);
+					Object processCanvas = c.newInstance(this);
+					Method initMethod = clazz.getMethod("init");
+					initMethod.invoke(processCanvas);
+
+					Method layoutMethod = clazz.getMethod("layout");
+					layoutMethod.invoke(processCanvas);
+
+					Method exportMethod = clazz.getMethod("export", String.class);
+					exportMethod.invoke(processCanvas,
+							PropertyUtil.getInstance().getWebserverDirectory() + File.separatorChar + ""
+									+ this.getId(SynchronizerFactory.getInstance().getActual()) + ".svg");
+
+//					element.appendElement("img").attr("style", "position: absolute;").attr("width", "100%").attr("src",
+//							this.getId(SynchronizerFactory.getInstance().getActual()) + ".svg");
+//element.append("<br/>");
+					
+					try {
+						String svg = new String(Files.readAllBytes(
+								Paths.get(PropertyUtil.getInstance().getWebserverDirectory() + File.separatorChar
+										+ this.getId(SynchronizerFactory.getInstance().getActual()) + ".svg")));
+						
+						element.append("<a href=\""+this.getId(SynchronizerFactory.getInstance().getActual())+".svg\">"+svg+"</a>");
+						
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				} catch (NoSuchMethodException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				} catch (InstantiationException e) {
+					e.printStackTrace();
+				}
+			}
+
 		}
 
 		return element;

@@ -14,6 +14,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -58,6 +61,7 @@ import org.rogatio.circlead.view.report.IReport;
 import org.rogatio.circlead.view.report.IndexCirclead;
 import org.rogatio.circlead.view.report.IndexRbs;
 import org.rogatio.circlead.view.report.IndexRrgs;
+import org.rogatio.circlead.view.report.IndexVoronoi;
 import org.rogatio.circlead.view.report.IndexWorkitems;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -77,11 +81,11 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 	private final static Logger LOGGER = LogManager.getLogger(FileSynchronizer.class);
 
 	/** The web directory. */
-	private String webDirectory = "web";
-	
+	private String webDirectory = PropertyUtil.getInstance().getWebserverDirectory();
+
 	/** The data directory. */
 	private String dataDirectory;
-	
+
 	/**
 	 * Sets the web directory.
 	 *
@@ -208,7 +212,7 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 		SynchronizerFactory.getInstance().setActual(this);
 		SynchronizerResult res = new SynchronizerResult();
 
-		if (PropertyUtil.getInstance().isFileSynchronizerEnabled() 
+		if (PropertyUtil.getInstance().isFileSynchronizerEnabled()
 				&& PropertyUtil.getInstance().isFileSynchronizerWriteMode()) {
 
 			ObjectMapper mapper = new ObjectMapper();
@@ -326,12 +330,12 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 	 */
 	public void writeReportRendered(IReport report) {
 		if (report instanceof IWorkitemRenderer) {
-			
-			if (report.getName()==null) {
-				LOGGER.warn("Report '"+report.getClass()+"' could not be found.");
+
+			if (report.getName() == null) {
+				LOGGER.warn("Report '" + report.getClass() + "' could not be found.");
 				return;
 			}
-			
+
 			IWorkitemRenderer renderer = (IWorkitemRenderer) report;
 			String filename = report.getName();
 			Document doc = new Document("");
@@ -352,13 +356,13 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 			head.append("<meta name=\"theme-color\" content=\"#ffffff\">");
 			head.append("<meta charset=\"utf-8\">");
 			Element body = html.appendElement("body");
-			
-			body.appendElement("H1").appendText(report.getName()); 
+
+			body.appendElement("H1").appendText(report.getName());
 
 			renderer.render(this).appendTo(body);
 
 			try {
-				String f = webDirectory+ File.separatorChar + filename + ".html";
+				String f = webDirectory + File.separatorChar + filename + ".html";
 
 				LOGGER.info("Write/Update file '" + f + "'");
 
@@ -402,24 +406,24 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 
 			body.appendElement("H1").appendText(workitem.getTitle());
 
-			/*Element p = body.appendElement("p");
-			p.attr("align", "right");
-			List<ISynchronizer> syn = SynchronizerFactory.getInstance().getSynchronizers();
-			for (ISynchronizer iSynchronizer : syn) {
-				if (iSynchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.getSimpleName())) {
-					p.append("<ac:link><ri:page ri:content-title=\"" +"A"
-							+ "\" ri:version-at-save=\"1\"/><ac:plain-text-link-body><![CDATA[" + workitem.getTitle() + ""
-							+ "]]></ac:plain-text-link-body></ac:link>");
-				} else if (iSynchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
-					p.appendElement("a").attr("href", "" + workitem.getId(iSynchronizer) + ".html")
-							.appendText("F");
-				}
-			}*/
-			
+			/*
+			 * Element p = body.appendElement("p"); p.attr("align", "right");
+			 * List<ISynchronizer> syn =
+			 * SynchronizerFactory.getInstance().getSynchronizers(); for (ISynchronizer
+			 * iSynchronizer : syn) { if
+			 * (iSynchronizer.getClass().getSimpleName().equals(AtlassianSynchronizer.class.
+			 * getSimpleName())) { p.append("<ac:link><ri:page ri:content-title=\"" +"A" +
+			 * "\" ri:version-at-save=\"1\"/><ac:plain-text-link-body><![CDATA[" +
+			 * workitem.getTitle() + "" + "]]></ac:plain-text-link-body></ac:link>"); } else
+			 * if (iSynchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.
+			 * getSimpleName())) { p.appendElement("a").attr("href", "" +
+			 * workitem.getId(iSynchronizer) + ".html") .appendText("F"); } }
+			 */
+
 			renderer.render(this).appendTo(body);
 
 			try {
-				String f = webDirectory+ File.separatorChar + filename + ".html";
+				String f = webDirectory + File.separatorChar + filename + ".html";
 				File ff = new File(webDirectory);
 				ff.mkdirs();
 				Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"));
@@ -544,7 +548,7 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.setSerializationInclusion(Include.NON_NULL);
-			
+
 			try {
 				LOGGER.info("Read file '" + filename + "'");
 
@@ -727,8 +731,8 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 				"intermediate-event-throw-link.png", "intermediate-event-catch-timer.png",
 				"intermediate-event-none.png", "end-event-multiple.png", "space-tool.png", "end-event-link.png" };
 		for (String file : bpmnFiles) {
-			Path p = Paths.get(
-					webDirectory + File.separatorChar + "images" + File.separatorChar + "bpmn" + File.separatorChar + file);
+			Path p = Paths.get(webDirectory + File.separatorChar + "images" + File.separatorChar + "bpmn"
+					+ File.separatorChar + file);
 			if (!Files.exists(p)) {
 				ValidationMessage m = new ValidationMessage(this);
 				m.error("File missing",
@@ -780,6 +784,14 @@ public class FileSynchronizer extends DefaultSynchronizer implements IValidator 
 			writeReportRendered(new IndexCirclead());
 			writeReportRendered(new IndexRbs());
 			writeReportRendered(new IndexRrgs());
+			// Only create report if voronoi-class exists
+			try {
+				ClassLoader scl = ClassLoader.getSystemClassLoader();
+				Class<?> clazz = scl.loadClass("org.rogatio.circlead.view.items.voronoi.VoronoiCanvas");
+				writeReportRendered(new IndexVoronoi());
+			} catch (ClassNotFoundException e) {
+			} catch (IllegalArgumentException e) {
+			}
 			writeReportRendered(new IndexWorkitems(WorkitemType.ROLE));
 			writeReportRendered(new IndexWorkitems(WorkitemType.ROLEGROUP));
 			writeReportRendered(new IndexWorkitems(WorkitemType.PERSON));
