@@ -13,7 +13,7 @@ import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
 import org.rogatio.circlead.model.Parameter;
 import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.work.Role;
-import org.rogatio.circlead.view.SvgBuilder;
+import org.rogatio.circlead.view.items.competence.DnaBuilder;
 import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
 
 ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
@@ -35,7 +35,7 @@ ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 			renderer.addRoleItem(tr.appendElement("td"), null, role.getTitle());
 
 			if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
-				tr.appendElement("td").append(SvgBuilder.createRoleDnaProfile(role, 64).toString());
+				tr.appendElement("td").append(DnaBuilder.createRoleDnaProfile(role, 64).toString());
 			}
 
 			if (role.getRedundance() == 0.0) {

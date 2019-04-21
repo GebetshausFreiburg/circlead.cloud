@@ -17,7 +17,7 @@ import org.rogatio.circlead.model.WorkitemStatusParameter;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.model.work.Team;
 import org.rogatio.circlead.util.PropertyUtil;
-import org.rogatio.circlead.view.SvgBuilder;
+import org.rogatio.circlead.view.items.competence.DnaBuilder;
 import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
 
 ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
@@ -44,7 +44,7 @@ ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 			tr.appendElement("td").appendText("Organisationsrolle");
 
 			if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
-				tr.appendElement("td").append(SvgBuilder.createRoleDnaProfile(role, 64).toString());
+				tr.appendElement("td").append(DnaBuilder.createRoleDnaProfile(role, 64).toString());
 			}
 
 			renderer.addStatus(tr.appendElement("td"), WorkitemStatusParameter.TEMPORARY.getName());
@@ -66,7 +66,7 @@ ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 				tr.appendElement("td").appendText("Organisationsrolle");
 
 				if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
-					tr.appendElement("td").append(SvgBuilder.createRoleDnaProfile(role, 64).toString());
+					tr.appendElement("td").append(DnaBuilder.createRoleDnaProfile(role, 64).toString());
 				}
 
 				renderer.addStatus(tr.appendElement("td"), "Unterbesetzt");
@@ -86,7 +86,7 @@ ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 				tr.appendElement("td").appendText("Organisationsrolle");
 
 				if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
-					tr.appendElement("td").append(SvgBuilder.createRoleDnaProfile(role, 64).toString());
+					tr.appendElement("td").append(DnaBuilder.createRoleDnaProfile(role, 64).toString());
 				}
 
 				renderer.addStatus(tr.appendElement("td"), "Unterbesetzt");
@@ -104,7 +104,7 @@ ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 			tr.appendElement("td").appendText("Teamrolle");
 
 			if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
-				tr.appendElement("td").append(SvgBuilder.createTeamDnaProfile(team, 64).toString());
+				tr.appendElement("td").append(DnaBuilder.createTeamDnaProfile(team, 64).toString());
 			}
 
 			renderer.addStatus(tr.appendElement("td"), "Unterbesetzt");
@@ -122,7 +122,7 @@ ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 				tr.appendElement("td").appendText("Teamrolle");
 
 				if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
-					tr.appendElement("td").append(SvgBuilder.createTeamDnaProfile(team, 64).toString());
+					tr.appendElement("td").append(DnaBuilder.createTeamDnaProfile(team, 64).toString());
 				}
 
 				renderer.addStatus(tr.appendElement("td"), "Einfachbesetzung");

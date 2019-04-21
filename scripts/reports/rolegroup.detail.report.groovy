@@ -106,11 +106,15 @@ ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 							}
 						}
 						if (contact!=null) {
-						td.
-							appendText(p.getFullname()).appendElement("br").
-							appendText(contact.getMail()).appendElement("br").
-							appendText(contact.getMobile());
+						    td.appendText(p.getFullname()).appendElement("br");
+							if (contact.getMail()!=null) {
+							   td.appendText(contact.getMail()).appendElement("br");
+							}
+							if (contact.getMobile()!=null) {
+							   td.appendText(contact.getMobile());
+							}
 						}
+						
 					} else {
 					td.attr("colspan", "1").appendText("-");									
 					}

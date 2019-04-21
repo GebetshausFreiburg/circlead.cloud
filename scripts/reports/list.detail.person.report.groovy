@@ -17,7 +17,7 @@ import org.rogatio.circlead.model.data.ContactDataitem;
 import org.rogatio.circlead.model.work.Person;
 import org.rogatio.circlead.model.work.Role;
 import org.rogatio.circlead.util.StringUtil;
-import org.rogatio.circlead.view.SvgBuilder;
+import org.rogatio.circlead.view.items.competence.DnaBuilder;
 import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
 
 ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
@@ -55,7 +55,7 @@ ISynchronizerRendererEngine renderer = synchronizer.getRenderer();
 			renderer.addPersonItem(tr.appendElement("td"), null, person.getFullname());
 
 			if (synchronizer.getClass().getSimpleName().equals(FileSynchronizer.class.getSimpleName())) {
-				tr.appendElement("td").append(SvgBuilder.createPersonDnaProfile(person, 64).toString());
+				tr.appendElement("td").append(DnaBuilder.createPersonDnaProfile(person, 64).toString());
 			}
 			
 			ContactDataitem contact = person.getFirstPrivateContact();
