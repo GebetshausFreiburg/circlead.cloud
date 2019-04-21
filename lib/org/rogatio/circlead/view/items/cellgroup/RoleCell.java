@@ -4,15 +4,12 @@ import java.awt.Color;
 
 import org.rogatio.circlead.util.ColorUtil;
 import org.rogatio.circlead.view.items.CellType;
-import org.rogatio.circlead.view.items.DefaultCell;
 
 import com.yworks.yfiles.geometry.PointD;
-import com.yworks.yfiles.geometry.SizeD;
 import com.yworks.yfiles.graph.INode;
 import com.yworks.yfiles.graph.labelmodels.ExteriorLabelModel;
 import com.yworks.yfiles.graph.styles.ShapeNodeShape;
 import com.yworks.yfiles.graph.styles.ShapeNodeStyle;
-import com.yworks.yfiles.view.GraphComponent;
 
 /**
  * The Class RoleCell.

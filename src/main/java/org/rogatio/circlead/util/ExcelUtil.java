@@ -57,6 +57,7 @@ public class ExcelUtil {
 		if (side==BorderSide.RIGHT) {
 			cellStyle.setBorderRight(bs);
 		}
+		@SuppressWarnings("deprecation")
 		XSSFColor color = new XSSFColor();
 		color.setRGB(new byte[] { (byte) r, (byte) g, (byte) b });
 		cellStyle.setBorderColor(side, color);
@@ -74,6 +75,7 @@ public class ExcelUtil {
 		cellStyle.setBorderLeft(bs);
 		cellStyle.setBorderRight(bs);
 		cellStyle.setBorderTop(bs);
+		@SuppressWarnings("deprecation")
 		XSSFColor color = new XSSFColor();
 		color.setRGB(new byte[] { (byte) r, (byte) g, (byte) b });
 		cellStyle.setBorderColor(BorderSide.BOTTOM, color);

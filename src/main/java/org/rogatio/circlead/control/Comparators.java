@@ -10,8 +10,6 @@ package org.rogatio.circlead.control;
 
 import java.util.Comparator;
 
-import org.rogatio.circlead.model.data.ActivityDataitem;
-import org.rogatio.circlead.model.work.Activity;
 import org.rogatio.circlead.model.work.DefaultWorkitem;
 import org.rogatio.circlead.model.work.Role;
 

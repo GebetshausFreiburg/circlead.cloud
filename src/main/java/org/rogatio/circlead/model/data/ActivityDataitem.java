@@ -139,6 +139,9 @@ public class ActivityDataitem extends DefaultDataitem {
 	 * @param bpmn the new bpmn
 	 */
 	public void setBpmn(String bpmn) {
+		if (bpmn!=null) {
+			bpmn = bpmn.toLowerCase();
+		}
 		this.bpmn = bpmn;
 	}
 

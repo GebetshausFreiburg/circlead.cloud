@@ -46,8 +46,6 @@ public class GatewayCell extends VoronoiCell {
 	@Override
 	public Object create() {
 
-		double POINT_SIZE = 5.0;
-
 		Color c = background;
 
 		if (this.getCenter() instanceof CellPoint) {

@@ -29,7 +29,7 @@ public class PropertyUtil {
 
 	/** The application version. Use Sematic Versioning (https://semver.org/). */
 	/* IF CHANGED, THEN CHANGE ALSO IN POM. */
-	public static String APPLICATION_VERSION = "1.5.8";
+	public static String APPLICATION_VERSION = "1.5.9";
 
 	/** The application name. */
 	public static String APPLICATION_NAME = "Circlead";
@@ -73,6 +73,7 @@ public class PropertyUtil {
 	/**  The backgroundcolor of the slides. */
 	public static String SLIDESHOW_COLOR = "slideshow.color";
 	
+	/** The confluence space. */
 	public static String CONFLUENCE_SPACE = "atlassian.confluence.space";
 	
 	/**  Text to display for default categorized hours. */
@@ -165,13 +166,25 @@ public class PropertyUtil {
 	/** The Constant APPLICATION_DISPLAY_TEAM_LEVEL. */
 	private static final String APPLICATION_DISPLAY_TEAM_LEVEL = "application.display.team.level";
 
+	/** The Constant BPMN_TASK_COLOR_BORDER. */
+	private static final String BPMN_TASK_COLOR_BORDER = "bpmn.task.color.border";
+	
+	/** The Constant BPMN_SWIMLANE_EVEN_COLOR_BACKGROUND. */
+	private static final String BPMN_SWIMLANE_EVEN_COLOR_BACKGROUND = "bpmn.swimlane.even.color.background";
+	
+	/** The Constant BPMN_SWIMLANE_ODD_COLOR_BACKGROUND. */
+	private static final String BPMN_SWIMLANE_ODD_COLOR_BACKGROUND = "bpmn.swimlane.odd.color.background";
+	
+	/** The Constant BPMN_GATEWAY_COLOR_BACKGROUND. */
+	private static final String BPMN_GATEWAY_COLOR_BACKGROUND = "bpmn.gateway.color.background";
+	
 	/** The instance. */
 	private static PropertyUtil instance = null;
 
-	/** The Application Properties */
+	/**  The Application Properties. */
 	private Properties applicationProperties = new Properties();
 
-	/** The Runtime Properties */
+	/**  The Runtime Properties. */
 	private Properties runtimeProperties = new Properties();
 
 	static {
@@ -778,6 +791,42 @@ public class PropertyUtil {
 	 */
 	public String getMailSender() {
 		return getApplicationValue(MAIL_SENDER);
+	}
+	
+	/**
+	 * Gets the bpmn task pen.
+	 *
+	 * @return the bpmn task pen
+	 */
+	public String getBpmnTaskPen() {
+		return getApplicationValue(BPMN_TASK_COLOR_BORDER);
+	}
+	
+	/**
+	 * Gets the bpmn swimlane even color background.
+	 *
+	 * @return the bpmn swimlane even color background
+	 */
+	public String getBpmnSwimlaneEvenColorBackground() {
+		return getApplicationValue(BPMN_SWIMLANE_EVEN_COLOR_BACKGROUND);
+	}
+	
+	/**
+	 * Gets the bpmn swimlane odd color background.
+	 *
+	 * @return the bpmn swimlane odd color background
+	 */
+	public String getBpmnSwimlaneOddColorBackground() {
+		return getApplicationValue(BPMN_SWIMLANE_ODD_COLOR_BACKGROUND);
+	}
+	
+	/**
+	 * Gets the bpmn gateway color background.
+	 *
+	 * @return the bpmn gateway color background
+	 */
+	public String getBpmnGatewayColorBackground() {
+		return getApplicationValue(BPMN_GATEWAY_COLOR_BACKGROUND);
 	}
 
 }

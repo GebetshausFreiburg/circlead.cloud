@@ -13,8 +13,10 @@ public enum CellType {
 	ACTIVITY,
 	/** The event start. */
 	EVENT_START,
+	EVENT_START_MESSAGE,
 	/** The event end. */
 	EVENT_END,
-	/** The gateway. */
+	GATEWAY_XOR,
+	GATEWAY_PARALLEL,
 	GATEWAY, POOL;
 }

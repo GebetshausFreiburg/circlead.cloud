@@ -46,6 +46,7 @@ import com.yworks.yfiles.graph.IGraph;
 import com.yworks.yfiles.graph.INode;
 import com.yworks.yfiles.layout.organic.OrganicLayout;
 import com.yworks.yfiles.layout.organic.RemoveOverlapsStage;
+import com.yworks.yfiles.layout.organic.StarSubstructureStyle;
 import com.yworks.yfiles.view.CanvasComponent;
 import com.yworks.yfiles.view.ContextConfigurator;
 import com.yworks.yfiles.view.GraphComponent;
@@ -393,7 +394,8 @@ public class CellgroupCanvas extends DefaultCanvas {
 		OrganicLayout layout = new OrganicLayout();
 		layout.setCompactnessFactor(1.0);
 		layout.setMinimumNodeDistance(20.0);
-		layout.setStarSubstructureStyle(layout.getStarSubstructureStyle().RADIAL);
+		layout.getStarSubstructureStyle();
+		layout.setStarSubstructureStyle(StarSubstructureStyle.RADIAL);
 		layout.setGroupNodeCompactness(1.0);
 		layout.setAutomaticGroupNodeCompactionEnabled(true);
 		layout.setClusteringQuality(1.0);
@@ -465,6 +467,8 @@ public class CellgroupCanvas extends DefaultCanvas {
 			break;
 		case SPECIFY_HEIGHT:
 			zoomedScale = configurator.calculateScaleForHeight(zoomedScale * height);
+			break;
+		default:
 			break;
 		}
 		configurator.setScale(zoomedScale);

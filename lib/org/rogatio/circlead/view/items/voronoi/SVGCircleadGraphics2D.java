@@ -3,7 +3,6 @@ package org.rogatio.circlead.view.items.voronoi;
 import java.awt.BasicStroke;
 import java.awt.Shape;
 import java.awt.Stroke;
-import java.io.File;
 
 import org.apache.batik.svggen.DOMGroupManager;
 import org.apache.batik.svggen.SVGGeneratorContext;
@@ -11,7 +10,6 @@ import org.apache.batik.svggen.SVGGraphics2D;
 import org.rogatio.circlead.control.synchronizer.SynchronizerFactory;
 import org.rogatio.circlead.model.work.Activity;
 import org.rogatio.circlead.model.work.Role;
-import org.rogatio.circlead.util.PropertyUtil;
 import org.rogatio.circlead.view.items.CellType;
 import org.rogatio.circlead.view.items.ICell;
 import org.w3c.dom.Element;

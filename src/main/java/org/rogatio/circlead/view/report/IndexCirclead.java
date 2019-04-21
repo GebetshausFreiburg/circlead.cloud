@@ -55,7 +55,7 @@ public class IndexCirclead extends DefaultReport {
 			// Only create report if voronoi-graph-class exists
 			try {
 				ClassLoader scl = ClassLoader.getSystemClassLoader();
-				Class<?> clazz = scl.loadClass("org.rogatio.circlead.view.items.voronoi.VoronoiCanvas");
+				scl.loadClass("org.rogatio.circlead.view.items.voronoi.VoronoiCanvas");
 				ul.appendElement("li").append("<a href=\"Index Voronoi.html\">Voronoi-Graph</a>");
 			} catch (ClassNotFoundException e) {
 			} catch (IllegalArgumentException e) {

@@ -20,10 +20,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Element;
 import org.rogatio.circlead.control.synchronizer.ISynchronizer;
-import org.rogatio.circlead.control.synchronizer.SynchronizerFactory;
 import org.rogatio.circlead.control.synchronizer.atlassian.AtlassianSynchronizer;
 import org.rogatio.circlead.control.synchronizer.file.FileSynchronizer;
-import org.rogatio.circlead.main.Launcher;
 import org.rogatio.circlead.util.PropertyUtil;
 import org.rogatio.circlead.view.renderer.ISynchronizerRendererEngine;
 

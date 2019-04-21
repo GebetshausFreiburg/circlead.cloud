@@ -12,6 +12,7 @@ public class SimpleFileLoader {
 
 	final static Logger LOGGER = LogManager.getLogger(SimpleFileLoader.class);
 
+	@SuppressWarnings("unused")
 	public static void main(String[] args) throws SecurityException {
 	
 		Repository repository = Repository.getInstance();

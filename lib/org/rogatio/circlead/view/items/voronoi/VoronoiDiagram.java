@@ -1,4 +1,5 @@
 package org.rogatio.circlead.view.items.voronoi;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -9,6 +10,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.rogatio.circlead.view.items.CellType;
 
 import de.alsclo.voronoi.Voronoi;
@@ -21,7 +24,11 @@ import de.alsclo.voronoi.graph.Vertex;
  */
 public class VoronoiDiagram extends Voronoi {
 
-	/* (non-Javadoc)
+	private final static Logger LOGGER = LogManager.getLogger(VoronoiDiagram.class);
+	
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.alsclo.voronoi.Voronoi#relax()
 	 */
 	@Override
@@ -49,7 +56,7 @@ public class VoronoiDiagram extends Voronoi {
 
 	/** The cells. */
 	private ArrayList<VoronoiCell> cells = new ArrayList<VoronoiCell>();
-	
+
 	/**
 	 * Gets the cells.
 	 *
@@ -58,7 +65,7 @@ public class VoronoiDiagram extends Voronoi {
 	public ArrayList<VoronoiCell> getCells() {
 		return cells;
 	}
-	
+
 	/**
 	 * Instantiates a new voronoi diagram.
 	 *
@@ -66,7 +73,7 @@ public class VoronoiDiagram extends Voronoi {
 	 */
 	public VoronoiDiagram(Collection<Point> points) {
 		super(points);
-		
+
 		for (Point site : this.getGraph().getSitePoints()) {
 
 			// Add all edges corresponding to the cell
@@ -86,31 +93,35 @@ public class VoronoiDiagram extends Voronoi {
 			});
 
 			// Create VoronoiCell on given site with coressponding edges
-			VoronoiCell cell = new VoronoiCell(site, edges);
+			try {
+				VoronoiCell cell = new VoronoiCell(site, edges);
 
-			// if cell is also defined in GraphCanvas, then set more specific voronoi-cell
-			if (site instanceof CellPoint) {
-				CellPoint cp = (CellPoint)site;
-				if (cp.getCell().getType()==CellType.ROLE) {
-					cell = new RoleCell(site, edges);
+				// if cell is also defined in GraphCanvas, then set more specific voronoi-cell
+				if (site instanceof CellPoint) {
+					CellPoint cp = (CellPoint) site;
+					if (cp.getCell().getType() == CellType.ROLE) {
+						cell = new RoleCell(site, edges);
+					}
+					if (cp.getCell().getType() == CellType.ACTIVITY) {
+						cell = new ActivityCell(site, edges);
+					}
+					if (cp.getCell().getType() == CellType.GATEWAY) {
+						cell = new GatewayCell(site, edges);
+					}
+					if (cp.getCell().getType() == CellType.EVENT_START) {
+						cell = new EventStartCell(site, edges);
+					}
+					if (cp.getCell().getType() == CellType.EVENT_END) {
+						cell = new EventEndCell(site, edges);
+					}
 				}
-				if (cp.getCell().getType()==CellType.ACTIVITY) {
-					cell = new ActivityCell(site, edges);
-				}
-				if (cp.getCell().getType()==CellType.GATEWAY) {
-					cell = new GatewayCell(site, edges);
-				}
-				if (cp.getCell().getType()==CellType.EVENT_START) {
-					cell = new EventStartCell(site, edges);
-				}
-				if (cp.getCell().getType()==CellType.EVENT_END) {
-					cell = new EventEndCell(site, edges);
-				}
+
+				cells.add(cell);
+
+			} catch (java.lang.IllegalArgumentException e) {
+				LOGGER.warn("Error on calculation voronoi-diagramm. Start calculation again!", e.getMessage());
 			}
-			
-			cells.add(cell);
-			
 		}
 	}
-	
+
 }

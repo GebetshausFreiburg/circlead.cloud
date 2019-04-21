@@ -3,7 +3,6 @@ package org.rogatio.circlead.view.items.voronoi;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -22,10 +21,7 @@ import org.rogatio.circlead.view.items.ICell;
 import org.rogatio.circlead.view.items.ILink;
 import org.rogatio.circlead.view.items.cellgroup.CellgroupCanvas;
 import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGDocument;
-
-import com.yworks.yfiles.view.CanvasComponent;
 
 import de.alsclo.voronoi.graph.Point;
 

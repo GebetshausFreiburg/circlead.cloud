@@ -13,12 +13,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.batik.svggen.SVGGraphics2D;
 import org.rogatio.circlead.view.items.DefaultCell;
 import org.rogatio.circlead.view.items.ICell;
-import org.rogatio.circlead.view.items.cellgroup.CellgroupCanvas;
-import org.rogatio.circlead.view.items.cellgroup.CellgroupCell;
-import org.w3c.dom.Node;
 
 import de.alsclo.voronoi.graph.Edge;
 import de.alsclo.voronoi.graph.Point;

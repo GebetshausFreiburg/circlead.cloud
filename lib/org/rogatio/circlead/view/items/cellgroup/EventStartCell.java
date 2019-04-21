@@ -2,23 +2,15 @@ package org.rogatio.circlead.view.items.cellgroup;
 
 import java.awt.Color;
 
-import org.rogatio.circlead.model.data.ActivityDataitem;
 import org.rogatio.circlead.view.items.CellType;
-import org.rogatio.circlead.view.items.DefaultCell;
 import org.rogatio.circlead.view.items.ICell;
-import org.rogatio.circlead.view.items.ILink;
 import org.rogatio.circlead.view.items.process.bpmn.SmallLabelStyle;
 
 import com.yworks.yfiles.geometry.PointD;
-import com.yworks.yfiles.geometry.SizeD;
-import com.yworks.yfiles.graph.IEdge;
 import com.yworks.yfiles.graph.INode;
 import com.yworks.yfiles.graph.labelmodels.ExteriorLabelModel;
-import com.yworks.yfiles.graph.styles.Arrow;
-import com.yworks.yfiles.graph.styles.PolylineEdgeStyle;
 import com.yworks.yfiles.graph.styles.ShapeNodeShape;
 import com.yworks.yfiles.graph.styles.ShapeNodeStyle;
-import com.yworks.yfiles.view.GraphComponent;
 import com.yworks.yfiles.view.Pen;
 
 /**
