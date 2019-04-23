@@ -527,10 +527,8 @@ public class Activity extends DefaultWorkitem implements IWorkitemRenderer, IVal
 
 	public List<ActivityDataitem> getChildSubactivities(ActivityDataitem subactivity) {
 		List<ActivityDataitem> list = new ArrayList<ActivityDataitem>();
-		String childrenString = subactivity.getChild();
-		List<String> childrenList = StringUtil.toList(childrenString);
-		if (childrenList != null) {
-			for (String childAid : childrenList) {
+		if (ObjectUtil.isListNotNullAndEmpty(subactivity.getLinkReferences())) {
+			for (String childAid : subactivity.getLinkReferences()) {
 				ActivityDataitem c = getSubactivityWithAid(childAid);
 				if (!list.contains(c)) {
 					list.add(c);

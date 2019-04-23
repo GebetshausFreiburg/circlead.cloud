@@ -9,13 +9,18 @@
 package org.rogatio.circlead.model.data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.rogatio.circlead.util.StringUtil;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaDescription;
 import com.kjetland.jackson.jsonSchema.annotations.JsonSchemaTitle;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class ActivityDataitem hold the data of activity.
  *
@@ -32,22 +37,22 @@ public class ActivityDataitem extends DefaultDataitem {
 	@JsonSchemaTitle("Accountable")
 	@JsonSchemaDescription("Accountable role")
 	private String accountable;
-	
+
 	/** The subactivities. */
 	private List<ActivityDataitem> subactivities;
-	
+
 	/** The description. */
 	private String description;
 
 	/** The aid. */
 	private String aid;
-	
+
 	/** The child. */
 	private String child;
-	
+
 	/** The bpmn. */
 	private String bpmn;
-	
+
 	/** The results. */
 	private String results;
 
@@ -64,7 +69,7 @@ public class ActivityDataitem extends DefaultDataitem {
 	@JsonSchemaDescription("Consultant role")
 	private List<String> consultant = new ArrayList<String>();
 
-	/** The informed. */ 
+	/** The informed. */
 	@JsonSchemaTitle("Informed")
 	@JsonSchemaDescription("Informed role")
 	private List<String> informed = new ArrayList<String>();
@@ -81,8 +86,7 @@ public class ActivityDataitem extends DefaultDataitem {
 	/**
 	 * Sets the role.
 	 *
-	 * @param role
-	 *            the new role
+	 * @param role the new role
 	 */
 	public void setResponsible(String role) {
 		this.responsible = role;
@@ -105,7 +109,7 @@ public class ActivityDataitem extends DefaultDataitem {
 	public void setAccountable(String accountable) {
 		this.accountable = accountable;
 	}
-	
+
 	/**
 	 * Gets the child.
 	 *
@@ -115,12 +119,85 @@ public class ActivityDataitem extends DefaultDataitem {
 		return child;
 	}
 
+	/** The link references. */
+	@JsonIgnore
+	private List<String> linkReferences = new ArrayList<String>();
+	
+	/** The link types. */
+	@JsonIgnore
+	private Map<String, String> linkTypes = new HashMap<String, String>();
+	
+	/** The link labels. */
+	@JsonIgnore
+	private Map<String, String> linkLabels = new HashMap<String, String>();
+
+	/**
+	 * Gets the link references.
+	 *
+	 * @return the link references
+	 */
+	@JsonIgnore
+	public List<String> getLinkReferences() {
+		return this.linkReferences;
+	}
+
+	/**
+	 * Gets the link type.
+	 *
+	 * @param linkReference the link reference
+	 * @return the link type
+	 */
+	@JsonIgnore
+	public String getLinkType(String linkReference) {
+		return linkTypes.get(linkReference);
+	}
+
+	/**
+	 * Gets the link label.
+	 *
+	 * @param linkReference the link reference
+	 * @return the link label
+	 */
+	@JsonIgnore
+	public String getLinkLabel(String linkReference) {
+		return linkLabels.get(linkReference);
+	}
+
 	/**
 	 * Sets the child.
 	 *
 	 * @param child the new child
 	 */
 	public void setChild(String child) {
+
+		if (StringUtil.isNotNullAndNotEmpty(child)) {
+			if (child.contains(",")) {
+				StringTokenizer st = new StringTokenizer(child, ",");
+				while (st.hasMoreTokens()) {
+					String token = st.nextToken().trim();
+					int idx = token.indexOf("[");
+					if (idx != -1) {
+						String linkType = token.substring(idx, token.length()).replace("[", "").replace("]", "").trim();
+						String linkReference = token.substring(0, idx).trim();
+						linkReferences.add(linkReference);
+						int idx2 = linkType.indexOf(":");
+						if (idx2 != -1) {
+							String linkLabel = linkType.substring(idx2, linkType.length());
+							linkLabels.put(linkReference, linkLabel);
+							linkType = linkType.substring(0, idx2).trim();
+							linkTypes.put(linkReference, linkType);
+						} else {
+							linkTypes.put(linkReference, linkType);
+						}
+					} else {
+						linkReferences.add(token);
+					}
+				}
+			} else {
+				linkReferences.add(child);
+			}
+		}
+
 		this.child = child;
 	}
 
@@ -139,7 +216,7 @@ public class ActivityDataitem extends DefaultDataitem {
 	 * @param bpmn the new bpmn
 	 */
 	public void setBpmn(String bpmn) {
-		if (bpmn!=null) {
+		if (bpmn != null) {
 			bpmn = bpmn.toLowerCase();
 		}
 		this.bpmn = bpmn;
@@ -211,8 +288,7 @@ public class ActivityDataitem extends DefaultDataitem {
 	/**
 	 * Sets the howtos.
 	 *
-	 * @param howtos
-	 *            the new howtos
+	 * @param howtos the new howtos
 	 */
 	public void setHowtos(List<String> howtos) {
 		this.howtos = StringUtil.clean(howtos);
@@ -271,7 +347,7 @@ public class ActivityDataitem extends DefaultDataitem {
 	public void setAid(String aid) {
 		this.aid = aid;
 	}
-	
+
 	/**
 	 * Gets the subactivities.
 	 *
@@ -289,5 +365,5 @@ public class ActivityDataitem extends DefaultDataitem {
 	public void setSubactivities(List<ActivityDataitem> subactivities) {
 		this.subactivities = subactivities;
 	}
-	
+
 }
