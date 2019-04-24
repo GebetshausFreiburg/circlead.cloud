@@ -29,7 +29,7 @@ public class PropertyUtil {
 
 	/** The application version. Use Sematic Versioning (https://semver.org/). */
 	/* IF CHANGED, THEN CHANGE ALSO IN POM. */
-	public static String APPLICATION_VERSION = "1.5.10";
+	public static String APPLICATION_VERSION = "1.6.0";
 
 	/** The application name. */
 	public static String APPLICATION_NAME = "Circlead";
@@ -130,6 +130,9 @@ public class PropertyUtil {
 	/** The atlassian login user. */
 	public static String ATLASSIAN_LOGIN_USER = "atlassian.login.user";
 
+	/** The atlassian login apitoken. */
+	public static String ATLASSIAN_LOGIN_APITOKEN = "atlassian.login.apitoken";
+	
 	/** The atlassian login password. */
 	public static String ATLASSIAN_LOGIN_PASSWORD = "atlassian.login.password";
 
@@ -640,12 +643,16 @@ public class PropertyUtil {
 	}
 
 	/**
-	 * Gets the atlassian password.
+	 * Gets the atlassian auth password/token
 	 *
-	 * @return the atlassian password
+	 * @return the atlassian auth password/token
 	 */
 	public String getAtlassianPassword() {
-		return getApplicationValue(ATLASSIAN_LOGIN_PASSWORD);
+		if (this.isDedicatedServer()) {
+			return getApplicationValue(ATLASSIAN_LOGIN_PASSWORD);	
+		} else {
+			return getApplicationValue(ATLASSIAN_LOGIN_APITOKEN);	
+		}
 	}
 
 	/**

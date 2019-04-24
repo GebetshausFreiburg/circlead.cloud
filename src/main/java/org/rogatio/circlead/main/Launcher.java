@@ -385,6 +385,8 @@ public class Launcher {
 					repository.writeIndex();
 				}
 
+				LOGGER.info("Circlead synchronizer finished.");
+				
 				/*
 				 * Start webserver if argument is set
 				 */

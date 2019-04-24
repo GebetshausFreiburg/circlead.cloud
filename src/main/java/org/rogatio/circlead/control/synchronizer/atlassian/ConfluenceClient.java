@@ -19,6 +19,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.UUID;
 
+import org.rogatio.circlead.control.synchronizer.SynchronizerException;
 import org.rogatio.circlead.control.synchronizer.SynchronizerResult;
 import org.rogatio.circlead.util.PropertyUtil;
 
@@ -108,8 +109,8 @@ public class ConfluenceClient extends HttpClient {
 	/**
 	 * Load attachment.
 	 *
-	 * @param pageId the page id
-	 * @param filename the filename
+	 * @param pageId     the page id
+	 * @param filename   the filename
 	 * @param targetPath the target path
 	 */
 	public void loadAttachment(int pageId, String filename, String targetPath) {
@@ -118,7 +119,8 @@ public class ConfluenceClient extends HttpClient {
 
 		try {
 			/*
-			 * load json-results of attachments. rest-url sets filter to specific attachment with filename
+			 * load json-results of attachments. rest-url sets filter to specific attachment
+			 * with filename
 			 */
 			SynchronizerResult res = get("wiki/rest/api/content/" + pageId + "/child/attachment?filename=" + filename);
 
@@ -232,7 +234,12 @@ public class ConfluenceClient extends HttpClient {
 			return this.get(restPrefix + "content/" + id + "?"
 					+ "expand=body.storage,metadata.labels,history,history.lastUpdated,space,version,ancestors");
 		} catch (IOException e) {
-			return null;
+			SynchronizerResult res = new SynchronizerResult();
+			res.setMessage(e.getMessage());
+			if (e.getMessage().contains("Server returned HTTP response code: 403 for URL")) {
+				res.setCode(403);
+			}
+			return res;
 		}
 	}
 

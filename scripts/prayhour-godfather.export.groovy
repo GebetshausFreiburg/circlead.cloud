@@ -19,7 +19,13 @@ import java.nio.file.StandardOpenOption;
 String content = "";
 
 Role roleSet = R.getRole("Stamm-Mitarbeiter");
-List<String> personIdentifiers = roleSet.getPersonIdentifiers();
+
+List<String> personIdentifiers = null;
+
+if (roleSet!=null) {
+       personIdentifiers = roleSet.getPersonIdentifiers();
+   }
+
 
 if (ObjectUtil.isListNotNullAndEmpty(personIdentifiers)) {
 	for (int i = 0; i < personIdentifiers.size(); i++) {

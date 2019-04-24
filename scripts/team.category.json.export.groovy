@@ -216,10 +216,12 @@ class Week {
 }
 
 List<Team> teams = R.getTeamsWithCategory(category);
-if (!ObjectUtil.isListNotNullAndEmpty(teams)) {
-  Element element = new Element("");
-  element.appendText("Report not created, because no team found with category '"+category+"'");
-  return element;
+if (ObjectUtil.isListNotNullAndEmpty(teams)) {
+    if (category!=null) {
+         return "Report not created, because no team found with category '"+category+"'";     
+     } else {
+         return "Report not created, because no category found";                
+     }
 }		
 	
 boolean[][] writeable = ObjectUtil.createMatrix(24,8)

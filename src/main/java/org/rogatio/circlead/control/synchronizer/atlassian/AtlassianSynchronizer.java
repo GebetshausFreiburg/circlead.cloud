@@ -833,7 +833,7 @@ public class AtlassianSynchronizer extends DefaultSynchronizer {
 
 				DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 				LOGGER.debug("Load: code=" + page.getCode() + ", message=" + page.getMessage() + ", source="
-						+ page.getSource() + ", title=" + p.getTitle() + "(modified="
+						+ page.getSource() + ", title=" + p.getTitle() + " (modified="
 						+ formatter.format(wi.getModified()) + ")");
 
 			} catch (JsonParseException e) {
