@@ -1787,6 +1787,9 @@ public final class Repository {
 	 * @return the activity
 	 */
 	public Activity getActivity(String identifier) {
+		if (identifier!=null) {
+			identifier = identifier.trim();
+		}
 		for (IWorkitem workitem : workitems) {
 			if (WorkitemType.ACTIVITY.isTypeOf(workitem)) {
 				Activity activity = (Activity) workitem;

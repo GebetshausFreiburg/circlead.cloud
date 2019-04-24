@@ -181,6 +181,9 @@ public class PropertyUtil {
 	/** The Constant BPMN_GATEWAY_COLOR_BACKGROUND. */
 	private static final String BPMN_GATEWAY_COLOR_BACKGROUND = "bpmn.gateway.color.background";
 	
+	/** The Constant BPMN_ANNOTATION_COLOR_BACKGROUND. */
+	private static final String BPMN_ANNOTATION_COLOR_BACKGROUND = "bpmn.annotation.color.background";
+	
 	/** The instance. */
 	private static PropertyUtil instance = null;
 
@@ -262,6 +265,10 @@ public class PropertyUtil {
 		return instance;
 	}
 
+	public void setApplicationProperty(String key, String value) {
+		applicationProperties.setProperty(key, value);
+	}
+	
 	/**
 	 * Gets the runtime modified date.
 	 *
@@ -643,7 +650,7 @@ public class PropertyUtil {
 	}
 
 	/**
-	 * Gets the atlassian auth password/token
+	 * Gets the atlassian auth password/token.
 	 *
 	 * @return the atlassian auth password/token
 	 */
@@ -834,6 +841,15 @@ public class PropertyUtil {
 	 */
 	public String getBpmnGatewayColorBackground() {
 		return getApplicationValue(BPMN_GATEWAY_COLOR_BACKGROUND);
+	}
+	
+	/**
+	 * Gets the bpmn annotation color background.
+	 *
+	 * @return the bpmn annotation color background
+	 */
+	public String getBpmnAnnotationColorBackground() {
+		return getApplicationValue(BPMN_ANNOTATION_COLOR_BACKGROUND);
 	}
 
 }

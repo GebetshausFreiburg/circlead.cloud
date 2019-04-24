@@ -5,6 +5,8 @@ package org.rogatio.circlead.view.items;
  */
 public enum CellType {
 
+	CONVERSATION,
+	ARTIFACT,
 	/** The default. */
 	DEFAULT,
 	/** The role. */
@@ -12,6 +14,7 @@ public enum CellType {
 	/** The activity. */
 	ACTIVITY,
 	/** The event start. */
+	EVENT,
 	EVENT_START,
 	EVENT_START_MESSAGE,
 	/** The event end. */
