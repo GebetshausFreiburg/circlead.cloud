@@ -1,8 +1,5 @@
 # circlead.cloud
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/32b70fdfef5e4fb59beecbb26d292789)](https://app.codacy.com/app/matthiaw/circlead.cloud?utm_source=github.com&utm_medium=referral&utm_content=GebetshausFreiburg/circlead.cloud&utm_campaign=Badge_Grade_Dashboard)
-[![Known Vulnerabilities](https://snyk.io/test/github/GebetshausFreiburg/circlead.cloud/badge.svg)](https://snyk.io/test/github/GebetshausFreiburg/circlead.cloud) 
-
 Circlead is a system which operates for an evolutionary role model. The is use for circular leadership for people and organisations. Circular leadership is a structural system (or software) and a set of principles based on the verse in the bible 1. peter 4,10.
 
 This is a version written in java to create the role model logic on a minimal dataset. A dataset can be used as
@@ -22,4 +19,4 @@ The main-layers for the application are
 
 To understood the philosophy (and model) of circlead read the blog (only in german) at https://circleadonline.wordpress.com/.
 
-To understood the API see https://gebetshausfreiburg.github.io/circlead.cloud/index.html?overview-summary.html and https://veniversum.me/git-visualizer/?owner=GebetshausFreiburg&repo=circlead.cloud
+To understood the API see https://gebetshausfreiburg.github.io/circlead.cloud/index.html?overview-summary.html
